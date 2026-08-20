@@ -787,13 +787,17 @@ ${skills}
 
 window.insertAIResult = function () {
     const aiResultEl = document.getElementById("aiResult");
-    const targetTextArea = document.getElementById("jobDescription");
+
+    // Mode-aware target: "blog" mode (set by window.generateBlogAI) targets the blog
+    // content textarea; default/"job" mode keeps targeting the job description field.
+    const mode = window.aiDraftMode || "job";
+    const targetTextArea = document.getElementById(mode === "blog" ? "adminBlogContent" : "jobDescription");
 
     if (!aiResultEl || !targetTextArea) return;
 
     const content = aiResultEl.innerText.trim();
 
-    if (!content || content.includes("Waiting for AI") || content.includes("Preparing AI") || content.includes("Generating")) {
+    if (!content || content.includes("Waiting for AI") || content.includes("Preparing AI") || content.includes("Generating") || content.includes("Enter a topic")) {
         if (typeof window.showCustomAlert === "function") {
             window.showCustomAlert("Please wait for the draft to generate before applying.", "Warning", "Info");
         }
@@ -804,7 +808,7 @@ window.insertAIResult = function () {
     window.closeAI();
 
     if (typeof window.showCustomAlert === "function") {
-        window.showCustomAlert("Applied description to form!", "Success", "Success");
+        window.showCustomAlert(mode === "blog" ? "Applied draft to article!" : "Applied description to form!", "Success", "Success");
     }
 };
 
@@ -813,6 +817,7 @@ window.closeAI = function () {
     if (aiModal) {
         aiModal.style.display = "none";
     }
+    window.aiDraftMode = "job";
 };
 
 // ==========================================================
