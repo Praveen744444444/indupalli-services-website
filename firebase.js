@@ -2,7 +2,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAJWdsNykkCp9tJfoBiZNoVfWT0orM6BHA",
+  apiKey: "YOUR_FIREBASE_WEB_API_KEY",
   authDomain: "indupalli-services-18404.firebaseapp.com",
   projectId: "indupalli-services-18404",
   storageBucket: "indupalli-services-18404.firebasestorage.app",
@@ -11,4 +11,5 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
+
 export const auth = getAuth(app);
