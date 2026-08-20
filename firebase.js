@@ -6,9 +6,10 @@ const firebaseConfig = {
   authDomain: "indupalli-services-18404.firebaseapp.com",
   projectId: "indupalli-services-18404",
   storageBucket: "indupalli-services-18404.firebasestorage.app",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID", // Add your actual ID here if you have it
-  appId: "YOUR_APP_ID" // Add your actual ID here if you have it
+  messagingSenderId: "187485195719",
+  appId: "1:187485195719:web:a2f422b12c47ea2d549de2"
 };
 
 const app = initializeApp(firebaseConfig);
+
 export const auth = getAuth(app);
