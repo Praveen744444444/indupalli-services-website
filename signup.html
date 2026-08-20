@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Free Account – Indupalli Services</title>
+
+<!-- Fonts & Icons -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+<style>
+:root{
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --navy: #0f172a;
+  --dark: #001b5e;
+  --orange: #f59e0b;
+  --orange-hover: #d97706;
+  --green: #10b981;
+  --red: #ef4444;
+  --bg-light: #f8fafc;
+  --border-color: #e2e8f0;
+  --text-title: #0f172a;
+  --text-body: #334155;
+  --text-muted: #64748b;
+  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 10px 25px -5px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 25px 50px -12px rgba(15, 23, 42, 0.25);
+}
+
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Plus Jakarta Sans', sans-serif; }
+body { min-height:100vh; display:flex; background:var(--bg-light); color:var(--text-body); -webkit-font-smoothing:antialiased; }
+
+/* ── LEFT HERO PANEL ── */
+.left-panel {
+  flex: 1.15;
+  background: radial-gradient(circle at 80% 20%, #1e40af 0%, var(--dark) 60%, #020617 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 50px 60px;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+.left-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+}
+
+.brand { display:flex; align-items:center; gap:14px; position:relative; z-index:2; }
+.brand img { height:48px; width:48px; border-radius:12px; background:#fff; padding:4px; box-shadow:0 4px 12px rgba(0,0,0,0.15); object-fit:contain; }
+.brand-text h2 { font-size:21px; font-weight:800; color:#fff; letter-spacing:-0.5px; margin:0; }
+.brand-text p { font-size:10.5px; color:#60a5fa; letter-spacing:1.5px; text-transform:uppercase; font-weight:700; margin:2px 0 0 0; }
+
+.left-center { flex:1; display:flex; flex-direction:column; justify-content:center; position:relative; z-index:2; margin:30px 0; max-width:480px; }
+.hero-badge { display:inline-flex; align-items:center; gap:8px; background:rgba(255, 255, 255, 0.08); border:1px solid rgba(255, 255, 255, 0.15); padding:6px 14px; border-radius:30px; font-size:12px; font-weight:700; letter-spacing:0.5px; text-transform:uppercase; margin-bottom:20px; width:fit-content; backdrop-filter:blur(4px); }
+.left-panel h1 { font-size:38px; font-weight:800; line-height:1.2; margin-bottom:12px; letter-spacing:-1px; }
+.left-panel h1 span { color:#60a5fa; text-shadow:0 0 40px rgba(96, 165, 250, 0.3); }
+.left-panel p.tagline { font-size:15px; line-height:1.7; color:#cbd5e1; margin-bottom:28px; }
+
+.features-list { display:flex; flex-direction:column; gap:12px; width:100%; max-width:420px; }
+.feature-item { display:flex; align-items:center; gap:14px; background:rgba(255, 255, 255, 0.04); border:1px solid rgba(255, 255, 255, 0.08); padding:12px 18px; border-radius:14px; backdrop-filter:blur(6px); transition:transform 0.2s; }
+.feature-item:hover { transform:translateX(6px); background:rgba(255, 255, 255, 0.08); }
+.feature-icon { width:36px; height:36px; border-radius:10px; background:rgba(37, 99, 235, 0.3); color:#60a5fa; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+.feature-text h4 { font-size:14px; font-weight:700; color:#fff; margin-bottom:2px; }
+.feature-text p { font-size:12px; color:#94a3b8; margin:0; }
+
+.left-bottom { position:relative; z-index:2; border-top:1px solid rgba(255, 255, 255, 0.1); padding-top:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:14px; width:100%; }
+.left-bottom p { font-size:12.5px; color:#94a3b8; margin:0; }
+.trust-badges { display:flex; gap:10px; }
+.trust-badge { background:rgba(255, 255, 255, 0.06); border:1px solid rgba(255, 255, 255, 0.12); padding:5px 12px; border-radius:20px; font-size:11px; font-weight:700; color:#cbd5e1; display:inline-flex; align-items:center; gap:6px; }
+
+/* ── RIGHT AUTH PANEL ── */
+.right-panel { width:520px; display:flex; align-items:center; justify-content:center; padding:40px 40px; background:#ffffff; flex-shrink:0; box-shadow:-10px 0 30px rgba(0, 0, 0, 0.02); overflow-y:auto; }
+.form-box { width:100%; max-width:400px; }
+.form-badge { display:inline-flex; align-items:center; gap:6px; background:#eff6ff; color:var(--primary); font-size:11.5px; font-weight:800; padding:5px 14px; border-radius:20px; margin-bottom:14px; letter-spacing:0.5px; text-transform:uppercase; border:1px solid #dbeafe; }
+.form-box h2 { font-size:28px; font-weight:800; color:var(--navy); margin-bottom:6px; letter-spacing:-0.5px; }
+.form-box .sub { color:var(--text-muted); font-size:14px; margin-bottom:24px; line-height:1.6; }
+
+.input-group { display:flex; flex-direction:column; margin-bottom:15px; position:relative; }
+.input-group label { font-size:12px; font-weight:700; color:var(--navy); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px; }
+
+.input-wrap { position:relative; }
+.input-wrap i { position:absolute; left:16px; top:50%; transform:translateY(-50%); color:#94a3b8; font-size:14px; pointer-events:none; }
+.input-wrap input { width:100%; padding:12px 16px 12px 44px; border:1.5px solid var(--border-color); border-radius:12px; font-size:14px; background:var(--bg-light); transition:all 0.2s ease; font-family:inherit; color:var(--navy); outline:none; }
+.input-wrap input:focus { border-color:var(--primary); background:#ffffff; box-shadow:0 0 0 4px rgba(37, 99, 235, 0.1); }
+.input-wrap input:focus + i { color:var(--primary); }
+
+.btn-register { width:100%; padding:14px; background:linear-gradient(135deg, var(--primary), var(--primary-dark)); color:#fff; border:none; border-radius:12px; font-size:15px; font-weight:700; cursor:pointer; margin-top:6px; transition:all 0.2s ease; box-shadow:0 4px 14px rgba(37, 99, 235, 0.25); display:flex; align-items:center; justify-content:center; gap:8px; }
+.btn-register:hover { transform:translateY(-2px); box-shadow:0 6px 20px rgba(37, 99, 235, 0.35); }
+.btn-register:disabled { background:#94a3b8; cursor:not-allowed; box-shadow:none; transform:none; }
+
+.social-btn { flex:1; display:flex; align-items:center; justify-content:center; gap:8px; padding:11px; background:#ffffff; border:1.5px solid var(--border-color); border-radius:12px; font-size:13.5px; font-weight:700; color:var(--navy); cursor:pointer; transition:all 0.2s; }
+.social-btn:hover { background:#f8fafc; border-color:#cbd5e1; transform:translateY(-1px); }
+.social-btn.fb { background:#1877F2; color:#fff; border:none; }
+.social-btn.fb:hover { background:#166fe5; }
+
+.divider { display:flex; align-items:center; gap:14px; margin:18px 0; }
+.divider::before, .divider::after { content:''; flex:1; height:1px; background:var(--border-color); }
+.divider span { font-size:12px; color:var(--text-muted); font-weight:600; text-transform:uppercase; letter-spacing:0.5px; }
+
+.btn-login { width:100%; padding:12px; background:#ffffff; color:var(--navy); border:1.5px solid var(--border-color); border-radius:12px; font-size:14px; font-weight:700; cursor:pointer; transition:all 0.2s ease; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:var(--shadow-sm); }
+.btn-login:hover { background:#f8fafc; border-color:#cbd5e1; transform:translateY(-1px); }
+
+/* ── RECRUITER CARD ── */
+.recruiter-access-box { margin-top:20px; padding:15px 18px; background:#fff7ed; border:1px solid #ffedd5; border-left:4px solid var(--orange); border-radius:12px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.rec-info h5 { font-size:13.5px; font-weight:800; color:var(--navy); margin-bottom:2px; }
+.rec-info p { font-size:11.5px; color:var(--text-muted); margin:0; }
+.btn-recruiter { padding:8px 14px; background:var(--orange); color:#fff; border:none; border-radius:8px; font-size:12px; font-weight:700; text-decoration:none; white-space:nowrap; transition:.2s; }
+.btn-recruiter:hover { background:var(--orange-hover); }
+
+/* ── PHASE 2 VERIFICATION SCREEN ── */
+#verificationPendingScreen { display:none; text-align:center; padding:10px 0; }
+.verify-icon-wrap { width:70px; height:70px; border-radius:50%; background:#eff6ff; color:var(--primary); display:flex; align-items:center; justify-content:center; font-size:30px; margin:0 auto 20px; border:2px dashed #bfdbfe; }
+
+/* ── POPUPS ── */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes popCenter { 0% { opacity: 0; transform: scale(0.92); } 100% { opacity: 1; transform: scale(1); } }
+
+.popup-overlay { display:none; position:fixed; inset:0; background:rgba(15, 23, 42, 0.75); backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px); justify-content:center; align-items:center; z-index:99999; padding:20px; animation:fadeIn 0.25s ease forwards; }
+.popup-box { background:#ffffff; width:100%; max-width:400px; padding:36px 30px; border-radius:24px; text-align:center; box-shadow:var(--shadow-lg); position:relative; animation:popCenter 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.popup-box button { background:var(--primary); color:#fff; border:none; padding:13px 28px; border-radius:12px; font-size:14.5px; font-weight:700; cursor:pointer; transition:all 0.2s; width:100%; }
+.popup-box button:hover { background:var(--primary-dark); }
+
+@media(max-width:900px) {
+  body { flex-direction:column; }
+  .left-panel { padding:40px 24px; min-height:auto; }
+  .brand img { height:42px; width:42px; }
+  .features-list { display:none; }
+  .left-bottom { display:none; }
+  .right-panel { width:100%; padding:40px 24px 60px; box-shadow:none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── LEFT HERO PANEL ── -->
+<div class="left-panel">
+  <div class="brand">
+    <img src="1000174411.png" alt="Indupalli Services Logo">
+    <div class="brand-text">
+      <h2>Indupalli Services</h2>
+      <p>Registration Portal</p>
+    </div>
+  </div>
+
+  <div class="left-center">
+    <div class="hero-badge"><i class="fa-solid fa-sparkles"></i> Free Career Registration</div>
+    <h1>Your Dream Job<br><span>Starts Here.</span></h1>
+    <p class="tagline">Create your free candidate account and get access to verified enterprise and startup openings across India.</p>
+
+    <div class="features-list">
+      <div class="feature-item">
+        <div class="feature-icon"><i class="fa-solid fa-briefcase"></i></div>
+        <div class="feature-text">
+          <h4>1-Click Application</h4>
+          <p>Apply directly to top openings nationwide</p>
+        </div>
+      </div>
+
+      <div class="feature-item">
+        <div class="feature-icon"><i class="fa-solid fa-chart-line"></i></div>
+        <div class="feature-text">
+          <h4>Application Tracking</h4>
+          <p>Real-time hiring pipeline updates</p>
+        </div>
+      </div>
+
+      <div class="feature-item">
+        <div class="feature-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+        <div class="feature-text">
+          <h4>Gemini AI Builder</h4>
+          <p>Auto-generate & optimize your profile skills</p>
+        </div>
+      </div>
+
+      <div class="feature-item">
+        <div class="feature-icon"><i class="fa-solid fa-comments"></i></div>
+        <div class="feature-text">
+          <h4>Direct Recruiter Chat</h4>
+          <p>Communicate directly with hiring teams</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="left-bottom">
+    <p>© 2026 Indupalli Services. All rights reserved.</p>
+    <div class="trust-badges">
+      <div class="trust-badge"><i class="fa-solid fa-shield-halved" style="color:#10b981;"></i> Secure</div>
+      <div class="trust-badge"><i class="fa-solid fa-circle-check" style="color:#60a5fa;"></i> Verified</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── RIGHT AUTH PANEL ── -->
+<div class="right-panel">
+  
+  <!-- PHASE 1: REGISTRATION FORM -->
+  <div class="form-box" id="signupFormScreen">
+    <div class="form-badge"><i class="fa-solid fa-user-plus"></i> Candidate & Recruiter Registration</div>
+    <h2>One Registration. Two Paths.</h2>
+    <p class="sub">Whether you're looking for your next opportunity or hiring talent, register here to get started.</p>
+
+    <div class="input-group">
+      <label>Full Name *</label>
+      <div class="input-wrap">
+        <i class="fa-regular fa-user"></i>
+        <input type="text" id="name" placeholder="Your full name" required>
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label>Email Address *</label>
+      <div class="input-wrap">
+        <i class="fa-regular fa-envelope"></i>
+        <input type="email" id="email" placeholder="you@example.com" required>
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label>Phone Number</label>
+      <div class="input-wrap">
+        <i class="fa-solid fa-phone"></i>
+        <input type="tel" id="phone" placeholder="10-digit mobile number">
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label>Create Password *</label>
+      <div class="input-wrap">
+        <i class="fa-solid fa-lock"></i>
+        <input type="password" id="password" placeholder="Minimum 6 characters" required>
+      </div>
+    </div>
+
+    <button class="btn-register" onclick="registerAndVerify()">
+      <span>Create Free Account</span>
+      <i class="fa-solid fa-arrow-right" style="font-size: 13px;"></i>
+    </button>
+
+    <div class="divider"><span>or register with</span></div>
+    
+    <div style="display:flex; gap:12px; margin-bottom:14px;">
+      <button id="googleSignupBtn" type="button" class="social-btn">
+        <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3c-1.6 4.7-6.1 8-11.3 8-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 6.1 29.6 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-4z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.9 18.9 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.6 6.1 29.6 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.5 0 10.5-2.1 14.3-5.6l-6.6-5.6C29.6 34.7 26.9 36 24 36c-5.2 0-9.6-3.3-11.3-7.9l-6.5 5C9.6 39.6 16.3 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.2 4.3-4.1 5.7l6.6 5.6C41.8 36 44 30.6 44 24c0-1.3-.1-2.7-.4-3.5z"/></svg>
+        Google
+      </button>
+      <button id="facebookSignupBtn" type="button" class="social-btn fb">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M22 12.06C22 6.5 17.5 2 12 2S2 6.5 2 12.06c0 5 3.66 9.15 8.44 9.94v-7.03H7.9v-2.91h2.54V9.85c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.23.2 2.23.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.44 2.91h-2.34V22c4.78-.79 8.44-4.94 8.44-9.94z"/></svg>
+        Facebook
+      </button>
+    </div>
+
+    <div class="divider"><span>Already have an account?</span></div>
+
+    <a href="login.html" class="btn-login">
+      <i class="fa-solid fa-arrow-right-to-bracket" style="color:var(--text-muted);"></i> Candidate Sign In
+    </a>
+
+    <!-- RECRUITER CARD -->
+    <div class="recruiter-access-box">
+      <div class="rec-info">
+        <h5>Recruiters & Employers</h5>
+        <p>Register to post jobs, manage hiring, and review applicants.</p>
+      </div>
+      <a href="recruiter-login.html" class="btn-recruiter" target="_blank" rel="noopener noreferrer">Recruiter Access →</a>
+    </div>
+  </div>
+
+  <!-- PHASE 2: VERIFICATION PENDING SCREEN -->
+  <div class="form-box" id="verificationPendingScreen">
+    <div class="verify-icon-wrap">
+      <i class="fa-regular fa-envelope-open"></i>
+    </div>
+    <h2>Verify Your Email</h2>
+    <p class="sub" style="margin-bottom:22px;">
+      We sent a secure verification link to <strong id="displayEmailTarget" style="color:var(--navy);">you@example.com</strong>.<br><br>
+      Please open your email client, click the verification link, and then press the button below.
+    </p>
+    
+    <button class="btn-register" onclick="checkEmailVerificationStatus()">
+      <span>I've Verified My Email</span>
+      <i class="fa-solid fa-check"></i>
+    </button>
+    
+    <div style="margin-top:20px; font-size:13.5px; color:var(--text-muted);">
+      Didn't receive the email? <a onclick="resendVerificationEmail()" style="color:var(--primary); font-weight:700; cursor:pointer; text-decoration:underline;">Resend Link</a>
+    </div>
+  </div>
+</div>
+
+<!-- ── POPUP MODAL ── -->
+<div class="popup-overlay" id="popup">
+  <div class="popup-box">
+    <div id="popupIconBadge" style="width:60px; height:60px; border-radius:50%; background:var(--primary); color:#fff; font-size:26px; font-weight:800; display:flex; align-items:center; justify-content:center; margin:0 auto 18px; box-shadow: 0 4px 14px rgba(0,0,0,0.15);">✓</div>
+    <h4 id="popupTitle" style="font-size:20px; font-weight:800; color:var(--navy); margin-bottom:8px;">Notification</h4>
+    <p id="popupText" style="font-size:14.5px; color:var(--text-muted); line-height:1.6; margin:0 0 24px;"></p>
+    <button id="popupOkBtn" onclick="closePopup()">Okay</button>
+  </div>
+</div>
+
+<script type="module">
+import { supabase } from "./supabase.js";
+import { auth } from "./firebase.js";
+import { createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword, signOut, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+let registeredUserObject = null;
+let savedEmailForResend = "";
+
+async function handleSocialSignup(provider) {
+  try {
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+
+    // Automatically provision candidate profile in Supabase using real Google Gmail
+    await supabase.from("candidates").upsert({
+      id: user.uid,
+      name: user.displayName || "Candidate",
+      phone: user.phoneNumber || "",
+      email: user.email, // Automatically pulled from Google account
+      location: "", experience: "", skills: "", about: "",
+      isEmailVerified: true,
+      createdAt: new Date().toISOString()
+    }, { onConflict: 'id' });
+
+    localStorage.setItem("userEmail", user.email);
+    localStorage.setItem("candidateLoggedInEmail", user.email);
+
+    showPopup("🎉 Account verified & created! Redirecting...");
+    document.querySelector("#popupOkBtn").onclick = () => window.location.href = "candidate.html";
+    
+    setTimeout(() => {
+        window.location.href = "candidate.html";
+    }, 1200);
+  } catch (e) {
+    showPopup("❌ " + e.message);
+  }
+}
+
+document.getElementById("googleSignupBtn").addEventListener("click", () => {
+  handleSocialSignup(new GoogleAuthProvider());
+});
+
+document.getElementById("facebookSignupBtn").addEventListener("click", () => {
+  handleSocialSignup(new FacebookAuthProvider());
+});
+
+window.registerAndVerify = async function() {
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const pw = document.getElementById("password").value;
+
+  if (!name || !email || !pw) return showPopup("⚠️ Please fill in all required fields.");
+  if (pw.length < 6) return showPopup("⚠️ Password must be at least 6 characters.");
+
+  const btn = document.querySelector(".btn-register");
+  btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Creating Account...`;
+  btn.disabled = true;
+
+  try {
+    savedEmailForResend = email;
+
+    // 1. Firebase Auth Registration
+    const userCredential = await createUserWithEmailAndPassword(auth, email, pw);
+    const user = userCredential.user;
+    registeredUserObject = user;
+
+    // 2. Send Verification Link
+    await sendEmailVerification(user);
+
+    // 3. Store baseline profile in Supabase
+    await supabase.from("candidates").upsert({
+      id: user.uid,
+      name, phone, email, location: "", experience: "", skills: "", about: "",
+      isEmailVerified: false, createdAt: new Date().toISOString()
+    }, { onConflict: 'id' });
+
+    await signOut(auth);
+
+    document.getElementById("displayEmailTarget").textContent = email;
+    document.getElementById("signupFormScreen").style.display = "none";
+    document.getElementById("verificationPendingScreen").style.display = "block";
+    
+    showPopup("✅ Account created! Please check your email inbox to verify your account.");
+  } catch(e) {
+    btn.innerHTML = `<span>Create Free Account</span><i class="fa-solid fa-arrow-right"></i>`;
+    btn.disabled = false;
+    let msg = e.code === 'auth/email-already-in-use' ? "This email is already registered." : e.message;
+    showPopup("❌ " + msg);
+  }
+};
+
+window.checkEmailVerificationStatus = async function() {
+  const btn = document.querySelector("#verificationPendingScreen .btn-register");
+  btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Checking Status...`;
+  btn.disabled = true;
+
+  try {
+    const pw = document.getElementById("password").value;
+    const email = savedEmailForResend || registeredUserObject?.email;
+
+    const userCredential = await signInWithEmailAndPassword(auth, email, pw);
+    const user = userCredential.user;
+    await user.reload();
+
+    if (user.emailVerified) {
+      await supabase.from("candidates").upsert({ id: user.uid, isEmailVerified: true }, { onConflict: 'id' });
+      localStorage.setItem("userEmail", user.email);
+      localStorage.setItem("candidateLoggedInEmail", user.email);
+      
+      showPopup("🎉 Email verified! Redirecting to login...");
+      document.querySelector("#popupOkBtn").onclick = () => window.location.href = "login.html";
+      
+      setTimeout(() => {
+          window.location.href = "login.html";
+      }, 1200);
+    } else {
+      await signOut(auth);
+      btn.innerHTML = `<span>I've Verified My Email</span><i class="fa-solid fa-check"></i>`;
+      btn.disabled = false;
+      showPopup("⚠️ Email not verified yet. Please check your inbox (including spam folder) and click the link.");
+    }
+  } catch(e) {
+    btn.innerHTML = `<span>I've Verified My Email</span><i class="fa-solid fa-check"></i>`;
+    btn.disabled = false;
+    showPopup("❌ Error: " + e.message);
+  }
+};
+
+window.resendVerificationEmail = async function() {
+  const email = savedEmailForResend || registeredUserObject?.email;
+  const pw = document.getElementById("password").value;
+  if (email && pw) {
+    try {
+      const userCred = await signInWithEmailAndPassword(auth, email, pw);
+      await sendEmailVerification(userCred.user);
+      await signOut(auth);
+      showPopup("✅ Verification link resent! Check your inbox.");
+    } catch(e) { showPopup("❌ Error: " + e.message); }
+  } else { showPopup("⚠️ Please ensure password field is filled."); }
+};
+</script>
+
+<script>
+function showPopup(msg) {
+  const palette = { "✅":"#10b981", "🎉":"#10b981", "❌":"#ef4444", "⚠️":"#f59e0b" };
+  let color = "#2563eb", icon = "✓", text = msg;
+  
+  for (const key in palette) {
+    if (msg.startsWith(key)) { 
+      color = palette[key]; 
+      icon = key === "✅" || key === "🎉" ? "✓" : (key === "❌" ? "✕" : "!"); 
+      text = msg.slice(key.length).trim(); 
+      break; 
+    }
+  }
+  
+  document.getElementById("popupText").textContent = text;
+  document.getElementById("popupIconBadge").textContent = icon;
+  document.getElementById("popupIconBadge").style.background = color;
+  document.getElementById("popupOkBtn").style.background = color;
+  document.getElementById("popup").style.display = "flex";
+}
+
+function closePopup() { 
+  document.getElementById("popup").style.display = "none"; 
+}
+
+// Background overlay click close
+window.addEventListener("click", (e) => {
+  if (e.target.id === "popup") closePopup();
+});
+</script>
+</body>
+</html>

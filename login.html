@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Seeker Login – Indupalli Services</title>
+    
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <style>
+    :root {
+        --primary: #2563eb;
+        --primary-dark: #1d4ed8;
+        --navy: #0f172a;
+        --dark: #001b5e;
+        --orange: #f59e0b;
+        --orange-hover: #d97706;
+        --green: #10b981;
+        --red: #ef4444;
+        --bg-light: #f8fafc;
+        --border-color: #e2e8f0;
+        --text-title: #0f172a;
+        --text-body: #334155;
+        --text-muted: #64748b;
+        --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        --shadow-md: 0 10px 25px -5px rgba(15, 23, 42, 0.08);
+        --shadow-lg: 0 25px 50px -12px rgba(15, 23, 42, 0.25);
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Plus Jakarta Sans', sans-serif; }
+    body { min-height: 100vh; display: flex; background: var(--bg-light); color: var(--text-body); -webkit-font-smoothing: antialiased; }
+
+    /* ── LEFT HERO PANEL ── */
+    .left-panel {
+        flex: 1.15;
+        background: radial-gradient(circle at 80% 20%, #1e40af 0%, var(--dark) 60%, #020617 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 50px 60px;
+        color: #fff;
+        position: relative;
+        overflow: hidden;
+    }
+    .left-panel::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+        background-size: 32px 32px;
+        pointer-events: none;
+    }
+
+    .brand { display: flex; align-items: center; gap: 14px; position: relative; z-index: 2; }
+    .brand img { height: 48px; width: 48px; border-radius: 12px; background: #fff; padding: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); object-fit: contain; }
+    .brand-text h2 { font-size: 21px; font-weight: 800; color: #fff; letter-spacing: -0.5px; margin: 0; }
+    .brand-text p { font-size: 10.5px; color: #60a5fa; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; margin: 2px 0 0 0; }
+
+    .left-center { flex: 1; display: flex; flex-direction: column; justify-content: center; position: relative; z-index: 2; margin: 40px 0; max-width: 480px; }
+    .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); padding: 6px 14px; border-radius: 30px; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 20px; width: fit-content; backdrop-filter: blur(4px); }
+    .left-panel h1 { font-size: 38px; font-weight: 800; line-height: 1.2; margin-bottom: 14px; letter-spacing: -1px; }
+    .left-panel h1 span { color: #60a5fa; text-shadow: 0 0 40px rgba(96, 165, 250, 0.3); }
+    .left-panel p.tagline { font-size: 15.5px; line-height: 1.7; color: #cbd5e1; margin-bottom: 30px; }
+
+    .features-list { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 420px; }
+    .feature-item { display: flex; align-items: center; gap: 14px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); padding: 14px 18px; border-radius: 14px; backdrop-filter: blur(6px); transition: transform 0.2s; }
+    .feature-item:hover { transform: translateX(6px); background: rgba(255, 255, 255, 0.08); }
+    .feature-icon { width: 36px; height: 36px; border-radius: 10px; background: rgba(37, 99, 235, 0.3); color: #60a5fa; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+    .feature-text h4 { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 2px; }
+    .feature-text p { font-size: 12px; color: #94a3b8; margin: 0; }
+
+    .left-bottom { position: relative; z-index: 2; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; width: 100%; }
+    .left-bottom p { font-size: 12.5px; color: #94a3b8; margin: 0; }
+    .trust-badges { display: flex; gap: 10px; }
+    .trust-badge { background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; color: #cbd5e1; display: inline-flex; align-items: center; gap: 6px; }
+
+    /* ── RIGHT AUTH PANEL ── */
+    .right-panel { width: 520px; display: flex; align-items: center; justify-content: center; padding: 50px 40px; background: #ffffff; flex-shrink: 0; box-shadow: -10px 0 30px rgba(0, 0, 0, 0.02); overflow-y: auto; }
+    .form-box { width: 100%; max-width: 400px; }
+    .form-badge { display: inline-flex; align-items: center; gap: 6px; background: #eff6ff; color: var(--primary); font-size: 11.5px; font-weight: 800; padding: 5px 14px; border-radius: 20px; margin-bottom: 16px; letter-spacing: 0.5px; text-transform: uppercase; border: 1px solid #dbeafe; }
+    .form-box h2 { font-size: 28px; font-weight: 800; color: var(--navy); margin-bottom: 6px; letter-spacing: -0.5px; }
+    .form-box .sub { color: var(--text-muted); font-size: 14px; margin-bottom: 28px; line-height: 1.6; }
+
+    .input-group { display: flex; flex-direction: column; margin-bottom: 18px; position: relative; }
+    .label-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .input-group label { font-size: 12.5px; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+    
+    .forgot-link { font-size: 12.5px; color: var(--primary); font-weight: 700; text-decoration: none; cursor: pointer; transition: color 0.2s; }
+    .forgot-link:hover { text-decoration: underline; color: var(--primary-dark); }
+
+    .input-wrap { position: relative; }
+    .input-wrap i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 14px; pointer-events: none; }
+    .input-wrap input { width: 100%; padding: 13px 16px 13px 44px; border: 1.5px solid var(--border-color); border-radius: 12px; font-size: 14.5px; background: var(--bg-light); transition: all 0.2s ease; font-family: inherit; color: var(--navy); outline: none; }
+    .input-wrap input:focus { border-color: var(--primary); background: #ffffff; box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
+    .input-wrap input:focus + i { color: var(--primary); }
+
+    .btn-login { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: #fff; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 6px; transition: all 0.2s ease; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25); display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-login:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35); }
+    .btn-login:disabled { background: #94a3b8; cursor: not-allowed; box-shadow: none; transform: none; }
+
+    .divider { display: flex; align-items: center; gap: 14px; margin: 20px 0; }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border-color); }
+    .divider span { font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .btn-register { width: 100%; padding: 13px; background: #ffffff; color: var(--navy); border: 1.5px solid var(--border-color); border-radius: 12px; font-size: 14.5px; font-weight: 700; cursor: pointer; transition: all 0.2s ease; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: var(--shadow-sm); }
+    .btn-register:hover { background: #f8fafc; border-color: #cbd5e1; transform: translateY(-1px); }
+
+    /* ── RECRUITER ACCESS BOX ── */
+    .recruiter-access-box { margin-top: 24px; padding: 16px 20px; background: #fff7ed; border: 1px solid #ffedd5; border-left: 4px solid var(--orange); border-radius: 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px; transition: 0.2s; }
+    .recruiter-access-box:hover { box-shadow: var(--shadow-sm); }
+    .rec-info h5 { font-size: 14px; font-weight: 800; color: var(--navy); margin-bottom: 2px; }
+    .rec-info p { font-size: 12px; color: var(--text-muted); margin: 0; }
+    .btn-recruiter { padding: 8px 14px; background: var(--orange); color: #fff; border: none; border-radius: 8px; font-size: 12.5px; font-weight: 700; text-decoration: none; white-space: nowrap; transition: .2s; }
+    .btn-recruiter:hover { background: var(--orange-hover); }
+
+    .security-row { display: flex; align-items: center; justify-content: center; gap: 18px; margin-top: 28px; padding-top: 18px; border-top: 1px solid var(--border-color); }
+    .sec-badge { display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--text-muted); font-weight: 600; }
+
+    /* ── POPUPS / MODALS (CENTERED) ── */
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes popCenter { 0% { opacity: 0; transform: scale(0.92); } 100% { opacity: 1; transform: scale(1); } }
+
+    .popup-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); justify-content: center; align-items: center; z-index: 99999; padding: 20px; animation: fadeIn 0.25s ease forwards; }
+    .popup-box { background: #ffffff; width: 100%; max-width: 420px; padding: 40px 32px 32px; border-radius: 20px; text-align: center; box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.35); position: relative; overflow: hidden; animation: popCenter 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .popup-box button { background: var(--primary); color: #fff; border: none; padding: 14px 28px; border-radius: 12px; font-size: 14.5px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+    .popup-box button:hover { filter: brightness(0.92); transform: translateY(-1px); }
+
+    /* ── PROFESSIONAL POPUP ACCENT + ICON BADGE ── */
+    .popup-accent-bar { position: absolute; top: 0; left: 0; right: 0; height: 5px; background: var(--accent-color, var(--primary)); }
+    .popup-icon-badge { width: 68px; height: 68px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 6px auto 20px; font-size: 26px; background: var(--accent-bg, #eff6ff); color: var(--accent-color, var(--primary)); }
+
+    .modal-close-btn { position: absolute; top: 16px; right: 16px; background: #f1f5f9; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 14px; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; transition: 0.2s; z-index: 2; }
+    .modal-close-btn:hover { background: #e2e8f0; color: var(--red); }
+
+    @media(max-width: 900px) {
+        body { flex-direction: column; }
+        .left-panel { padding: 40px 24px; min-height: auto; }
+        .brand img { height: 42px; width: 42px; }
+        .features-list { display: none; }
+        .left-bottom { display: none; }
+        .right-panel { width: 100%; padding: 40px 24px 60px; box-shadow: none; }
+    }
+    </style>
+</head>
+<body>
+
+<!-- ── LEFT HERO PANEL ── -->
+<div class="left-panel">
+    <div class="brand">
+        <img src="1000174411.png" alt="Indupalli Services Logo">
+        <div class="brand-text">
+            <h2>Indupalli Services</h2>
+            <p>Candidate Career Portal</p>
+        </div>
+    </div>
+  
+    <div class="left-center">
+        <div class="hero-badge"><i class="fa-solid fa-user-astronaut"></i> Job Seeker Dashboard</div>
+        <h1>Access Your<br><span>Dream Career.</span></h1>
+        <p class="tagline">Log in to track your applications, optimize your resume with AI, and chat directly with recruiters.</p>
+        
+        <div class="features-list">
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fa-solid fa-briefcase"></i></div>
+                <div class="feature-text">
+                    <h4>1-Click Job Applications</h4>
+                    <p>Apply directly to top openings across India</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fa-solid fa-chart-pie"></i></div>
+                <div class="feature-text">
+                    <h4>Live Application Tracking</h4>
+                    <p>Monitor your review status in real time</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+                <div class="feature-text">
+                    <h4>AI Resume Master Builder</h4>
+                    <p>Optimize your profile & skills with Gemini AI</p>
+                </div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fa-solid fa-comments"></i></div>
+                <div class="feature-text">
+                    <h4>Direct Recruiter Chat</h4>
+                    <p>Communicate directly with hiring managers</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="left-bottom">
+        <p>© 2026 Indupalli Services. All rights reserved.</p>
+        <div class="trust-badges">
+            <div class="trust-badge"><i class="fa-solid fa-shield-halved" style="color:#10b981;"></i> Secure</div>
+            <div class="trust-badge"><i class="fa-solid fa-circle-check" style="color:#60a5fa;"></i> Verified</div>
+        </div>
+    </div>
+</div>
+
+<!-- ── RIGHT LOGIN PANEL ── -->
+<div class="right-panel">
+    <div class="form-box">
+        <div class="form-badge"><i class="fa-regular fa-user"></i> Candidate Login</div>
+        <h2>Welcome Back</h2>
+        <p class="sub">Log in to your account to manage your profile and view application statuses.</p>
+
+        <div class="input-group">
+            <label>Email Address</label>
+            <div class="input-wrap">
+                <i class="fa-regular fa-envelope"></i>
+                <input type="email" id="email" placeholder="you@example.com" required>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <div class="label-row">
+                <label>Password</label>
+                <a href="javascript:void(0)" class="forgot-link" onclick="openForgotModal()">Forgot Password?</a>
+            </div>
+            <div class="input-wrap">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="password" placeholder="Enter your password" required>
+            </div>
+        </div>
+
+        <button class="btn-login" onclick="handleLogin()">
+            <span>Login to Dashboard</span>
+            <i class="fa-solid fa-arrow-right" style="font-size: 13px;"></i>
+        </button>
+
+        <div class="divider"><span>Don't have an account?</span></div>
+
+        <a href="signup.html" class="btn-register">
+            <i class="fa-solid fa-user-plus" style="color:var(--text-muted);"></i> Create Free Candidate Account
+        </a>
+
+        <!-- RECRUITER UPSELL CARD -->
+        <div class="recruiter-access-box">
+            <div class="rec-info">
+                <h5>Are you an Employer?</h5>
+                <p>Post mandates & review applicants</p>
+            </div>
+            <a href="recruiter-login.html" class="btn-recruiter">Recruiter Portal <i class="fa-solid fa-arrow-right" style="font-size: 11px; margin-left: 2px;"></i></a>
+        </div>
+
+        <div class="security-row">
+            <div class="sec-badge"><i class="fa-brands fa-google" style="color:#94a3b8;"></i> Firebase Auth</div>
+            <div class="sec-badge"><i class="fa-solid fa-shield-check" style="color:#94a3b8;"></i> Data Protected</div>
+        </div>
+    </div>
+</div>
+
+<!-- ── FORGOT PASSWORD MODAL ── -->
+<div class="popup-overlay" id="forgotModal">
+    <div class="popup-box" style="text-align:left; max-width: 440px;">
+        <button onclick="closeForgotModal()" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
+        <h3 style="font-size:20px; font-weight:800; color:var(--navy); margin-bottom:8px;">
+            <i class="fa-solid fa-key" style="color:var(--primary); margin-right:6px;"></i> Reset Password
+        </h3>
+        <p style="font-size:13.5px; color:var(--text-muted); line-height:1.6; margin-bottom:20px;">
+            Enter your registered email address and we'll send you a password reset link.
+        </p>
+        
+        <div class="input-group" style="margin-bottom: 0;">
+            <label>Candidate Email</label>
+            <div class="input-wrap">
+                <i class="fa-regular fa-envelope"></i>
+                <input type="email" id="resetEmail" placeholder="you@example.com">
+            </div>
+        </div>
+        
+        <div style="display:flex; gap:10px; margin-top:24px;">
+            <button onclick="closeForgotModal()" style="flex:1; background:#f1f5f9; color:var(--navy); border:1px solid var(--border-color);">Cancel</button>
+            <button id="sendResetBtn" style="flex:1; background:var(--primary); color:#fff;">Send Link</button>
+        </div>
+    </div>
+</div>
+
+<!-- ── PROFESSIONAL SAAS POPUP (NOTIFICATIONS) ── -->
+<div class="popup-overlay" id="popup">
+    <div class="popup-box">
+        <div id="popupAccentBar" class="popup-accent-bar"></div>
+        <div id="popupIconBadge" class="popup-icon-badge"><i class="fa-solid fa-circle-check"></i></div>
+        <h4 id="popupTitle" style="font-size:20px; font-weight:800; color:var(--navy); margin-bottom:8px; letter-spacing:-0.2px;">System Notification</h4>
+        <p id="popupText" style="font-size:14.5px; color:var(--text-muted); line-height:1.65; margin:0 0 26px; padding: 0 6px;"></p>
+        
+        <div id="popupActions" style="display:flex; gap:12px; justify-content:center;">
+            <button id="popupOkBtn" onclick="closePopup()" style="flex:1;">Okay</button>
+            <a id="popupRegisterBtn" href="signup.html" style="display:none; flex:1; background:var(--orange); color:#fff; text-decoration:none; padding:14px 20px; border-radius:12px; font-size:14.5px; font-weight:700; align-items:center; justify-content:center; transition: .2s;">Register Now</a>
+        </div>
+    </div>
+</div>
+
+<!-- FIREBASE AUTHENTICATION SCRIPT -->
+<script type="module">
+import { auth } from "./firebase.js";
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+window.handleLogin = async function() {
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+
+    if (!email || !password) {
+        showPopup("⚠️ Missing Information", "Please enter both your email and password.");
+        return;
+    }
+
+    const btn = document.querySelector(".btn-login");
+    btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Authenticating...`;
+    btn.disabled = true;
+
+    try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
+
+        await user.reload();
+        if (!user.emailVerified) {
+            btn.innerHTML = `<span>Login to Dashboard</span><i class="fa-solid fa-arrow-right"></i>`;
+            btn.disabled = false;
+            showPopup("⚠️ Email Not Verified", "Your email is not verified yet. Please check your inbox and click the verification link before logging in.");
+            return;
+        }
+
+        localStorage.setItem("userEmail", user.email);
+        localStorage.setItem("userRole", "candidate");
+
+        // Require explicit confirmation before redirecting to the dashboard
+        showPopup("✅ Authentication Successful", "Welcome back! Click below to continue to your dashboard.");
+
+        const okBtn = document.querySelector("#popupOkBtn");
+        okBtn.textContent = "Enter Dashboard";
+        okBtn.onclick = () => { window.location.href = "candidate.html"; };
+
+    } catch (error) {
+        btn.innerHTML = `<span>Login to Dashboard</span><i class="fa-solid fa-arrow-right"></i>`;
+        btn.disabled = false;
+        
+        let errorMsg = error.message;
+        if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
+            errorMsg = "Invalid email or password. Please try again.";
+        }
+        showPopup("❌ Login Failed", errorMsg);
+    }
+};
+
+// Pure Firebase Auth Forgot Password Flow
+document.getElementById("sendResetBtn").addEventListener("click", async () => {
+    const resetEmail = document.getElementById("resetEmail").value.trim().toLowerCase();
+    const sendBtn = document.getElementById("sendResetBtn");
+
+    if (!resetEmail) {
+        showPopup("⚠️ Email Required", "Please enter your email address to receive a reset link.");
+        return;
+    }
+
+    sendBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i>`;
+    sendBtn.disabled = true;
+
+    try {
+        await sendPasswordResetEmail(auth, resetEmail);
+        
+        sendBtn.textContent = "Send Link";
+        sendBtn.disabled = false;
+        closeForgotModal();
+        showPopup("✅ Password Reset Sent", "A secure password reset link has been delivered to " + resetEmail + ". Please check your inbox.");
+
+    } catch (error) {
+        sendBtn.textContent = "Send Link";
+        sendBtn.disabled = false;
+        closeForgotModal();
+
+        if (error.code === 'auth/user-not-found' || error.message.includes('user-not-found')) {
+            showNotRegisteredPopup(resetEmail);
+        } else if (error.code === 'auth/invalid-email') {
+            showPopup("❌ Invalid Email", "Please enter a valid email address.");
+        } else {
+            showPopup("❌ Request Failed", error.message);
+        }
+    }
+});
+
+// Trigger login on Enter key
+document.getElementById("password").addEventListener("keydown", e => {
+    if (e.key === "Enter") window.handleLogin();
+});
+</script>
+
+<script>
+function openForgotModal() {
+    const currentEmail = document.getElementById("email").value.trim();
+    if (currentEmail) {
+        document.getElementById("resetEmail").value = currentEmail;
+    }
+    document.getElementById("forgotModal").style.display = "flex";
+}
+
+function closeForgotModal() {
+    document.getElementById("forgotModal").style.display = "none";
+}
+
+// Soft-tint icon badge + accent bar palette for each notification type
+const POPUP_PALETTE = {
+    success: { color: "#10b981", bg: "#ecfdf5", icon: "fa-solid fa-circle-check" },
+    error:   { color: "#ef4444", bg: "#fef2f2", icon: "fa-solid fa-circle-exclamation" },
+    warning: { color: "#f59e0b", bg: "#fffbeb", icon: "fa-solid fa-triangle-exclamation" },
+    info:    { color: "#2563eb", bg: "#eff6ff", icon: "fa-solid fa-circle-info" }
+};
+
+function showPopup(titleOrMsg, bodyMsg = "") {
+    let type = "info", title = titleOrMsg, text = bodyMsg;
+
+    if (!bodyMsg) {
+        text = titleOrMsg;
+        title = "System Notification";
+    }
+
+    // Detect type from leading emoji, then strip it from the display text
+    const emojiToType = { "✅": "success", "🎉": "success", "❌": "error", "⚠️": "warning" };
+    for (const key in emojiToType) {
+        if (title.startsWith(key)) { type = emojiToType[key]; title = title.replace(key, "").trim(); break; }
+        if (text.startsWith(key)) { type = emojiToType[key]; text = text.replace(key, "").trim(); break; }
+    }
+
+    applyPopupStyle(type);
+    document.getElementById("popupTitle").textContent = title;
+    document.getElementById("popupText").textContent = text;
+
+    const okBtn = document.getElementById("popupOkBtn");
+    okBtn.textContent = "Okay";
+    okBtn.onclick = closePopup; // reset to default; callers can override after showPopup()
+
+    document.getElementById("popupRegisterBtn").style.display = "none";
+    document.getElementById("popup").style.display = "flex";
+}
+
+function showNotRegisteredPopup(email) {
+    applyPopupStyle("warning");
+    document.getElementById("popupTitle").textContent = "Account Not Found";
+    document.getElementById("popupText").textContent = "The email address " + email + " is not registered in our system as a job seeker. Please create an account to get started.";
+
+    const okBtn = document.getElementById("popupOkBtn");
+    okBtn.style.background = "#94a3b8"; // Gray secondary action
+    okBtn.textContent = "Close";
+    okBtn.onclick = closePopup;
+
+    const regBtn = document.getElementById("popupRegisterBtn");
+    regBtn.style.display = "inline-flex";
+
+    document.getElementById("popup").style.display = "flex";
+}
+
+function applyPopupStyle(type) {
+    const p = POPUP_PALETTE[type] || POPUP_PALETTE.info;
+    const box = document.querySelector("#popup .popup-box");
+    box.style.setProperty("--accent-color", p.color);
+    box.style.setProperty("--accent-bg", p.bg);
+
+    const iconBadge = document.getElementById("popupIconBadge");
+    iconBadge.innerHTML = `<i class="${p.icon}"></i>`;
+
+    document.getElementById("popupOkBtn").style.background = p.color;
+}
+
+function closePopup() {
+    document.getElementById("popup").style.display = "none";
+    document.getElementById("popupOkBtn").textContent = "Okay";
+    document.getElementById("popupOkBtn").onclick = closePopup;
+}
+
+// Background overlay click close
+window.addEventListener("click", (e) => {
+    if (e.target.id === "forgotModal") closeForgotModal();
+    if (e.target.id === "popup") closePopup();
+});
+</script>
+</body>
+</html>

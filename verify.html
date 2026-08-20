@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Verifying Email...</title>
+</head>
+<body>
+  <h2>Verifying your email, please wait...</h2>
+
+  <script type="module">
+    import { supabase } from './supabase.js'; // Adjust path to your supabase client file
+
+    window.addEventListener('DOMContentLoaded', async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get('code');
+
+      if (code) {
+        const { error } = await supabase.auth.exchangeCodeForSession(code);
+
+        if (error) {
+          alert("Verification failed: " + error.message);
+          window.location.href = "login.html";
+          return;
+        }
+
+        alert("Email verified successfully! Redirecting to login...");
+        window.location.href = "login.html";
+      } else {
+        alert("Invalid or missing verification link.");
+        window.location.href = "login.html";
+      }
+    });
+  </script>
+</body>
+</html>

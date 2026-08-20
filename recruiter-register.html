@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recruiter Register – Indupalli Services ATS</title>
+<style>
+:root{--blue:#0056d2;--dark:#001233;--orange:#ff7a00;--green:#00b86b;--bg:#f0f4ff;--border:#dce8ff;}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Calibri,Arial,sans-serif;}
+body{min-height:100vh;display:flex;background:#000;}
+
+/* ── LEFT PANEL ── */
+.left-panel{
+  flex:1;position:relative;overflow:hidden;
+  display:flex;flex-direction:column;justify-content:space-between;
+  padding:40px;
+  background:linear-gradient(145deg,#000d2e 0%,#001a6e 50%,#0038c8 100%);
+}
+.left-panel::before{
+  content:'';position:absolute;inset:0;
+  background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1px);
+  background-size:32px 32px;pointer-events:none;
+}
+.orb{position:absolute;border-radius:50%;filter:blur(80px);pointer-events:none;}
+.orb1{width:400px;height:400px;background:rgba(0,86,210,.4);top:-80px;right:-80px;}
+.orb2{width:300px;height:300px;background:rgba(0,184,107,.2);bottom:-60px;left:-60px;}
+.orb3{width:200px;height:200px;background:rgba(255,122,0,.15);top:50%;left:40%;}
+
+.brand{position:relative;z-index:2;display:flex;align-items:center;gap:14px;}
+.brand img{height:52px;border-radius:12px;background:#fff;padding:4px;}
+.brand-text h2{font-size:20px;font-weight:900;color:#fff;letter-spacing:.3px;}
+.brand-text p{font-size:11px;color:rgba(255,255,255,.5);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+
+.left-center{position:relative;z-index:2;flex:1;display:flex;flex-direction:column;justify-content:center;padding:40px 0;}
+.ats-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+  padding:7px 16px;border-radius:30px;font-size:12px;font-weight:700;
+  color:rgba(255,255,255,.9);letter-spacing:.8px;text-transform:uppercase;
+  margin-bottom:24px;width:fit-content;
+}
+.ats-badge span{width:8px;height:8px;background:var(--orange);border-radius:50%;display:inline-block;animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(1.3);}}
+
+.left-center h1{font-size:46px;font-weight:900;color:#fff;line-height:1.1;margin-bottom:10px;}
+.left-center h1 span{color:#7ecfff;}
+.left-center .tagline{font-size:15px;color:rgba(255,255,255,.65);line-height:1.7;max-width:380px;margin-bottom:36px;}
+
+/* STEPS */
+.steps{display:flex;flex-direction:column;gap:0;}
+.step-item{display:flex;gap:16px;align-items:flex-start;padding:16px 0;border-bottom:1px solid rgba(255,255,255,.08);}
+.step-item:last-child{border-bottom:none;}
+.step-num{
+  width:36px;height:36px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:900;flex-shrink:0;color:#fff;
+}
+.step-text h4{font-size:14px;font-weight:700;color:#fff;margin-bottom:3px;}
+.step-text p{font-size:12px;color:rgba(255,255,255,.55);line-height:1.5;}
+
+/* BENEFITS STRIP */
+.benefits{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:32px;}
+.benefit{
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.09);
+  padding:14px 16px;border-radius:14px;
+}
+.benefit .b-icon{font-size:22px;margin-bottom:6px;}
+.benefit h4{font-size:13px;font-weight:700;color:#fff;margin-bottom:3px;}
+.benefit p{font-size:11px;color:rgba(255,255,255,.5);line-height:1.4;}
+
+.left-bottom{position:relative;z-index:2;border-top:1px solid rgba(255,255,255,.1);padding-top:20px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+.left-bottom p{font-size:12px;color:rgba(255,255,255,.4);}
+.trust-badges{display:flex;gap:10px;}
+.trust-badge{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);padding:5px 12px;border-radius:20px;font-size:11px;font-weight:600;color:rgba(255,255,255,.7);}
+
+/* ── RIGHT PANEL ── */
+.right-panel{
+  width:500px;flex-shrink:0;background:var(--bg);
+  display:flex;flex-direction:column;justify-content:center;
+  padding:44px 44px;position:relative;overflow-y:auto;
+}
+.right-panel::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(90deg,var(--orange),var(--blue),var(--green));
+}
+
+.right-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:36px;}
+.right-top span{font-size:12px;color:#999;font-weight:600;}
+.right-top a{font-size:12px;color:var(--blue);font-weight:700;text-decoration:none;}
+
+.form-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  background:#e8fff2;color:var(--green);
+  font-size:11px;font-weight:800;padding:5px 14px;
+  border-radius:20px;margin-bottom:18px;
+  letter-spacing:.6px;text-transform:uppercase;
+}
+.form-box h2{font-size:30px;font-weight:900;color:var(--dark);margin-bottom:6px;}
+.form-box .sub{color:#888;font-size:14px;margin-bottom:28px;line-height:1.6;}
+
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.input-group{position:relative;margin-bottom:16px;}
+.input-group.half{margin-bottom:0;}
+.input-group label{display:block;font-size:11px;font-weight:800;color:#555;margin-bottom:6px;letter-spacing:.5px;text-transform:uppercase;}
+.input-group .input-wrap{position:relative;}
+.input-group .icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none;}
+.input-group input,.input-group select{
+  width:100%;padding:13px 13px 13px 42px;
+  border:2px solid var(--border);border-radius:12px;
+  font-size:14px;background:#fff;transition:.2s;
+  font-family:inherit;color:var(--dark);
+}
+.input-group select{padding-left:42px;cursor:pointer;}
+.input-group input:focus,.input-group select:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 4px rgba(0,184,107,.08);}
+.input-group input::placeholder{color:#bbb;}
+
+.terms-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:20px;padding:14px;background:#fff;border-radius:12px;border:2px solid var(--border);}
+.terms-row input[type=checkbox]{width:16px;height:16px;accent-color:var(--green);flex-shrink:0;margin-top:2px;}
+.terms-row label{font-size:13px;color:#666;line-height:1.5;cursor:pointer;}
+.terms-row a{color:var(--blue);font-weight:600;text-decoration:none;}
+
+.btn-register{
+  width:100%;padding:15px;
+  background:linear-gradient(135deg,var(--green),#009a5c);
+  color:#fff;border:none;border-radius:12px;
+  font-size:16px;font-weight:800;cursor:pointer;
+  transition:.2s;letter-spacing:.3px;
+  box-shadow:0 6px 20px rgba(0,184,107,.3);
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-register:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(0,184,107,.4);}
+
+.divider{display:flex;align-items:center;gap:14px;margin:18px 0;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border);}
+.divider span{font-size:12px;color:#bbb;font-weight:600;white-space:nowrap;}
+
+.btn-login{
+  width:100%;padding:14px;background:#fff;color:var(--blue);
+  border:2px solid var(--blue);border-radius:12px;
+  font-size:15px;font-weight:800;cursor:pointer;transition:.2s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-login:hover{background:var(--blue);color:#fff;transform:translateY(-1px);}
+
+.security-row{display:flex;align-items:center;justify-content:center;gap:18px;margin-top:22px;padding-top:18px;border-top:1px solid var(--border);}
+.sec-badge{display:flex;align-items:center;gap:5px;font-size:11px;color:#bbb;font-weight:600;}
+
+/* POPUP */
+.popup-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);justify-content:center;align-items:center;z-index:9999;backdrop-filter:blur(4px);}
+.popup-box{background:#fff;width:90%;max-width:360px;padding:36px 32px;border-radius:24px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.25);}
+.popup-box .pop-icon{font-size:48px;margin-bottom:12px;}
+.popup-box h3{color:var(--dark);font-size:20px;font-weight:800;margin-bottom:8px;}
+.popup-box p{color:#777;font-size:14px;line-height:1.6;margin-bottom:20px;}
+.popup-box button{background:linear-gradient(135deg,var(--green),#009a5c);color:#fff;border:none;padding:13px 32px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;width:100%;}
+
+@media(max-width:900px){.left-center h1{font-size:34px;}.benefits{display:none;}}
+@media(max-width:768px){
+  body{flex-direction:column;}
+  .left-panel{padding:28px 24px;min-height:auto;}
+  .left-center{padding:24px 0;}
+  .left-center h1{font-size:28px;}
+  .steps,.benefits,.left-bottom{display:none;}
+  .right-panel{width:100%;padding:32px 22px 48px;}
+  .form-row{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- LEFT PANEL -->
+<div class="left-panel">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+
+  <div class="brand">
+    <img src="1000174411.png" alt="Indupalli Services">
+    <div class="brand-text">
+      <h2>Indupalli Services</h2>
+      <p>ATS — Applicant Tracking System</p>
+    </div>
+  </div>
+
+  <div class="left-center">
+    <div class="ats-badge">
+      <span></span> Join 100+ Active Recruiters
+    </div>
+    <h1>Start Hiring<br><span>Smarter Today.</span></h1>
+    <p class="tagline">Create your free recruiter account and get access to India's most powerful hiring platform in minutes.</p>
+
+    <div class="steps">
+      <div class="step-item">
+        <div class="step-num" style="background:var(--blue);">1</div>
+        <div class="step-text">
+          <h4>Create Your Account</h4>
+          <p>Register with your name, company and email</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num" style="background:var(--orange);">2</div>
+        <div class="step-text">
+          <h4>Post Your First Job</h4>
+          <p>Add job details, requirements and go live instantly</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num" style="background:var(--purple,#673ab7);">3</div>
+        <div class="step-text">
+          <h4>Review Applications</h4>
+          <p>Candidates apply and you review in your dashboard</p>
+        </div>
+      </div>
+      <div class="step-item">
+        <div class="step-num" style="background:var(--green);">4</div>
+        <div class="step-text">
+          <h4>Hire the Best Talent</h4>
+          <p>Schedule interviews and make your offer</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="benefits">
+      <div class="benefit">
+        <div class="b-icon">📋</div>
+        <h4>Unlimited Job Posts</h4>
+        <p>Post as many jobs as you need</p>
+      </div>
+      <div class="benefit">
+        <div class="b-icon">👥</div>
+        <h4>All Applications</h4>
+        <p>Review every candidate in one view</p>
+      </div>
+      <div class="benefit">
+        <div class="b-icon">📊</div>
+        <h4>Pipeline Analytics</h4>
+        <p>Visual funnel & hiring reports</p>
+      </div>
+      <div class="benefit">
+        <div class="b-icon">📅</div>
+        <h4>Interview Scheduler</h4>
+        <p>Set date & time for interviews</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="left-bottom">
+    <p>© 2026 Indupalli Services. All rights reserved.</p>
+    <div class="trust-badges">
+      <div class="trust-badge">🔒 Secure</div>
+      <div class="trust-badge">✅ Free</div>
+      <div class="trust-badge">🇮🇳 India</div>
+    </div>
+  </div>
+</div>
+
+<!-- RIGHT PANEL -->
+<div class="right-panel">
+  <div class="right-top">
+    <span>Already a recruiter?</span>
+    <a href="recruiter-login.html" target="_blank" rel="noopener noreferrer">Login here →</a>
+  </div>
+
+  <div class="form-box">
+    <div class="form-badge">✨ New Recruiter Account</div>
+    <h2>Create Your Account</h2>
+    <p class="sub">Join Indupalli Services and start posting jobs to find the best talent across India.</p>
+
+    <div class="form-row" style="margin-bottom:16px;">
+      <div class="input-group half">
+        <label>Full Name *</label>
+        <div class="input-wrap">
+          <span class="icon">👤</span>
+          <input type="text" id="name" placeholder="Your full name">
+        </div>
+      </div>
+      <div class="input-group half">
+        <label>Company Name</label>
+        <div class="input-wrap">
+          <span class="icon">🏢</span>
+          <input type="text" id="company" placeholder="Company name">
+        </div>
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label>Work Email Address *</label>
+      <div class="input-wrap">
+        <span class="icon">📧</span>
+        <input type="email" id="email" placeholder="recruiter@company.com">
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label>Phone Number</label>
+      <div class="input-wrap">
+        <span class="icon">📞</span>
+        <input type="tel" id="phone" placeholder="10-digit mobile number">
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label>Industry</label>
+      <div class="input-wrap">
+        <span class="icon">🏭</span>
+        <select id="industry">
+          <option value="">Select your industry</option>
+          <option>IT / Software</option>
+          <option>Sales & Marketing</option>
+          <option>HR & Recruitment</option>
+          <option>Finance & Accounts</option>
+          <option>Healthcare</option>
+          <option>Manufacturing</option>
+          <option>Education</option>
+          <option>Other</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label>Create Password *</label>
+      <div class="input-wrap">
+        <span class="icon">🔑</span>
+        <input type="password" id="password" placeholder="Minimum 6 characters">
+      </div>
+    </div>
+
+    <div class="terms-row">
+      <input type="checkbox" id="terms">
+      <label for="terms">I agree to the <a href="terms.html" target="_blank" rel="noopener noreferrer">Terms of Service</a> and <a href="privacy.html" target="_blank" rel="noopener noreferrer">Privacy Policy</a> of Indupalli Services.</label>
+    </div>
+
+    <button class="btn-register" onclick="register()">
+      Create Recruiter Account
+    </button>
+
+    <div class="divider"><span>Already have an account?</span></div>
+
+    <button class="btn-login" onclick="window.location.href='recruiter-login.html'">
+       Login to Dashboard
+    </button>
+
+    <div class="security-row">
+      <div class="sec-badge">🔒 SSL Secured</div>
+      <div class="sec-badge">🛡️ Data Protected</div>
+      <div class="sec-badge">✅ Free Forever</div>
+    </div>
+  </div>
+</div>
+
+<!-- POPUP -->
+<div class="popup-overlay" id="popup">
+  <div class="popup-box">
+    <div class="pop-icon" id="popIcon">✅</div>
+    <h3 id="popTitle">Success</h3>
+    <p id="popupText"></p>
+    <button onclick="closePopup()">Continue</button>
+  </div>
+</div>
+
+<script type="module">
+import { supabase } from "./supabase.js";
+
+window.register = async function() {
+  const name     = document.getElementById("name").value.trim();
+  const company  = document.getElementById("company").value.trim();
+  const email    = document.getElementById("email").value.trim();
+  const phone    = document.getElementById("phone").value.trim();
+  const industry = document.getElementById("industry").value;
+  const pw       = document.getElementById("password").value;
+  const terms    = document.getElementById("terms").checked;
+
+  if (!name || !email || !pw) {
+    showPopup("⚠️","Missing Info","Please fill in your name, email and password to continue.");
+    return;
+  }
+  if (pw.length < 6) {
+    showPopup("⚠️","Weak Password","Password must be at least 6 characters long.");
+    return;
+  }
+  if (!terms) {
+    showPopup("⚠️","Terms Required","Please agree to our Terms of Service to create your account.");
+    return;
+  }
+
+  const btn = document.querySelector(".btn-register");
+  btn.textContent = "⏳ Creating Account...";
+  btn.disabled = true;
+
+  try {
+    // 1. Sign up user with Supabase Auth
+    const { data: authData, error: authError } = await supabase.auth.signUp({
+      email: email,
+      password: pw,
+      options: {
+        data: { full_name: name, role: 'recruiter' }
+      }
+    });
+
+    if (authError) throw authError;
+
+    const user = authData?.user;
+    if (!user) throw new Error("User registration failed.");
+
+    // 2. Save recruiter profile to Supabase 'recruiters' table
+    const { error: dbError } = await supabase
+      .from("recruiters")
+      .upsert({
+        id: user.id,
+        name,
+        company,
+        email,
+        phone,
+        industry,
+        role: "recruiter",
+        createdAt: new Date().toISOString()
+      }, { onConflict: 'id' });
+
+    if (dbError) throw dbError;
+
+    localStorage.setItem("recruiterEmail", email);
+    localStorage.setItem("recruiterName", name);
+    localStorage.setItem("recruiterCompany", company);
+    localStorage.setItem("userRole", "recruiter");
+
+    showPopup("🎉","Account Created!","Your recruiter account is ready. Redirecting to login...");
+    document.querySelector("#popup button").onclick = () => { window.location.href = "recruiter-login.html"; };
+  } catch(e) {
+    btn.innerHTML = "Create Recruiter Account";
+    btn.disabled = false;
+    const msg = e.message?.includes("already registered") || e.message?.includes("already exists")
+      ? "This email is already registered. Please login instead."
+      : (e.message || "Registration failed. Please try again.");
+    showPopup("❌","Registration Failed", msg);
+  }
+};
+
+document.getElementById("password").addEventListener("keydown", e => {
+  if (e.key === "Enter") window.register();
+});
+</script>
+
+<script>
+function showPopup(icon, title, msg) {
+  document.getElementById("popIcon").textContent = icon;
+  document.getElementById("popTitle").textContent = title;
+  document.getElementById("popupText").textContent = msg;
+  document.getElementById("popup").style.display = "flex";
+}
+function closePopup() { document.getElementById("popup").style.display = "none"; }
+</script>
+</body>
+</html>

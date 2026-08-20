@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recruiter Portal Login – Indupalli Services</title>
+
+    <!-- Fonts & Icons -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <style>
+    :root {
+        --primary: #2563eb;
+        --primary-dark: #1d4ed8;
+        --navy: #0f172a;
+        --dark: #001b5e;
+        --orange: #f59e0b;
+        --orange-hover: #d97706;
+        --green: #10b981;
+        --red: #ef4444;
+        --bg-light: #f8fafc;
+        --border-color: #e2e8f0;
+        --text-title: #0f172a;
+        --text-body: #334155;
+        --text-muted: #64748b;
+        --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+        --shadow-lg: 0 25px 50px -12px rgba(15, 23, 42, 0.25);
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Plus Jakarta Sans', sans-serif; }
+    body { min-height: 100vh; display: flex; background: var(--bg-light); color: var(--text-body); -webkit-font-smoothing: antialiased; }
+
+    /* ── LEFT HERO PANEL ── */
+    .left-panel {
+        flex: 1.15;
+        background: radial-gradient(circle at 80% 20%, #1e40af 0%, var(--dark) 60%, #020617 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 50px 60px;
+        color: #fff;
+        position: relative;
+        overflow: hidden;
+    }
+    .left-panel::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+        background-size: 32px 32px;
+        pointer-events: none;
+    }
+
+    .brand { display: flex; align-items: center; gap: 14px; position: relative; z-index: 2; }
+    .brand img { height: 48px; width: 48px; border-radius: 12px; background: #fff; padding: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); object-fit: contain; }
+    .brand-text h2 { font-size: 21px; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+    .brand-text p { font-size: 10.5px; color: #60a5fa; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; margin-top: 1px; }
+
+    .left-center { flex: 1; display: flex; flex-direction: column; justify-content: center; position: relative; z-index: 2; margin: 40px 0; max-width: 480px; }
+    .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); padding: 6px 14px; border-radius: 30px; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 20px; width: fit-content; backdrop-filter: blur(4px); }
+    .left-panel h1 { font-size: 38px; font-weight: 800; line-height: 1.2; margin-bottom: 14px; letter-spacing: -1px; }
+    .left-panel h1 span { color: #60a5fa; text-shadow: 0 0 40px rgba(96, 165, 250, 0.3); }
+    .left-panel p { font-size: 15.5px; line-height: 1.7; color: #cbd5e1; }
+
+    .features { margin-top: 32px; display: flex; flex-direction: column; gap: 12px; width: 100%; }
+    .feature { display: flex; align-items: center; gap: 14px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); padding: 12px 18px; border-radius: 14px; font-size: 13.5px; color: #f1f5f9; font-weight: 600; backdrop-filter: blur(6px); transition: transform 0.2s; }
+    .feature:hover { transform: translateX(6px); background: rgba(255, 255, 255, 0.08); }
+    .feature-icon { width: 32px; height: 32px; border-radius: 8px; background: rgba(37, 99, 235, 0.3); color: #60a5fa; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+
+    .left-bottom { position: relative; z-index: 2; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; width: 100%; }
+    .left-bottom p { font-size: 12.5px; color: #94a3b8; margin: 0; }
+    .trust-badges { display: flex; gap: 10px; }
+    .trust-badge { background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; color: #cbd5e1; display: inline-flex; align-items: center; gap: 6px; }
+
+    /* ── RIGHT AUTH PANEL ── */
+    .right-panel { width: 520px; display: flex; align-items: center; justify-content: center; padding: 50px 40px; background: #ffffff; flex-shrink: 0; box-shadow: -10px 0 30px rgba(0, 0, 0, 0.02); }
+    .form-box { width: 100%; max-width: 400px; }
+    .form-badge { display: inline-flex; align-items: center; gap: 6px; background: #fff7ed; color: var(--orange-hover); font-size: 11.5px; font-weight: 800; padding: 5px 14px; border-radius: 20px; margin-bottom: 16px; letter-spacing: 0.5px; text-transform: uppercase; border: 1px solid #ffedd5; }
+    .form-box h2 { font-size: 28px; font-weight: 800; color: var(--navy); margin-bottom: 6px; letter-spacing: -0.5px; }
+    .form-box .sub { color: var(--text-muted); font-size: 14px; margin-bottom: 28px; line-height: 1.6; }
+
+    .form-group { display: flex; flex-direction: column; margin-bottom: 18px; }
+    .label-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    label { font-size: 12.5px; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: 0.5px; }
+    .forgot-link { font-size: 12.5px; color: var(--primary); font-weight: 700; text-decoration: none; cursor: pointer; transition: color 0.2s; }
+    .forgot-link:hover { text-decoration: underline; color: var(--primary-dark); }
+
+    input { width: 100%; padding: 13px 16px; border: 1.5px solid var(--border-color); border-radius: 12px; font-size: 14.5px; background: var(--bg-light); transition: all 0.2s ease; font-family: inherit; color: var(--navy); outline: none; }
+    input:focus { border-color: var(--primary); background: #ffffff; box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
+
+    .btn-login { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: #fff; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 10px; transition: all 0.2s ease; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25); display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-login:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35); }
+
+    .btn-register { width: 100%; padding: 13px; background: #fff; color: var(--orange-hover); border: 1.5px solid #fed7aa; border-radius: 12px; font-size: 14.5px; font-weight: 700; cursor: pointer; margin-top: 12px; transition: all 0.2s ease; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-register:hover { background: #fff7ed; border-color: var(--orange); transform: translateY(-1px); }
+
+    .back-link { display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%; text-align: center; margin-top: 20px; color: var(--text-muted); font-size: 13px; font-weight: 600; text-decoration: none; transition: color 0.2s; }
+    .back-link:hover { color: var(--primary); }
+
+    /* ── POPUPS ── */
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes popCenter { 0% { opacity: 0; transform: scale(0.92); } 100% { opacity: 1; transform: scale(1); } }
+
+    .popup-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(6px); justify-content: center; align-items: center; z-index: 99999; padding: 20px; animation: fadeIn 0.25s ease forwards; }
+    .popup-box { background: #ffffff; width: 100%; max-width: 440px; padding: 36px 32px; border-radius: 24px; text-align: center; box-shadow: var(--shadow-lg); position: relative; animation: popCenter 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .popup-box button { background: var(--primary); color: #fff; border: none; padding: 14px 28px; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+    .popup-box button:hover { background: var(--primary-dark); }
+
+    @media(max-width: 900px) {
+        body { flex-direction: column; }
+        .left-panel { padding: 40px 24px; min-height: auto; }
+        .brand img { height: 42px; width: 42px; }
+        .features, .left-bottom { display: none; }
+        .right-panel { width: 100%; padding: 40px 24px 60px; box-shadow: none; }
+    }
+    </style>
+</head>
+<body>
+
+<!-- ── LEFT HERO PANEL ── -->
+<div class="left-panel">
+    <div class="brand">
+        <img src="1000174411.png" alt="Indupalli Services Logo">
+        <div class="brand-text">
+            <h2>Indupalli Services</h2>
+            <p>Recruiter Portal</p>
+        </div>
+    </div>
+
+    <div class="left-center">
+        <div class="hero-badge"><i class="fa-solid fa-building-user"></i> Enterprise ATS Workspace</div>
+        <h1>Streamline Hiring & <span>Find Top Talent.</span></h1>
+        <p>Post mandates, review candidate pitch statements, track applications, and directly chat with job seekers across India.</p>
+
+        <div class="features">
+            <div class="feature"><div class="feature-icon"><i class="fa-solid fa-bullhorn"></i></div><span>Publish and edit job mandates instantly</span></div>
+            <div class="feature"><div class="feature-icon"><i class="fa-solid fa-id-card"></i></div><span>Review AI candidate profiles and resumes</span></div>
+            <div class="feature"><div class="feature-icon"><i class="fa-solid fa-comments"></i></div><span>Live direct messaging with applicants</span></div>
+            <div class="feature"><div class="feature-icon"><i class="fa-solid fa-list-check"></i></div><span>Interactive candidate pipeline management</span></div>
+        </div>
+    </div>
+
+    <div class="left-bottom">
+        <p>© 2026 Indupalli Services. All rights reserved.</p>
+        <div class="trust-badges">
+            <div class="trust-badge"><i class="fa-solid fa-shield-halved" style="color:#10b981;"></i> Secure ATS</div>
+            <div class="trust-badge"><i class="fa-solid fa-circle-check" style="color:#60a5fa;"></i> Verified System</div>
+        </div>
+    </div>
+</div>
+
+<!-- ── RIGHT LOGIN PANEL ── -->
+<div class="right-panel">
+    <div class="form-box">
+        <div class="form-badge"><i class="fa-solid fa-lock"></i> Employer Login</div>
+        <h2>Recruiter Sign In</h2>
+        <p class="sub">Access your recruiter control panel to manage candidates and job postings.</p>
+
+        <div class="form-group">
+            <label for="email">Recruiter Email</label>
+            <input type="email" id="email" placeholder="recruiter@company.com">
+        </div>
+
+        <div class="form-group">
+            <div class="label-row">
+                <label for="password">Password</label>
+                <a href="javascript:void(0)" class="forgot-link" onclick="openForgotModal()">Forgot?</a>
+            </div>
+            <input type="password" id="password" placeholder="Enter your password">
+        </div>
+
+        <button class="btn-login" onclick="login()">
+            <span>Sign In to Dashboard</span>
+            <i class="fa-solid fa-arrow-right" style="font-size: 13px;"></i>
+        </button>
+
+        <a href="signup.html" class="btn-register">
+            <i class="fa-solid fa-user-plus"></i> New Recruiter? Register Here
+        </a>
+
+        <a href="login.html" class="back-link">
+            <i class="fa-solid fa-arrow-left"></i> Job Seeker Login
+        </a>
+    </div>
+</div>
+
+<!-- POPUP (SUCCESS/ERROR) -->
+<div class="popup-overlay" id="popup">
+    <div class="popup-box">
+        <div id="popupIconBadge" style="width:64px; height:64px; border-radius:50%; background:var(--primary); color:#fff; font-size:28px; font-weight:800; display:flex; align-items:center; justify-content:center; margin:0 auto 20px;">✓</div>
+        <h4 id="popupTitle" style="font-size:20px; font-weight:800; color:var(--navy); margin-bottom:8px;"></h4>
+        <p id="popupText" style="font-size:15px; color:var(--text-muted); line-height:1.6; margin:0 0 28px;"></p>
+        <button id="popupOkBtn" onclick="closePopup()" style="width: 100%;">Okay</button>
+    </div>
+</div>
+
+<!-- FORGOT PASSWORD MODAL (FIREBASE INTEGRATED) -->
+<div class="popup-overlay" id="forgotModal">
+    <div class="popup-box">
+        <div style="width:64px; height:64px; border-radius:50%; background:#eff6ff; color:var(--primary); font-size:26px; display:flex; align-items:center; justify-content:center; margin:0 auto 16px;">
+            <i class="fa-solid fa-key"></i>
+        </div>
+        <h4 style="font-size:20px; font-weight:800; color:var(--navy); margin-bottom:8px;">Reset Password</h4>
+        <p style="font-size:14px; color:var(--text-muted); line-height:1.6; margin-bottom:20px;">
+            Enter your registered recruiter email to reset your password.
+        </p>
+
+        <div style="margin-bottom: 20px; text-align: left;">
+            <label for="resetEmail" style="display:block; margin-bottom:6px;">Registered Email</label>
+            <input type="email" id="resetEmail" placeholder="recruiter@company.com">
+        </div>
+
+        <div style="display:flex; gap:10px;">
+            <button type="button" onclick="closeForgotModal()" style="flex:1; background:#f1f5f9; color:var(--text-muted);">Cancel</button>
+            <button type="button" id="btnSendReset" onclick="sendPasswordReset()" style="flex:1.4;">Send Reset Link</button>
+        </div>
+    </div>
+</div>
+
+<!-- FIREBASE AUTHENTICATION LOGIC -->
+<script type="module">
+import { auth } from "./firebase.js";
+import { 
+    signInWithEmailAndPassword, 
+    sendPasswordResetEmail 
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+// Sign In Logic
+window.login = async function() {
+    const email = document.getElementById("email").value.trim();
+    const pw = document.getElementById("password").value;
+
+    if (!email || !pw) { 
+        showPopup("⚠️ Missing Credentials", "Please enter your email and password."); 
+        return; 
+    }
+
+    try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, pw);
+        const userEmail = userCredential.user.email;
+        const isAdmin = userEmail === "praveencenaindupalli@gmail.com";
+
+        localStorage.setItem("recruiterEmail", userEmail);
+        localStorage.setItem("isAdmin", isAdmin ? "true" : "false");
+
+        showPopup("✅ Authentication Successful", "Welcome back! Securely connecting to your dashboard...");
+
+        document.querySelector("#popupOkBtn").onclick = () => { 
+            window.location.href = "recruiter-dashboard.html"; 
+        };
+
+    } catch (e) {
+        showPopup("❌ Login Failed", "Invalid email or password. Please try again.");
+    }
+};
+
+// Firebase Password Reset Logic
+window.sendPasswordReset = async function() {
+    const resetEmail = document.getElementById("resetEmail").value.trim();
+    const btn = document.getElementById("btnSendReset");
+
+    if (!resetEmail) {
+        showPopup("⚠️ Missing Email", "Please enter your registered email address.");
+        return;
+    }
+
+    try {
+        btn.disabled = true;
+        btn.textContent = "Sending...";
+
+        await sendPasswordResetEmail(auth, resetEmail);
+
+        closeForgotModal();
+        showPopup("✉️ Reset Link Sent", `A password reset link has been sent to ${resetEmail}. Please check your inbox or spam folder.`);
+    } catch (error) {
+        let msg = "Failed to send reset link. Please check the email address and try again.";
+        if (error.code === "auth/user-not-found") {
+            msg = "No account found with this email address.";
+        } else if (error.code === "auth/invalid-email") {
+            msg = "Please enter a valid email address.";
+        }
+        showPopup("❌ Reset Error", msg);
+    } finally {
+        btn.disabled = false;
+        btn.textContent = "Send Reset Link";
+    }
+};
+</script>
+
+<script>
+function showPopup(title, text) {
+    let color = "#2563eb", icon = "✓";
+    if (title.includes("❌")) color = "#ef4444";
+    if (title.includes("⚠️")) color = "#f59e0b";
+    if (title.includes("✉️")) color = "#10b981";
+
+    document.getElementById("popupTitle").textContent = title;
+    document.getElementById("popupText").textContent = text;
+    document.getElementById("popupIconBadge").textContent = icon;
+    document.getElementById("popupIconBadge").style.background = color;
+    document.getElementById("popupOkBtn").style.background = color;
+    document.getElementById("popup").style.display = "flex";
+}
+
+function closePopup() { 
+    document.getElementById("popup").style.display = "none"; 
+}
+
+function openForgotModal() {
+    const mainEmail = document.getElementById("email").value.trim();
+    if (mainEmail) {
+        document.getElementById("resetEmail").value = mainEmail;
+    }
+    document.getElementById("forgotModal").style.display = "flex";
+}
+
+function closeForgotModal() {
+    document.getElementById("forgotModal").style.display = "none";
+}
+
+// Close modals when clicking background overlay
+window.addEventListener("click", function(e) {
+    const forgot = document.getElementById("forgotModal");
+    if (e.target === forgot) {
+        forgot.style.display = "none";
+    }
+});
+</script>
+</body>
+</html>

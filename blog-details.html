@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog Article | Indupalli Services</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+<style>
+:root {
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --dark: #001b5e;
+  --navy: #0f172a;
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --bg-light: #f8fafc;
+  --card-bg: #ffffff;
+  --border: #e2e8f0;
+  --shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 16px 36px rgba(15, 23, 42, 0.08);
+  --radius-lg: 24px;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Plus Jakarta Sans', sans-serif; }
+body { background:var(--bg-light); color:var(--text-main); overflow-x:hidden; -webkit-font-smoothing:antialiased; }
+
+/* ── HEADER ── */
+header {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  padding: 0 6%;
+  display: flex; justify-content: space-between; align-items: center;
+  height: 80px;
+  position: sticky; top: 0; z-index: 1000;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+}
+.logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+.logo img { height: 44px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.06); }
+.logo-text h2 { font-size: 21px; color: var(--navy); font-weight: 800; letter-spacing: -0.5px; }
+.logo-text span { color: var(--primary); font-size: 10px; font-weight: 800; letter-spacing: 1.5px; display: block; }
+
+nav { display: flex; gap: 8px; align-items: center; }
+nav a { text-decoration: none; font-weight: 600; color: #475569; padding: 9px 16px; border-radius: 10px; font-size: 14px; transition: all .2s ease; }
+nav a:hover { color: var(--primary); background: #eff6ff; }
+.nav-login { background: linear-gradient(135deg, var(--primary), var(--primary-dark)) !important; color: #fff !important; padding: 10px 22px !important; border-radius: 12px !important; font-weight: 700 !important; font-size: 13.5px !important; box-shadow: 0 6px 16px rgba(37, 99, 235, 0.25); }
+.nav-login:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(37, 99, 235, 0.35); }
+
+/* ── BLOG DETAIL WRAPPER ── */
+.blog-wrapper {
+  max-width: 900px;
+  margin: 40px auto 80px;
+  padding: 0 20px;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 24px;
+  padding: 8px 16px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+.back-link:hover {
+  color: var(--primary);
+  border-color: #bfdbfe;
+  background: #eff6ff;
+  transform: translateX(-3px);
+}
+
+.blog-container {
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+  padding: 48px;
+}
+
+/* ── SUBTLE BRAND WATERMARK ── */
+.blog-container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url('1000174411.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 380px auto;
+  opacity: 0.05;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.blog-header, .blog-content-body, #blogImageWrapper {
+  position: relative;
+  z-index: 1;
+}
+
+.blog-meta-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #eff6ff;
+  color: var(--primary);
+  border: 1px solid #dbeafe;
+  padding: 6px 14px;
+  border-radius: 30px;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 16px;
+}
+
+.blog-title {
+  font-size: 36px;
+  font-weight: 800;
+  color: var(--navy);
+  line-height: 1.3;
+  margin-bottom: 28px;
+  letter-spacing: -0.8px;
+}
+
+#blogImageWrapper {
+  margin-bottom: 32px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+#blogImage {
+  display: none;
+  width: 100%;
+  max-height: 440px;
+  object-fit: cover;
+  display: block;
+}
+
+.blog-content-body {
+  font-size: 16.5px;
+  color: #334155;
+  line-height: 1.9;
+  white-space: pre-line;
+  letter-spacing: -0.1px;
+}
+
+/* ── SKELETON / LOADING STATE ── */
+.loading-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 0;
+  gap: 16px;
+  color: var(--text-muted);
+}
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #e2e8f0;
+  border-top-color: var(--primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+footer {
+  background: #090d16;
+  color: #94a3b8;
+  padding: 40px 6%;
+  text-align: center;
+  font-size: 13.5px;
+  border-top: 4px solid var(--primary);
+}
+
+@media (max-width: 768px) {
+  .blog-container { padding: 28px 20px; }
+  .blog-title { font-size: 26px; }
+  .blog-content-body { font-size: 15px; }
+  header nav { display: none; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <a href="index.html#home" class="logo">
+    <img src="1000174411.png" alt="Indupalli Services Logo">
+    <div class="logo-text">
+      <h2>Indupalli Services</h2>
+      <span>TALENT & RECRUITMENT ATS</span>
+    </div>
+  </a>
+  <nav>
+    <a href="index.html#home"><i class="fa-solid fa-house"></i> Home</a>
+    <a href="index.html#blogs-section"><i class="fa-solid fa-newspaper"></i> Blogs</a>
+    <a href="login.html" target="_blank" class="nav-login"><i class="fa-solid fa-user"></i> Job Seeker Login</a>
+  </nav>
+</header>
+
+<div class="blog-wrapper">
+  <a href="index.html#blogs-section" class="back-link">
+    <i class="fa-solid fa-arrow-left"></i> Back to Articles
+  </a>
+
+  <div class="blog-container">
+    <div id="blogDetailLoading" class="loading-box">
+      <div class="spinner"></div>
+      <p style="font-weight: 600; font-size: 14px;">Loading article details...</p>
+    </div>
+
+    <div id="blogDetailWrapper" style="display: none;">
+      <div class="blog-header">
+        <div class="blog-meta-badge" id="blogDate">
+          <i class="fa-regular fa-calendar-days"></i> Posted
+        </div>
+        <h1 class="blog-title" id="blogTitle">Title</h1>
+      </div>
+
+      <div id="blogImageWrapper" style="display: none;">
+        <img id="blogImage" src="" alt="Blog Cover">
+      </div>
+
+      <div class="blog-content-body" id="blogContent">Content</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2026 Indupalli Services. All Rights Reserved.</p>
+</footer>
+
+<script type="module">
+import { supabase } from './supabase.js';
+
+async function fetchArticle() {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id");
+  const loadingEl = document.getElementById("blogDetailLoading");
+  const wrapperEl = document.getElementById("blogDetailWrapper");
+
+  if (!id) {
+    loadingEl.innerHTML = "<p style='color:#ef4444; font-weight:600;'><i class='fa-solid fa-circle-exclamation'></i> Article ID not specified.</p>";
+    return;
+  }
+
+  try {
+    const { data: blog, error } = await supabase
+      .from('blogs')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error || !blog) {
+      loadingEl.innerHTML = "<p style='color:#ef4444; font-weight:600;'><i class='fa-solid fa-circle-xmark'></i> Article not found.</p>";
+      return;
+    }
+
+    document.getElementById("blogTitle").innerText = blog.title || "Untitled Article";
+    const dateStr = blog.created_at ? new Date(blog.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : "Recent";
+    document.getElementById("blogDate").innerHTML = `<i class="fa-regular fa-calendar-days"></i> ${dateStr}`;
+    document.getElementById("blogContent").innerText = blog.content || "No content found.";
+
+    if (blog.image_url) {
+      const imgEl = document.getElementById("blogImage");
+      const imgWrapper = document.getElementById("blogImageWrapper");
+      imgEl.src = blog.image_url;
+      imgEl.alt = blog.title || "Blog Cover";
+      imgWrapper.style.display = "block";
+    }
+
+    loadingEl.style.display = "none";
+    wrapperEl.style.display = "block";
+  } catch (e) {
+    console.error(e);
+    loadingEl.innerHTML = "<p style='color:#ef4444; font-weight:600;'><i class='fa-solid fa-triangle-exclamation'></i> Failed to load article.</p>";
+  }
+}
+
+fetchArticle();
+</script>
+</body>
+</html>

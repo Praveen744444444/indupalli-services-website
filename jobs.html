@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Current Job Openings | Indupalli Services</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<style>
+:root {
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+  --navy: #0f172a;
+  --bg: #f8fafc;
+  --card: #ffffff;
+  --text: #334155;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+  --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 10px 25px -5px rgba(15, 23, 42, 0.08);
+  --shadow-lg: 0 25px 50px -12px rgba(15, 23, 42, 0.25);
+  --border-radius: 20px;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; font-family:'Plus Jakarta Sans', sans-serif; }
+body { background:var(--bg); color:var(--text); overflow-x:hidden; -webkit-font-smoothing:antialiased; display: flex; flex-direction: column; min-height: 100vh; }
+
+/* ── HEADER ── */
+header {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  padding: 0 6%;
+  display: flex; justify-content: space-between; align-items: center;
+  height: 85px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  position: sticky; top: 0; z-index: 1000;
+  border-bottom: 1px solid var(--border);
+}
+
+.logo { display: flex; align-items: center; gap: 14px; text-decoration: none; flex-shrink: 0; }
+.logo img { width: 48px; height: 48px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.06); object-fit: contain; background: #fff; padding: 4px; }
+.logo-text { display: flex; flex-direction: column; justify-content: center; }
+.logo-text h2 { font-size: 20px; font-weight: 800; color: var(--navy); line-height: 1.1; letter-spacing: -0.5px; margin: 0; }
+.logo-text p { font-size: 10.5px; color: var(--primary); font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; margin: 4px 0 0 0; line-height: 1; }
+
+nav { display: flex; gap: 20px; align-items: center; }
+nav a { text-decoration: none; color: var(--text-muted); font-weight: 600; font-size: 14.5px; transition: color 0.2s; }
+nav a:hover { color: var(--primary); }
+.nav-login { background: var(--primary) !important; color: #fff !important; padding: 10px 20px !important; border-radius: 10px !important; box-shadow: 0 4px 12px rgba(37,99,235,0.25); transition: 0.2s; }
+.nav-login:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(37,99,235,0.3); }
+
+/* ── HERO & SEARCH ── */
+.container { max-width: 1240px; margin: 60px auto; padding: 0 5%; flex: 1; }
+.page-title { text-align: center; margin-bottom: 40px; }
+.page-title h1 { font-size: 42px; font-weight: 800; color: var(--navy); margin-bottom: 14px; letter-spacing: -1px; }
+.page-title p { color: var(--text-muted); font-size: 16px; max-width: 500px; margin: 0 auto; line-height: 1.6; }
+
+.search-bar { display: flex; align-items: center; gap: 14px; margin-bottom: 50px; background: #fff; padding: 14px 24px; border-radius: 16px; box-shadow: var(--shadow-md); border: 1px solid var(--border); max-width: 680px; margin-left: auto; margin-right: auto; transition: 0.2s; }
+.search-bar:focus-within { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
+.search-bar i { font-size: 18px; color: var(--primary); }
+.search-bar input { flex: 1; border: none; outline: none; font-size: 15.5px; font-family: inherit; background: transparent; color: var(--navy); }
+.search-bar input::placeholder { color: #94a3b8; }
+
+/* ── JOB GRID CARDS ── */
+.jobs-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 30px; }
+.job-card { background: var(--card); border-radius: var(--border-radius); padding: 32px; box-shadow: var(--shadow-sm); border: 1px solid var(--border); display: flex; flex-direction: column; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); position: relative; overflow: hidden; }
+.job-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 5px; background: linear-gradient(90deg, var(--primary), #60a5fa); opacity: 0; transition: 0.3s; }
+.job-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-md); border-color: #bfdbfe; }
+.job-card:hover::before { opacity: 1; }
+
+.job-title-main { font-size: 20px; font-weight: 800; color: var(--navy); line-height: 1.3; margin-bottom: 6px; letter-spacing: -0.3px; }
+.job-company { font-size: 13.5px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 20px; }
+
+.job-meta { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+.job-meta span { background: #f1f5f9; padding: 6px 12px; border-radius: 8px; font-size: 12.5px; color: var(--navy); display: flex; align-items: center; gap: 6px; font-weight: 600; border: 1px solid #e2e8f0; }
+.job-meta span i { color: var(--primary); }
+.job-meta span.urgent { background: #fef2f2; color: #dc2626; border-color: #fecaca; }
+.job-meta span.urgent i { color: #dc2626; }
+
+.job-desc-snippet { font-size: 14px; color: var(--text); line-height: 1.6; margin-bottom: 24px; flex: 1; }
+
+.card-actions { display: flex; gap: 12px; margin-top: auto; }
+.read-more-btn { flex: 1; background: #eff6ff; color: var(--primary); border: 1px solid #bfdbfe; padding: 12px; border-radius: 12px; font-weight: 700; font-size: 13.5px; cursor: pointer; transition: 0.2s; text-align: center; }
+.read-more-btn:hover { background: #dbeafe; }
+.apply-btn { flex: 1; background: var(--navy); color: #fff; border: none; padding: 12px; border-radius: 12px; font-size: 13.5px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; transition: 0.2s; box-shadow: 0 4px 12px rgba(15,23,42,0.15); }
+.apply-btn:hover { background: var(--primary); box-shadow: 0 6px 16px rgba(37,99,235,0.25); }
+
+/* ── MODAL ENGINE ── */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes popCenter { 0% { opacity: 0; transform: scale(0.95); } 100% { opacity: 1; transform: scale(1); } }
+
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(6px); z-index: 99999; align-items: center; justify-content: center; padding: 20px; animation: fadeIn 0.25s ease forwards; }
+.modal-box { background: #fff; border-radius: 24px; padding: 40px; width: 100%; max-width: 680px; max-height: 85vh; overflow-y: auto; box-shadow: var(--shadow-lg); position: relative; animation: popCenter 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+.modal-close { position: absolute; top: 20px; right: 20px; background: #f1f5f9; border: none; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; color: var(--text-muted); font-size: 16px; transition: 0.2s; }
+.modal-close:hover { background: #e2e8f0; color: var(--red); }
+
+.modal-box h2 { color: var(--navy); font-size: 26px; margin-bottom: 20px; font-weight: 800; letter-spacing: -0.5px; padding-right: 40px; }
+.modal-meta-grid { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; background: #f8fafc; padding: 18px; border-radius: 16px; font-size: 13.5px; color: var(--navy); font-weight: 600; border: 1px solid var(--border); }
+.modal-meta-grid span { display: flex; align-items: center; gap: 6px; }
+.modal-meta-grid span i { color: var(--primary); }
+
+.modal-body { font-size: 14.5px; color: var(--text); line-height: 1.8; white-space: pre-line; margin-bottom: 32px; background: #ffffff; border: 1px solid var(--border); padding: 24px; border-radius: 16px; }
+
+.modal-actions { display: flex; justify-content: flex-end; gap: 12px; }
+.modal-actions .apply-btn { width: auto; padding: 12px 28px; background: var(--primary); font-size: 14.5px; }
+
+/* ── FOOTER ── */
+footer { background: var(--navy); color: #fff; padding: 70px 6% 30px; margin-top: auto; }
+.footer-grid { max-width: 1240px; margin: auto; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 50px; margin-bottom: 50px; }
+.footer-brand h3 { font-size: 22px; font-weight: 800; margin-bottom: 12px; }
+.footer-brand p { color: #94a3b8; font-size: 14px; line-height: 1.7; max-width: 380px; }
+.footer-col h5 { font-size: 13px; font-weight: 800; color: #60a5fa; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 20px; }
+.footer-col a { display: block; color: #cbd5e1; text-decoration: none; font-size: 14px; margin-bottom: 12px; transition: 0.2s ease; }
+.footer-col a:hover { color: #fff; padding-left: 5px; }
+.footer-bottom { max-width: 1240px; margin: auto; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.08); text-align: center; color: #64748b; font-size: 13.5px; }
+
+@media(max-width: 768px) {
+  header { padding: 0 20px; height: 75px; }
+  nav { display: none; }
+  .logo-text h2 { font-size: 17px; }
+  .logo-text p { font-size: 9px; }
+  .page-title h1 { font-size: 32px; }
+  .footer-grid { grid-template-columns: 1fr; gap: 30px; }
+  .modal-box { padding: 30px 24px; }
+}
+</style>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="logo">
+        <img src="1000174411.png" alt="Logo">
+        <div class="logo-text">
+            <h2>Indupalli Services</h2>
+            <p>TALENT & RECRUITMENT ATS</p>
+        </div>
+    </a>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="jobs.html">Browse Jobs</a>
+        <a href="login.html" class="nav-login">Job Seeker Login</a>
+    </nav>
+</header>
+
+<div class="container">
+    <div class="page-title">
+        <h1>Current Job Openings</h1>
+        <p>Explore opportunities matching your skills and take the next big step in your career with Indupalli Services.</p>
+    </div>
+
+    <div class="search-bar">
+        <i class="fa-solid fa-search"></i>
+        <input type="text" id="jobSearchInput" placeholder="Search by job title, location, or keyword...">
+    </div>
+
+    <div id="allJobsContainer" class="jobs-grid">
+        <div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 60px;">
+            <i class="fa-solid fa-spinner fa-spin" style="font-size: 28px; color: var(--primary); margin-bottom: 16px;"></i>
+            <p style="font-weight: 600; font-size: 15px;">Loading active job postings...</p>
+        </div>
+    </div>
+</div>
+
+<!-- FULL JOB DESCRIPTION MODAL -->
+<div id="jobModal" class="modal-overlay">
+    <div class="modal-box">
+        <button class="modal-close" id="closeModalBtn"><i class="fa-solid fa-xmark"></i></button>
+        <h2 id="modalTitle">Job Title</h2>
+        <div class="modal-meta-grid" id="modalMeta"></div>
+        <div class="modal-body" id="modalDescription">Full description goes here...</div>
+        <div class="modal-actions">
+            <a href="login.html" class="apply-btn">Apply For This Role <i class="fa-solid fa-arrow-right" style="margin-left: 6px;"></i></a>
+        </div>
+    </div>
+</div>
+
+<footer id="contact">
+    <div class="footer-grid">
+        <div class="footer-brand">
+            <img src="1000174411.png" alt="Indupalli Services" style="height:60px; width:60px; object-fit:contain; border-radius:12px; margin-bottom:18px; background: #fff; padding: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+            <h3>Indupalli Services</h3>
+            <p>Next-generation talent connectivity and staffing platform empowering careers and accelerating enterprise hiring across India.</p>
+        </div>
+
+        <div class="footer-col">
+            <h5>Navigation</h5>
+            <a href="index.html">Home</a>
+            <a href="jobs.html">Browse Jobs</a>
+            <a href="index.html#pricing">Pricing</a>
+        </div>
+
+        <div class="footer-col">
+            <h5>Portals & Legal</h5>
+            <a href="login.html">Candidate Login</a>
+            <a href="recruiter-login.html">Recruiter Login</a>
+            <a href="terms.html">Terms of Service</a>
+            <a href="privacy.html">Privacy Policy</a>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>📧 contact@indupalliservices.com &nbsp;|&nbsp; © 2026 Indupalli Services. All Rights Reserved.</p>
+    </div>
+</footer>
+
+<script type="module">
+import { supabase } from './supabase.js';
+
+window.rawJobsData = [];
+
+// RE-ADDED JOB DESCRIPTION FORMATTER FOR BULLETS AND HEADINGS
+function formatJobDescription(text) {
+    if (!text) return "No detailed description provided.";
+    
+    return text
+        .replace(/\n\n/g, '<br><br>')
+        .replace(/\n/g, '<br>')
+        .replace(/(🎯 Key Responsibilities|🛠 Requirements & Qualifications|🎁 What We Offer|About the Role)/g, '<br><br><strong><span style="color:var(--primary);">$1</span></strong><br>')
+        .replace(/(\d+\.\s+[A-Za-z &]+)/g, '<br><strong>$1</strong><br>');
+}
+
+async function loadAllJobs() {
+  const container = document.getElementById("allJobsContainer");
+  try {
+    const { data: jobs, error } = await supabase.from('jobs').select('*');
+    if (error) throw error;
+
+    if (jobs && container) {
+      window.rawJobsData = [];
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      jobs.forEach((job) => {
+        const isArchived = job.isarchived ?? job.is_archived ?? job.isArchived ?? false;
+        const rawClosingDate = job.closingdate ?? job.closing_date ?? job.closingDate;
+
+        if (isArchived) return;
+        if (rawClosingDate) {
+          const closeDate = new Date(rawClosingDate);
+          closeDate.setHours(23, 59, 59, 999);
+          if (today > closeDate) return;
+        }
+        window.rawJobsData.push(job);
+      });
+
+      renderJobsGrid(window.rawJobsData);
+    }
+  } catch (e) {
+    console.error("Error loading jobs:", e);
+    if (container) {
+      container.innerHTML = `<p style="grid-column: 1/-1; text-align: center; color: var(--red); padding: 40px; font-weight:600;"><i class="fa-solid fa-triangle-exclamation"></i> Failed to load job openings. Please refresh or try again later.</p>`;
+    }
+  }
+}
+
+function renderJobsGrid(jobsArray) {
+  const container = document.getElementById("allJobsContainer");
+  if (!jobsArray || !jobsArray.length) {
+    container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 60px; background: #fff; border-radius: 16px; border: 1px solid var(--border);">
+        <i class="fa-solid fa-folder-open" style="font-size: 32px; color: var(--text-muted); margin-bottom: 12px;"></i>
+        <p style="color: var(--text-muted); font-weight: 600; font-size: 15px;">No active job openings available matching your criteria.</p>
+    </div>`;
+    return;
+  }
+
+  let html = "";
+  jobsArray.forEach((job, index) => {
+    const title = job.jobtitle || job.job_title || job.title || job.jobTitle || job.position || "Position";
+    const company = job.companyname || job.company_name || job.companyName || "Indupalli Services Pvt Ltd";
+    const location = job.location || "Remote";
+    const salary = job.salary || "Standard";
+    const experience = job.experience || "1 Year";
+    
+    const rawDate = job.closingdate || job.closing_date || job.closingDate || job.deadline;
+    const closingDateStr = rawDate ? new Date(rawDate).toLocaleDateString('en-GB') : "Open until filled";
+    
+    const descText = job.description || "No description provided.";
+    const snippet = descText.substring(0, 110) + (descText.length > 110 ? "..." : "");
+
+    html += `
+    <div class="job-card">
+      <div>
+        <div class="job-title-main">${title}</div>
+        <div class="job-company">${company}</div>
+      </div>
+      <div class="job-meta">
+        <span><i class="fa-solid fa-location-dot"></i> ${location}</span>
+        <span><i class="fa-solid fa-indian-rupee-sign"></i> ${salary}</span>
+        <span><i class="fa-solid fa-briefcase"></i> ${experience}</span>
+        <span class="urgent"><i class="fa-regular fa-clock"></i> Closes: ${closingDateStr}</span>
+      </div>
+      <p class="job-desc-snippet">${snippet}</p>
+      <div class="card-actions">
+        <button class="read-more-btn" data-index="${index}">Read Details</button>
+        <a href="login.html" class="apply-btn">Apply Now</a>
+      </div>
+    </div>
+    `;
+  });
+  container.innerHTML = html;
+
+  document.querySelectorAll(".read-more-btn").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      const idx = e.target.getAttribute("data-index");
+      openJobModal(idx);
+    });
+  });
+}
+
+function filterJobs() {
+  const queryText = document.getElementById("jobSearchInput").value.toLowerCase();
+  const filtered = window.rawJobsData.filter(job => {
+    const title = (job.jobtitle || job.job_title || job.title || job.jobTitle || "").toLowerCase();
+    const company = (job.companyname || job.company_name || job.companyName || "").toLowerCase();
+    const loc = (job.location || "").toLowerCase();
+    const desc = (job.description || "").toLowerCase();
+    return title.includes(queryText) || company.includes(queryText) || loc.includes(queryText) || desc.includes(queryText);
+  });
+  renderJobsGrid(filtered);
+}
+
+function openJobModal(index) {
+  const job = window.rawJobsData[index];
+  if (!job) return;
+
+  const title = job.jobtitle || job.job_title || job.title || job.jobTitle || job.position || "Position";
+  const company = job.companyname || job.company_name || job.companyName || "Indupalli Services Pvt Ltd";
+  const location = job.location || "Remote";
+  const salary = job.salary || "Standard";
+  const exp = job.experience || "1 Year";
+  
+  const rawDate = job.closingdate || job.closing_date || job.closingDate || job.deadline;
+  const closes = rawDate ? new Date(rawDate).toLocaleDateString('en-GB') : "Open until filled";
+  const desc = job.description || "No detailed description provided.";
+
+  document.getElementById("modalTitle").innerText = title;
+  
+  // Insert company name right under the modal title
+  let companyEl = document.getElementById("modalCompany");
+  if (!companyEl) {
+    companyEl = document.createElement("div");
+    companyEl.id = "modalCompany";
+    companyEl.style.cssText = "font-size: 14px; font-weight: 800; color: var(--blue); background: #eef4ff; padding: 4px 12px; border-radius: 6px; display: inline-block; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 0.8px; border: 1px solid #bfdbfe;";
+    document.getElementById("modalTitle").after(companyEl);
+  }
+  companyEl.innerText = company;
+
+  document.getElementById("modalMeta").innerHTML = `
+    <span style="flex:1;"><i class="fa-solid fa-location-dot"></i> ${location}</span>
+    <span style="flex:1;"><i class="fa-solid fa-indian-rupee-sign"></i> ${salary}</span>
+    <span style="flex:1;"><i class="fa-solid fa-briefcase"></i> ${exp}</span>
+    <span style="flex:1; color: var(--red);"><i class="fa-regular fa-clock"></i> Deadline: ${closes}</span>
+  `;
+  document.getElementById("modalDescription").innerHTML = formatJobDescription(desc);
+  document.getElementById("jobModal").style.display = "flex";
+}
+
+document.getElementById("closeModalBtn").addEventListener("click", () => {
+  document.getElementById("jobModal").style.display = "none";
+});
+
+// Close modal on background click
+document.getElementById("jobModal").addEventListener("click", (e) => {
+    if (e.target === document.getElementById("jobModal")) {
+        document.getElementById("jobModal").style.display = "none";
+    }
+});
+
+document.getElementById("jobSearchInput").addEventListener("keyup", filterJobs);
+
+loadAllJobs();
+</script>
+</body>
+</html>
