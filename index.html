@@ -1128,7 +1128,7 @@
                 );
                 const data = await response.json();
                 document.getElementById("chatbotTyping")?.remove();
-                let reply = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "I am available to assist you.";
+                let reply = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "Indupalli AI is currently undergoing a quick refresh. We'll be back online in a moment.";
                 addChatMessage("bot", reply);
                 chatHistory.push({ role: "model", parts: [{ text: reply }] });
             } catch (e) {
