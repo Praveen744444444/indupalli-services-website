@@ -2231,13 +2231,73 @@ At Indupalli Services, we are committed to helping employers and professionals n
             }
 
             try {
+                /* ------------------------------------------------------------
+                   UPLOAD FEATURED IMAGE TO SUPABASE STORAGE
+                   Bucket: images (PUBLIC)
+                   ------------------------------------------------------------ */
+                let imageUrl = null;
+                const imageInput = document.getElementById("blogImageInput");
+                const imageFile = imageInput?.files?.[0] || null;
+
+                if (imageFile) {
+                    if (!imageFile.type.startsWith("image/")) {
+                        throw new Error("Please select a valid image file.");
+                    }
+
+                    /* Keep the upload safely below the bucket's 50 MB limit. */
+                    if (imageFile.size > 50 * 1024 * 1024) {
+                        throw new Error("Image is too large. Please select an image smaller than 50 MB.");
+                    }
+
+                    const extension = (imageFile.name.split(".").pop() || "jpg")
+                        .toLowerCase()
+                        .replace(/[^a-z0-9]/g, "");
+
+                    const baseName = (imageFile.name
+                        .replace(/\.[^/.]+$/, "")
+                        .toLowerCase()
+                        .replace(/[^a-z0-9]+/g, "-")
+                        .replace(/^-+|-+$/g, "")
+                        .slice(0, 80)) || "blog-image";
+
+                    const filePath = `blogs/${Date.now()}-${crypto.randomUUID()}-${baseName}.${extension}`;
+
+                    const { error: uploadError } = await supabase.storage
+                        .from("images")
+                        .upload(filePath, imageFile, {
+                            cacheControl: "3600",
+                            upsert: false,
+                            contentType: imageFile.type
+                        });
+
+                    if (uploadError) {
+                        console.error("Blog image upload error:", uploadError);
+                        throw new Error(`Image upload failed: ${uploadError.message}`);
+                    }
+
+                    const { data: publicUrlData } = supabase.storage
+                        .from("images")
+                        .getPublicUrl(filePath);
+
+                    imageUrl = publicUrlData?.publicUrl || null;
+
+                    if (!imageUrl) {
+                        throw new Error("The image uploaded, but a public image URL could not be generated.");
+                    }
+
+                    console.log("Blog image uploaded:", imageUrl);
+                }
+
+                /* ------------------------------------------------------------
+                   SAVE BLOG INCLUDING THE IMAGE URL
+                   ------------------------------------------------------------ */
                 const { data, error } = await supabase
                     .from("blogs")
                     .insert([{
                         title,
                         content,
                         is_published: true,
-                        image_url: null
+                        image_url: imageUrl
                     }])
                     .select()
                     .single();
