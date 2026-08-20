@@ -981,7 +981,7 @@
                 <div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                         <label style="font-size: 12.5px; font-weight: 700; color: var(--navy);">Article Content *</label>
-                        <button type="button" onclick="generateBlogAI()" class="btn-ai">
+                        <button type="button" onclick="window.generateBlogAI()" class="btn-ai">
                             <i class="fa-solid fa-wand-magic-sparkles"></i> Auto-Draft with AI
                         </button>
                     </div>
@@ -1000,9 +1000,9 @@
     <div id="aiModal" class="modal-overlay">
         <div class="modal-box" style="max-width:700px;">
             <button onclick="closeAI()" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
-            <h3 style="margin:0 0 16px 0; font-size:18px; font-weight:800; color: var(--navy);"><i class="fa-solid fa-wand-magic-sparkles" style="color:var(--primary); margin-right: 8px;"></i> Gemini Job Description Generator</h3>
+            <h3 id="aiModalTitle" style="margin:0 0 16px 0; font-size:18px; font-weight:800; color: var(--navy);"><i class="fa-solid fa-wand-magic-sparkles" style="color:var(--primary); margin-right: 8px;"></i> Gemini Job Description Generator</h3>
             
-            <label style="font-weight:700; font-size:13px; color: var(--navy); display:block; margin-bottom:6px;">Role Guidelines / Requirements</label>
+            <label id="aiPromptLabel" style="font-weight:700; font-size:13px; color: var(--navy); display:block; margin-bottom:6px;">Role Guidelines / Requirements</label>
             <textarea id="aiPrompt" class="form-control" rows="4" style="background:#ffffff;" placeholder="e.g. Need Senior Java Engineer with Spring Boot and AWS knowledge in Hyderabad."></textarea>
             
             <button id="btnGenerateAIModal" type="button" onclick="window.runGeminiAIDraft()" class="btn-post-job" style="margin-top: 14px; width: auto; padding: 10px 22px; font-size: 13px;">
@@ -1013,7 +1013,7 @@
             
             <div style="display:flex; justify-content:flex-end; gap:10px;">
                 <button onclick="closeAI()" class="view-btn">Close</button>
-                <button onclick="insertAIResult()" class="btn-post-job" style="margin-top: 0; width: auto; background: var(--green); padding: 10px 22px; font-size: 13px;"><i class="fa-solid fa-check"></i> Apply to Job Form</button>
+                <button id="btnApplyAIModal" onclick="insertAIResult()" class="btn-post-job" style="margin-top: 0; width: auto; background: var(--green); padding: 10px 22px; font-size: 13px;"><i class="fa-solid fa-check"></i> Apply to Job Form</button>
             </div>
         </div>
     </div>
@@ -1080,6 +1080,95 @@
             if (resultEl) {
                 resultEl.innerText = "Click 'Generate Draft' above to generate the full job description.";
             }
+
+            window.aiDraftMode = "job";
+            const titleEl = document.getElementById("aiModalTitle");
+            const labelEl = document.getElementById("aiPromptLabel");
+            const genBtn = document.getElementById("btnGenerateAIModal");
+            const applyBtn = document.getElementById("btnApplyAIModal");
+            if (titleEl) titleEl.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles" style="color:var(--primary); margin-right: 8px;"></i> Gemini Job Description Generator';
+            if (labelEl) labelEl.innerText = "Role Guidelines / Requirements";
+            if (genBtn) genBtn.setAttribute("onclick", "window.runGeminiAIDraft()");
+            if (applyBtn) applyBtn.innerHTML = '<i class="fa-solid fa-check"></i> Apply to Job Form';
+        };
+
+        // ── Blog "Auto-Draft with AI" popup (reuses the same aiModal, targeted at the blog form) ──
+        window.generateBlogAI = function() {
+            const modal = document.getElementById("aiModal");
+            if (!modal) return;
+
+            modal.style.display = "flex";
+            window.aiDraftMode = "blog";
+
+            const blogTitle = document.getElementById("adminBlogTitle")?.value?.trim() || "";
+
+            const titleEl = document.getElementById("aiModalTitle");
+            const labelEl = document.getElementById("aiPromptLabel");
+            const genBtn = document.getElementById("btnGenerateAIModal");
+            const applyBtn = document.getElementById("btnApplyAIModal");
+            if (titleEl) titleEl.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles" style="color:var(--primary); margin-right: 8px;"></i> Gemini Blog Draft Generator';
+            if (labelEl) labelEl.innerText = "Topic / Key Points for the Article";
+            if (genBtn) genBtn.setAttribute("onclick", "window.runGeminiBlogDraft()");
+            if (applyBtn) applyBtn.innerHTML = '<i class="fa-solid fa-check"></i> Apply to Article';
+
+            const promptEl = document.getElementById("aiPrompt");
+            if (promptEl) {
+                promptEl.value = blogTitle
+                    ? `Write a professional blog article about "${blogTitle}" for a recruitment/talent services company.`
+                    : "";
+            }
+
+            const resultEl = document.getElementById("aiResult");
+            if (resultEl) {
+                resultEl.innerText = "Enter a topic (or use the title above) and click 'Generate Draft' to write the article.";
+            }
+        };
+
+        // ── Generates a blog draft (template-based, mirrors runGeminiAIDraft's approach) ──
+        window.runGeminiBlogDraft = function() {
+            const promptInput = document.getElementById("aiPrompt");
+            const aiResultEl = document.getElementById("aiResult");
+            const blogTitle = document.getElementById("adminBlogTitle")?.value?.trim() || "";
+
+            const userPrompt = promptInput?.value?.trim() || "";
+            const topic = blogTitle || userPrompt || "Careers & Hiring Trends";
+
+            if (!userPrompt && !blogTitle) {
+                if (typeof window.showCustomAlert === "function") {
+                    window.showCustomAlert("Please add a blog title or a topic/key points before generating.", "Warning", "Info");
+                } else if (promptInput) {
+                    promptInput.focus();
+                }
+                return;
+            }
+
+            if (aiResultEl) {
+                aiResultEl.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Generating tailored article draft...`;
+            }
+
+            setTimeout(() => {
+                const guidance = userPrompt && userPrompt !== topic ? `\n\nKey points to cover: ${userPrompt}` : "";
+
+                const generatedBlog = `${topic}
+
+In today's competitive job market, staying informed about ${topic.toLowerCase()} is essential for both employers and job seekers. Companies that adapt quickly to changing hiring trends are better positioned to attract and retain top talent.
+
+Why It Matters
+Organizations that prioritize a strong talent strategy see measurable improvements in employee retention, productivity, and overall workplace culture. Understanding the nuances of ${topic.toLowerCase()} helps recruiters and hiring managers make smarter, faster decisions.
+
+Key Takeaways
+• Stay updated on evolving industry standards and candidate expectations.
+• Leverage data-driven insights to refine your recruitment strategy.
+• Prioritize clear communication throughout the hiring process.
+• Build long-term relationships with candidates, not just one-time placements.
+
+Looking Ahead
+As the workforce continues to evolve, staying proactive about ${topic.toLowerCase()} will help organizations remain competitive. At Indupalli Services, we're committed to helping both employers and candidates navigate these changes with confidence.${guidance}`;
+
+                if (aiResultEl) {
+                    aiResultEl.innerText = generatedBlog;
+                }
+            }, 400);
         };
 
         window.allCandidatesData = {};
