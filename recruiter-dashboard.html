@@ -1826,5 +1826,498 @@ As the workforce continues to evolve, staying proactive about ${topic.toLowerCas
         });
     </script>
 
+
+    <!-- ============================================================
+         FINAL BLOG / AI OVERRIDE
+         Fixes the blog AI popup, Apply action, blog publishing,
+         and the admin Published Blog Articles loading state.
+         This intentionally runs after the existing dashboard modules.
+         ============================================================ -->
+    <script type="module">
+        import { supabase } from "./supabase.js";
+
+        window.supabase = supabase;
+        window.aiDraftMode = "job";
+
+        function blogAlert(message, title = "Notice", type = "Info") {
+            if (typeof window.showCustomAlert === "function") {
+                window.showCustomAlert(message, title, type);
+            } else {
+                alert(message);
+            }
+        }
+
+        function safeText(value) {
+            return String(value ?? "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/\"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        /* ============================================================
+           1. OPEN BLOG AI POPUP
+           ============================================================ */
+        window.generateBlogAI = function () {
+            const modal = document.getElementById("aiModal");
+
+            if (!modal) {
+                console.error("AI modal #aiModal was not found.");
+                blogAlert("The AI generator could not be opened.", "AI Error", "Error");
+                return;
+            }
+
+            const blogTitle = document.getElementById("adminBlogTitle")?.value?.trim() || "";
+            const promptEl = document.getElementById("aiPrompt");
+            const resultEl = document.getElementById("aiResult");
+            const titleEl = document.getElementById("aiModalTitle");
+            const labelEl = document.getElementById("aiPromptLabel");
+            const generateBtn = document.getElementById("btnGenerateAIModal");
+            const applyBtn = document.getElementById("btnApplyAIModal");
+
+            window.aiDraftMode = "blog";
+
+            if (titleEl) {
+                titleEl.innerHTML =
+                    '<i class="fa-solid fa-wand-magic-sparkles" style="color:var(--primary); margin-right:8px;"></i>' +
+                    'Blog Article Draft Generator';
+            }
+
+            if (labelEl) {
+                labelEl.textContent = "Topic / Key Points for the Article";
+            }
+
+            if (promptEl) {
+                promptEl.value = blogTitle
+                    ? `Write a professional recruitment and talent industry blog article about "${blogTitle}". Include a clear introduction, useful insights, practical points, and a professional conclusion.`
+                    : "";
+            }
+
+            if (generateBtn) {
+                generateBtn.onclick = window.runGeminiBlogDraft;
+            }
+
+            if (applyBtn) {
+                applyBtn.innerHTML = '<i class="fa-solid fa-check"></i> Apply to Article';
+                applyBtn.onclick = window.insertAIResult;
+            }
+
+            if (resultEl) {
+                resultEl.textContent = blogTitle
+                    ? "Click 'Generate Draft' to create the article."
+                    : "Enter a topic or article title and click 'Generate Draft'.";
+            }
+
+            modal.style.display = "flex";
+            modal.style.visibility = "visible";
+            modal.style.opacity = "1";
+
+            console.log("Blog AI modal opened successfully.");
+        };
+
+        /* ============================================================
+           2. GENERATE BLOG DRAFT
+           NOTE: This is a local template generator, not a live Gemini
+           API call. It is intentionally kept consistent with the
+           existing job-description generator architecture.
+           ============================================================ */
+        window.runGeminiBlogDraft = function () {
+            const promptEl = document.getElementById("aiPrompt");
+            const resultEl = document.getElementById("aiResult");
+            const titleEl = document.getElementById("adminBlogTitle");
+
+            if (!resultEl) {
+                console.error("AI result container #aiResult was not found.");
+                return;
+            }
+
+            const title = titleEl?.value?.trim() || "";
+            const prompt = promptEl?.value?.trim() || "";
+
+            let topic = title || prompt;
+
+            if (!topic) {
+                blogAlert(
+                    "Please enter a blog title or topic first.",
+                    "Missing Information",
+                    "Info"
+                );
+                titleEl?.focus();
+                return;
+            }
+
+            topic = topic
+                .replace(/^Write a professional recruitment and talent industry blog article about\s*/i, "")
+                .replace(/^Create a professional blog article about\s*/i, "")
+                .replace(/^\"|\"$/g, "")
+                .trim();
+
+            resultEl.innerHTML =
+                '<i class="fa-solid fa-spinner fa-spin"></i> Generating article draft...';
+
+            setTimeout(() => {
+                const generatedBlog = `${topic}
+
+Introduction
+
+The recruitment and talent landscape continues to evolve rapidly. Organizations are increasingly looking for better ways to attract qualified professionals, improve hiring efficiency, and create a stronger candidate experience.
+
+Understanding ${topic.toLowerCase()} can help recruiters, hiring managers, and organizations make more informed decisions throughout the hiring process.
+
+Why It Matters
+
+A strong recruitment strategy is not only about filling open positions. It is about identifying the right talent, improving communication, reducing hiring delays, and building long-term relationships with candidates.
+
+For organizations, staying informed about ${topic.toLowerCase()} can create opportunities to improve workforce planning and strengthen overall hiring outcomes.
+
+Key Insights
+
+• Understand current hiring trends and candidate expectations.
+
+• Use structured recruitment processes to improve consistency.
+
+• Focus on skills, experience, and overall candidate suitability.
+
+• Maintain clear communication throughout the recruitment process.
+
+• Use technology and data to make better hiring decisions.
+
+Practical Approach
+
+Recruiters can improve their approach by combining human judgment with modern recruitment technology. Clear job requirements, structured candidate evaluation, timely communication, and organized hiring workflows can significantly improve the overall recruitment experience.
+
+Organizations should also continuously review their hiring processes and identify areas where technology can reduce repetitive work while allowing recruiters to focus on meaningful candidate interactions.
+
+Conclusion
+
+${topic} will continue to play an important role in the future of recruitment and workforce management. Organizations that remain adaptable, candidate-focused, and technology-driven will be better positioned to compete for high-quality talent.
+
+At Indupalli Services, we are committed to helping employers and professionals navigate the changing recruitment landscape through smarter hiring workflows, technology, and talent connectivity.`;
+
+                resultEl.textContent = generatedBlog;
+                console.log("Blog draft generated successfully.");
+            }, 500);
+        };
+
+        /* ============================================================
+           3. APPLY BLOG AI RESULT
+           ============================================================ */
+        window.insertAIResult = function () {
+            const resultEl = document.getElementById("aiResult");
+            const mode = window.aiDraftMode || "job";
+            const targetId = mode === "blog" ? "adminBlogContent" : "jobDescription";
+            const targetEl = document.getElementById(targetId);
+
+            if (!resultEl || !targetEl) {
+                console.error("AI result or target field not found.", {
+                    mode,
+                    targetId
+                });
+                blogAlert(
+                    mode === "blog"
+                        ? "The article content field could not be found."
+                        : "The job description field could not be found.",
+                    "AI Error",
+                    "Error"
+                );
+                return;
+            }
+
+            const content = resultEl.textContent?.trim() || "";
+
+            const invalidStates = [
+                "Waiting for AI generation",
+                "Click 'Generate Draft' to create the article",
+                "Enter a topic or article title",
+                "Enter a topic (or use the title above)",
+                "Generating article draft",
+                "Generating tailored article draft"
+            ];
+
+            if (!content || invalidStates.some(text => content.includes(text))) {
+                blogAlert(
+                    "Please generate the draft before applying it.",
+                    "Draft Not Ready",
+                    "Info"
+                );
+                return;
+            }
+
+            targetEl.value = content;
+            targetEl.dispatchEvent(new Event("input", { bubbles: true }));
+            targetEl.dispatchEvent(new Event("change", { bubbles: true }));
+
+            if (typeof window.closeAI === "function") {
+                window.closeAI();
+            } else {
+                const modal = document.getElementById("aiModal");
+                if (modal) modal.style.display = "none";
+                window.aiDraftMode = "job";
+            }
+
+            blogAlert(
+                mode === "blog"
+                    ? "AI draft applied to the article."
+                    : "AI description applied to the job form.",
+                "Success",
+                "Success"
+            );
+        };
+
+        /* ============================================================
+           4. CLOSE AI POPUP
+           ============================================================ */
+        window.closeAI = function () {
+            const modal = document.getElementById("aiModal");
+            if (modal) modal.style.display = "none";
+            window.aiDraftMode = "job";
+        };
+
+        /* ============================================================
+           5. LOAD ADMIN BLOG CONTROL LIST
+           ============================================================ */
+        window.loadAdminBlogs = async function () {
+            const tbody = document.getElementById("adminBlogsTableBody");
+            if (!tbody) return;
+
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="4" style="text-align:center;padding:22px;color:var(--text-muted);">
+                        <i class="fa-solid fa-spinner fa-spin"></i> Loading blogs...
+                    </td>
+                </tr>`;
+
+            try {
+                const { data: blogs, error } = await supabase
+                    .from("blogs")
+                    .select("*")
+                    .order("created_at", { ascending: false });
+
+                if (error) throw error;
+
+                if (!blogs || blogs.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="4" style="text-align:center;padding:24px;color:var(--text-muted);font-weight:600;">
+                                No blog articles published yet.
+                            </td>
+                        </tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = blogs.map(blog => {
+                    const id = String(blog.id ?? "");
+                    const title = blog.title || "Untitled Article";
+                    const created = blog.created_at
+                        ? new Date(blog.created_at).toLocaleDateString("en-IN", {
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric"
+                        })
+                        : "Recent";
+                    const published = blog.is_published !== false;
+
+                    return `
+                        <tr>
+                            <td>
+                                <strong>${safeText(title)}</strong>
+                            </td>
+                            <td>${safeText(created)}</td>
+                            <td>
+                                <span style="display:inline-flex;align-items:center;padding:5px 10px;border-radius:999px;background:${published ? "#ecfdf5" : "#fef3c7"};color:${published ? "#047857" : "#92400e"};font-size:11px;font-weight:800;">
+                                    ${published ? "Published" : "Draft"}
+                                </span>
+                            </td>
+                            <td>
+                                <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+                                    <button class="view-btn" onclick="window.openBlogArticle('${safeText(id)}')">
+                                        <i class="fa-solid fa-eye"></i> View
+                                    </button>
+                                    <button class="view-btn" style="background:#fef2f2;color:#b91c1c;border-color:#fecaca;" onclick="window.deleteAdminBlog('${safeText(id)}')">
+                                        <i class="fa-solid fa-trash"></i> Delete
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>`;
+                }).join("");
+            } catch (error) {
+                console.error("Failed to load blogs:", error);
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="4" style="text-align:center;padding:24px;color:var(--red);font-weight:600;">
+                            Failed to load blog articles.
+                        </td>
+                    </tr>`;
+            }
+        };
+
+        /* ============================================================
+           6. VIEW BLOG ARTICLE
+           ============================================================ */
+        window.openBlogArticle = function (id) {
+            if (!id) return;
+            window.open(`blog-details.html?id=${encodeURIComponent(id)}`, "_blank", "noopener,noreferrer");
+        };
+
+        /* ============================================================
+           7. DELETE BLOG ARTICLE
+           ============================================================ */
+        window.deleteAdminBlog = function (id) {
+            if (!id) return;
+
+            const performDelete = async () => {
+                try {
+                    const { error } = await supabase
+                        .from("blogs")
+                        .delete()
+                        .eq("id", id);
+
+                    if (error) throw error;
+
+                    blogAlert("The blog article has been deleted.", "Blog Deleted", "Success");
+                    await window.loadAdminBlogs();
+                } catch (error) {
+                    console.error("Delete blog error:", error);
+                    blogAlert(
+                        error?.message || "Unable to delete the blog article.",
+                        "Delete Failed",
+                        "Error"
+                    );
+                }
+            };
+
+            if (typeof window.showCustomConfirm === "function") {
+                window.showCustomConfirm(
+                    "This blog article will be permanently deleted. This action cannot be undone.",
+                    "Delete Blog Article",
+                    performDelete
+                );
+            } else if (confirm("Delete this blog article?")) {
+                performDelete();
+            }
+        };
+
+        /* ============================================================
+           8. PUBLISH BLOG ARTICLE
+           ============================================================ */
+        window.publishAdminBlog = async function (event) {
+            if (event) event.preventDefault();
+
+            const titleEl = document.getElementById("adminBlogTitle");
+            const contentEl = document.getElementById("adminBlogContent");
+            const submitBtn = document.getElementById("blogSubmitBtn");
+
+            const title = titleEl?.value?.trim() || "";
+            const content = contentEl?.value?.trim() || "";
+
+            if (!title) {
+                blogAlert("Please enter the article title.", "Missing Title", "Info");
+                titleEl?.focus();
+                return;
+            }
+
+            if (!content) {
+                blogAlert("Please add article content before publishing.", "Missing Content", "Info");
+                contentEl?.focus();
+                return;
+            }
+
+            const originalText = submitBtn?.innerHTML || "Publish Article";
+
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Publishing...';
+            }
+
+            try {
+                const { data, error } = await supabase
+                    .from("blogs")
+                    .insert([{
+                        title,
+                        content,
+                        is_published: true,
+                        image_url: null
+                    }])
+                    .select()
+                    .single();
+
+                if (error) throw error;
+
+                console.log("Blog published:", data);
+
+                blogAlert("The article has been published successfully.", "Published", "Success");
+
+                const form = document.getElementById("adminBlogForm");
+                if (form) form.reset();
+
+                const preview = document.getElementById("blogImagePreview");
+                if (preview) preview.style.display = "none";
+
+                const blogModal = document.getElementById("blogModal");
+                if (blogModal) blogModal.style.display = "none";
+
+                await window.loadAdminBlogs();
+            } catch (error) {
+                console.error("Publish blog error:", error);
+                blogAlert(
+                    error?.message || "Unable to publish the article. Please try again.",
+                    "Publish Failed",
+                    "Error"
+                );
+            } finally {
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalText;
+                }
+            }
+        };
+
+        /* ============================================================
+           9. BLOG IMAGE PREVIEW
+           ============================================================ */
+        const blogImageInput = document.getElementById("blogImageInput");
+        if (blogImageInput) {
+            blogImageInput.addEventListener("change", function () {
+                const file = this.files?.[0];
+                const preview = document.getElementById("blogImagePreview");
+                const image = document.getElementById("previewImg");
+
+                if (!file || !preview || !image) {
+                    if (preview) preview.style.display = "none";
+                    return;
+                }
+
+                if (!file.type.startsWith("image/")) {
+                    this.value = "";
+                    preview.style.display = "none";
+                    blogAlert("Please select a valid image file.", "Invalid Image", "Info");
+                    return;
+                }
+
+                image.src = URL.createObjectURL(file);
+                preview.style.display = "block";
+            });
+        }
+
+        /* ============================================================
+           10. INITIALIZE ADMIN BLOG LIST
+           ============================================================ */
+        window.addEventListener("load", () => {
+            const section = document.getElementById("manageBlogsSection");
+            const email = String(localStorage.getItem("recruiterEmail") || "")
+                .trim()
+                .toLowerCase();
+            const adminEmail = "praveencenaindupalli@gmail.com";
+
+            if (section && email === adminEmail) {
+                section.style.display = "block";
+                document.getElementById("adminBlogNavLink1")?.style.setProperty("display", "flex");
+                document.getElementById("adminBlogNavLink2")?.style.setProperty("display", "flex");
+                window.loadAdminBlogs();
+            }
+        });
+    </script>
+
 </body>
 </html>
