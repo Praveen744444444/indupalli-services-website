@@ -1093,49 +1093,52 @@ Keep responses concise, clear, and under 100 words. Always guide users to the re
     }
 
     async function sendChatMessage() {
-        const input = document.getElementById("chatbotInput");
-        const text = input.value.trim();
-        if (!text) return;
+    const input = document.getElementById("chatbotInput");
+    const text = input.value.trim();
+    if (!text) return;
 
-        addChatMessage("user", text);
-        chatHistory.push({ role: "user", parts: [{ text }] });
-        input.value = "";
+    addChatMessage("user", text);
+    chatHistory.push({ role: "user", parts: [{ text }] });
+    input.value = "";
 
-        const messages = document.getElementById("chatbotMessages");
-        const typingEl = document.createElement("div");
-        typingEl.className = "chat-msg bot typing";
-        typingEl.id = "chatbotTyping";
-        typingEl.textContent = "typing...";
-        messages.appendChild(typingEl);
-        messages.scrollTop = messages.scrollHeight;
+    const messages = document.getElementById("chatbotMessages");
+    const typingEl = document.createElement("div");
+    typingEl.className = "chat-msg bot typing";
+    typingEl.id = "chatbotTyping";
+    typingEl.textContent = "Nikki is typing...";
+    messages.appendChild(typingEl);
+    messages.scrollTop = messages.scrollHeight;
 
-        try {
-            const response = await fetch("/api/chat", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    system_instruction: { parts: [{ text: CHATBOT_CONTEXT }] },
-                    contents: chatHistory
-                })
-            });
+    try {
+        // Route to your serverless backend
+        const response = await fetch("/api/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                system_instruction: { parts: [{ text: CHATBOT_CONTEXT }] },
+                contents: chatHistory
+            })
+        });
 
-            document.getElementById("chatbotTyping")?.remove();
-            const data = await response.json();
+        document.getElementById("chatbotTyping")?.remove();
+        const data = await response.json();
 
-            if (!response.ok) {
-                const errMsg = data?.error?.message || "Service unavailable. Please try again.";
-                addChatMessage("bot", errMsg);
-                return;
-            }
-
-            const reply = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "Indupalli AI is currently unavailable.";
-            addChatMessage("bot", reply);
-            chatHistory.push({ role: "model", parts: [{ text: reply }] });
-        } catch (err) {
-            document.getElementById("chatbotTyping")?.remove();
-            addChatMessage("bot", "Unable to connect. Please check your network or server status.");
+        if (!response.ok) {
+            console.error("API error:", data);
+            addChatMessage("bot", data?.error?.message || "Service temporarily unavailable.");
+            return;
         }
+
+        const reply = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() 
+            || "Indupalli AI is currently unavailable.";
+
+        addChatMessage("bot", reply);
+        chatHistory.push({ role: "model", parts: [{ text: reply }] });
+    } catch (e) {
+        document.getElementById("chatbotTyping")?.remove();
+        addChatMessage("bot", "Network error. Please check your connection.");
     }
+}
 </script>
 </body>
 </html>
