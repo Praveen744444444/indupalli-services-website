@@ -983,170 +983,159 @@
         loadJobs();
         loadStats();
     </script>
+<script>
+    function toggleNav() {
+        document.getElementById("mainNav").classList.toggle("open");
+    }
 
-    <script>
-        function toggleNav() {
-            document.getElementById("mainNav").classList.toggle("open");
+    function toggleDark() {
+        document.body.classList.toggle("dark");
+        localStorage.setItem("darkMode", document.body.classList.contains("dark") ? "1" : "0");
+    }
+    if (localStorage.getItem("darkMode") === "1") document.body.classList.add("dark");
+
+    function switchPlatformTab(tabName, btn) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('tab-' + tabName).classList.add('active');
+    }
+
+    // ── CHATBOT NIKKI ENGINE ──
+    const CHATBOT_CONTEXT = `
+You are Nikki, the AI Assistant for Indupalli Services.
+Deliver crisp, executive-grade, beautifully structured responses.
+
+Key Navigation Links:
+- Candidate Signup: signup.html
+- Candidate Portal / Login: login.html
+- Live Positions: jobs.html
+- Recruiter Login / ATS: recruiter-login.html
+
+Pricing Tiers:
+- Basic Tier: Free (Standard profile, explore openings, 3 applications)
+- Single Boost (₹19): 7-day priority recruiter profile visibility
+- Premium Monthly (₹49/mo): Full AI suite, unlimited applications, verified badge
+- Lifetime Access (₹99): Permanent full suite access and verified status
+
+Keep responses concise, clear, and under 100 words. Always guide users to the relevant site links.`;
+
+    let chatHistory = [];
+
+    function toggleChatbot() {
+        const panel = document.getElementById("chatbotPanel");
+        panel.classList.toggle("open");
+        if (panel.classList.contains("open") && chatHistory.length === 0) {
+            renderWelcomeScreen();
         }
+    }
 
-        function toggleDark() {
-            document.body.classList.toggle("dark");
-            localStorage.setItem("darkMode", document.body.classList.contains("dark") ? "1" : "0");
-        }
-        if (localStorage.getItem("darkMode") === "1") document.body.classList.add("dark");
+    function renderWelcomeScreen() {
+        const messages = document.getElementById("chatbotMessages");
+        messages.innerHTML = "";
 
-        function switchPlatformTab(tabName, btn) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById('tab-' + tabName).classList.add('active');
-        }
+        const welcomeMsg = document.createElement("div");
+        welcomeMsg.className = "chat-msg bot";
+        welcomeMsg.innerHTML = "Hello! I am <strong>Nikki</strong>, your AI Assistant at Indupalli Services.<br><br>How can I help you today?";
+        messages.appendChild(welcomeMsg);
 
-        // CHATBOT ENGINE
-const CHATBOT_CONTEXT = `
-        You are Nikki, the AI Assistant for Indupalli Services.
-        Deliver crisp, executive-grade, beautifully structured responses.
-
-        Formatting Rules:
-        - Never output raw symbols or messy asterisks.
-        - Keep paragraphs short (1-2 sentences).
-        - Use clear, clean bullet lists with direct HTML links.
-
-        Key Candidate Navigation:
-        - Registration: signup.html
-        - Candidate Portal: login.html
-        - Live Positions: jobs.html
-        - Recruiter Access: recruiter-login.html
-
-        Pricing Structure:
-        - Basic Tier: Free (Standard profile, explore openings, 3 applications)
-        - Single Boost (₹19): 7-day priority recruiter profile visibility
-        - Premium Monthly (₹49/mo): Full AI suite, unlimited applications, verified badge
-        - Lifetime Elite (₹99): Permanent full suite access and verified status
+        const suggestionsWrap = document.createElement("div");
+        suggestionsWrap.className = "chat-suggestions-wrap";
+        suggestionsWrap.innerHTML = `
+            <div class="chat-suggestions-title">Popular Questions</div>
+            <div class="chat-suggestions-grid">
+                <button class="chat-chip" onclick="triggerQuickChip('I am a job seeker looking for opportunities')">
+                    <span>💼 I am a job seeker</span>
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+                <button class="chat-chip" onclick="triggerQuickChip('I am an employer looking to post a job')">
+                    <span>🏢 I am an employer looking to hire</span>
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+                <button class="chat-chip" onclick="triggerQuickChip('Show me the pricing plans')">
+                    <span>💳 Platform pricing & plans</span>
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+                <button class="chat-chip" onclick="triggerQuickChip('Where can I browse open jobs?')">
+                    <span>🔍 Browse live job openings</span>
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
         `;
-        
-        let chatHistory = [];
+        messages.appendChild(suggestionsWrap);
+        messages.scrollTop = messages.scrollHeight;
+    }
 
-        function toggleChatbot() {
-            const panel = document.getElementById("chatbotPanel");
-            panel.classList.toggle("open");
-            if (panel.classList.contains("open") && chatHistory.length === 0) {
-                renderWelcomeScreen();
+    function triggerQuickChip(questionText) {
+        document.getElementById("chatbotInput").value = questionText;
+        sendChatMessage();
+    }
+
+    function addChatMessage(role, text) {
+        const messages = document.getElementById("chatbotMessages");
+        const el = document.createElement("div");
+        el.className = "chat-msg " + role;
+
+        if (role === "bot" && typeof marked !== "undefined") {
+            el.innerHTML = marked.parse(text);
+        } else {
+            el.textContent = text;
+        }
+
+        // Convert page links into clickable anchors
+        el.innerHTML = el.innerHTML.replace(
+            /\b(signup\.html|login\.html|recruiter-login\.html|jobs\.html)\b/g,
+            '<a href="$1" target="_blank" style="color:#2563eb;font-weight:700;text-decoration:underline;">$1</a>'
+        );
+
+        messages.appendChild(el);
+        messages.scrollTop = messages.scrollHeight;
+    }
+
+    async function sendChatMessage() {
+        const input = document.getElementById("chatbotInput");
+        const text = input.value.trim();
+        if (!text) return;
+
+        addChatMessage("user", text);
+        chatHistory.push({ role: "user", parts: [{ text }] });
+        input.value = "";
+
+        const messages = document.getElementById("chatbotMessages");
+        const typingEl = document.createElement("div");
+        typingEl.className = "chat-msg bot typing";
+        typingEl.id = "chatbotTyping";
+        typingEl.textContent = "typing...";
+        messages.appendChild(typingEl);
+        messages.scrollTop = messages.scrollHeight;
+
+        try {
+            const response = await fetch("/api/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    system_instruction: { parts: [{ text: CHATBOT_CONTEXT }] },
+                    contents: chatHistory
+                })
+            });
+
+            document.getElementById("chatbotTyping")?.remove();
+            const data = await response.json();
+
+            if (!response.ok) {
+                const errMsg = data?.error?.message || "Service unavailable. Please try again.";
+                addChatMessage("bot", errMsg);
+                return;
             }
+
+            const reply = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || "Indupalli AI is currently unavailable.";
+            addChatMessage("bot", reply);
+            chatHistory.push({ role: "model", parts: [{ text: reply }] });
+        } catch (err) {
+            document.getElementById("chatbotTyping")?.remove();
+            addChatMessage("bot", "Unable to connect. Please check your network or server status.");
         }
-
-        function renderWelcomeScreen() {
-            const messages = document.getElementById("chatbotMessages");
-            messages.innerHTML = "";
-
-            const welcomeMsg = document.createElement("div");
-            welcomeMsg.className = "chat-msg bot";
-            welcomeMsg.innerHTML = "Hello. I am <strong>Nikki</strong>, your AI Assistant at Indupalli Services.<br><br>How may I assist you today?";
-            messages.appendChild(welcomeMsg);
-
-            const suggestionsWrap = document.createElement("div");
-            suggestionsWrap.className = "chat-suggestions-wrap";
-            suggestionsWrap.innerHTML = `
-                <div class="chat-suggestions-title">Popular Questions</div>
-                <div class="chat-suggestions-grid">
-                    <button class="chat-chip" onclick="triggerQuickChip('I am a job seeker')">
-                        <span>💼 I am a job seeker</span>
-                        <i class="fa-solid fa-chevron-right"></i>
-                    </button>
-                    <button class="chat-chip" onclick="triggerQuickChip('I am an employer looking to hire')">
-                        <span>🏢 I am an employer looking to hire</span>
-                        <i class="fa-solid fa-chevron-right"></i>
-                    </button>
-                    <button class="chat-chip" onclick="triggerQuickChip('Show me all platform pricing plans')">
-                        <span>💳 Platform pricing & plans</span>
-                        <i class="fa-solid fa-chevron-right"></i>
-                    </button>
-                    <button class="chat-chip" onclick="triggerQuickChip('Where can I browse live job openings?')">
-                        <span>🔍 Browse live job openings</span>
-                        <i class="fa-solid fa-chevron-right"></i>
-                    </button>
-                </div>
-            `;
-            messages.appendChild(suggestionsWrap);
-            messages.scrollTop = messages.scrollHeight;
-        }
-
-        function triggerQuickChip(questionText) {
-            document.getElementById("chatbotInput").value = questionText;
-            sendChatMessage();
-        }
-
-        function addChatMessage(role, text) {
-            const messages = document.getElementById("chatbotMessages");
-            const el = document.createElement("div");
-            el.className = "chat-msg " + role;
-
-            if (role === "bot" && typeof marked !== "undefined") {
-                // Parse markdown into clean HTML (eliminating raw asterisks)
-                el.innerHTML = marked.parse(text);
-            } else {
-                el.textContent = text;
-            }
-
-            // Auto-link relative portal routes cleanly
-            el.innerHTML = el.innerHTML.replace(/\b(signup\.html|login\.html|recruiter-login\.html|jobs\.html)\b/g, '<a href="$1" target="_blank" style="color:#2563eb;font-weight:700;text-decoration:underline;">$1</a>');
-
-            messages.appendChild(el);
-            messages.scrollTop = messages.scrollHeight;
-        }
-
-        async function sendChatMessage() {
-            const input = document.getElementById("chatbotInput");
-            const text = input.value.trim();
-            if (!text) return;
-
-            addChatMessage("user", text);
-            chatHistory.push({ role: "user", parts: [{ text }] });
-            input.value = "";
-
-            const messages = document.getElementById("chatbotMessages");
-            const typingEl = document.createElement("div");
-            typingEl.className = "chat-msg bot typing";
-            typingEl.id = "chatbotTyping";
-            typingEl.textContent = "typing...";
-            messages.appendChild(typingEl);
-            messages.scrollTop = messages.scrollHeight;
-
-            try {
-                const response = await fetch("/api/chat", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        system_instruction: { parts: [{ text: CHATBOT_CONTEXT }] },
-                        contents: chatHistory
-                    })
-                });
-                const data = await response.json();
-                document.getElementById("chatbotTyping")?.remove();
-
-                if (!response.ok) {
-                    console.error("Nikki API error:", response.status, data);
-
-                    const errorMessage =
-                        data?.error?.message ||
-                        data?.message ||
-                        `AI service error (${response.status}). Please try again.`;
-
-                    addChatMessage("bot", errorMessage);
-                    return;
-                }
-
-                const reply =
-                    data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() ||
-                    "Indupalli AI is currently undergoing a quick refresh. We'll be back online in a moment.";
-
-                addChatMessage("bot", reply);
-                chatHistory.push({ role: "model", parts: [{ text: reply }] });
-            } catch (e) {
-                document.getElementById("chatbotTyping")?.remove();
-                addChatMessage("bot", "Network error. Please check your connection.");
-            }
-        }
-    </script>
+    }
+</script>
 </body>
 </html>
