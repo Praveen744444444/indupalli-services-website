@@ -690,7 +690,7 @@
         </div>
     </footer>
 
-    <!-- ── CHATBOT WIDGET: SRUTHI ── -->
+    <!-- ── CHATBOT WIDGET: NIKKI ── -->
     <style>
         #chatbotBubbleWrap { position: fixed; bottom: 30px; right: 30px; z-index: 99998; display: flex; align-items: center; justify-content: flex-end; }
         #chatbotBubble { position: relative; width: 62px; height: 62px; border-radius: 50%; background: linear-gradient(145deg, #2563eb, #0f1f4d); display: flex; align-items: center; justify-content: center; cursor: pointer; border: none; color: #fff; font-size: 24px; box-shadow: 0 14px 30px -8px rgba(15, 23, 42, 0.5); transition: transform 0.25s cubic-bezier(0.16,1,0.3,1); }
@@ -753,7 +753,7 @@
     </style>
 
     <div id="chatbotBubbleWrap">
-        <span id="chatbotTooltip">Chat with Sruthi</span>
+        <span id="chatbotTooltip">Chat with Nikki</span>
         <button id="chatbotBubble" onclick="toggleChatbot()" aria-label="Open chat">
             <i class="fa-solid fa-headset"></i>
             <span id="chatbotStatusDot"></span>
@@ -764,7 +764,7 @@
         <div id="chatbotHeader">
             <div>
                 <div style="font-weight:700; font-size:15px; display:flex; align-items:center; gap:8px;">
-                    <i class="fa-solid fa-robot" style="color:#60a5fa;"></i> Sruthi
+                    <i class="fa-solid fa-robot" style="color:#60a5fa;"></i> Nikki
                 </div>
                 <div style="font-size:11.5px; color:#94a3b8;">Indupalli Services AI Assistant</div>
             </div>
@@ -1004,7 +1004,7 @@
 
         // CHATBOT ENGINE
 const CHATBOT_CONTEXT = `
-        You are Sruthi, the AI Assistant for Indupalli Services.
+        You are Nikki, the AI Assistant for Indupalli Services.
         Deliver crisp, executive-grade, beautifully structured responses.
 
         Formatting Rules:
@@ -1041,7 +1041,7 @@ const CHATBOT_CONTEXT = `
 
             const welcomeMsg = document.createElement("div");
             welcomeMsg.className = "chat-msg bot";
-            welcomeMsg.innerHTML = "Hello. I am <strong>Sruthi</strong>, your AI Assistant at Indupalli Services.<br><br>How may I assist you today?";
+            welcomeMsg.innerHTML = "Hello. I am <strong>Nikki</strong>, your AI Assistant at Indupalli Services.<br><br>How may I assist you today?";
             messages.appendChild(welcomeMsg);
 
             const suggestionsWrap = document.createElement("div");
@@ -1125,7 +1125,7 @@ const CHATBOT_CONTEXT = `
                 document.getElementById("chatbotTyping")?.remove();
 
                 if (!response.ok) {
-                    console.error("Sruthi API error:", response.status, data);
+                    console.error("Nikki API error:", response.status, data);
 
                     const errorMessage =
                         data?.error?.message ||
