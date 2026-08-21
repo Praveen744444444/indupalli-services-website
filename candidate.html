@@ -2237,6 +2237,22 @@ body.dark-mode .sidebar{background:#090d16!important;}
           }
       }
 
+      // Use the AI-computed match score if the candidate already ran the
+      // "Analyze Resume & Job Match" step for this job + this resume.
+      // Falls back to null (shows as "Not analyzed" on the dashboard) if
+      // no analysis was run before submitting.
+      let matchScore = null;
+      if (
+          window.currentJobMatchAnalysis &&
+          window.currentJobMatchResumeUrl &&
+          window.currentJobMatchResumeUrl === downloadUrl
+      ) {
+          const overall = Number(window.currentJobMatchAnalysis.overallScore);
+          if (Number.isFinite(overall)) {
+              matchScore = Math.max(0, Math.min(100, Math.round(overall)));
+          }
+      }
+
       try {
           const { error: appErr } = await supabase.from('jobApplications').insert([{
               jobId: jobId ?? null,
@@ -2248,7 +2264,8 @@ body.dark-mode .sidebar{background:#090d16!important;}
               experience: document.getElementById("applyExperience")?.value || "",
               coverLetter: document.getElementById("coverLetter")?.value || "",
               resumeUrl: downloadUrl || "",
-              status: "New Application"
+              status: "New Application",
+              matchScore: matchScore
           }]);
           if (appErr) throw appErr;
       } catch (error) {
