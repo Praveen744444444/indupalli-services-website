@@ -1743,44 +1743,106 @@ body.dark-mode .sidebar{background:#090d16!important;}
   }
 
   async function invokeScoreResume(payload) {
-      const publishableKey = getSupabasePublishableKey();
 
-      if (!publishableKey) {
-          throw new Error(
-              "Supabase publishable key could not be read from supabase.js."
-          );
-      }
+    const publishableKey = getSupabasePublishableKey();
 
-      const response = await fetch(SCORE_FUNCTION_URL, {
-          method: "POST",
-          headers: {
-              "apikey": publishableKey,
-              "Content-Type": "application/json"
-          },
-          body: JSON.stringify(payload)
-      });
+    if (!publishableKey) {
+        throw new Error(
+            "Supabase publishable key could not be read from supabase.js."
+        );
+    }
 
-      let data = null;
-      try {
-          data = await response.json();
-      } catch (parseError) {
-          data = null;
-      }
+    // ------------------------------------------------------
+    // AI REQUEST TIMEOUT
+    // Prevent "Analyzing..." from running forever.
+    // ------------------------------------------------------
 
-      if (!response.ok) {
-          throw new Error(
-              data?.message ||
-              data?.error ||
-              `Score service failed with HTTP ${response.status}`
-          );
-      }
+    const controller = new AbortController();
 
-      if (!data || typeof data.overallScore !== "number") {
-          throw new Error("Invalid score returned by AI service.");
-      }
+    const timeoutId = setTimeout(() => {
+        controller.abort();
+    }, 60000); // 60 seconds
 
-      return data;
-  }
+    try {
+
+        console.log("🤖 ATS AI analysis started");
+
+        const response = await fetch(
+            SCORE_FUNCTION_URL,
+            {
+                method: "POST",
+
+                headers: {
+                    "apikey": publishableKey,
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify(payload),
+
+                signal: controller.signal
+            }
+        );
+
+        let data = null;
+
+        try {
+
+            data = await response.json();
+
+        } catch (parseError) {
+
+            console.warn(
+                "AI response was not valid JSON:",
+                parseError
+            );
+
+        }
+
+        if (!response.ok) {
+
+            throw new Error(
+                data?.message ||
+                data?.error ||
+                `Score service failed with HTTP ${response.status}`
+            );
+
+        }
+
+        if (
+            !data ||
+            typeof data.overallScore !== "number"
+        ) {
+
+            throw new Error(
+                "Invalid score returned by AI service."
+            );
+
+        }
+
+        console.log(
+            `✅ AI Match Score received: ${data.overallScore}%`
+        );
+
+        return data;
+
+    } catch (error) {
+
+        if (error?.name === "AbortError") {
+
+            throw new Error(
+                "AI analysis timed out after 60 seconds. Please try again."
+            );
+
+        }
+
+        throw error;
+
+    } finally {
+
+        clearTimeout(timeoutId);
+
+    }
+}
   window.invokeScoreResume = invokeScoreResume;
 
   // GLOBAL NAME UPDATER
@@ -3579,8 +3641,8 @@ body.dark-mode .sidebar{background:#090d16!important;}
       const btn=document.getElementById('aiAnalyzeMatchBtn');
       const subtitle=document.getElementById('aiMatchSubtitle');
       if (overall) overall.textContent='—';
-      if (label) label.textContent='Not analyzed';
-      if (confidence) confidence.textContent='Waiting for resume analysis';
+      if (label) label.textContent='Preparing analysis';
+if (confidence) confidence.textContent='Starting AI analysis...';
       if (results) results.style.display='none';
       if (error) { error.style.display='none'; error.textContent=''; }
       if (loading) loading.style.display='none';
