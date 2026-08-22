@@ -2512,6 +2512,7 @@ body.dark-mode .sidebar{background:#090d16!important;}
       const score = window.jobMatchScoreCache.get(key);
       return Number.isFinite(score) ? score : null;
   }
+  window.getSavedJobScore = getSavedJobScore;
 
   function getCandidateProfileForMatch() {
       return {
@@ -3490,7 +3491,7 @@ body.dark-mode .sidebar{background:#090d16!important;}
 
       // Reuse an already-computed Job Discovery score if one exists for
       // this exact job + master resume, so it carries through to submission.
-      const cachedScore = getSavedJobScore(selectedJob || { id: jobId });
+      const cachedScore = window.getSavedJobScore ? window.getSavedJobScore(selectedJob || { id: jobId }) : null;
       if (cachedScore !== null && window.candidateMasterResumeUrl) {
           window.currentJobMatchAnalysis = { overallScore: cachedScore };
           window.currentJobMatchResumeUrl = window.candidateMasterResumeUrl;
