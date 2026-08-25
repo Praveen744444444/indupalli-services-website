@@ -211,29 +211,71 @@
         <h2>Welcome Back</h2>
         <p class="sub">Log in to your account to manage your profile and view application statuses.</p>
 
-        <div class="input-group">
-            <label>Email Address</label>
-            <div class="input-wrap">
-                <i class="fa-regular fa-envelope"></i>
-                <input type="email" id="email" placeholder="you@example.com" required>
-            </div>
+        <div style="display:flex; gap:8px; margin-bottom:20px; background:var(--bg-light); border:1px solid var(--border-color); border-radius:12px; padding:4px;">
+            <button type="button" id="tabEmailBtn" onclick="switchLoginTab('email')" style="flex:1; padding:9px; border:none; border-radius:9px; background:#fff; color:var(--navy); font-weight:700; font-size:13.5px; cursor:pointer; box-shadow:var(--shadow-sm);">Email</button>
+            <button type="button" id="tabPhoneBtn" onclick="switchLoginTab('phone')" style="flex:1; padding:9px; border:none; border-radius:9px; background:transparent; color:var(--text-muted); font-weight:700; font-size:13.5px; cursor:pointer;">Phone OTP</button>
         </div>
 
-        <div class="input-group">
-            <div class="label-row">
-                <label>Password</label>
-                <a href="javascript:void(0)" class="forgot-link" onclick="openForgotModal()">Forgot Password?</a>
+        <!-- EMAIL LOGIN -->
+        <div id="emailLoginPanel">
+            <div class="input-group">
+                <label>Email Address</label>
+                <div class="input-wrap">
+                    <i class="fa-regular fa-envelope"></i>
+                    <input type="email" id="email" placeholder="you@example.com" required>
+                </div>
             </div>
-            <div class="input-wrap">
-                <i class="fa-solid fa-lock"></i>
-                <input type="password" id="password" placeholder="Enter your password" required>
+
+            <div class="input-group">
+                <div class="label-row">
+                    <label>Password</label>
+                    <a href="javascript:void(0)" class="forgot-link" onclick="openForgotModal()">Forgot Password?</a>
+                </div>
+                <div class="input-wrap">
+                    <i class="fa-solid fa-lock"></i>
+                    <input type="password" id="password" placeholder="Enter your password" required>
+                </div>
             </div>
+
+            <button class="btn-login" onclick="handleLogin()">
+                <span>Login to Dashboard</span>
+                <i class="fa-solid fa-arrow-right" style="font-size: 13px;"></i>
+            </button>
         </div>
 
-        <button class="btn-login" onclick="handleLogin()">
-            <span>Login to Dashboard</span>
-            <i class="fa-solid fa-arrow-right" style="font-size: 13px;"></i>
-        </button>
+        <!-- PHONE OTP LOGIN -->
+        <div id="phoneLoginPanel" style="display:none;">
+            <div id="phoneLoginEntryStep">
+                <div class="input-group">
+                    <label>Phone Number</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-phone"></i>
+                        <input type="tel" id="phoneLoginInput" placeholder="10-digit mobile number" maxlength="10" inputmode="numeric" autocomplete="off">
+                    </div>
+                </div>
+                <div id="recaptcha-container-login" style="margin-bottom:14px;"></div>
+                <button class="btn-login" onclick="sendLoginOtp()">
+                    <span>Send OTP</span>
+                    <i class="fa-solid fa-paper-plane" style="font-size:13px;"></i>
+                </button>
+            </div>
+            <div id="phoneLoginOtpStep" style="display:none;">
+                <div class="input-group">
+                    <label>Enter OTP</label>
+                    <div class="input-wrap">
+                        <i class="fa-solid fa-key"></i>
+                        <input type="text" id="phoneLoginOtpCode" placeholder="6-digit code" maxlength="6" inputmode="numeric">
+                    </div>
+                </div>
+                <button class="btn-login" onclick="confirmLoginOtp()">
+                    <span>Verify & Login</span>
+                    <i class="fa-solid fa-check" style="font-size:13px;"></i>
+                </button>
+                <div style="margin-top:14px; font-size:13.5px; color:var(--text-muted); text-align:center;">
+                    Wrong number? <a onclick="resetLoginPhoneStep()" style="color:var(--primary); font-weight:700; cursor:pointer; text-decoration:underline;">Change it</a>
+                </div>
+            </div>
+        </div>
 
         <div class="divider"><span>Don't have an account?</span></div>
 
@@ -301,7 +343,110 @@
 <!-- FIREBASE AUTHENTICATION SCRIPT -->
 <script type="module">
 import { auth } from "./firebase.js";
-import { signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { signInWithEmailAndPassword, sendPasswordResetEmail, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+let loginRecaptchaVerifier = null;
+let loginConfirmationResult = null;
+
+window.switchLoginTab = function(tab) {
+    const emailBtn = document.getElementById("tabEmailBtn");
+    const phoneBtn = document.getElementById("tabPhoneBtn");
+    const emailPanel = document.getElementById("emailLoginPanel");
+    const phonePanel = document.getElementById("phoneLoginPanel");
+
+    if (tab === "email") {
+        emailBtn.style.background = "#fff"; emailBtn.style.color = "var(--navy)"; emailBtn.style.boxShadow = "var(--shadow-sm)";
+        phoneBtn.style.background = "transparent"; phoneBtn.style.color = "var(--text-muted)"; phoneBtn.style.boxShadow = "none";
+        emailPanel.style.display = "block";
+        phonePanel.style.display = "none";
+    } else {
+        phoneBtn.style.background = "#fff"; phoneBtn.style.color = "var(--navy)"; phoneBtn.style.boxShadow = "var(--shadow-sm)";
+        emailBtn.style.background = "transparent"; emailBtn.style.color = "var(--text-muted)"; emailBtn.style.boxShadow = "none";
+        phonePanel.style.display = "block";
+        emailPanel.style.display = "none";
+    }
+};
+
+function normalizeIndianPhoneLogin(raw) {
+    const digits = raw.replace(/\D/g, "");
+    if (digits.length === 10) return "+91" + digits;
+    if (digits.length === 12 && digits.startsWith("91")) return "+" + digits;
+    if (raw.startsWith("+")) return raw;
+    return null;
+}
+
+window.sendLoginOtp = async function() {
+    const rawPhone = document.getElementById("phoneLoginInput").value.trim();
+    const digitsOnly = rawPhone.replace(/\D/g, "");
+    if (digitsOnly.length !== 10 && !(digitsOnly.length === 12 && digitsOnly.startsWith("91"))) {
+        showPopup("⚠️ Invalid Number", "Please enter a valid 10-digit mobile number (no extra digits).");
+        return;
+    }
+    const phone = normalizeIndianPhoneLogin(rawPhone);
+    if (!phone) { showPopup("⚠️ Invalid Number", "Please enter a valid 10-digit mobile number."); return; }
+
+    const btn = document.querySelector("#phoneLoginEntryStep .btn-login");
+    btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Sending...`;
+    btn.disabled = true;
+
+    try {
+        if (!loginRecaptchaVerifier) {
+            loginRecaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container-login", { size: "normal" });
+        }
+        loginConfirmationResult = await signInWithPhoneNumber(auth, phone, loginRecaptchaVerifier);
+        document.getElementById("phoneLoginEntryStep").style.display = "none";
+        document.getElementById("phoneLoginOtpStep").style.display = "block";
+    } catch (e) {
+        btn.innerHTML = `<span>Send OTP</span><i class="fa-solid fa-paper-plane"></i>`;
+        btn.disabled = false;
+        if (loginRecaptchaVerifier) { try { loginRecaptchaVerifier.clear(); } catch(_) {} loginRecaptchaVerifier = null; }
+        if (e.code === 'auth/billing-not-enabled' || e.code === 'auth/operation-not-allowed') {
+            showPopup("⚠️ Service Unavailable", "Phone login is temporarily unavailable. Please log in with your email and password instead.");
+            return;
+        }
+        showPopup("❌ Error", e.message || "Could not send OTP. Please try again.");
+    }
+};
+
+window.confirmLoginOtp = async function() {
+    const code = document.getElementById("phoneLoginOtpCode").value.trim();
+    if (!code || code.length < 6) { showPopup("⚠️ Invalid Code", "Enter the 6-digit code sent to your phone."); return; }
+    if (!loginConfirmationResult) { showPopup("❌ Error", "No OTP session found. Please resend the code."); return; }
+
+    const btn = document.querySelector("#phoneLoginOtpStep .btn-login");
+    btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Verifying...`;
+    btn.disabled = true;
+
+    try {
+        // This signs the user in as whichever Firebase account this phone
+        // number is linked to (linked via linkWithCredential during signup),
+        // so it authenticates the same account as email/password login.
+        const userCredential = await loginConfirmationResult.confirm(code);
+        const user = userCredential.user;
+
+        localStorage.setItem("userEmail", user.email || "");
+        localStorage.setItem("userPhone", user.phoneNumber || "");
+        localStorage.setItem("userRole", "candidate");
+
+        if (loginRecaptchaVerifier) { try { loginRecaptchaVerifier.clear(); } catch(_) {} loginRecaptchaVerifier = null; }
+
+        showPopup("✅ Authentication Successful", "Welcome back! Click below to continue to your dashboard.");
+        const okBtn = document.querySelector("#popupOkBtn");
+        okBtn.textContent = "Enter Dashboard";
+        okBtn.onclick = () => { window.location.href = "candidate.html"; };
+    } catch (e) {
+        btn.innerHTML = `<span>Verify & Login</span><i class="fa-solid fa-check"></i>`;
+        btn.disabled = false;
+        showPopup("❌ Verification Failed", e.message || "Invalid or expired code. Please try again.");
+    }
+};
+
+window.resetLoginPhoneStep = function() {
+    document.getElementById("phoneLoginOtpStep").style.display = "none";
+    document.getElementById("phoneLoginEntryStep").style.display = "block";
+    document.getElementById("phoneLoginOtpCode").value = "";
+    loginConfirmationResult = null;
+};
 
 window.handleLogin = async function() {
     const email = document.getElementById("email").value.trim();
