@@ -1,35 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Verifying Email...</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verify Email – Indupalli Services</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+<style>
+:root{
+  --primary:#2563eb; --primary-dark:#1d4ed8; --navy:#0f172a;
+  --green:#10b981; --red:#ef4444; --orange:#f59e0b;
+  --bg-light:#f8fafc; --border-color:#e2e8f0; --text-muted:#64748b;
+}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Plus Jakarta Sans',sans-serif;}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg-light);padding:20px;}
+.card{width:100%;max-width:420px;background:#fff;border-radius:20px;padding:40px 32px;text-align:center;box-shadow:0 25px 50px -12px rgba(15,23,42,0.15);}
+.icon-wrap{width:64px;height:64px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:26px;background:#eff6ff;color:var(--primary);}
+.icon-wrap.success{background:#ecfdf5;color:var(--green);}
+.icon-wrap.error{background:#fef2f2;color:var(--red);}
+.icon-wrap.warning{background:#fffbeb;color:var(--orange);}
+.spin{animation:spin 1s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+h2{font-size:20px;font-weight:800;color:var(--navy);margin-bottom:8px;}
+p{font-size:14px;color:var(--text-muted);line-height:1.6;margin-bottom:22px;}
+a.btn{display:none;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;text-decoration:none;padding:12px 24px;border-radius:12px;font-size:14.5px;font-weight:700;}
+</style>
 </head>
 <body>
-  <h2>Verifying your email, please wait...</h2>
 
-  <script type="module">
-    import { supabase } from './supabase.js'; // Adjust path to your supabase client file
+<div class="card">
+  <div class="icon-wrap" id="iconWrap"><i class="fa-solid fa-spinner spin"></i></div>
+  <h2 id="statusTitle">Verifying your email...</h2>
+  <p id="statusText">Please wait a moment while we confirm your verification link.</p>
+  <a class="btn" id="loginLink" href="login.html">Go to Login</a>
+</div>
 
-    window.addEventListener('DOMContentLoaded', async () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const code = urlParams.get('code');
+<script type="module">
+import { auth } from "./firebase.js";
+import { supabase } from "./supabase.js";
+import { applyActionCode, checkActionCode } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-      if (code) {
-        const { error } = await supabase.auth.exchangeCodeForSession(code);
+const iconWrap = document.getElementById("iconWrap");
+const statusTitle = document.getElementById("statusTitle");
+const statusText = document.getElementById("statusText");
+const loginLink = document.getElementById("loginLink");
 
-        if (error) {
-          alert("Verification failed: " + error.message);
-          window.location.href = "login.html";
-          return;
-        }
+function render(state, title, text) {
+  iconWrap.classList.remove("success", "error", "warning");
+  if (state === "success") { iconWrap.classList.add("success"); iconWrap.innerHTML = '<i class="fa-solid fa-circle-check"></i>'; }
+  else if (state === "warning") { iconWrap.classList.add("warning"); iconWrap.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>'; }
+  else { iconWrap.classList.add("error"); iconWrap.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i>'; }
+  statusTitle.textContent = title;
+  statusText.textContent = text;
+  loginLink.style.display = "inline-block";
+}
 
-        alert("Email verified successfully! Redirecting to login...");
-        window.location.href = "login.html";
-      } else {
-        alert("Invalid or missing verification link.");
-        window.location.href = "login.html";
+window.addEventListener("DOMContentLoaded", async () => {
+  const params = new URLSearchParams(window.location.search);
+  const mode = params.get("mode");
+  const oobCode = params.get("oobCode");
+
+  // This page only handles Firebase's email verification action links
+  // (mode=verifyEmail&oobCode=...). Any other mode/param shape is invalid here.
+  if (mode !== "verifyEmail" || !oobCode) {
+    render("error", "Invalid Verification Link", "This link is missing required information. Please request a new verification email from the login page.");
+    return;
+  }
+
+  try {
+    // Look up which account this code belongs to BEFORE consuming it,
+    // so we can sync the mirrored flag in Supabase for the right user.
+    let email = null;
+    try {
+      const info = await checkActionCode(auth, oobCode);
+      email = info?.data?.email || null;
+    } catch (_) {
+      // If this fails, applyActionCode below will fail too and we'll
+      // report that error instead — no action needed here.
+    }
+
+    // This is the call that actually marks the account verified in Firebase.
+    await applyActionCode(auth, oobCode);
+
+    // Firebase is now the source of truth (isEmailVerified = true).
+    // Best-effort mirror into Supabase so other parts of the app that read
+    // candidates.isEmailVerified (profile visibility, admin views, etc.)
+    // stay in sync. Login itself does NOT depend on this succeeding.
+    if (email) {
+      try {
+        await supabase.from("candidates").update({ isEmailVerified: true }).eq("email", email);
+      } catch (syncErr) {
+        console.warn("Supabase verification sync failed (non-fatal):", syncErr);
       }
-    });
-  </script>
+    }
+
+    render("success", "Email Verified!", "Your email has been verified successfully. You can now log in to your account.");
+    setTimeout(() => { window.location.href = "login.html"; }, 1800);
+
+  } catch (err) {
+    if (err && err.code === "auth/invalid-action-code") {
+      // Firebase invalidates a code the moment it's been used, so this is
+      // exactly what happens on a second click of the same link.
+      render("warning", "Already Verified", "This verification link has already been used, or it has expired. If you've already verified your email, you can log in now.");
+    } else {
+      render("error", "Verification Failed", (err && err.message) || "Something went wrong while verifying your email. Please try again or request a new link.");
+    }
+  }
+});
+</script>
 </body>
 </html>
