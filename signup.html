@@ -228,10 +228,22 @@ body { min-height:100vh; display:flex; background:var(--bg-light); color:var(--t
 
     <div class="input-group">
       <label>Phone Number</label>
-      <div class="input-wrap">
-        <i class="fa-solid fa-phone"></i>
-        <input type="tel" id="phone" placeholder="10-digit mobile number">
+      <div class="input-wrap" style="display:flex; gap:8px; align-items:center;">
+        <div style="position:relative; flex:1;">
+          <i class="fa-solid fa-phone"></i>
+          <input type="tel" id="phone" placeholder="10-digit mobile number" maxlength="10" inputmode="numeric" autocomplete="off">
+        </div>
+        <button type="button" id="inlineSendOtpBtn" onclick="sendInlineSignupOtp()" style="flex-shrink:0; padding:12px 14px; background:#eff6ff; color:var(--primary); border:1.5px solid #dbeafe; border-radius:12px; font-size:12.5px; font-weight:700; cursor:pointer; white-space:nowrap;">Send OTP</button>
       </div>
+      <div id="recaptcha-container-inline" style="margin-top:10px;"></div>
+      <div id="inlineOtpRow" style="display:none; margin-top:10px; gap:8px; align-items:center;">
+        <div class="input-wrap" style="flex:1; position:relative;">
+          <i class="fa-solid fa-key"></i>
+          <input type="text" id="inlineOtpCode" placeholder="6-digit code" maxlength="6" inputmode="numeric" style="padding-left:44px;">
+        </div>
+        <button type="button" id="inlineConfirmOtpBtn" onclick="confirmInlineSignupOtp()" style="flex-shrink:0; padding:12px 14px; background:var(--primary); color:#fff; border:none; border-radius:12px; font-size:12.5px; font-weight:700; cursor:pointer; white-space:nowrap;">Verify</button>
+      </div>
+      <div id="inlinePhoneStatus" style="font-size:12px; margin-top:6px; font-weight:700;"></div>
     </div>
 
     <div class="input-group">
@@ -296,6 +308,50 @@ body { min-height:100vh; display:flex; background:var(--bg-light); color:var(--t
       Didn't receive the email? <a onclick="resendVerificationEmail()" style="color:var(--primary); font-weight:700; cursor:pointer; text-decoration:underline;">Resend Link</a>
     </div>
   </div>
+
+  <!-- PHASE 3: PHONE OTP VERIFICATION SCREEN -->
+  <div class="form-box" id="phoneVerifyScreen" style="display:none;">
+    <div class="verify-icon-wrap"><i class="fa-solid fa-mobile-screen-button"></i></div>
+    <h2>Verify Your Phone</h2>
+    <p class="sub" style="margin-bottom:18px;">
+      Enter your 10-digit mobile number. We'll text you a one-time code to verify it.
+    </p>
+
+    <div id="phoneEntryStep">
+      <div class="input-group">
+        <label>Phone Number</label>
+        <div class="input-wrap">
+          <i class="fa-solid fa-phone"></i>
+          <input type="tel" id="phoneOtpInput" placeholder="10-digit mobile number" maxlength="10" inputmode="numeric" autocomplete="off">
+        </div>
+      </div>
+      <div id="recaptcha-container" style="margin-bottom:14px;"></div>
+      <button class="btn-register" onclick="sendPhoneOtp()">
+        <span>Send OTP</span>
+        <i class="fa-solid fa-paper-plane" style="font-size:13px;"></i>
+      </button>
+      <div style="margin-top:16px; font-size:13.5px; color:var(--text-muted);">
+        <a onclick="skipPhoneVerification()" style="color:var(--text-muted); font-weight:700; cursor:pointer; text-decoration:underline;">Skip for now</a>
+      </div>
+    </div>
+
+    <div id="phoneOtpStep" style="display:none;">
+      <div class="input-group">
+        <label>Enter OTP</label>
+        <div class="input-wrap">
+          <i class="fa-solid fa-key"></i>
+          <input type="text" id="phoneOtpCode" placeholder="6-digit code" maxlength="6" inputmode="numeric">
+        </div>
+      </div>
+      <button class="btn-register" onclick="confirmPhoneOtp()">
+        <span>Verify & Continue</span>
+        <i class="fa-solid fa-check" style="font-size:13px;"></i>
+      </button>
+      <div style="margin-top:16px; font-size:13.5px; color:var(--text-muted);">
+        Wrong number? <a onclick="resetPhoneStep()" style="color:var(--primary); font-weight:700; cursor:pointer; text-decoration:underline;">Change it</a>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- ── POPUP MODAL ── -->
@@ -311,10 +367,132 @@ body { min-height:100vh; display:flex; background:var(--bg-light); color:var(--t
 <script type="module">
 import { supabase } from "./supabase.js";
 import { auth } from "./firebase.js";
-import { createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword, signOut, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { createUserWithEmailAndPassword, sendEmailVerification, signInWithEmailAndPassword, signOut, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider, RecaptchaVerifier, signInWithPhoneNumber, linkWithCredential } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 let registeredUserObject = null;
 let savedEmailForResend = "";
+let savedPasswordForReauth = "";
+let recaptchaVerifier = null;
+let confirmationResultRef = null;
+
+function ensureRecaptcha() {
+  if (!recaptchaVerifier) {
+    recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", { size: "normal" });
+  }
+  return recaptchaVerifier;
+}
+
+function normalizeIndianPhone(raw) {
+  const digits = raw.replace(/\D/g, "");
+  if (digits.length === 10) return "+91" + digits;
+  if (digits.length === 12 && digits.startsWith("91")) return "+" + digits;
+  if (raw.startsWith("+")) return raw;
+  return null;
+}
+
+window.sendPhoneOtp = async function() {
+  const rawPhone = document.getElementById("phoneOtpInput").value.trim();
+  const digitsOnly = rawPhone.replace(/\D/g, "");
+  if (digitsOnly.length !== 10 && !(digitsOnly.length === 12 && digitsOnly.startsWith("91"))) {
+    return showPopup("⚠️ Please enter a valid 10-digit mobile number (no extra digits).");
+  }
+  const phone = normalizeIndianPhone(rawPhone);
+  if (!phone) return showPopup("⚠️ Please enter a valid 10-digit mobile number.");
+
+  const btn = document.querySelector("#phoneEntryStep .btn-register");
+  btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Sending...`;
+  btn.disabled = true;
+
+  try {
+    // Phone verification must be linked to the same account created during
+    // email signup, so we sign back in first (the user was signed out after
+    // the email step). This keeps one Firebase user with both credentials
+    // rather than creating a second, disconnected account.
+    if (!auth.currentUser) {
+      const email = savedEmailForResend || registeredUserObject?.email;
+      await signInWithEmailAndPassword(auth, email, savedPasswordForReauth);
+    }
+
+    const verifier = ensureRecaptcha();
+    confirmationResultRef = await signInWithPhoneNumber(auth, phone, verifier);
+    document.getElementById("phoneEntryStep").style.display = "none";
+    document.getElementById("phoneOtpStep").style.display = "block";
+    showPopup("✅ OTP sent! Check your SMS inbox.");
+  } catch (e) {
+    btn.innerHTML = `<span>Send OTP</span><i class="fa-solid fa-paper-plane"></i>`;
+    btn.disabled = false;
+    if (recaptchaVerifier) { try { recaptchaVerifier.clear(); } catch(_) {} recaptchaVerifier = null; }
+    if (e.code === 'auth/billing-not-enabled' || e.code === 'auth/operation-not-allowed') {
+      showPopup("⚠️ Phone verification is temporarily unavailable. Please continue with email verification for now — you can add your phone number later from your profile.");
+      skipPhoneVerification();
+      return;
+    }
+    showPopup("❌ " + (e.message || "Could not send OTP. Please try again."));
+  }
+};
+
+window.confirmPhoneOtp = async function() {
+  const code = document.getElementById("phoneOtpCode").value.trim();
+  if (!code || code.length < 6) return showPopup("⚠️ Enter the 6-digit code sent to your phone.");
+  if (!confirmationResultRef) return showPopup("❌ No OTP session found. Please resend the code.");
+
+  const btn = document.querySelector("#phoneOtpStep .btn-register");
+  btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Verifying...`;
+  btn.disabled = true;
+
+  try {
+    // signInWithPhoneNumber signs the user IN as a fresh phone-only user,
+    // separate from the existing email/password account. To attach the
+    // verified phone number to the SAME account instead of creating a
+    // second one, we link the phone credential onto the currently
+    // signed-in email/password user.
+    const phoneCredential = confirmationResultRef.verificationId
+      ? null : null; // placeholder, replaced below
+
+    // confirmationResultRef.confirm() both verifies the code AND signs in
+    // as the phone user. We instead extract the credential via the
+    // PhoneAuthProvider credential helper so we can link it to the
+    // already-authenticated email account without switching identities.
+    const { PhoneAuthProvider } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js");
+    const credential = PhoneAuthProvider.credential(confirmationResultRef.verificationId, code);
+
+    const emailUser = auth.currentUser;
+    await linkWithCredential(emailUser, credential);
+
+    const phoneNumber = emailUser.phoneNumber;
+    await supabase.from("candidates").upsert({
+      id: emailUser.uid,
+      phone: phoneNumber,
+      isPhoneVerified: true
+    }, { onConflict: 'id' });
+
+    if (recaptchaVerifier) { try { recaptchaVerifier.clear(); } catch(_) {} recaptchaVerifier = null; }
+    await signOut(auth);
+
+    showPopup("🎉 Phone number verified! You're all set.");
+    document.querySelector("#popupOkBtn").onclick = () => window.location.href = "login.html";
+    setTimeout(() => { window.location.href = "login.html"; }, 1200);
+  } catch (e) {
+    btn.innerHTML = `<span>Verify & Continue</span><i class="fa-solid fa-check"></i>`;
+    btn.disabled = false;
+    let msg = e.message || "Invalid or expired code.";
+    if (e.code === 'auth/credential-already-in-use') msg = "This phone number is already linked to another account.";
+    showPopup("❌ " + msg);
+  }
+};
+
+window.resetPhoneStep = function() {
+  document.getElementById("phoneOtpStep").style.display = "none";
+  document.getElementById("phoneEntryStep").style.display = "block";
+  document.getElementById("phoneOtpCode").value = "";
+  confirmationResultRef = null;
+};
+
+window.skipPhoneVerification = function() {
+  showPopup("You can verify your phone number anytime from your profile.");
+  document.querySelector("#popupOkBtn").onclick = () => window.location.href = "login.html";
+  setTimeout(() => { window.location.href = "login.html"; }, 1000);
+};
 
 async function handleSocialSignup(provider) {
   try {
@@ -354,6 +532,111 @@ document.getElementById("facebookSignupBtn").addEventListener("click", () => {
   handleSocialSignup(new FacebookAuthProvider());
 });
 
+let inlineRecaptchaVerifier = null;
+let inlineConfirmationResult = null;
+let inlinePhoneVerified = false;
+let inlineVerifiedPhoneNumber = null;
+
+function normalizeInlinePhone(raw) {
+  const digits = raw.replace(/\D/g, "");
+  if (digits.length === 10) return "+91" + digits;
+  if (digits.length === 12 && digits.startsWith("91")) return "+" + digits;
+  if (raw.startsWith("+")) return raw;
+  return null;
+}
+
+window.sendInlineSignupOtp = async function() {
+  const rawPhone = document.getElementById("phone").value.trim();
+  const digitsOnly = rawPhone.replace(/\D/g, "");
+  const statusEl = document.getElementById("inlinePhoneStatus");
+
+  if (digitsOnly.length !== 10 && !(digitsOnly.length === 12 && digitsOnly.startsWith("91"))) {
+    statusEl.style.color = "var(--red)";
+    statusEl.textContent = "Enter a valid 10-digit mobile number.";
+    return;
+  }
+  const phone = normalizeInlinePhone(rawPhone);
+
+  const btn = document.getElementById("inlineSendOtpBtn");
+  btn.textContent = "Sending...";
+  btn.disabled = true;
+
+  try {
+    if (!inlineRecaptchaVerifier) {
+      inlineRecaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container-inline", { size: "normal" });
+    }
+    // Phone OTP requires an authenticated context in Firebase, but no
+    // account exists yet at this point in the form. We use an anonymous
+    // sign-in purely to run signInWithPhoneNumber and confirm ownership of
+    // the number; the phone credential is then linked onto the real
+    // email/password account once it's created in registerAndVerify().
+    if (!auth.currentUser) {
+      const { signInAnonymously } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js");
+      await signInAnonymously(auth);
+    }
+    inlineConfirmationResult = await signInWithPhoneNumber(auth, phone, inlineRecaptchaVerifier);
+    document.getElementById("inlineOtpRow").style.display = "flex";
+    statusEl.style.color = "var(--primary)";
+    statusEl.textContent = "OTP sent. Enter the 6-digit code.";
+    btn.textContent = "Resend";
+    btn.disabled = false;
+  } catch (e) {
+    btn.textContent = "Send OTP";
+    btn.disabled = false;
+    if (inlineRecaptchaVerifier) { try { inlineRecaptchaVerifier.clear(); } catch(_) {} inlineRecaptchaVerifier = null; }
+    statusEl.style.color = "var(--red)";
+    if (e.code === 'auth/billing-not-enabled' || e.code === 'auth/operation-not-allowed') {
+      statusEl.textContent = "Phone verification is temporarily unavailable. You can skip this and continue.";
+    } else {
+      statusEl.textContent = e.message || "Could not send OTP.";
+    }
+  }
+};
+
+window.confirmInlineSignupOtp = async function() {
+  const code = document.getElementById("inlineOtpCode").value.trim();
+  const statusEl = document.getElementById("inlinePhoneStatus");
+  if (!code || code.length < 6) {
+    statusEl.style.color = "var(--red)";
+    statusEl.textContent = "Enter the 6-digit code.";
+    return;
+  }
+  if (!inlineConfirmationResult) {
+    statusEl.style.color = "var(--red)";
+    statusEl.textContent = "No OTP session found. Please resend.";
+    return;
+  }
+
+  const btn = document.getElementById("inlineConfirmOtpBtn");
+  btn.textContent = "...";
+  btn.disabled = true;
+
+  try {
+    const { PhoneAuthProvider } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js");
+    const credential = PhoneAuthProvider.credential(inlineConfirmationResult.verificationId, code);
+    // Attach the credential to the current (anonymous) session just to
+    // validate the code. We don't keep this anonymous user — its only
+    // purpose is proving phone ownership before the real account exists.
+    await linkWithCredential(auth.currentUser, credential);
+
+    inlinePhoneVerified = true;
+    inlineVerifiedPhoneNumber = auth.currentUser.phoneNumber;
+
+    if (inlineRecaptchaVerifier) { try { inlineRecaptchaVerifier.clear(); } catch(_) {} inlineRecaptchaVerifier = null; }
+
+    document.getElementById("phone").disabled = true;
+    document.getElementById("inlineSendOtpBtn").style.display = "none";
+    document.getElementById("inlineOtpRow").style.display = "none";
+    statusEl.style.color = "var(--green)";
+    statusEl.innerHTML = '<i class="fa-solid fa-circle-check"></i> Phone number verified.';
+  } catch (e) {
+    btn.textContent = "Verify";
+    btn.disabled = false;
+    statusEl.style.color = "var(--red)";
+    statusEl.textContent = e.message || "Invalid or expired code.";
+  }
+};
+
 window.registerAndVerify = async function() {
   const name = document.getElementById("name").value.trim();
   const email = document.getElementById("email").value.trim();
@@ -369,20 +652,45 @@ window.registerAndVerify = async function() {
 
   try {
     savedEmailForResend = email;
+    savedPasswordForReauth = pw;
 
     // 1. Firebase Auth Registration
-    const userCredential = await createUserWithEmailAndPassword(auth, email, pw);
-    const user = userCredential.user;
+    // If the phone was verified inline above, auth.currentUser is already
+    // the anonymous user that proved phone ownership. We link the
+    // email/password credential onto that SAME account instead of calling
+    // createUserWithEmailAndPassword (which would make a second, separate
+    // account) — this keeps one account with both a verified phone and an
+    // email/password sign-in method attached.
+    let user;
+    if (inlinePhoneVerified && auth.currentUser) {
+      const { EmailAuthProvider } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js");
+      const emailCredential = EmailAuthProvider.credential(email, pw);
+      const linkedCredential = await linkWithCredential(auth.currentUser, emailCredential);
+      user = linkedCredential.user;
+    } else {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, pw);
+      user = userCredential.user;
+    }
     registeredUserObject = user;
 
     // 2. Send Verification Link
-    await sendEmailVerification(user);
+    // Explicitly point the link at this app's verify.html (rather than
+    // relying on the Firebase Console's default Action URL), so the click
+    // always lands on the page that actually applies the verification code.
+    const actionCodeSettings = {
+      url: window.location.origin + "/verify.html",
+      handleCodeInApp: true
+    };
+    await sendEmailVerification(user, actionCodeSettings);
 
     // 3. Store baseline profile in Supabase
     await supabase.from("candidates").upsert({
       id: user.uid,
-      name, phone, email, location: "", experience: "", skills: "", about: "",
-      isEmailVerified: false, createdAt: new Date().toISOString()
+      name, phone: inlinePhoneVerified ? inlineVerifiedPhoneNumber : phone, email,
+      location: "", experience: "", skills: "", about: "",
+      isEmailVerified: false,
+      isPhoneVerified: inlinePhoneVerified,
+      createdAt: new Date().toISOString()
     }, { onConflict: 'id' });
 
     await signOut(auth);
@@ -418,9 +726,10 @@ window.checkEmailVerificationStatus = async function() {
       localStorage.setItem("userEmail", user.email);
       localStorage.setItem("candidateLoggedInEmail", user.email);
       
+      await signOut(auth);
       showPopup("🎉 Email verified! Redirecting to login...");
       document.querySelector("#popupOkBtn").onclick = () => window.location.href = "login.html";
-      
+
       setTimeout(() => {
           window.location.href = "login.html";
       }, 1200);
@@ -443,7 +752,11 @@ window.resendVerificationEmail = async function() {
   if (email && pw) {
     try {
       const userCred = await signInWithEmailAndPassword(auth, email, pw);
-      await sendEmailVerification(userCred.user);
+      const actionCodeSettings = {
+        url: window.location.origin + "/verify.html",
+        handleCodeInApp: true
+      };
+      await sendEmailVerification(userCred.user, actionCodeSettings);
       await signOut(auth);
       showPopup("✅ Verification link resent! Check your inbox.");
     } catch(e) { showPopup("❌ Error: " + e.message); }
