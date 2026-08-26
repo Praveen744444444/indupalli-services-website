@@ -96,7 +96,12 @@
         * { margin:0; padding:0; box-sizing:border-box; font-family:'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
         html { scroll-behavior: smooth; }
         html, body { overflow-x:hidden; }
-        body { background: var(--bg-page); color: var(--text-main); line-height: 1.5; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+        body { 
+            background: var(--bg-page); color: var(--text-main); 
+            line-height: 1.5; -webkit-font-smoothing: antialiased; 
+            overflow-x: hidden; 
+            padding-top: 112px; /* Fix to prevent content hiding behind frozen navbar */
+        }
 
         /* Structural Container */
         .container { max-width: var(--max-w); margin: 0 auto; padding: 0 24px; }
@@ -125,7 +130,9 @@
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(12px);
             height: 76px;
-            position: sticky; top: 0; z-index: 1000;
+            position: fixed; /* Frozen taskbar */
+            top: 0; left: 0; width: 100%;
+            z-index: 10000;
             border-bottom: 1px solid var(--border);
             display: flex; align-items: center;
         }
@@ -320,6 +327,7 @@
 
         @media (max-width: 1400px) {
             header { height: 102px; }
+            body { padding-top: 102px; }
 
             .header-container {
                 padding-left: 22px;
@@ -382,6 +390,7 @@
 
         @media (max-width: 960px) {
             header { height: 82px; }
+            body { padding-top: 82px; }
 
             .header-container .logo { min-width: 0; }
             .header-container .logo img {
@@ -418,6 +427,7 @@
 
         @media (max-width: 600px) {
             header { height: 72px; }
+            body { padding-top: 72px; }
 
             .header-container {
                 padding-left: 12px;
@@ -649,7 +659,11 @@
         /* ── FOOTER ── */
         footer { background: #070c18; color: #94a3b8; padding: 70px 0 35px; border-top: 1px solid rgba(255,255,255,0.08); font-size: 13.5px; }
         .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
-        .footer-brand h4 { color: #fff; font-size: 18px; font-weight: 800; margin-bottom: 12px; }
+        
+        .footer-logo-link { display: flex; align-items: center; gap: 12px; text-decoration: none; margin-bottom: 16px; }
+        .footer-logo-link img { width: 44px; height: 44px; border-radius: 8px; }
+        .footer-logo-link h4 { color: #fff; font-size: 18px; font-weight: 800; margin: 0; }
+        
         .footer-brand p { font-size: 13.5px; line-height: 1.6; max-width: 320px; }
         .footer-col h5 { color: #fff; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 16px; }
         .footer-col a { display: block; color: #94a3b8; text-decoration: none; margin-bottom: 10px; transition: color 0.15s; }
@@ -1109,7 +1123,7 @@
                 <a href="#for-employers">For Employers</a>
                 <a href="#technology">AI & ATS</a>
                 <a href="#unnanu-feature" class="nav-unnanu-new">Unnanu <span class="nav-new-badge">NEW</span></a>
-                <a href="#resources">Career Resources</a>
+                <a href="#resources">Blogs</a>
                 <a href="#about">About</a>
                 <div class="nav-divider"></div>
                 <a href="login.html" target="_blank" class="btn-nav-login">Sign In</a>
@@ -1742,7 +1756,10 @@
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-brand">
-                    <h4>Indupalli Services</h4>
+                    <a href="index.html" class="footer-logo-link">
+                        <img src="1000174411.png" alt="Indupalli Services Logo">
+                        <h4>Indupalli Services</h4>
+                    </a>
                     <p>A modern talent and recruitment technology platform connecting job seekers with hiring organizations across India.</p>
                     <div style="margin-top: 14px;">
                         <a href="https://www.linkedin.com/company/indupalli-services/" target="_blank" rel="noopener noreferrer" style="color:#94a3b8; font-size:18px;" title="LinkedIn" aria-label="LinkedIn">
@@ -2098,7 +2115,7 @@
             if (nav.style.display === "flex") {
                 nav.style.flexDirection = "column";
                 nav.style.position = "absolute";
-                nav.style.top = "76px";
+                nav.style.top = "100%";
                 nav.style.left = "0";
                 nav.style.width = "100%";
                 nav.style.background = "var(--surface)";
