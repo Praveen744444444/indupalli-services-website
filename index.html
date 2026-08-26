@@ -646,27 +646,6 @@
         .btn-cta-trans { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.25); padding: 12px 26px; border-radius: var(--radius-sm); font-weight: 700; font-size: 14px; text-decoration: none; transition: 0.15s; }
         .btn-cta-trans:hover { background: rgba(255,255,255,0.2); }
 
-        /* Clickable company logo in footer */
-        .footer-logo-link {
-            display: inline-flex;
-            align-items: center;
-            justify-content: flex-start;
-            margin-bottom: 14px;
-            text-decoration: none;
-        }
-        .footer-logo {
-            width: 76px;
-            height: 76px;
-            object-fit: contain;
-            border-radius: 10px;
-            display: block;
-            transition: transform 0.18s ease, opacity 0.18s ease;
-        }
-        .footer-logo-link:hover .footer-logo {
-            transform: translateY(-2px);
-            opacity: 0.92;
-        }
-
         /* ── FOOTER ── */
         footer { background: #070c18; color: #94a3b8; padding: 70px 0 35px; border-top: 1px solid rgba(255,255,255,0.08); font-size: 13.5px; }
         .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
@@ -1088,9 +1067,7 @@
 </head>
 <body>
 
-    <!-- Authentication routes: standalone pages -->
-<!-- Candidate: login.html / signup.html | Employer: recruiter-login.html -->
-<!-- ── NAVIGATION BAR ── -->
+    <!-- ── NAVIGATION BAR ── -->
     <header>
         <div class="container nav-wrapper header-container">
             <a href="index.html" class="logo">
@@ -1132,11 +1109,11 @@
                 <a href="#for-employers">For Employers</a>
                 <a href="#technology">AI & ATS</a>
                 <a href="#unnanu-feature" class="nav-unnanu-new">Unnanu <span class="nav-new-badge">NEW</span></a>
-                <a href="blogs.html">Blogs</a>
+                <a href="#resources">Career Resources</a>
                 <a href="#about">About</a>
                 <div class="nav-divider"></div>
-                <a href="login.html" class="btn-nav-login">Sign In</a>
-                <a href="signup.html" class="btn-nav-cta">Get Started</a>
+                <a href="login.html" target="_blank" class="btn-nav-login">Sign In</a>
+                <a href="signup.html" target="_blank" class="btn-nav-cta">Get Started</a>
                 <button onclick="toggleDark()" style="background:none;border:none;cursor:pointer;font-size:16px;margin-left:8px;" title="Toggle dark mode" aria-label="Toggle dark mode">🌙</button>
             </nav>
 
@@ -1159,10 +1136,10 @@
                 <p class="hero-p">Indupalli Services connects forward-thinking employers with top talent across India through intelligent profile matching, ATS pipelines, and AI-assisted resume screening.</p>
 
                 <div class="hero-actions">
-                    <a href="signup.html" class="hero-primary-cta">
+                    <a href="signup.html" target="_blank" class="hero-primary-cta">
                         <i class="fa-solid fa-user-plus"></i> Join as Candidate
                     </a>
-                    <a href="recruiter-login.html" class="hero-secondary-cta">
+                    <a href="recruiter-login.html" target="_blank" class="hero-secondary-cta">
                         <i class="fa-solid fa-building"></i> Post a Job
                     </a>
                 </div></div>
@@ -1472,7 +1449,7 @@
             </div>
 
             <div style="text-align: center; margin-top: 36px; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
-                <a href="recruiter-login.html" class="btn-nav-cta" style="padding: 12px 28px;">Start Hiring on Indupalli</a>
+                <a href="recruiter-login.html" target="_blank" class="btn-nav-cta" style="padding: 12px 28px;">Start Hiring on Indupalli</a>
                 <a href="#about" class="btn-nav-login" style="border: 1px solid var(--border); padding: 12px 24px;">Talk to Staffing Experts</a>
             </div>
         </div>
@@ -1603,7 +1580,7 @@
                             <li><i class="fa-solid fa-circle-check"></i> Standard email support</li>
                         </ul>
                     </div>
-                    <a href="login.html" class="price-btn outline">Choose Plan</a>
+                    <a href="login.html" target="_blank" class="price-btn outline">Choose Plan</a>
                 </div>
 
                 <div class="pricing-box app-card popular">
@@ -1618,7 +1595,7 @@
                             <li><i class="fa-solid fa-circle-check"></i> Candidate dashboard analytics</li>
                         </ul>
                     </div>
-                    <a href="login.html" class="price-btn solid">Select Monthly Pass</a>
+                    <a href="login.html" target="_blank" class="price-btn solid">Select Monthly Pass</a>
                 </div>
 
                 <div class="pricing-box app-card">
@@ -1632,14 +1609,14 @@
                             <li><i class="fa-solid fa-circle-check"></i> Priority access to new postings</li>
                         </ul>
                     </div>
-                    <a href="login.html" class="price-btn outline">Get Lifetime Access</a>
+                    <a href="login.html" target="_blank" class="price-btn outline">Get Lifetime Access</a>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- ── CAREER RESOURCES (BLOGS) ── -->
-    <section class="section-py"  style="background: var(--bg-page);">
+    <section class="section-py" id="resources" style="background: var(--bg-page);">
         <div class="container">
             <div class="section-header">
                 <span class="section-tag">Resources</span>
@@ -1662,9 +1639,9 @@
                 <p class="section-desc">Useful pathways for candidates before, during and after the job search.</p>
             </div>
             <div class="toolkit-grid">
-                <a class="toolkit-card app-card" href="signup.html"><i class="fa-solid fa-id-card"></i><h4>Create a Professional Profile</h4><p>Build your candidate profile and keep your career information ready for applications.</p></a>
-                <a class="toolkit-card app-card" href="login.html"><i class="fa-solid fa-chart-line"></i><h4>Track Your Applications</h4><p>Return to your candidate portal to manage your application activity.</p></a>
-                <a class="toolkit-card app-card" href="blogs.html"><i class="fa-solid fa-book-open"></i><h4>Career Guides</h4><p>Read practical articles covering resumes, interviews and modern hiring.</p></a>
+                <a class="toolkit-card app-card" href="signup.html" target="_blank"><i class="fa-solid fa-id-card"></i><h4>Create a Professional Profile</h4><p>Build your candidate profile and keep your career information ready for applications.</p></a>
+                <a class="toolkit-card app-card" href="login.html" target="_blank"><i class="fa-solid fa-chart-line"></i><h4>Track Your Applications</h4><p>Return to your candidate portal to manage your application activity.</p></a>
+                <a class="toolkit-card app-card" href="#resources"><i class="fa-solid fa-book-open"></i><h4>Career Guides</h4><p>Read practical articles covering resumes, interviews and modern hiring.</p></a>
                 <a class="toolkit-card app-card" href="#technology"><i class="fa-solid fa-wand-magic-sparkles"></i><h4>AI & ATS Features</h4><p>See how structured profiles, matching and recruitment automation fit into the platform.</p></a>
             </div>
         </div>
@@ -1685,13 +1662,13 @@
                     <p>Search active openings, filter your options and open the full job details before applying.</p>
                     <span class="link">Start job search →</span>
                 </a>
-                <a class="discovery-card app-card" href="signup.html">
+                <a class="discovery-card app-card" href="signup.html" target="_blank">
                     <div class="icon"><i class="fa-solid fa-user-plus"></i></div>
                     <h3>I want to build my profile</h3>
                     <p>Create your candidate account and prepare your information for future applications.</p>
                     <span class="link">Create candidate account →</span>
                 </a>
-                <a class="discovery-card app-card" href="recruiter-login.html">
+                <a class="discovery-card app-card" href="recruiter-login.html" target="_blank">
                     <div class="icon"><i class="fa-solid fa-user-tie"></i></div>
                     <h3>I need to hire</h3>
                     <p>Access the recruiter workflow to publish roles and manage candidates through the platform.</p>
@@ -1753,8 +1730,8 @@
                 <h3>Ready to Accelerate Your Career or Hiring?</h3>
                 <p>Join professionals and employers already leveraging Indupalli Services for structured, efficient talent discovery.</p>
                 <div class="final-cta-buttons">
-                    <a href="signup.html" class="btn-cta-white">Join as Candidate</a>
-                    <a href="recruiter-login.html" class="btn-cta-trans">Post a Job Opening</a>
+                    <a href="signup.html" target="_blank" class="btn-cta-white">Join as Candidate</a>
+                    <a href="recruiter-login.html" target="_blank" class="btn-cta-trans">Post a Job Opening</a>
                 </div>
             </div>
         </div>
@@ -1765,9 +1742,6 @@
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-brand">
-                    <a href="index.html" class="footer-logo-link" aria-label="Indupalli Services Homepage" title="Go to Indupalli Services Homepage">
-                        <img src="1000174411.png" alt="Indupalli Services Logo" class="footer-logo">
-                    </a>
                     <h4>Indupalli Services</h4>
                     <p>A modern talent and recruitment technology platform connecting job seekers with hiring organizations across India.</p>
                     <div style="margin-top: 14px;">
@@ -1782,15 +1756,15 @@
                     <a href="https://jobs.unnanu.com/">Unnanu Jobs</a>
                     <a href="jobs.html?exp=fresher">Fresher Jobs</a>
                     <a href="jobs.html?type=Remote">Remote Jobs</a>
-                    <a href="login.html">Candidate Portal</a>
-                    <a href="signup.html">Create Profile</a>
-                    <a href="blogs.html">Blogs</a>
+                    <a href="login.html" target="_blank">Candidate Portal</a>
+                    <a href="signup.html" target="_blank">Create Profile</a>
+                    <a href="#resources">Career Resources</a>
                 </div>
 
                 <div class="footer-col">
                     <h5>For Employers</h5>
-                    <a href="recruiter-login.html">Recruiter Login</a>
-                    <a href="recruiter-login.html">Post a Job</a>
+                    <a href="recruiter-login.html" target="_blank">Recruiter Login</a>
+                    <a href="recruiter-login.html" target="_blank">Post a Job</a>
                     <a href="#for-employers">Employer Solutions</a>
                     <a href="#technology">AI & ATS</a>
                     <a href="#pricing">Plans & Pricing</a>
@@ -1801,7 +1775,7 @@
                     <h5>Company & Support</h5>
                     <a href="#about">Leadership</a>
                     <a href="#about">About Indupalli Services</a>
-                    <a href="blogs.html">Career Insights</a>
+                    <a href="#resources">Career Insights</a>
                     <a href="terms.html">Terms of Service</a>
                     <a href="privacy.html">Privacy Policy</a>
                     <a href="mailto:contact@indupalliservices.com">Contact Support</a>
