@@ -646,6 +646,27 @@
         .btn-cta-trans { background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.25); padding: 12px 26px; border-radius: var(--radius-sm); font-weight: 700; font-size: 14px; text-decoration: none; transition: 0.15s; }
         .btn-cta-trans:hover { background: rgba(255,255,255,0.2); }
 
+        /* Clickable company logo in footer */
+        .footer-logo-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: flex-start;
+            margin-bottom: 14px;
+            text-decoration: none;
+        }
+        .footer-logo {
+            width: 76px;
+            height: 76px;
+            object-fit: contain;
+            border-radius: 10px;
+            display: block;
+            transition: transform 0.18s ease, opacity 0.18s ease;
+        }
+        .footer-logo-link:hover .footer-logo {
+            transform: translateY(-2px);
+            opacity: 0.92;
+        }
+
         /* ── FOOTER ── */
         footer { background: #070c18; color: #94a3b8; padding: 70px 0 35px; border-top: 1px solid rgba(255,255,255,0.08); font-size: 13.5px; }
         .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
@@ -1067,7 +1088,9 @@
 </head>
 <body>
 
-    <!-- ── NAVIGATION BAR ── -->
+    <!-- Authentication routes: standalone pages -->
+<!-- Candidate: login.html / signup.html | Employer: recruiter-login.html -->
+<!-- ── NAVIGATION BAR ── -->
     <header>
         <div class="container nav-wrapper header-container">
             <a href="index.html" class="logo">
@@ -1109,7 +1132,7 @@
                 <a href="#for-employers">For Employers</a>
                 <a href="#technology">AI & ATS</a>
                 <a href="#unnanu-feature" class="nav-unnanu-new">Unnanu <span class="nav-new-badge">NEW</span></a>
-                <a href="#resources">Career Resources</a>
+                <a href="blogs.html">Blogs</a>
                 <a href="#about">About</a>
                 <div class="nav-divider"></div>
                 <a href="login.html" class="btn-nav-login">Sign In</a>
@@ -1616,11 +1639,11 @@
     </section>
 
     <!-- ── CAREER RESOURCES (BLOGS) ── -->
-    <section class="section-py" id="resources" style="background: var(--bg-page);">
+    <section class="section-py"  style="background: var(--bg-page);">
         <div class="container">
             <div class="section-header">
                 <span class="section-tag">Resources</span>
-                <h2 class="section-title">Blogs & Career Advice</h2>
+                <h2 class="section-title"> Blogs & Career Advice</h2>
                 <p class="section-desc">Practical guidance on interview preparation, resume formatting, and modern recruitment trends.</p>
             </div>
 
@@ -1641,7 +1664,7 @@
             <div class="toolkit-grid">
                 <a class="toolkit-card app-card" href="signup.html"><i class="fa-solid fa-id-card"></i><h4>Create a Professional Profile</h4><p>Build your candidate profile and keep your career information ready for applications.</p></a>
                 <a class="toolkit-card app-card" href="login.html"><i class="fa-solid fa-chart-line"></i><h4>Track Your Applications</h4><p>Return to your candidate portal to manage your application activity.</p></a>
-                <a class="toolkit-card app-card" href="#resources"><i class="fa-solid fa-book-open"></i><h4>Career Guides</h4><p>Read practical articles covering resumes, interviews and modern hiring.</p></a>
+                <a class="toolkit-card app-card" href="blogs.html"><i class="fa-solid fa-book-open"></i><h4>Career Guides</h4><p>Read practical articles covering resumes, interviews and modern hiring.</p></a>
                 <a class="toolkit-card app-card" href="#technology"><i class="fa-solid fa-wand-magic-sparkles"></i><h4>AI & ATS Features</h4><p>See how structured profiles, matching and recruitment automation fit into the platform.</p></a>
             </div>
         </div>
@@ -1742,6 +1765,9 @@
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-brand">
+                    <a href="index.html" class="footer-logo-link" aria-label="Indupalli Services Homepage" title="Go to Indupalli Services Homepage">
+                        <img src="1000174411.png" alt="Indupalli Services Logo" class="footer-logo">
+                    </a>
                     <h4>Indupalli Services</h4>
                     <p>A modern talent and recruitment technology platform connecting job seekers with hiring organizations across India.</p>
                     <div style="margin-top: 14px;">
@@ -1758,7 +1784,7 @@
                     <a href="jobs.html?type=Remote">Remote Jobs</a>
                     <a href="login.html">Candidate Portal</a>
                     <a href="signup.html">Create Profile</a>
-                    <a href="#resources">Career Resources</a>
+                    <a href="blogs.html">Blogs</a>
                 </div>
 
                 <div class="footer-col">
@@ -1775,7 +1801,7 @@
                     <h5>Company & Support</h5>
                     <a href="#about">Leadership</a>
                     <a href="#about">About Indupalli Services</a>
-                    <a href="#resources">Career Insights</a>
+                    <a href="blogs.html">Career Insights</a>
                     <a href="terms.html">Terms of Service</a>
                     <a href="privacy.html">Privacy Policy</a>
                     <a href="mailto:contact@indupalliservices.com">Contact Support</a>
