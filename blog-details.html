@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -155,6 +155,18 @@ nav a:hover { color: var(--primary); background: #eff6ff; }
   letter-spacing: -0.1px;
 }
 
+.blog-content-body a {
+  color: var(--primary);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  word-break: break-word;
+}
+
+.blog-content-body a:hover {
+  color: var(--primary-dark);
+}
+
 /* ── SKELETON / LOADING STATE ── */
 .loading-box {
   display: flex;
@@ -272,7 +284,35 @@ async function fetchArticle() {
     document.getElementById("blogTitle").innerText = blog.title || "Untitled Article";
     const dateStr = blog.created_at ? new Date(blog.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : "Recent";
     document.getElementById("blogDate").innerHTML = `<i class="fa-regular fa-calendar-days"></i> ${dateStr}`;
-    document.getElementById("blogContent").innerText = blog.content || "No content found.";
+    const blogContentEl = document.getElementById("blogContent");
+    blogContentEl.innerHTML = "";
+
+    const contentText = blog.content || "No content found.";
+    const urlPattern = /(https?:\/\/[^\s<]+)/gi;
+    const parts = contentText.split(urlPattern);
+
+    parts.forEach((part, index) => {
+      if (/^https?:\/\/[^\s<]+$/i.test(part)) {
+        // Remove common punctuation that may be attached to the URL in prose.
+        const match = part.match(/^(.+?)([.,!?;:)\]}]+)?$/);
+        const url = match ? match[1] : part;
+        const trailing = match ? (match[2] || "") : "";
+
+        const link = document.createElement("a");
+        link.href = url;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.textContent = url;
+        link.title = "Open link in a new tab";
+        blogContentEl.appendChild(link);
+
+        if (trailing) {
+          blogContentEl.appendChild(document.createTextNode(trailing));
+        }
+      } else {
+        blogContentEl.appendChild(document.createTextNode(part));
+      }
+    });
 
     if (blog.image_url) {
       const imgEl = document.getElementById("blogImage");
