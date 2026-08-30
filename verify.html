@@ -24,14 +24,18 @@ body{min-height:100vh;display:flex;align-items:center;justify-content:center;bac
 h2{font-size:20px;font-weight:800;color:var(--navy);margin-bottom:8px;}
 p{font-size:14px;color:var(--text-muted);line-height:1.6;margin-bottom:22px;}
 a.btn{display:none;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;text-decoration:none;padding:12px 24px;border-radius:12px;font-size:14.5px;font-weight:700;}
+button.btn{display:none;background:linear-gradient(135deg,var(--primary),var(--primary-dark));color:#fff;border:none;text-decoration:none;padding:12px 24px;border-radius:12px;font-size:14.5px;font-weight:700;cursor:pointer;width:100%;margin-bottom:10px;font-family:inherit;}
+button.btn:disabled{opacity:0.7;cursor:not-allowed;}
+button.btn .spin{margin-right:6px;}
 </style>
 </head>
 <body>
 
 <div class="card">
   <div class="icon-wrap" id="iconWrap"><i class="fa-solid fa-spinner spin"></i></div>
-  <h2 id="statusTitle">Verifying your email...</h2>
+  <h2 id="statusTitle">Checking your link...</h2>
   <p id="statusText">Please wait a moment while we confirm your verification link.</p>
+  <button class="btn" id="confirmBtn" type="button" style="display:none;">Confirm Email Verification</button>
   <a class="btn" id="loginLink" href="login.html">Go to Login</a>
 </div>
 
@@ -44,66 +48,94 @@ const iconWrap = document.getElementById("iconWrap");
 const statusTitle = document.getElementById("statusTitle");
 const statusText = document.getElementById("statusText");
 const loginLink = document.getElementById("loginLink");
+const confirmBtn = document.getElementById("confirmBtn");
 
-function render(state, title, text) {
+function render(state, title, text, { showConfirm = false, showLogin = false } = {}) {
   iconWrap.classList.remove("success", "error", "warning");
   if (state === "success") { iconWrap.classList.add("success"); iconWrap.innerHTML = '<i class="fa-solid fa-circle-check"></i>'; }
   else if (state === "warning") { iconWrap.classList.add("warning"); iconWrap.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>'; }
-  else { iconWrap.classList.add("error"); iconWrap.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i>'; }
+  else if (state === "error") { iconWrap.classList.add("error"); iconWrap.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i>'; }
+  else { iconWrap.innerHTML = '<i class="fa-solid fa-envelope-circle-check"></i>'; }
   statusTitle.textContent = title;
   statusText.textContent = text;
-  loginLink.style.display = "inline-block";
+  confirmBtn.style.display = showConfirm ? "inline-block" : "none";
+  loginLink.style.display = showLogin ? "inline-block" : "none";
 }
 
+let pendingOobCode = null;
+let pendingEmail = null;
+
+// STEP 1 — read-only validation, safe to run automatically on page load.
+// checkActionCode() only inspects the code; it does NOT consume it, so an
+// email-security scanner or link-preview bot silently opening this URL
+// before the real user clicks cannot burn the one-time code here.
 window.addEventListener("DOMContentLoaded", async () => {
   const params = new URLSearchParams(window.location.search);
   const mode = params.get("mode");
   const oobCode = params.get("oobCode");
 
-  // This page only handles Firebase's email verification action links
-  // (mode=verifyEmail&oobCode=...). Any other mode/param shape is invalid here.
   if (mode !== "verifyEmail" || !oobCode) {
-    render("error", "Invalid Verification Link", "This link is missing required information. Please request a new verification email from the login page.");
+    render("error", "Invalid Verification Link", "This link is missing required information. Please request a new verification email from the login page.", { showLogin: true });
     return;
   }
 
   try {
-    // Look up which account this code belongs to BEFORE consuming it,
-    // so we can sync the mirrored flag in Supabase for the right user.
-    let email = null;
-    try {
-      const info = await checkActionCode(auth, oobCode);
-      email = info?.data?.email || null;
-    } catch (_) {
-      // If this fails, applyActionCode below will fail too and we'll
-      // report that error instead — no action needed here.
-    }
+    const info = await checkActionCode(auth, oobCode);
+    pendingOobCode = oobCode;
+    pendingEmail = info?.data?.email || null;
 
-    // This is the call that actually marks the account verified in Firebase.
-    await applyActionCode(auth, oobCode);
+    render(
+      "info",
+      "Confirm Your Email",
+      pendingEmail
+        ? `Click below to verify ${pendingEmail} and activate your account.`
+        : "Click below to verify your email and activate your account.",
+      { showConfirm: true }
+    );
+  } catch (err) {
+    if (err && err.code === "auth/expired-action-code") {
+      render("warning", "Link Expired", "This verification link has expired. Please request a new verification email from the login page.", { showLogin: true });
+    } else if (err && err.code === "auth/invalid-action-code") {
+      render("warning", "Already Verified", "This verification link has already been used. If you've already verified your email, you can log in now.", { showLogin: true });
+    } else {
+      render("error", "Verification Failed", (err && err.message) || "Something went wrong while checking your verification link. Please try again or request a new link.", { showLogin: true });
+    }
+  }
+});
+
+// STEP 2 — the actual consuming call. Gated behind a real click, which a
+// scanner/prefetcher cannot perform, so the code only gets used when the
+// person genuinely intends to verify.
+confirmBtn.addEventListener("click", async () => {
+  if (!pendingOobCode) return;
+
+  confirmBtn.disabled = true;
+  confirmBtn.innerHTML = '<i class="fa-solid fa-spinner spin"></i> Verifying...';
+
+  try {
+    await applyActionCode(auth, pendingOobCode);
 
     // Firebase is now the source of truth (isEmailVerified = true).
     // Best-effort mirror into Supabase so other parts of the app that read
     // candidates.isEmailVerified (profile visibility, admin views, etc.)
     // stay in sync. Login itself does NOT depend on this succeeding.
-    if (email) {
+    if (pendingEmail) {
       try {
-        await supabase.from("candidates").update({ isEmailVerified: true }).eq("email", email);
+        await supabase.from("candidates").update({ isEmailVerified: true }).eq("email", pendingEmail);
       } catch (syncErr) {
         console.warn("Supabase verification sync failed (non-fatal):", syncErr);
       }
     }
 
-    render("success", "Email Verified!", "Your email has been verified successfully. You can now log in to your account.");
+    render("success", "Email Verified!", "Your email has been verified successfully. You can now log in to your account.", { showLogin: true });
     setTimeout(() => { window.location.href = "login.html"; }, 1800);
-
   } catch (err) {
-    if (err && err.code === "auth/invalid-action-code") {
-      // Firebase invalidates a code the moment it's been used, so this is
-      // exactly what happens on a second click of the same link.
-      render("warning", "Already Verified", "This verification link has already been used, or it has expired. If you've already verified your email, you can log in now.");
+    if (err && err.code === "auth/expired-action-code") {
+      render("warning", "Link Expired", "This verification link has expired. Please request a new verification email from the login page.", { showLogin: true });
+    } else if (err && err.code === "auth/invalid-action-code") {
+      render("warning", "Already Verified", "This verification link has already been used. If you've already verified your email, you can log in now.", { showLogin: true });
     } else {
-      render("error", "Verification Failed", (err && err.message) || "Something went wrong while verifying your email. Please try again or request a new link.");
+      render("error", "Verification Failed", (err && err.message) || "Something went wrong while verifying your email. Please try again or request a new link.", { showLogin: true });
     }
   }
 });
