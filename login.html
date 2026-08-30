@@ -345,6 +345,17 @@
 import { auth } from "./firebase.js";
 import { signInWithEmailAndPassword, sendPasswordResetEmail, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
+// Point the reset email at our own reset-password.html (instead of relying
+// on Firebase's generic hosted action page), so the link always lands on a
+// page we control and can debug — and so it uses the same safe
+// "validate first, only apply on explicit submit" pattern as email
+// verification, which protects against email-security link scanners
+// silently consuming the one-time code before the real user clicks.
+const passwordResetActionCodeSettings = {
+    url: window.location.origin + "/reset-password.html",
+    handleCodeInApp: true
+};
+
 let loginRecaptchaVerifier = null;
 let loginConfirmationResult = null;
 
@@ -509,7 +520,7 @@ document.getElementById("sendResetBtn").addEventListener("click", async () => {
     sendBtn.disabled = true;
 
     try {
-        await sendPasswordResetEmail(auth, resetEmail);
+        await sendPasswordResetEmail(auth, resetEmail, passwordResetActionCodeSettings);
         
         sendBtn.textContent = "Send Link";
         sendBtn.disabled = false;
