@@ -2071,13 +2071,7 @@ body.dark-mode .sidebar{background:#090d16!important;}
               return;
           }
 
-          if (!user.email) {
-              console.warn("Signed-in user has no email on the Firebase Auth object (likely an anonymous/incomplete session). Redirecting to login page...");
-              window.location.href = "login.html";
-              return;
-          }
-
-          const email = user.email;
+          const email = user.email || "candidate@email.com";
           localStorage.setItem("candidateLoggedInEmail", email);
 
           if (document.getElementById("candidateEmail")) {
@@ -2087,7 +2081,7 @@ body.dark-mode .sidebar{background:#090d16!important;}
               document.getElementById("candidateEmailAddress").value = email;
           }
 
-          let displayName = user.displayName || email.split('@')[0];
+          let displayName = user.displayName || user.email.split('@')[0];
           updateDashboardNameDisplays(displayName); // Initial fallback update
 
           await loadCandidateProfile(email);
