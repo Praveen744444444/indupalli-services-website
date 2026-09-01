@@ -1708,6 +1708,9 @@ body.dark-mode .sidebar{background:#090d16!important;}
 
       return "";
   }
+  // Expose on window so classic (non-module) scripts elsewhere on the page
+  // — e.g. the AI Profile Builder / AI Cover Letter code — can call it too.
+  window.getSupabasePublishableKey = getSupabasePublishableKey;
 
   window.aiQuotaPopupShownThisLoad = false;
 
@@ -2068,7 +2071,13 @@ body.dark-mode .sidebar{background:#090d16!important;}
               return;
           }
 
-          const email = user.email || "candidate@email.com";
+          if (!user.email) {
+              console.warn("Signed-in user has no email on the Firebase Auth object (likely an anonymous/incomplete session). Redirecting to login page...");
+              window.location.href = "login.html";
+              return;
+          }
+
+          const email = user.email;
           localStorage.setItem("candidateLoggedInEmail", email);
 
           if (document.getElementById("candidateEmail")) {
@@ -2078,7 +2087,7 @@ body.dark-mode .sidebar{background:#090d16!important;}
               document.getElementById("candidateEmailAddress").value = email;
           }
 
-          let displayName = user.displayName || user.email.split('@')[0];
+          let displayName = user.displayName || email.split('@')[0];
           updateDashboardNameDisplays(displayName); // Initial fallback update
 
           await loadCandidateProfile(email);
@@ -3077,6 +3086,15 @@ body.dark-mode .sidebar{background:#090d16!important;}
     "https://lfjgtwiivdqvcgzbfkmu.supabase.co/functions/v1/generate-ai-profile";
 
 
+  // Turns any raw backend/provider error (timeouts, HTTP codes, upstream
+  // AI-provider quota messages, etc.) into a single professional, generic
+  // message for the candidate. Technical detail stays in the console log
+  // only — never shown in the UI.
+  function friendlyAIErrorMessage() {
+    return "Our AI service is temporarily down. Please try again in a few minutes.";
+  }
+  window.friendlyAIErrorMessage = friendlyAIErrorMessage;
+
   async function callAIProfileFunction(payload) {
     const supabaseClient =
       window.supabase || supabase;
@@ -3120,7 +3138,8 @@ body.dark-mode .sidebar{background:#090d16!important;}
     if (!response.ok) {
       throw new Error(
         data?.error ||
-        "AI generation failed."
+        data?.message ||
+        `AI generation failed (HTTP ${response.status}).`
       );
     }
 
@@ -3188,9 +3207,8 @@ body.dark-mode .sidebar{background:#090d16!important;}
 
       if (window.showCustomAlert) {
         window.showCustomAlert(
-          error.message ||
-          "Failed to generate About Me summary.",
-          "AI Generation Error",
+          friendlyAIErrorMessage(),
+          "AI Generation Unavailable",
           "error"
         );
       }
@@ -3362,9 +3380,8 @@ body.dark-mode .sidebar{background:#090d16!important;}
 
       if (window.showCustomAlert) {
         window.showCustomAlert(
-          error.message ||
-          "Failed to generate profile details.",
-          "AI Error",
+          friendlyAIErrorMessage(),
+          "AI Generation Unavailable",
           "error"
         );
       }
