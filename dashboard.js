@@ -690,9 +690,10 @@ console.log("✅ Dashboard Part 7 Loaded");
 // PART 8: AI GENERATOR & MODAL CONTROLS (PLAIN TEXT)
 // ==========================================================
 
-window.runGeminiAIDraft = function () {
+window.runGeminiAIDraft = async function () {
     const promptInput = document.getElementById("aiPrompt");
     const aiResultEl = document.getElementById("aiResult");
+    const genBtn = document.getElementById("btnGenerateAIModal");
 
     const titleInput = document.getElementById("jobTitle");
     const expInput = document.getElementById("experience");
@@ -702,87 +703,63 @@ window.runGeminiAIDraft = function () {
     const noticeInput = document.getElementById("maxNotice");
 
     const userPrompt = promptInput?.value?.trim() || "";
-    const title = titleInput?.value?.trim() || "Professional";
-    const exp = expInput?.value?.trim() || "2+ Years";
+    const title = titleInput?.value?.trim() || "";
+    const exp = expInput?.value?.trim() || "0";
     const company = compInput?.value?.trim() || "Indupalli Services Pvt Ltd";
     const location = locInput?.value?.trim() || "Hyderabad, Telangana";
-    const salary = salaryInput?.value?.trim() || "Competitive / Best in Industry";
-    const notice = noticeInput?.value || "Immediate / Serving";
+    const salary = salaryInput?.value?.trim() || "";
+    const notice = noticeInput?.value || "";
 
-    if (aiResultEl) {
-        aiResultEl.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Generating tailored Job Description...`;
+    if (!title) {
+        if (typeof window.showCustomAlert === "function") {
+            window.showCustomAlert("Please enter a Job Title before generating a description.", "Warning", "Info");
+        }
+        titleInput?.focus();
+        return;
     }
 
-    setTimeout(() => {
-        const titleLower = title.toLowerCase();
-        let responsibilities = "";
-        let skills = "";
+    if (aiResultEl) {
+        aiResultEl.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Generating tailored Job Description with Gemini...`;
+    }
+    if (genBtn) genBtn.disabled = true;
 
-        if (titleLower.includes("recruit") || titleLower.includes("hr") || titleLower.includes("talent") || titleLower.includes("staffing")) {
-            responsibilities = `• End-to-End Recruitment: Manage the complete full-cycle recruitment process from sourcing and screening to offer negotiation and onboarding.
-• Candidate Sourcing: Source active and passive candidates using job boards (Dice, LinkedIn Recruiter, Monster), networking, and internal databases.
-• Screening & Assessment: Conduct initial HR screenings to evaluate candidate fit, technical baseline, communication skills, and salary expectations.
-• Stakeholder Coordination: Partner closely with hiring managers to understand technical requirements, project needs, and team culture.
-• Pipeline Management: Maintain accurate candidate records, compliance data, and pipeline tracking in the Applicant Tracking System (ATS).`;
-            
-            skills = `• Professional Experience: Minimum ${exp} of proven experience in IT/Non-IT recruitment, talent acquisition, or HR operations.
-• Sourcing Expertise: Hands-on experience with modern sourcing tools, job portals, and complex Boolean search strings.
-• Communication Skills: Exceptional verbal and written English communication and negotiation abilities.
-• Market Knowledge: Strong understanding of hiring trends, compensation benchmarks, and employment/tax terms (e.g., W2, C2C, 1099).`;
-        
-        } else if (titleLower.includes("develop") || titleLower.includes("engineer") || titleLower.includes("program") || titleLower.includes("coder")) {
-            responsibilities = `• Software Development: Design, develop, test, and deploy scalable, high-performance software solutions and architectures.
-• Code Quality: Write clean, maintainable, and efficient code while adhering to best practices and coding standards.
-• Agile Collaboration: Participate actively in daily stand-ups, sprint planning, and code review sessions with cross-functional teams.
-• System Optimization: Identify performance bottlenecks, debug complex technical issues, and optimize application workflows.
-• Technical Documentation: Maintain clear and comprehensive technical documentation for APIs, systems, and logic flows.`;
-            
-            skills = `• Professional Experience: Minimum ${exp} of hands-on software development, engineering, or architecture experience.
-• Core Technologies: Proficiency in relevant programming languages, modern frameworks, and version control systems (e.g., Git).
-• Problem Solving: Strong analytical mindset with a proven ability to troubleshoot and resolve complex logical issues.
-• Team Collaboration: Excellent communication skills and the ability to thrive in cross-functional Agile environments.`;
-        
-        } else {
-            responsibilities = `• Lifecycle & Execution: Lead and manage end-to-end deliverables aligned with organizational goals and client objectives.
-• Cross-Functional Collaboration: Partner directly with internal teams and external stakeholders to ensure seamless project delivery.
-• Strategy & Optimization: Identify operational bottlenecks and implement scalable, high-impact workflow solutions.
-• Quality & Standards: Ensure all deliverables adhere to strict quality benchmarks, established standards, and compliance guidelines.
-• Tracking & Reporting: Maintain transparent status updates, performance metrics, and structured reporting.`;
-            
-            skills = `• Professional Experience: Minimum ${exp} of proven, hands-on experience in ${title} or equivalent roles.
-• Core Competencies: Strong functional and technical domain knowledge aligned with ${title} responsibilities.
-• Communication Skills: Exceptional verbal and written English communication and stakeholder management abilities.
-• Analytical Mindset: Strong problem-solving ability with a structured approach to working independently.`;
-        }
+    // Pull any free-text guidance the recruiter typed beyond the auto-filled
+    // "Create a professional job description for..." starter sentence.
+    let extraGuidance = "";
+    if (userPrompt && !userPrompt.toLowerCase().startsWith("create a professional job description")) {
+        extraGuidance = userPrompt;
+    }
 
-        let customRequirements = "";
-        if (userPrompt && !userPrompt.toLowerCase().startsWith("create a professional job description")) {
-            customRequirements = `\n\nAdditional Role Guidelines:\n• ${userPrompt}`;
-        }
+    try {
+        const { data, error } = await supabase.functions.invoke("generate-job-description", {
+            body: {
+                jobTitle: title,
+                companyName: company,
+                location,
+                experience: exp,
+                salary,
+                notice,
+                extraGuidance,
+            },
+        });
 
-        const generatedJD = `Role Overview:
-${company} is looking for an experienced and results-driven ${title} to join our team in ${location}. The ideal candidate should have at least ${exp} of relevant domain experience and be able to deliver high-quality work in a collaborative, fast-paced environment.
-
-Key Details:
-• Position: ${title}
-• Company: ${company}
-• Location: ${location}
-• Experience Required: ${exp}
-• CTC / Salary: ${salary}
-• Notice Period: ${notice}
-
-Key Responsibilities:
-${responsibilities}
-
-Required Qualifications & Skills:
-${skills}
-• Educational Background: Bachelor's or Master's degree in a relevant discipline or equivalent practical experience.${customRequirements}`;
+        if (error) throw error;
+        if (!data?.description) throw new Error("Gemini did not return a description.");
 
         if (aiResultEl) {
-            aiResultEl.innerText = generatedJD;
+            aiResultEl.innerText = data.description;
         }
-
-    }, 400);
+    } catch (e) {
+        console.error("runGeminiAIDraft error:", e);
+        if (aiResultEl) {
+            aiResultEl.innerText = "Could not generate a description right now. Please try again, or write it manually.";
+        }
+        if (typeof window.showCustomAlert === "function") {
+            window.showCustomAlert(e?.message || "AI generation failed. Please try again.", "Error", "Error");
+        }
+    } finally {
+        if (genBtn) genBtn.disabled = false;
+    }
 };
 
 window.insertAIResult = function () {
