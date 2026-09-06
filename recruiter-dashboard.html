@@ -1273,19 +1273,24 @@ As the workforce continues to evolve, staying proactive about ${topic.toLowerCas
                         return ownerEmails.includes(currentEmail);
                     });
 
+                    // Strict, ID-based ownership only. Job IDs are unique per job
+                    // row, and recruiteremail (stamped on the application itself
+                    // at submission time) is unique per recruiter account.
+                    // We deliberately do NOT match by job title text anymore:
+                    // two different recruiters can post jobs with the same
+                    // title (e.g. "Software Engineer"), and matching on title
+                    // would leak one recruiter's applicants into another
+                    // recruiter's dashboard.
                     const jobIds = new Set(recruiterJobs.map(job => String(job.id)));
-                    const jobTitles = new Set(recruiterJobs.map(job => normalize(job.jobtitle || job.title || job.jobTitle || job.job_title)));
 
                     apps = allApps.filter(app => {
                         const appJobId = String(app.jobId ?? app.job_id ?? app.jobID ?? "");
-                        const appJobTitle = normalize(app.jobTitle || app.job_title || app.title);
                         const appRecruiterEmail = normalize(
                             app.recruiteremail || app.recruiterEmail || app.recruiter_email || app.createdByEmail || app.created_by_email
                         );
 
                         return (
                             (appJobId && jobIds.has(appJobId)) ||
-                            (appJobTitle && jobTitles.has(appJobTitle)) ||
                             (appRecruiterEmail && appRecruiterEmail === currentEmail)
                         );
                     });
