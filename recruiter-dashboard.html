@@ -1274,7 +1274,7 @@ As the workforce continues to evolve, staying proactive about ${topic.toLowerCas
                     });
 
                     const jobIds = new Set(recruiterJobs.map(job => String(job.id)));
-                    const jobTitles = new Set(recruiterJobs.map(job => normalize(job.title || job.jobTitle || job.job_title)));
+                    const jobTitles = new Set(recruiterJobs.map(job => normalize(job.jobtitle || job.title || job.jobTitle || job.job_title)));
 
                     apps = allApps.filter(app => {
                         const appJobId = String(app.jobId ?? app.job_id ?? app.jobID ?? "");
