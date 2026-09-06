@@ -2302,11 +2302,22 @@ body.dark-mode .sidebar{background:#090d16!important;}
           }
       }
 
+      // Stamp the owning recruiter's email onto the application row itself,
+      // read from the already-loaded job record (window.allJobsData). This
+      // keeps the application correctly associated with candidate + job +
+      // recruiter even if the job posting is later edited/deleted, so the
+      // recruiter's application count/list doesn't silently lose entries.
+      const applyingJobRecord = (jobId && window.allJobsData) ? window.allJobsData[String(jobId)] : null;
+      const jobOwnerEmail = String(
+          applyingJobRecord?.recruiteremail || applyingJobRecord?.recruiterEmail || applyingJobRecord?.recruiter_email || ""
+      ).trim().toLowerCase();
+
       try {
           const { error: appErr } = await supabase.from('jobApplications').insert([{
               jobId: jobId ?? null,
               jobTitle: jobTitleStr,
               companyName: window.currentApplyingJobCompany || "Indupalli Services",
+              recruiteremail: jobOwnerEmail || null,
               fullname: applicantName,
               email: applicantEmail || "",
               phone: document.getElementById("applyPhone")?.value || "",
