@@ -1739,11 +1739,60 @@ body.dark-mode .sidebar{background:#090d16!important;}
   }
   window.showAiQuotaNoticeOnce = showAiQuotaNoticeOnce;
 
+  // A job must be hidden from candidates when it is archived OR its closing date has passed.
+  // Do not use new Date("YYYY-MM-DD") directly because it is parsed as UTC and can
+  // incorrectly expire a job early in some time zones.
+  function getJobClosingDate(job) {
+      return job?.closingdate ??
+          job?.closing_date ??
+          job?.closingDate ??
+          job?.expirydate ??
+          job?.expiry_date ??
+          job?.expiryDate ??
+          job?.expiresat ??
+          job?.expires_at ??
+          job?.expiresAt ??
+          null;
+  }
+
   function isJobArchived(job) {
       return job?.isarchived === true ||
           job?.is_archived === true ||
           job?.isArchived === true;
   }
+
+  function isJobExpired(job) {
+      const rawDate = getJobClosingDate(job);
+      if (!rawDate) return false; // No closing date means the job remains open.
+
+      const value = String(rawDate).trim();
+      if (!value) return false;
+
+      let closingTime;
+
+      // Date-only values (the normal value from <input type="date">) stay open
+      // for the entire closing date and expire at the end of that local day.
+      if (/^\d{4}-\d{2}-\d{2}$/.test(value)) {
+          const [year, month, day] = value.split('-').map(Number);
+          closingTime = new Date(year, month - 1, day, 23, 59, 59, 999).getTime();
+      } else {
+          closingTime = new Date(value).getTime();
+      }
+
+      if (!Number.isFinite(closingTime)) {
+          console.warn('Invalid job closing date:', rawDate, job);
+          return false;
+      }
+
+      return closingTime < Date.now();
+  }
+
+  function isJobActive(job) {
+      return !isJobArchived(job) && !isJobExpired(job);
+  }
+
+  window.isJobExpired = isJobExpired;
+  window.isJobActive = isJobActive;
 
   async function invokeScoreResume(payload) {
 
@@ -2760,7 +2809,7 @@ body.dark-mode .sidebar{background:#090d16!important;}
       );
       const scoreEl = card?.querySelector(".job-match-score");
 
-      if (!scoreEl || !job || isJobArchived(job)) return;
+      if (!scoreEl || !job || !isJobActive(job)) return;
 
       const savedScore = getSavedJobScore(job);
 
@@ -2852,7 +2901,7 @@ body.dark-mode .sidebar{background:#090d16!important;}
       const uncachedJobs = [];
 
       jobs.forEach(job => {
-          if (!job || isJobArchived(job)) return;
+          if (!job || !isJobActive(job)) return;
 
           const card = document.querySelector(
               `.job-card[data-job-id="${CSS.escape(String(job.id))}"]`
@@ -2942,7 +2991,7 @@ body.dark-mode .sidebar{background:#090d16!important;}
               return;
           }
 
-          const activeJobs = jobs.filter(job => !isJobArchived(job));
+          const activeJobs = jobs.filter(job => isJobActive(job));
 
           if (activeJobs.length === 0) {
               container.innerHTML = `<div style="grid-column:1/-1; text-align:center; color:var(--text-muted); font-weight:600; padding:40px;">No active job postings found.</div>`;
