@@ -138,60 +138,6 @@ body { min-height:100vh; display:flex; background:var(--bg-light); color:var(--t
   .left-bottom { display:none; }
   .right-panel { width:100%; padding:40px 24px 60px; box-shadow:none; }
 }
-
-/* ===== PREMIUM SAAS UI/UX REDESIGN ===== */
-:root{
-  --primary:#2563eb;--primary-dark:#1d4ed8;--navy:#0f172a;--bg-light:#f5f7fb;
-  --border-color:#e5e7eb;--text-title:#111827;--text-body:#475569;--text-muted:#64748b;
-}
-body{min-height:100vh;background:#f5f7fb;overflow-x:hidden}
-.left-panel{flex:1.05;padding:42px 56px;background:
- radial-gradient(circle at 15% 15%,rgba(59,130,246,.35),transparent 30%),
- radial-gradient(circle at 85% 75%,rgba(37,99,235,.22),transparent 35%),
- linear-gradient(145deg,#07152e 0%,#0b2456 52%,#06142d 100%)}
-.left-panel:after{content:"";position:absolute;width:380px;height:380px;border:1px solid rgba(96,165,250,.12);border-radius:50%;right:-150px;bottom:-170px}
-.brand img{height:44px;width:44px;border-radius:11px}
-.left-center{max-width:500px;margin:22px 0}
-.hero-badge{background:rgba(96,165,250,.12);border-color:rgba(147,197,253,.18);color:#dbeafe}
-.left-panel h1{font-size:42px;letter-spacing:-1.6px}
-.left-panel p.tagline{max-width:440px;color:#cbd5e1}
-.features-list{gap:10px;max-width:460px}
-.feature-item{padding:11px 14px;border-radius:13px;background:rgba(255,255,255,.055)}
-.feature-item:hover{transform:translateX(4px)}
-.feature-icon{width:38px;height:38px}
-.right-panel{width:560px;padding:36px 52px;background:#fff;box-shadow:-18px 0 60px rgba(15,23,42,.06)}
-.form-box{max-width:420px}
-.form-badge{margin-bottom:12px;background:#eff6ff}
-.form-box h2{font-size:30px;letter-spacing:-1px;margin-bottom:8px}
-.form-box .sub{margin-bottom:22px}
-.input-group{margin-bottom:13px}
-.input-group label{font-size:11px}
-.input-wrap input{padding-top:13px;padding-bottom:13px;border-radius:10px;background:#fafbfc}
-.input-wrap input:hover{border-color:#cbd5e1}
-.btn-register{border-radius:10px;padding:14px;background:linear-gradient(135deg,#2563eb,#1d4ed8)}
-.social-btn,.btn-login{border-radius:10px}
-.recruiter-access-box{margin-top:18px;border-radius:12px;background:linear-gradient(135deg,#fffaf5,#fff7ed)}
-.popup-box{border-radius:20px}
-@media(max-width:1100px){.left-panel{padding:38px}.right-panel{width:500px;padding:34px}}
-@media(max-width:900px){
- body{display:block;background:#fff}
- .left-panel{min-height:250px;padding:28px 24px}
- .left-center{margin:28px 0 0}.left-panel h1{font-size:32px}
- .hero-badge,.left-center .tagline{display:none}
- .right-panel{width:100%;padding:32px 22px 50px;overflow:visible}
- .form-box{max-width:480px}
-}
-@media(max-width:480px){
- .left-panel{min-height:160px;padding:22px}
- .brand-text h2{font-size:18px}
- .left-panel h1{font-size:27px;margin:20px 0 0}
- .right-panel{padding:28px 16px 40px}
- .form-box h2{font-size:25px}
- .input-wrap input{font-size:16px}
- .recruiter-access-box{align-items:flex-start;flex-direction:column}
- .btn-recruiter{width:100%;text-align:center}
-}
-
 </style>
 </head>
 <body>
@@ -550,31 +496,68 @@ window.skipPhoneVerification = function() {
 
 async function handleSocialSignup(provider) {
   try {
+    if (provider instanceof GoogleAuthProvider) {
+      provider.addScope("email");
+      provider.addScope("profile");
+      provider.setCustomParameters({ prompt: "select_account" });
+    }
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
+    const providerEmail = (user.providerData || []).map(p => p?.email).find(Boolean);
+    const tokenEmail = result?._tokenResponse?.email || result?._tokenResponse?.emailAddress || "";
+    const email = String(user.email || providerEmail || tokenEmail || "").trim().toLowerCase();
+    if (!email) {
+      try { await signOut(auth); } catch (_) {}
+      showPopup("⚠️ Email Not Available. We could not retrieve an email address from this account. Please choose another account or use email registration.");
+      return;
+    }
+    // The email column is unique. First check whether this candidate already
+    // exists (for example, the user previously registered with email/password).
+    const { data: existingCandidate, error: lookupError } = await supabase
+      .from("candidates")
+      .select("id, email")
+      .eq("email", email)
+      .maybeSingle();
 
-    // Automatically provision candidate profile in Supabase using real Google Gmail
-    await supabase.from("candidates").upsert({
-      id: user.uid,
-      name: user.displayName || "Candidate",
-      phone: user.phoneNumber || "",
-      email: user.email, // Automatically pulled from Google account
-      location: "", experience: "", skills: "", about: "",
-      isEmailVerified: true,
-      createdAt: new Date().toISOString()
-    }, { onConflict: 'id' });
+    if (lookupError) throw lookupError;
 
-    localStorage.setItem("userEmail", user.email);
-    localStorage.setItem("candidateLoggedInEmail", user.email);
-
+    if (existingCandidate) {
+      // Do NOT insert a second row with the same email. Reuse the existing
+      // candidate record and only refresh safe profile fields.
+      const { error } = await supabase
+        .from("candidates")
+        .update({
+          name: user.displayName || undefined,
+          phone: user.phoneNumber || undefined,
+          isEmailVerified: true
+        })
+        .eq("email", email);
+      if (error) throw error;
+    } else {
+      const { error } = await supabase.from("candidates").insert({
+        id: user.uid,
+        name: user.displayName || email.split("@")[0] || "Candidate",
+        phone: user.phoneNumber || "",
+        email,
+        location: "", experience: "", skills: "", about: "",
+        isEmailVerified: true,
+        createdAt: new Date().toISOString()
+      });
+      if (error) throw error;
+    }
+    localStorage.setItem("userEmail", email);
+    localStorage.setItem("candidateLoggedInEmail", email);
     showPopup("🎉 Account verified & created! Redirecting...");
     document.querySelector("#popupOkBtn").onclick = () => window.location.href = "candidate.html";
-    
-    setTimeout(() => {
-        window.location.href = "candidate.html";
-    }, 1200);
+    setTimeout(() => { window.location.href = "candidate.html"; }, 1200);
   } catch (e) {
-    showPopup("❌ " + e.message);
+    console.error("Social sign-in error:", e);
+    if (e?.code === "auth/popup-closed-by-user") return;
+    if (e?.code === "auth/account-exists-with-different-credential") {
+      showPopup("⚠️ This email already has an account with a different sign-in method. Please use the original sign-in method.");
+      return;
+    }
+    showPopup("❌ " + (e?.message || "Social sign-in failed. Please try again."));
   }
 }
 
