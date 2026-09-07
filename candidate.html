@@ -2071,7 +2071,28 @@ body.dark-mode .sidebar{background:#090d16!important;}
               return;
           }
 
-          const email = user.email || "candidate@email.com";
+          // Always use the authenticated account email. Google/Firebase users
+          // normally expose it as user.email; providerData is a safe fallback.
+          const providerEmail = user.providerData
+              ?.map(provider => provider.email)
+              .find(Boolean);
+          const email = String(user.email || providerEmail || "").trim().toLowerCase();
+
+          // Never use a fake placeholder such as candidate@email.com.
+          // A placeholder would cause different Google users to share the same
+          // candidate profile and application records.
+          if (!email) {
+              console.error("Authenticated user has no email address.", user);
+              if (window.showCustomAlert) {
+                  window.showCustomAlert(
+                      "We could not retrieve the email address from your Google account. Please sign in again with an account that provides an email address.",
+                      "Email Not Available",
+                      "error"
+                  );
+              }
+              return;
+          }
+
           localStorage.setItem("candidateLoggedInEmail", email);
 
           if (document.getElementById("candidateEmail")) {
@@ -2081,7 +2102,7 @@ body.dark-mode .sidebar{background:#090d16!important;}
               document.getElementById("candidateEmailAddress").value = email;
           }
 
-          let displayName = user.displayName || user.email.split('@')[0];
+          const displayName = user.displayName || email.split('@')[0];
           updateDashboardNameDisplays(displayName); // Initial fallback update
 
           await loadCandidateProfile(email);
