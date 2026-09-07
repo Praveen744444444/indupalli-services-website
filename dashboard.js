@@ -63,12 +63,21 @@ function initializeDashboard() {
     initializeSearch();
     initializeLogout();
     initializeNotificationListener();
-    loadDashboardCounts();
     loadJobs();
-    
+
     // NOTE: loadApplications() has been removed here because
     // window.loadInboundApplications() is now handled cleanly by the HTML file.
-    
+
+    // NOTE: loadDashboardCounts() has been removed for the same reason —
+    // it wrote to the same #kpiTotalJobs / #kpiTotalApps elements as
+    // window.loadPostedJobsInventory() and window.loadInboundApplications()
+    // (both in recruiter-dashboard.html), running concurrently on every
+    // page load. Two async fetches racing to set the same DOM element
+    // meant the displayed count depended on which one happened to finish
+    // last, sometimes showing a stale/incorrect number even though the
+    // underlying per-recruiter filtering logic was correct. The HTML's
+    // own functions are now the single source of truth for both KPIs.
+
     loadPayments();
 }
 
@@ -180,38 +189,22 @@ console.log("✅ Dashboard Part 1 Loaded");
 // Dashboard Counters
 // ==========================================================
 async function loadDashboardCounts() {
+    // This function used to independently fetch jobs/applications and write
+    // its own counts into #kpiTotalJobs / #kpiTotalApps. That duplicated
+    // window.loadPostedJobsInventory() and window.loadInboundApplications()
+    // (both in recruiter-dashboard.html), which run on the same page and
+    // race this one to set the same DOM elements — including every 60s via
+    // refreshDashboardKPIs()'s setInterval below. Two independent writers
+    // meant the visible count could revert to a stale/incorrect value
+    // shortly after the correct one appeared.
+    //
+    // Kept as a wrapper (rather than deleted) so every existing call site
+    // (post/edit/delete job, the periodic refresh) keeps working, but both
+    // KPIs now always come from the single, recruiter-scoped implementation
+    // in recruiter-dashboard.html.
     try {
-        const myJobIds = await getMyJobIds();
-
-        const { data: jobs } = await supabase
-            .from("jobs")
-            .select("id, recruiteremail");
-
-        const { data: apps } = await supabase
-            .from("jobApplications")
-            .select("*");
-
-        const jobList = jobs || [];
-        const appList = apps || [];
-
-        const jobCount = myJobIds === null
-            ? jobList.length
-            : jobList.filter(j =>
-                String(j.recruiteremail || "").trim().toLowerCase() === getMyEmail()
-            ).length;
-
-        const appCount = myJobIds === null
-            ? appList.length
-            : appList.filter(a =>
-                myJobIds.has(String(a.jobId ?? a.job_id ?? a.jobID ?? "").trim())
-            ).length;
-
-        const jobsCard = document.getElementById("kpiTotalJobs");
-        const appsCard = document.getElementById("kpiTotalApps");
-
-        if (jobsCard) jobsCard.innerHTML = jobCount;
-        if (appsCard) appsCard.innerHTML = appCount;
-
+        if (typeof window.loadPostedJobsInventory === "function") await window.loadPostedJobsInventory();
+        if (typeof window.loadInboundApplications === "function") await window.loadInboundApplications();
     } catch (e) {
         console.error("Dashboard counter error:", e);
     }
