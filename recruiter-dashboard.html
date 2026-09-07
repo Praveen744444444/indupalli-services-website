@@ -495,6 +495,80 @@
         .custom-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
         
         @media(max-width:768px) { .candidate-analysis-grid { grid-template-columns:1fr; } .candidate-skills { max-width:none; } }
+
+        /* ── COVER LETTER / CANDIDATE PROFILE MODAL FIT FIX ── */
+        #coverLetterModal .modal-box {
+            max-width: 620px !important;
+            max-height: calc(100vh - 40px);
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        #coverLetterModal .cover-letter-header {
+            flex-shrink: 0;
+            padding: 32px 32px 20px;
+            padding-right: 76px;
+        }
+
+        #coverLetterModal .cover-letter-body {
+            flex: 1 1 auto;
+            min-height: 0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 0 32px 20px;
+            overscroll-behavior: contain;
+        }
+
+        #coverLetterModal .cover-letter-body .summary-card {
+            margin-bottom: 18px;
+        }
+
+        /* Remove the nested scrollbar from the professional summary. */
+        #coverLetterModal #modalCandidateLetter {
+            max-height: none !important;
+            overflow: visible !important;
+            padding-right: 0 !important;
+        }
+
+        #coverLetterModal .candidate-analysis-panel {
+            margin-top: 0;
+        }
+
+        #coverLetterModal .cover-letter-footer {
+            flex-shrink: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 16px 32px 24px;
+            background: #ffffff;
+            border-top: 1px solid var(--border-color);
+        }
+
+        @media (max-width: 768px) {
+            .modal-overlay { padding: 10px; }
+
+            #coverLetterModal .modal-box {
+                max-height: calc(100vh - 20px);
+                border-radius: 18px;
+            }
+
+            #coverLetterModal .cover-letter-header {
+                padding: 24px 20px 16px;
+                padding-right: 60px;
+            }
+
+            #coverLetterModal .cover-letter-body {
+                padding: 0 20px 16px;
+            }
+
+            #coverLetterModal .cover-letter-footer {
+                padding: 14px 20px 18px;
+            }
+        }
     </style>
 </head>
 
@@ -826,30 +900,32 @@
 
     <!-- ── MODAL: VIEW CANDIDATE COVER LETTER / ABOUT ME ── -->
     <div id="coverLetterModal" class="modal-overlay">
-        <div class="modal-box" style="max-width: 620px;">
+        <div class="modal-box">
             <button onclick="closeCoverLetterModal()" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
-            
-            <div style="margin-bottom: 20px; padding-right: 40px;">
+
+            <div class="cover-letter-header">
                 <span id="modalCandidateJob" style="font-size: 12px; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 1px;">Target Role</span>
                 <div id="modalCandidateName">Candidate Profile</div>
                 <div id="modalCandidateMeta" style="font-size: 13px; color: var(--text-muted); display: flex; gap: 14px; flex-wrap: wrap;"></div>
             </div>
 
-            <div style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: 16px; padding: 22px; margin-bottom: 24px;">
-                <h4 style="font-size: 14px; font-weight: 800; color: var(--navy); margin-bottom: 10px; display:flex; align-items:center; gap:8px;">
-                    <i class="fa-solid fa-quote-left" style="color: var(--primary);"></i> Professional Summary & Pitch
-                </h4>
-                <div id="modalCandidateLetter" class="custom-scroll" style="font-size: 14.5px; color: var(--text-body); line-height: 1.8; white-space: pre-line; max-height: 200px; overflow-y: auto; padding-right: 6px;">No cover letter provided by candidate.</div>
+            <div class="cover-letter-body custom-scroll">
+                <div class="summary-card" style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: 16px; padding: 22px;">
+                    <h4 style="font-size: 14px; font-weight: 800; color: var(--navy); margin-bottom: 10px; display:flex; align-items:center; gap:8px;">
+                        <i class="fa-solid fa-quote-left" style="color: var(--primary);"></i> Professional Summary & Pitch
+                    </h4>
+                    <div id="modalCandidateLetter" class="custom-scroll" style="font-size: 14.5px; color: var(--text-body); line-height: 1.8; white-space: pre-line;">No cover letter provided by candidate.</div>
+                </div>
+
+                <div class="candidate-analysis-panel">
+                    <h4 style="font-size:14px;font-weight:800;color:var(--navy);margin:0 0 14px;display:flex;align-items:center;gap:8px;">
+                        <i class="fa-solid fa-chart-simple" style="color:var(--primary);"></i> Resume & Job Match Analysis
+                    </h4>
+                    <div id="modalCandidateAnalysis" class="candidate-analysis-grid"></div>
+                </div>
             </div>
 
-            <div class="candidate-analysis-panel">
-                <h4 style="font-size:14px;font-weight:800;color:var(--navy);margin:0 0 14px;display:flex;align-items:center;gap:8px;">
-                    <i class="fa-solid fa-chart-simple" style="color:var(--primary);"></i> Resume & Job Match Analysis
-                </h4>
-                <div id="modalCandidateAnalysis" class="candidate-analysis-grid"></div>
-            </div>
-
-            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+            <div class="cover-letter-footer">
                 <div id="modalResumeLinkBox"></div>
                 <button onclick="closeCoverLetterModal()" class="view-btn" style="padding: 10px 22px;">Close</button>
             </div>
