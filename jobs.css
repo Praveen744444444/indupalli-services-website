@@ -270,15 +270,14 @@ nav a.active{
     font-weight:bold;
 }
 
-
 /* =========================================
-   ACTIVE STATUS WITH GLOWING LIGHTNING
+   ACTIVE STATUS WITH BLINKING GREEN DOT
 ========================================= */
 
 .job-status{
     display:inline-flex;
     align-items:center;
-    gap:6px;
+    gap:7px;
 
     background:#e8fff2;
     color:#00a651;
@@ -290,53 +289,47 @@ nav a.active{
     font-weight:700;
 }
 
-/* Animated Lightning Icon */
+/* Green blinking dot */
 
 .job-status::before{
-    content:"⚡";
+    content:"";
+    width:8px;
+    height:8px;
+
+    background:#00b86b;
+    border-radius:50%;
+
     display:inline-block;
+    flex-shrink:0;
 
-    color:#00b86b;
-    font-size:14px;
-
-    animation:lightningPulse 1.2s ease-in-out infinite;
+    animation:greenBlink 1.2s ease-in-out infinite;
 }
 
+/* Green glow + blinking animation */
 
-/* Green Glow + Pulse Animation */
+@keyframes greenBlink{
 
-@keyframes lightningPulse{
+    0%,
+    100%{
+        opacity:.35;
+        transform:scale(.8);
 
-    0%{
-        transform:scale(1);
-        opacity:.6;
-
-        filter:
-        drop-shadow(0 0 2px #00b86b)
-        drop-shadow(0 0 4px #00b86b);
+        box-shadow:
+            0 0 2px #00b86b,
+            0 0 5px #00b86b;
     }
 
     50%{
-        transform:scale(1.35);
         opacity:1;
+        transform:scale(1.25);
 
-        filter:
-        drop-shadow(0 0 5px #00b86b)
-        drop-shadow(0 0 12px #00b86b)
-        drop-shadow(0 0 20px #00b86b);
-    }
-
-    100%{
-        transform:scale(1);
-        opacity:.6;
-
-        filter:
-        drop-shadow(0 0 2px #00b86b)
-        drop-shadow(0 0 4px #00b86b);
+        box-shadow:
+            0 0 5px #00b86b,
+            0 0 10px #00b86b,
+            0 0 18px #00b86b;
     }
 
 }
-
 
 /* ======================
    TITLE
