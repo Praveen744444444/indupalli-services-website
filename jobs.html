@@ -2747,6 +2747,143 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
+
+<!-- =========================================================
+     ADD-ONLY ORIGINAL SEARCH + FILTER VISUAL LAYOUT
+     No existing Supabase, job loading, or application logic changed.
+========================================================= -->
+<style>
+/* Original professional search header */
+.search-bar{
+  max-width:920px !important;
+  min-height:82px !important;
+  margin:42px auto 44px !important;
+  border-radius:16px !important;
+  background:rgba(255,255,255,.96) !important;
+  box-shadow:0 14px 34px rgba(28,55,94,.15) !important;
+  padding:10px 18px !important;
+  position:relative;
+  z-index:2;
+}
+
+.search-bar::before{
+  content:"";
+  position:absolute;
+  z-index:-1;
+  left:-100vw;
+  right:-100vw;
+  top:-42px;
+  bottom:-44px;
+  background:
+    linear-gradient(120deg,rgba(31,78,145,.82),rgba(91,139,202,.62)),
+    linear-gradient(90deg,#416da8,#b9c9df);
+}
+
+.search-bar input{
+  min-height:58px !important;
+  font-size:17px !important;
+  border-right:1px solid #d8e0ea !important;
+  padding:0 20px !important;
+}
+
+.search-bar::after{
+  content:"Find Opportunities";
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-width:180px;
+  min-height:58px;
+  border-radius:11px;
+  background:linear-gradient(135deg,#285a9f,#477fc8);
+  color:#fff;
+  font-size:16px;
+  font-weight:800;
+  letter-spacing:.1px;
+  cursor:pointer;
+  box-shadow:0 8px 18px rgba(40,90,159,.20);
+}
+
+/* Added filter presentation only */
+.container::before{
+  content:"Explore Jobs        Job Category        Work Preference        Compensation";
+  display:flex;
+  align-items:center;
+  height:86px;
+  padding-left:max(7%,calc((100% - 1420px)/2));
+  white-space:pre;
+  color:#344154;
+  background:#fff;
+  border-bottom:1px solid #dce4ed;
+  box-shadow:0 3px 10px rgba(24,45,78,.05);
+  font-size:16px;
+  font-weight:700;
+  word-spacing:5px;
+}
+
+/* Added actions on the right side of filter row */
+.container{
+  position:relative;
+}
+.container::after{
+  content:"Reset Search       ✦  Personalized Jobs";
+  position:absolute;
+  top:20px;
+  right:max(7%,calc((100% - 1420px)/2));
+  display:flex;
+  align-items:center;
+  gap:24px;
+  height:46px;
+  padding:0 18px;
+  border-radius:13px;
+  color:#27374d;
+  background:
+    linear-gradient(90deg,#fff 0 42%,transparent 42% 46%,#f5a400 46% 100%);
+  border:1px solid #d4dfeb;
+  font-size:15px;
+  font-weight:800;
+  box-shadow:0 4px 12px rgba(35,55,85,.07);
+}
+
+/* Preserve mobile usability */
+@media(max-width:1000px){
+  .container::before{
+    content:"Explore Jobs   •   Categories   •   Work Type";
+    height:68px;
+    padding-left:24px;
+    font-size:14px;
+  }
+  .container::after{
+    display:none;
+  }
+  .search-bar{
+    margin-left:24px !important;
+    margin-right:24px !important;
+  }
+}
+
+@media(max-width:700px){
+  .search-bar{
+    min-height:68px !important;
+    margin-top:28px !important;
+    margin-bottom:30px !important;
+  }
+  .search-bar::after{
+    content:"Search";
+    min-width:105px;
+    min-height:48px;
+  }
+  .search-bar input{
+    min-height:48px !important;
+    font-size:14px !important;
+  }
+  .container::before{
+    content:"Explore Jobs";
+    justify-content:center;
+    padding-left:0;
+  }
+}
+</style>
+
 </body>
 
 </html>
