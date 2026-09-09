@@ -1,6 +1,6 @@
 /* =========================================
-   JOBS PAGE - PART 2A
-   ========================================= */
+   JOBS PAGE - COMPLETE CSS
+========================================= */
 
 :root{
     --blue:#0056d2;
@@ -14,9 +14,11 @@
 
 *{
     font-family:Calibri,'Segoe UI',sans-serif;
+    box-sizing:border-box;
 }
 
 body{
+    margin:0;
     background:var(--bg);
     color:var(--text);
 }
@@ -52,17 +54,19 @@ header{
     object-fit:contain;
     background:#fff;
     padding:3px;
-    box-shadow:0 4px 10px rgba(0,0,0,0.06);
+    box-shadow:0 4px 10px rgba(0,0,0,.06);
 }
 
 .logo-text h2{
     font-size:22px;
     color:var(--blue);
+    margin:0;
 }
 
 .logo-text p{
     font-size:12px;
     color:#64748b;
+    margin:0;
 }
 
 nav{
@@ -97,6 +101,7 @@ nav a.active{
     border-radius:3px;
 }
 
+
 /* ==========================
    HERO
 ========================== */
@@ -130,6 +135,7 @@ nav a.active{
     opacity:.9;
 }
 
+
 /* ==========================
    PAGE
 ========================== */
@@ -139,6 +145,7 @@ nav a.active{
     margin:auto;
     padding:60px 20px;
 }
+
 
 /* ==========================
    SEARCH
@@ -175,6 +182,7 @@ nav a.active{
     background:transparent;
 }
 
+
 /* ==========================
    FILTERS
 ========================== */
@@ -208,6 +216,7 @@ nav a.active{
     background:var(--blue);
     color:#fff;
 }
+
 
 /* =========================================
    JOB CARDS
@@ -246,8 +255,9 @@ nav a.active{
     background:linear-gradient(90deg,#0056d2,#00b86b);
 }
 
+
 /* ======================
-   TOP
+   JOB TOP
 ====================== */
 
 .job-top{
@@ -270,69 +280,85 @@ nav a.active{
     font-weight:bold;
 }
 
+
 /* =========================================
-   ACTIVE STATUS WITH BLINKING GREEN DOT
+   ACTIVE STATUS
+   GREEN BLINKING DOT
 ========================================= */
 
 .job-status{
-    display:inline-flex;
-    align-items:center;
-    gap:7px;
+    display:inline-flex !important;
+    align-items:center !important;
+    justify-content:center;
+    gap:7px !important;
 
-    background:#e8fff2;
-    color:#00a651;
+    background:#e8fff2 !important;
+    color:#00a651 !important;
 
-    padding:6px 14px;
-    border-radius:25px;
+    padding:6px 14px !important;
+    border-radius:25px !important;
 
-    font-size:12px;
-    font-weight:700;
+    font-size:12px !important;
+    font-weight:700 !important;
+
+    white-space:nowrap;
 }
 
-/* Green blinking dot */
+
+/* GREEN DOT */
 
 .job-status::before{
-    content:"";
-    width:8px;
-    height:8px;
+    content:"" !important;
 
-    background:#00b86b;
-    border-radius:50%;
+    width:8px !important;
+    height:8px !important;
 
-    display:inline-block;
-    flex-shrink:0;
+    min-width:8px !important;
+    min-height:8px !important;
 
-    animation:greenBlink 1.2s ease-in-out infinite;
+    background:#00c853 !important;
+
+    border-radius:50% !important;
+
+    display:block !important;
+
+    flex-shrink:0 !important;
+
+    animation:greenBlink 1s ease-in-out infinite !important;
 }
 
-/* Green glow + blinking animation */
+
+/* GREEN DOT BLINK + GLOW */
 
 @keyframes greenBlink{
 
     0%,
     100%{
         opacity:.35;
-        transform:scale(.8);
+
+        transform:scale(.85);
 
         box-shadow:
-            0 0 2px #00b86b,
-            0 0 5px #00b86b;
+            0 0 3px #00c853,
+            0 0 6px rgba(0,200,83,.6);
     }
 
     50%{
         opacity:1;
+
         transform:scale(1.25);
 
         box-shadow:
-            0 0 5px #00b86b,
-            0 0 10px #00b86b,
-            0 0 18px #00b86b;
+            0 0 5px #00c853,
+            0 0 10px #00c853,
+            0 0 18px rgba(0,200,83,.8);
     }
 
 }
 
+
 /* ======================
-   TITLE
+   JOB TITLE
 ====================== */
 
 .job-card h3{
@@ -340,6 +366,11 @@ nav a.active{
     margin-bottom:8px;
     color:#0f172a;
 }
+
+
+/* ======================
+   COMPANY
+====================== */
 
 .company{
     font-size:13.5px;
@@ -355,8 +386,9 @@ nav a.active{
     border:1px solid #bfdbfe;
 }
 
+
 /* ======================
-   META
+   META INFORMATION
 ====================== */
 
 .meta{
@@ -374,6 +406,7 @@ nav a.active{
     font-weight:600;
     color:#334155;
 }
+
 
 /* ======================
    DESCRIPTION
@@ -393,6 +426,7 @@ nav a.active{
     -webkit-box-orient:vertical;
     overflow:hidden;
 }
+
 
 /* ======================
    BUTTONS
@@ -431,8 +465,9 @@ nav a.active{
     background:#001b5e;
 }
 
+
 /* ======================
-   EMPTY / LOADING STATE
+   LOADING / EMPTY
 ====================== */
 
 .loading-box{
@@ -458,6 +493,7 @@ nav a.active{
 .loading-box p{
     color:#64748b;
 }
+
 
 /* =========================================
    PAGINATION
@@ -496,6 +532,7 @@ nav a.active{
     color:#fff;
 }
 
+
 /* ==========================
    FOOTER
 ========================== */
@@ -510,6 +547,7 @@ footer{
     max-width:1300px;
     margin:auto;
     padding:60px 20px;
+
     display:grid;
     grid-template-columns:2fr 1fr 1fr;
     gap:40px;
@@ -563,6 +601,7 @@ footer{
     font-size:14px;
 }
 
+
 /* ==========================
    SCROLLBAR
 ========================== */
@@ -580,8 +619,9 @@ footer{
     background:#edf2f7;
 }
 
+
 /* ==========================
-   RESPONSIVE
+   RESPONSIVE - TABLET
 ========================== */
 
 @media(max-width:992px){
@@ -602,6 +642,11 @@ footer{
     }
 
 }
+
+
+/* ==========================
+   RESPONSIVE - MOBILE
+========================== */
 
 @media(max-width:768px){
 
@@ -650,6 +695,11 @@ footer{
     }
 
 }
+
+
+/* ==========================
+   SMALL MOBILE
+========================== */
 
 @media(max-width:480px){
 
