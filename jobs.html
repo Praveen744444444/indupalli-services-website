@@ -2884,6 +2884,388 @@ document.addEventListener("DOMContentLoaded", function () {
 }
 </style>
 
+
+<!-- =========================================================
+ ADD-ONLY PROFESSIONAL PAGE UPGRADE
+ Existing Supabase / jobs / JS logic is untouched.
+ This block adds real images, clickable UI controls and visual layout.
+========================================================= -->
+<style>
+/* Remove only the earlier CSS-generated fake filter text */
+.container::before,
+.container::after{
+  content:none !important;
+  display:none !important;
+}
+
+/* Hero: use a real professional workplace image */
+.search-bar{
+  position:relative !important;
+  z-index:5 !important;
+}
+.search-bar::before{
+  content:"" !important;
+  display:block !important;
+  position:absolute !important;
+  left:-100vw !important;
+  right:-100vw !important;
+  top:-42px !important;
+  bottom:-44px !important;
+  z-index:-1 !important;
+  background:
+    linear-gradient(90deg,rgba(20,55,110,.84),rgba(49,102,180,.63)),
+    url("https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1800&q=85") center/cover !important;
+}
+
+/* Real clickable filter toolbar */
+.professional-filter-bar{
+  width:100%;
+  background:#fff;
+  border-top:1px solid #e8edf3;
+  border-bottom:1px solid #dce4ee;
+  box-shadow:0 4px 14px rgba(23,42,69,.06);
+  position:relative;
+  z-index:4;
+}
+
+.professional-filter-inner{
+  max-width:1400px;
+  margin:0 auto;
+  padding:14px 24px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.filter-control{
+  position:relative;
+}
+
+.filter-trigger{
+  border:0;
+  background:#fff;
+  color:#334155;
+  padding:14px 16px;
+  border-radius:10px;
+  font-size:15px;
+  font-weight:700;
+  cursor:pointer;
+  white-space:nowrap;
+  transition:.2s;
+}
+
+.filter-trigger:hover{
+  background:#f3f7fc;
+  color:#285a9f;
+}
+
+.filter-trigger i{
+  margin-left:8px;
+  font-size:12px;
+}
+
+.filter-menu{
+  display:none;
+  position:absolute;
+  top:52px;
+  left:0;
+  min-width:190px;
+  padding:8px;
+  background:#fff;
+  border:1px solid #dce4ee;
+  border-radius:12px;
+  box-shadow:0 14px 32px rgba(20,40,70,.16);
+  z-index:50;
+}
+
+.filter-control.open .filter-menu{
+  display:block;
+}
+
+.filter-option{
+  display:block;
+  width:100%;
+  text-align:left;
+  border:0;
+  background:transparent;
+  color:#4b5563;
+  padding:11px 12px;
+  border-radius:8px;
+  cursor:pointer;
+  font-size:14px;
+}
+
+.filter-option:hover{
+  background:#eef4fc;
+  color:#285a9f;
+}
+
+.filter-spacer{flex:1;}
+
+.filter-reset,
+.filter-for-you{
+  min-height:48px;
+  border-radius:13px;
+  padding:0 22px;
+  font-size:15px;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.filter-reset{
+  border:1px solid #9ab8df;
+  color:#315b96;
+  background:#fff;
+}
+
+.filter-for-you{
+  border:0;
+  color:#202a38;
+  background:linear-gradient(135deg,#ffd45c,#f7a800);
+  box-shadow:0 8px 16px rgba(245,158,11,.18);
+}
+
+/* Main professional 3-column page */
+.jobs-side-layout{
+  max-width:1400px !important;
+  grid-template-columns:270px minmax(0,1fr) 290px !important;
+  gap:26px !important;
+  padding:30px 24px 60px !important;
+  margin:0 auto !important;
+}
+
+/* Real image cards */
+.side-info-card{
+  border-radius:18px !important;
+  background:#fff !important;
+  border:1px solid #dde5ef !important;
+  box-shadow:0 12px 30px rgba(27,48,79,.10) !important;
+  overflow:hidden !important;
+}
+
+.side-image{
+  width:100%;
+  height:185px;
+  display:block;
+  object-fit:cover;
+}
+
+.side-info-top{
+  min-height:auto !important;
+  padding:22px !important;
+  background:linear-gradient(135deg,#24549a,#4b82ca) !important;
+}
+
+.side-info-top::after{display:none !important;}
+
+.side-info-card h3{
+  font-size:22px !important;
+}
+
+.side-info-content{
+  padding:20px 22px 22px !important;
+}
+
+.side-info-content p{
+  font-size:14px !important;
+  line-height:1.6 !important;
+}
+
+.side-info-card.hire{
+  background:#fff !important;
+  border:1px solid #dde5ef !important;
+}
+
+.side-info-card.hire .side-info-top{
+  background:linear-gradient(135deg,#172f5c,#285b9f) !important;
+  padding:22px !important;
+}
+
+.side-info-card.hire .side-info-content{
+  padding:20px 22px 22px !important;
+}
+
+.side-info-card.hire .side-info-content p{
+  color:#667085 !important;
+}
+
+.side-info-card.hire h3{
+  color:#fff !important;
+  font-size:23px !important;
+}
+
+.side-info-card.hire .side-info-icon{
+  color:#fff;
+}
+
+.side-info-btn.hire-btn{
+  width:100% !important;
+  min-height:48px;
+  box-sizing:border-box;
+  justify-content:center;
+  background:#285a9f !important;
+  color:#fff !important;
+}
+
+/* Center jobs area */
+.jobs-side-layout #allJobsContainer{
+  width:100% !important;
+}
+
+@media(max-width:1100px){
+  .professional-filter-inner{
+    overflow-x:auto;
+  }
+  .filter-spacer{display:none;}
+  .filter-reset,.filter-for-you{white-space:nowrap;}
+}
+
+@media(max-width:700px){
+  .professional-filter-inner{
+    padding:10px 12px;
+  }
+  .filter-trigger{
+    padding:11px 12px;
+    font-size:13px;
+  }
+  .filter-reset,.filter-for-you{
+    min-height:42px;
+    padding:0 14px;
+    font-size:13px;
+  }
+}
+</style>
+
+<script>
+/* ADD ONLY: Real images + clickable filter controls */
+document.addEventListener("DOMContentLoaded", function(){
+
+  /* Add real filter bar after the existing search section */
+  const searchBar = document.querySelector(".search-bar");
+  if (searchBar && !document.querySelector(".professional-filter-bar")) {
+    const bar = document.createElement("section");
+    bar.className = "professional-filter-bar";
+    bar.innerHTML = `
+      <div class="professional-filter-inner">
+        <div class="filter-control">
+          <button class="filter-trigger" type="button">Closing Anytime <i class="fa-solid fa-chevron-down"></i></button>
+          <div class="filter-menu">
+            <button class="filter-option" type="button">Closing Today</button>
+            <button class="filter-option" type="button">Closing This Week</button>
+            <button class="filter-option" type="button">Closing This Month</button>
+          </div>
+        </div>
+
+        <div class="filter-control">
+          <button class="filter-trigger" type="button">Job Type <i class="fa-solid fa-chevron-down"></i></button>
+          <div class="filter-menu">
+            <button class="filter-option" type="button">Full Time</button>
+            <button class="filter-option" type="button">Part Time</button>
+            <button class="filter-option" type="button">Contract</button>
+          </div>
+        </div>
+
+        <div class="filter-control">
+          <button class="filter-trigger" type="button">Work Style <i class="fa-solid fa-chevron-down"></i></button>
+          <div class="filter-menu">
+            <button class="filter-option" type="button">Remote</button>
+            <button class="filter-option" type="button">Hybrid</button>
+            <button class="filter-option" type="button">On-site</button>
+          </div>
+        </div>
+
+        <div class="filter-control">
+          <button class="filter-trigger" type="button">Salary <i class="fa-solid fa-chevron-down"></i></button>
+          <div class="filter-menu">
+            <button class="filter-option" type="button">Entry Level</button>
+            <button class="filter-option" type="button">Mid Level</button>
+            <button class="filter-option" type="button">Senior Level</button>
+          </div>
+        </div>
+
+        <div class="filter-spacer"></div>
+
+        <button class="filter-reset" type="button">Reset Filters</button>
+        <button class="filter-for-you" type="button"><i class="fa-solid fa-sparkles"></i> Jobs For You</button>
+      </div>
+    `;
+
+    searchBar.parentNode.insertBefore(bar, searchBar.nextSibling);
+
+    /* Clickable dropdowns */
+    bar.querySelectorAll(".filter-trigger").forEach(function(btn){
+      btn.addEventListener("click", function(e){
+        e.stopPropagation();
+        const parent = btn.parentElement;
+        bar.querySelectorAll(".filter-control").forEach(function(item){
+          if(item !== parent) item.classList.remove("open");
+        });
+        parent.classList.toggle("open");
+      });
+    });
+
+    /* Selecting an option updates the button text only.
+       Existing job/Supabase filtering logic is not touched. */
+    bar.querySelectorAll(".filter-option").forEach(function(option){
+      option.addEventListener("click", function(){
+        const control = option.closest(".filter-control");
+        const trigger = control.querySelector(".filter-trigger");
+        trigger.innerHTML = option.textContent + ' <i class="fa-solid fa-chevron-down"></i>';
+        control.classList.remove("open");
+      });
+    });
+
+    document.addEventListener("click", function(){
+      bar.querySelectorAll(".filter-control").forEach(function(item){
+        item.classList.remove("open");
+      });
+    });
+
+    /* Reset only the new visual controls */
+    bar.querySelector(".filter-reset").addEventListener("click", function(){
+      const labels = ["Closing Anytime","Job Type","Work Style","Salary"];
+      bar.querySelectorAll(".filter-trigger").forEach(function(btn, index){
+        btn.innerHTML = labels[index] + ' <i class="fa-solid fa-chevron-down"></i>';
+      });
+    });
+  }
+
+  /* Replace side panels with professional image-based versions */
+  const left = document.querySelector(".side-info-left");
+  if(left){
+    left.innerHTML = `
+      <div class="side-info-card">
+        <img class="side-image" src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=800&q=85" alt="Career opportunities">
+        <div class="side-info-top">
+          <div class="side-info-icon"><i class="fa-solid fa-rocket"></i></div>
+          <h3>Build your next<br>career <span>move.</span></h3>
+        </div>
+        <div class="side-info-content">
+          <p>Explore opportunities, showcase your skills, and take the next step in your professional journey.</p>
+          <a href="login.html" class="side-info-btn join">Create your profile</a>
+        </div>
+      </div>`;
+  }
+
+  const right = document.querySelector(".side-info-right");
+  if(right){
+    right.innerHTML = `
+      <div class="side-info-card hire">
+        <img class="side-image" src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=800&q=85" alt="Recruitment team">
+        <div class="side-info-top">
+          <div class="side-info-icon"><i class="fa-solid fa-users"></i></div>
+          <h3>Looking for<br>great talent?</h3>
+        </div>
+        <div class="side-info-content">
+          <p>Reach qualified candidates and make hiring simpler with Indupalli Services.</p>
+          <a href="recruiter-signup.html" class="side-info-btn hire-btn">Start hiring today</a>
+        </div>
+      </div>`;
+  }
+
+});
+</script>
+
 </body>
 
 </html>
