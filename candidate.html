@@ -2139,7 +2139,8 @@ body.dark-mode .sidebar{background:#090d16!important;}
 
       const nameEl = document.getElementById("candidateName");
       if (nameEl) {
-          nameEl.innerHTML = fullName + ` <i id="premiumBadgeIcon" class="fa-solid fa-circle-check premium-badge" title="Premium Member" style="${localStorage.getItem('isPremiumCandidate') === 'true' ? 'display:inline-block;' : 'display:none; color: #10b981; font-size: 14px;'}"></i>`;
+          const isPremiumDisplay = localStorage.getItem('isPremiumCandidate') === 'true' || isFullAccessEmail(localStorage.getItem('candidateLoggedInEmail'));
+          nameEl.innerHTML = fullName + ` <i id="premiumBadgeIcon" class="fa-solid fa-circle-check premium-badge" title="Premium Member" style="${isPremiumDisplay ? 'display:inline-block;' : 'display:none; color: #10b981; font-size: 14px;'}"></i>`;
       }
       
       const topbarNameEl = document.getElementById("topbarName");
@@ -2342,9 +2343,50 @@ body.dark-mode .sidebar{background:#090d16!important;}
       }
   }
 
+  // ── FULL ACCESS OVERRIDE ──
+  // Accounts listed here get permanent premium/lifetime access without
+  // needing to pay, regardless of their subscription record. This is
+  // intentionally scoped to specific email addresses only.
+  const FULL_ACCESS_EMAILS = ["indupalli24@gmail.com"];
+  function isFullAccessEmail(email) {
+      return FULL_ACCESS_EMAILS.includes(String(email || "").trim().toLowerCase());
+  }
+  function setPremiumBadgeVisible(visible) {
+      document.querySelectorAll(".premium-badge").forEach(b => b.style.display = visible ? "inline-block" : "none");
+  }
+  // Authoritative per-account premium check. Always runs on login and
+  // ALWAYS writes a true/false result (never leaves the old value in
+  // place) so isPremiumCandidate can never "leak" from one candidate's
+  // session to the next candidate who logs into the same browser.
+  async function syncPremiumStatus(email) {
+      if (isFullAccessEmail(email)) {
+          localStorage.setItem("isPremiumCandidate", "true");
+          setPremiumBadgeVisible(true);
+          return true;
+      }
+      try {
+          const { count, error } = await supabase
+              .from('subscriptions')
+              .select('*', { count: 'exact', head: true })
+              .ilike('email', email)
+              .eq('status', 'SUCCESS');
+          if (error) throw error;
+          const isPremium = (count || 0) > 0;
+          localStorage.setItem("isPremiumCandidate", isPremium ? "true" : "false");
+          setPremiumBadgeVisible(isPremium);
+          return isPremium;
+      } catch (err) {
+          console.error("Error checking premium status:", err);
+          localStorage.setItem("isPremiumCandidate", "false");
+          setPremiumBadgeVisible(false);
+          return false;
+      }
+  }
+
   function initSession() {
       const cachedEmail = localStorage.getItem("candidateLoggedInEmail");
       if (cachedEmail) {
+          syncPremiumStatus(cachedEmail);
           loadCandidateProfile(cachedEmail);
       }
 
@@ -2378,6 +2420,7 @@ body.dark-mode .sidebar{background:#090d16!important;}
           }
 
           localStorage.setItem("candidateLoggedInEmail", email);
+          await syncPremiumStatus(email);
 
           if (document.getElementById("candidateEmail")) {
               document.getElementById("candidateEmail").textContent = email;
@@ -2664,10 +2707,10 @@ body.dark-mode .sidebar{background:#090d16!important;}
   };
 
   window.checkSubscriptionRequirement = async function() {
-      const isPremium = localStorage.getItem("isPremiumCandidate") === "true";
+      const email = localStorage.getItem("candidateLoggedInEmail");
+      const isPremium = await syncPremiumStatus(email);
       if (isPremium) return false;
 
-      const email = localStorage.getItem("candidateLoggedInEmail");
       if (!email) return false;
 
       try {
