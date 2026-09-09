@@ -2139,7 +2139,8 @@ body.dark-mode .sidebar{background:#090d16!important;}
 
       const nameEl = document.getElementById("candidateName");
       if (nameEl) {
-          nameEl.innerHTML = fullName + ` <i id="premiumBadgeIcon" class="fa-solid fa-circle-check premium-badge" title="Premium Member" style="${localStorage.getItem('isPremiumCandidate') === 'true' ? 'display:inline-block;' : 'display:none; color: #10b981; font-size: 14px;'}"></i>`;
+          const isPremiumDisplay = localStorage.getItem('isPremiumCandidate') === 'true' || isFullAccessEmail(localStorage.getItem('candidateLoggedInEmail'));
+          nameEl.innerHTML = fullName + ` <i id="premiumBadgeIcon" class="fa-solid fa-circle-check premium-badge" title="Premium Member" style="${isPremiumDisplay ? 'display:inline-block;' : 'display:none; color: #10b981; font-size: 14px;'}"></i>`;
       }
       
       const topbarNameEl = document.getElementById("topbarName");
@@ -2342,8 +2343,23 @@ body.dark-mode .sidebar{background:#090d16!important;}
       }
   }
 
+  // ── FULL ACCESS OVERRIDE ──
+  // Accounts listed here get permanent premium/lifetime access without
+  // needing to pay, regardless of their subscription record. This is
+  // intentionally scoped to specific email addresses only.
+  const FULL_ACCESS_EMAILS = ["indupalli24@gmail.com"];
+  function isFullAccessEmail(email) {
+      return FULL_ACCESS_EMAILS.includes(String(email || "").trim().toLowerCase());
+  }
+  function applyFullAccessOverride(email) {
+      if (!isFullAccessEmail(email)) return;
+      localStorage.setItem("isPremiumCandidate", "true");
+      document.querySelectorAll(".premium-badge").forEach(b => b.style.display = "inline-block");
+  }
+
   function initSession() {
       const cachedEmail = localStorage.getItem("candidateLoggedInEmail");
+      if (isFullAccessEmail(cachedEmail)) applyFullAccessOverride(cachedEmail);
       if (cachedEmail) {
           loadCandidateProfile(cachedEmail);
       }
@@ -2378,6 +2394,7 @@ body.dark-mode .sidebar{background:#090d16!important;}
           }
 
           localStorage.setItem("candidateLoggedInEmail", email);
+          applyFullAccessOverride(email);
 
           if (document.getElementById("candidateEmail")) {
               document.getElementById("candidateEmail").textContent = email;
@@ -2664,10 +2681,15 @@ body.dark-mode .sidebar{background:#090d16!important;}
   };
 
   window.checkSubscriptionRequirement = async function() {
+      const email = localStorage.getItem("candidateLoggedInEmail");
+      if (isFullAccessEmail(email)) {
+          applyFullAccessOverride(email);
+          return false;
+      }
+
       const isPremium = localStorage.getItem("isPremiumCandidate") === "true";
       if (isPremium) return false;
 
-      const email = localStorage.getItem("candidateLoggedInEmail");
       if (!email) return false;
 
       try {
