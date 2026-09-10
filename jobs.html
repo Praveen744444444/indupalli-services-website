@@ -3237,9 +3237,9 @@ document.addEventListener("DOMContentLoaded", function(){
         <div class="filter-control">
           <button class="filter-trigger" type="button">Salary <i class="fa-solid fa-chevron-down"></i></button>
           <div class="filter-menu">
-            <button class="filter-option" type="button">Entry Level</button>
-            <button class="filter-option" type="button">Mid Level</button>
-            <button class="filter-option" type="button">Senior Level</button>
+            <button class="filter-option" type="button">Under ₹25,000</button>
+            <button class="filter-option" type="button">₹25,000 – ₹50,000</button>
+            <button class="filter-option" type="button">Above ₹50,000</button>
           </div>
         </div>
 
@@ -3517,80 +3517,154 @@ document.addEventListener("DOMContentLoaded", function(){
 </style>
 
 <script>
-/* ADD ONLY: Make all heading/filter controls actually clickable */
+/* WORKING FILTERS */
 document.addEventListener("DOMContentLoaded", function(){
-
   const bar = document.querySelector(".professional-filter-bar");
-  if(!bar) return;
+  if (!bar) return;
 
-  /* Close menus when clicking outside */
-  document.addEventListener("click", function(e){
-    if(!bar.contains(e.target)){
-      bar.querySelectorAll(".filter-control").forEach(c => c.classList.remove("open"));
+  const state = { closing:"", jobType:"", workStyle:"", salary:"", jobsForYou:false };
+  const defaults = ["Closing Anytime","Job Type","Work Style","Salary"];
+  const keys = ["closing","jobType","workStyle","salary"];
+
+  const getValue = (job, names) => {
+    for (const name of names) {
+      const v = job && job[name];
+      if (v !== undefined && v !== null && String(v).trim() !== "") return String(v).trim();
     }
+    return "";
+  };
+
+  const normalize = v => String(v || "").toLowerCase().replace(/[\s_-]+/g," ").trim();
+
+  const getClosingDate = job => getValue(job, ["closingdate","closing_date","closingDate","deadline"]);
+  const getJobType = job => normalize(getValue(job, ["jobtype","job_type","jobType","employment_type","employmentType","type"]));
+  const getWorkStyle = job => normalize(getValue(job, ["workstyle","work_style","workStyle","work_type","workType","work_mode","workMode","remote_type"]));
+
+  const parseSalary = value => {
+    const text = String(value || "");
+    const nums = text.replace(/,/g,"").match(/\d+(?:\.\d+)?/g);
+    if (!nums || !nums.length) return NaN;
+    const values = nums.map(Number);
+    if (/lpa|lakhs?|lakh/i.test(text)) return values[0] * 100000 / 12;
+    return values.length > 1 ? (values[0] + values[1]) / 2 : values[0];
+  };
+
+  function applyFilters(){
+    let jobs = Array.isArray(window.rawJobsData) ? [...window.rawJobsData] : [];
+    const now = new Date();
+    now.setHours(0,0,0,0);
+
+    jobs = jobs.filter(job => {
+      if (state.closing) {
+        const raw = getClosingDate(job);
+        if (!raw) return false;
+        const closing = new Date(raw);
+        if (Number.isNaN(closing.getTime())) return false;
+        closing.setHours(23,59,59,999);
+
+        if (state.closing === "Closing Today") {
+          const end = new Date(now); end.setHours(23,59,59,999);
+          if (closing < now || closing > end) return false;
+        } else if (state.closing === "Closing This Week") {
+          const end = new Date(now); end.setDate(now.getDate()+7); end.setHours(23,59,59,999);
+          if (closing < now || closing > end) return false;
+        } else if (state.closing === "Closing This Month") {
+          const end = new Date(now.getFullYear(), now.getMonth()+1, 0); end.setHours(23,59,59,999);
+          if (closing < now || closing > end) return false;
+        }
+      }
+
+      if (state.jobType) {
+        const type = getJobType(job);
+        if (!type || !type.includes(normalize(state.jobType))) return false;
+      }
+
+      if (state.workStyle) {
+        const style = getWorkStyle(job);
+        if (!style || !style.includes(normalize(state.workStyle))) return false;
+      }
+
+      if (state.salary) {
+        const salary = parseSalary(getValue(job, ["salary","salary_range","salaryRange","monthly_salary"]));
+        if (Number.isNaN(salary)) return false;
+        if (state.salary === "Under ₹25,000" && salary >= 25000) return false;
+        if (state.salary === "₹25,000 – ₹50,000" && (salary < 25000 || salary > 50000)) return false;
+        if (state.salary === "Above ₹50,000" && salary <= 50000) return false;
+      }
+      return true;
+    });
+
+    if (state.jobsForYou) {
+      const search = (document.getElementById("jobSearchInput")?.value || "").trim().toLowerCase();
+      jobs.sort((a,b) => {
+        if (search) {
+          const score = job => {
+            const title = (typeof getJobTitle === "function" ? getJobTitle(job) : job.title || "").toLowerCase();
+            const company = (typeof getCompany === "function" ? getCompany(job) : job.company || "").toLowerCase();
+            const desc = String(job.description || "").toLowerCase();
+            return (title.includes(search)?3:0)+(company.includes(search)?2:0)+(desc.includes(search)?1:0);
+          };
+          const diff = score(b)-score(a);
+          if (diff) return diff;
+        }
+        const da = new Date(a.created_at || a.createdAt || a.posteddate || a.posted_date || 0).getTime() || 0;
+        const db = new Date(b.created_at || b.createdAt || b.posteddate || b.posted_date || 0).getTime() || 0;
+        return db-da;
+      });
+    }
+
+    if (typeof renderJobsGrid === "function") renderJobsGrid(jobs,1);
+  }
+
+  document.addEventListener("click", e => {
+    if (!bar.contains(e.target)) bar.querySelectorAll(".filter-control").forEach(c=>c.classList.remove("open"));
   });
 
-  /* Ensure dropdown headings open */
-  bar.querySelectorAll(".filter-trigger").forEach(function(trigger){
-    trigger.addEventListener("click", function(e){
-      e.preventDefault();
-      e.stopPropagation();
-
+  bar.querySelectorAll(".filter-trigger").forEach(trigger => {
+    trigger.addEventListener("click", e => {
+      e.preventDefault(); e.stopPropagation();
       const control = trigger.closest(".filter-control");
-      bar.querySelectorAll(".filter-control").forEach(function(other){
-        if(other !== control) other.classList.remove("open");
-      });
+      bar.querySelectorAll(".filter-control").forEach(other=>{ if(other!==control) other.classList.remove("open"); });
       control.classList.toggle("open");
     });
   });
 
-  /* Clicking every option selects it visibly */
-  bar.querySelectorAll(".filter-option").forEach(function(option){
-    option.addEventListener("click", function(e){
-      e.preventDefault();
-      e.stopPropagation();
-
-      const control = option.closest(".filter-control");
-      const trigger = control.querySelector(".filter-trigger");
-
-      trigger.innerHTML = option.textContent + ' <i class="fa-solid fa-chevron-down"></i>';
-      trigger.classList.add("has-selection");
-      control.classList.remove("open");
-
-      /* Dispatch a custom event without touching existing job logic */
-      document.dispatchEvent(new CustomEvent("jobFilterSelected", {
-        detail:{filter: trigger.textContent.trim(), value: option.textContent.trim()}
-      }));
+  bar.querySelectorAll(".filter-control").forEach((control, controlIndex) => {
+    control.querySelectorAll(".filter-option").forEach(option => {
+      option.addEventListener("click", e => {
+        e.preventDefault(); e.stopPropagation();
+        const value = option.textContent.trim();
+        state[keys[controlIndex]] = value;
+        const trigger = control.querySelector(".filter-trigger");
+        trigger.innerHTML = value + ' <i class="fa-solid fa-chevron-down"></i>';
+        trigger.classList.add("has-selection");
+        control.classList.remove("open");
+        applyFilters();
+      });
     });
   });
 
-  /* Reset all visual filters */
   const reset = bar.querySelector(".filter-reset");
-  if(reset){
-    reset.addEventListener("click", function(){
-      const defaults = ["Closing Anytime","Job Type","Work Style","Salary"];
-      bar.querySelectorAll(".filter-trigger").forEach(function(trigger,index){
-        trigger.innerHTML = defaults[index] + ' <i class="fa-solid fa-chevron-down"></i>';
-        trigger.classList.remove("has-selection");
-      });
-
-      /* If existing page has a search input, keep it unchanged */
-      document.dispatchEvent(new CustomEvent("jobFiltersReset"));
+  if (reset) reset.addEventListener("click", e => {
+    e.preventDefault();
+    state.closing=""; state.jobType=""; state.workStyle=""; state.salary=""; state.jobsForYou=false;
+    bar.querySelectorAll(".filter-trigger").forEach((trigger,index)=>{
+      trigger.innerHTML = defaults[index] + ' <i class="fa-solid fa-chevron-down"></i>';
+      trigger.classList.remove("has-selection");
     });
-  }
+    bar.querySelector(".filter-for-you")?.classList.remove("active");
+    applyFilters();
+  });
 
-  /* Jobs For You button is clickable and visually active */
   const forYou = bar.querySelector(".filter-for-you");
-  if(forYou){
-    forYou.addEventListener("click", function(){
-      forYou.classList.toggle("active");
-      document.dispatchEvent(new CustomEvent("jobsForYouClicked"));
-    });
-  }
-
+  if (forYou) forYou.addEventListener("click", e => {
+    e.preventDefault();
+    state.jobsForYou=!state.jobsForYou;
+    forYou.classList.toggle("active",state.jobsForYou);
+    applyFilters();
+  });
 });
 </script>
-
 
 <!-- ADD-ONLY: EXTRA PROFESSIONAL PAGE INFORMATION -->
 <style>
@@ -3906,3 +3980,368 @@ img{max-width:100%;height:auto;}
 
 </body>
 </html>
+<style>
+.professional-filter-bar{position:relative;z-index:1000;}
+.professional-filter-inner{overflow:visible !important;}
+.filter-control.open{z-index:2000;}
+.filter-menu{z-index:3000 !important;}
+@media(max-width:1100px){
+  .professional-filter-inner{overflow-x:auto !important;overflow-y:visible !important;}
+}
+@media(max-width:700px){
+  .professional-filter-inner{
+    display:grid !important;
+    grid-template-columns:1fr 1fr !important;
+    gap:8px !important;
+    overflow:visible !important;
+  }
+  .filter-control,.filter-trigger,.filter-reset,.filter-for-you{width:100% !important;}
+  .filter-menu{min-width:100% !important;top:48px !important;}
+  .filter-spacer{display:none !important;}
+}
+</style>
+
+
+<!-- =========================================================
+ ADD-ONLY: FILLED LEFT + RIGHT SIDE INFORMATION PANELS
+ Keeps all existing job loading, filters, pagination and cards unchanged.
+========================================================= -->
+<style>
+/* Filled professional sidebars */
+.jobs-side-layout{
+  align-items:start !important;
+}
+
+.side-info-left,
+.side-info-right{
+  display:flex !important;
+  flex-direction:column !important;
+  gap:18px !important;
+  width:100% !important;
+  min-width:0 !important;
+  visibility:visible !important;
+  opacity:1 !important;
+}
+
+.side-panel-card{
+  display:block !important;
+  width:100% !important;
+  box-sizing:border-box !important;
+  background:#ffffff !important;
+  border:1px solid #dbe4ef !important;
+  border-radius:18px !important;
+  overflow:hidden !important;
+  box-shadow:0 10px 28px rgba(25,45,78,.09) !important;
+}
+
+.side-panel-head{
+  padding:22px 20px !important;
+  background:linear-gradient(135deg,#1f4f92,#4b82c9) !important;
+  color:#fff !important;
+}
+
+.side-panel-head.dark{
+  background:linear-gradient(135deg,#132b52,#285a9f) !important;
+}
+
+.side-panel-icon{
+  width:42px !important;
+  height:42px !important;
+  border-radius:12px !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  background:rgba(255,255,255,.14) !important;
+  margin-bottom:14px !important;
+  font-size:18px !important;
+}
+
+.side-panel-head h3{
+  margin:0 !important;
+  color:#fff !important;
+  font-size:20px !important;
+  line-height:1.28 !important;
+  font-weight:800 !important;
+}
+
+.side-panel-body{
+  padding:20px !important;
+}
+
+.side-panel-body p{
+  margin:0 0 15px !important;
+  color:#667085 !important;
+  font-size:14px !important;
+  line-height:1.6 !important;
+}
+
+.side-link-list{
+  display:flex !important;
+  flex-direction:column !important;
+  gap:0 !important;
+}
+
+.side-link{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:10px !important;
+  padding:12px 0 !important;
+  border-bottom:1px solid #edf1f6 !important;
+  color:#2d4f7f !important;
+  text-decoration:none !important;
+  font-size:14px !important;
+  font-weight:700 !important;
+  cursor:pointer !important;
+}
+
+.side-link:last-child{
+  border-bottom:0 !important;
+}
+
+.side-link:hover{
+  color:#0f3f82 !important;
+  padding-left:4px !important;
+}
+
+.side-link i{
+  color:#5b84bc !important;
+  font-size:12px !important;
+}
+
+.side-primary-btn,
+.side-secondary-btn{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  width:100% !important;
+  min-height:46px !important;
+  box-sizing:border-box !important;
+  border-radius:10px !important;
+  text-decoration:none !important;
+  font-size:14px !important;
+  font-weight:800 !important;
+  margin-top:12px !important;
+  cursor:pointer !important;
+}
+
+.side-primary-btn{
+  background:#f7a800 !important;
+  color:#1f2937 !important;
+}
+
+.side-secondary-btn{
+  background:#285a9f !important;
+  color:#fff !important;
+}
+
+.side-stat-grid{
+  display:grid !important;
+  grid-template-columns:1fr 1fr !important;
+  gap:10px !important;
+}
+
+.side-stat{
+  padding:13px 10px !important;
+  border-radius:12px !important;
+  background:#f4f7fb !important;
+  border:1px solid #e4ebf3 !important;
+  text-align:center !important;
+}
+
+.side-stat strong{
+  display:block !important;
+  color:#244b82 !important;
+  font-size:16px !important;
+  margin-bottom:3px !important;
+}
+
+.side-stat span{
+  color:#738096 !important;
+  font-size:11px !important;
+}
+
+.side-tip{
+  background:#f7faff !important;
+  border-left:4px solid #3e73ba !important;
+  border-radius:10px !important;
+  padding:13px 14px !important;
+  color:#526174 !important;
+  font-size:13px !important;
+  line-height:1.55 !important;
+}
+
+@media (min-width:1151px){
+  .side-info-left{grid-column:1 !important;}
+  .side-info-right{grid-column:3 !important;}
+  .jobs-side-layout > #allJobsContainer{grid-column:2 !important;}
+}
+
+@media (max-width:1150px){
+  .side-info-right{display:none !important;}
+}
+
+@media (max-width:800px){
+  .side-info-left,
+  .side-info-right{
+    display:flex !important;
+    order:2 !important;
+  }
+  .side-info-right{order:3 !important;}
+}
+</style>
+
+<script>
+(function(){
+  function initFilledSidePanels(){
+    const jobs = document.getElementById("allJobsContainer");
+    if(!jobs) return;
+
+    let layout = document.querySelector(".jobs-side-layout");
+    if(!layout){
+      layout = document.createElement("div");
+      layout.className = "jobs-side-layout";
+      jobs.parentNode.insertBefore(layout, jobs);
+      layout.appendChild(jobs);
+    }
+
+    let left = layout.querySelector(".side-info-left");
+    if(!left){
+      left = document.createElement("aside");
+      left.className = "side-info-left";
+      layout.insertBefore(left, jobs);
+    }
+
+    let right = layout.querySelector(".side-info-right");
+    if(!right){
+      right = document.createElement("aside");
+      right.className = "side-info-right";
+      layout.appendChild(right);
+    }
+
+    left.innerHTML = `
+      <section class="side-panel-card">
+        <div class="side-panel-head">
+          <div class="side-panel-icon"><i class="fa-solid fa-rocket"></i></div>
+          <h3>Build your next<br>career move.</h3>
+        </div>
+        <div class="side-panel-body">
+          <p>Explore opportunities that match your skills and take the next step in your professional journey.</p>
+          <a class="side-primary-btn" href="/login.html">Create your profile</a>
+        </div>
+      </section>
+
+      <section class="side-panel-card">
+        <div class="side-panel-body">
+          <h3 style="margin:0 0 8px;color:#24344d;font-size:18px;">Quick Links</h3>
+          <div class="side-link-list">
+            <a class="side-link" href="/jobs.html"><span><i class="fa-solid fa-briefcase"></i> Browse All Jobs</span><i class="fa-solid fa-chevron-right"></i></a>
+            <a class="side-link" href="/login.html"><span><i class="fa-solid fa-user"></i> Job Seeker Login</span><i class="fa-solid fa-chevron-right"></i></a>
+            <a class="side-link" href="/jobs.html"><span><i class="fa-solid fa-magnifying-glass"></i> Search Opportunities</span><i class="fa-solid fa-chevron-right"></i></a>
+          </div>
+        </div>
+      </section>
+
+      <section class="side-panel-card">
+        <div class="side-panel-body">
+          <h3 style="margin:0 0 12px;color:#24344d;font-size:18px;">Job Search Tip</h3>
+          <div class="side-tip"><i class="fa-solid fa-lightbulb"></i> Use the filters above to narrow jobs by type, work style, salary and closing date.</div>
+        </div>
+      </section>
+    `;
+
+    right.innerHTML = `
+      <section class="side-panel-card">
+        <div class="side-panel-head dark">
+          <div class="side-panel-icon"><i class="fa-solid fa-users"></i></div>
+          <h3>Looking for<br>great talent?</h3>
+        </div>
+        <div class="side-panel-body">
+          <p>Reach qualified candidates and make your hiring process simpler with Indupalli Services.</p>
+          <a class="side-secondary-btn" href="/recruiter-login.html">Start Hiring</a>
+        </div>
+      </section>
+
+      <section class="side-panel-card">
+        <div class="side-panel-body">
+          <h3 style="margin:0 0 12px;color:#24344d;font-size:18px;">For Employers</h3>
+          <div class="side-link-list">
+            <a class="side-link" href="/recruiter-login.html"><span><i class="fa-solid fa-right-to-bracket"></i> Recruiter Login</span><i class="fa-solid fa-chevron-right"></i></a>
+            <a class="side-link" href="/recruiter-signup.html"><span><i class="fa-solid fa-user-plus"></i> Create Recruiter Account</span><i class="fa-solid fa-chevron-right"></i></a>
+            <a class="side-link" href="/recruiter-login.html"><span><i class="fa-solid fa-circle-plus"></i> Post a Job</span><i class="fa-solid fa-chevron-right"></i></a>
+          </div>
+        </div>
+      </section>
+
+      <section class="side-panel-card">
+        <div class="side-panel-body">
+          <h3 style="margin:0 0 12px;color:#24344d;font-size:18px;">Why Indupalli Services?</h3>
+          <div class="side-stat-grid">
+            <div class="side-stat"><strong><i class="fa-solid fa-briefcase"></i></strong><span>Job Opportunities</span></div>
+            <div class="side-stat"><strong><i class="fa-solid fa-users"></i></strong><span>Talent Network</span></div>
+            <div class="side-stat"><strong><i class="fa-solid fa-filter"></i></strong><span>Smart Filters</span></div>
+            <div class="side-stat"><strong><i class="fa-solid fa-share-nodes"></i></strong><span>Easy Sharing</span></div>
+          </div>
+        </div>
+      </section>
+    `;
+
+    left.style.display = "flex";
+    right.style.display = "flex";
+  }
+
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", initFilledSidePanels);
+  } else {
+    initFilledSidePanels();
+  }
+
+  window.addEventListener("load", function(){
+    setTimeout(initFilledSidePanels, 50);
+  });
+})();
+</script>
+
+
+<!-- ADDITIONAL FIX: 5 JOBS PER PAGE + GRID VIEW -->
+<style>
+/* Desktop: job cards in a clean 2-column grid */
+#allJobsContainer{
+  display:grid !important;
+  grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
+  gap:20px !important;
+  width:100% !important;
+  align-items:start !important;
+}
+
+/* Keep every job card full width inside its grid cell */
+#allJobsContainer > .job-card{
+  width:100% !important;
+  min-width:0 !important;
+  box-sizing:border-box !important;
+  margin:0 !important;
+}
+
+/* Pagination and empty/loading states must span both columns */
+#allJobsContainer > .job-pagination,
+#allJobsContainer > .jobs-empty-state,
+#allJobsContainer > .jobs-loading,
+#allJobsContainer > [style*="grid-column"]{
+  grid-column:1 / -1 !important;
+}
+
+/* If there are only 3 jobs on the last page, they remain naturally
+   arranged in the grid: 2 on the first row and 1 on the next row. */
+@media (max-width:900px){
+  #allJobsContainer{
+    grid-template-columns:1fr !important;
+    gap:14px !important;
+  }
+}
+
+@media (max-width:600px){
+  #allJobsContainer > .job-card{
+    padding:18px !important;
+  }
+}
+</style>
