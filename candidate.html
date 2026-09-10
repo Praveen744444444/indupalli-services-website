@@ -1165,6 +1165,13 @@ body.dark-mode .sidebar{background:#090d16!important;}
 }
 </style>
 
+
+<style>
+.ai-nav-dot{width:8px;height:8px;border-radius:50%;background:#22c55e;margin-left:auto;box-shadow:0 0 0 0 rgba(34,197,94,.7);animation:agentPulse 1.4s infinite}
+@keyframes agentPulse{70%{box-shadow:0 0 0 7px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+.ai-agent-panel{margin:0 0 28px;padding:28px 30px;border-radius:20px;background:linear-gradient(135deg,#0f172a,#172554 55%,#2563eb);color:#fff;box-shadow:0 14px 35px rgba(30,64,175,.18)}
+.ai-agent-top{display:flex;justify-content:space-between;gap:24px;align-items:center}.agent-kicker{font-size:11px;font-weight:800;letter-spacing:.7px;color:#bfdbfe;margin-bottom:9px}.agent-live-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#22c55e;margin-right:7px;animation:agentPulse 1.4s infinite}.ai-agent-top h2{font-size:25px;margin-bottom:8px}.ai-agent-top h2 i{color:#93c5fd}.ai-agent-top p{color:#cbd5e1;max-width:760px;line-height:1.6}.agent-primary{background:#fff;color:#1d4ed8;border:0;padding:12px 18px;border-radius:10px;font-weight:800;cursor:pointer;white-space:nowrap}.agent-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:22px 0}.agent-card{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.13);border-radius:14px;padding:16px;display:flex;gap:12px;align-items:center}.agent-card>i{font-size:21px;color:#93c5fd}.agent-card b{display:block;font-size:21px}.agent-card span{font-size:11px;color:#cbd5e1}.agent-feed{background:#fff;color:#334155;border-radius:14px;padding:16px}.agent-feed-title{font-size:12px;font-weight:800;color:#1d4ed8;margin-bottom:10px}.agent-message{font-size:13px;line-height:1.6}@media(max-width:768px){.ai-agent-panel{padding:20px}.ai-agent-top{align-items:flex-start;flex-direction:column}.ai-agent-top h2{font-size:20px}.agent-grid{grid-template-columns:1fr}.agent-primary{width:100%}}
+</style>
 </head>
 <body>
 
@@ -1455,6 +1462,7 @@ body.dark-mode .sidebar{background:#090d16!important;}
 <a class="active" href="#"><i class="fa-solid fa-border-all"></i> Home</a>
 <a href="#" onclick="smoothTo('profileSection');return false;"><i class="fa-regular fa-id-badge"></i> My Profile</a>
 <a href="#" onclick="smoothTo('browseSection');return false;"><i class="fa-solid fa-magnifying-glass"></i> Job Discovery</a>
+<a href="#" onclick="smoothTo('aiAgentSection');return false;"><i class="fa-solid fa-robot"></i> My AI Agent <span class="ai-nav-dot"></span></a>
 <a href="#" onclick="smoothTo('applicationsSection');return false;"><i class="fa-regular fa-folder-open"></i> Applications</a>
 <a href="#" onclick="smoothTo('subscriptionsSection');return false;"><i class="fa-solid fa-file-invoice-dollar"></i> Billing</a>
 <a href="#" onclick="smoothTo('candidateGuidelinesBlock');return false;"><i class="fa-solid fa-shield-halved"></i> Guidelines</a>
@@ -1742,6 +1750,28 @@ body.dark-mode .sidebar{background:#090d16!important;}
         </div>
     </div>
 </div>
+</div>
+
+
+<!-- PERSONAL AI CAREER AGENT -->
+<div id="aiAgentSection" style="scroll-margin-top:100px;">
+  <div class="ai-agent-panel">
+    <div class="ai-agent-top">
+      <div><div class="agent-kicker"><span class="agent-live-dot"></span> PERSONAL AI CAREER AGENT • ACTIVE</div>
+      <h2><i class="fa-solid fa-robot"></i> Your AI is working for your career</h2>
+      <p>It analyzes your profile and active jobs, prioritizes the best opportunities, and prepares you before you apply.</p></div>
+      <button class="agent-primary" onclick="runAIAgent()"><i class="fa-solid fa-wand-magic-sparkles"></i> Run AI Agent</button>
+    </div>
+    <div class="agent-grid">
+      <div class="agent-card"><i class="fa-solid fa-bullseye"></i><div><b id="agentHighMatch">0</b><span>High-match jobs</span></div></div>
+      <div class="agent-card"><i class="fa-solid fa-file-circle-check"></i><div><b id="agentReady">0</b><span>Ready to prepare</span></div></div>
+      <div class="agent-card"><i class="fa-solid fa-triangle-exclamation"></i><div><b id="agentGaps">Profile</b><span>Skill-gap analysis</span></div></div>
+    </div>
+    <div class="agent-feed" id="agentFeed">
+      <div class="agent-feed-title"><i class="fa-solid fa-sparkles"></i> Agent Activity</div>
+      <div class="agent-message"><b>AI Agent:</b> Complete your profile and resume. Then I can rank jobs and explain why they match you.</div>
+    </div>
+  </div>
 </div>
 
 <!-- JOB DISCOVERY -->
@@ -4533,6 +4563,19 @@ function syncVideoSummary(){
 }
 document.addEventListener('input',e=>{ if(e.target?.id==='candidateAbout'||e.target?.id==='candidateFullName') syncVideoSummary(); });
 document.addEventListener('DOMContentLoaded',syncVideoSummary);
+</script>
+
+<script>
+function runAIAgent(){
+ const jobs=[...document.querySelectorAll('#jobsContainer .job-card')];
+ const high=[];
+ jobs.forEach(j=>{ const t=(j.innerText||'').match(/(\d{1,3})%/); if(t && +t[1]>=75) high.push(j); });
+ document.getElementById('agentHighMatch').textContent=high.length;
+ document.getElementById('agentReady').textContent=high.length;
+ document.getElementById('agentGaps').textContent=high.length?'Review':'Profile';
+ const feed=document.getElementById('agentFeed');
+ feed.innerHTML='<div class="agent-feed-title"><i class="fa-solid fa-sparkles"></i> Agent Activity • Updated now</div><div class="agent-message"><b>AI Agent:</b> I analyzed the currently loaded opportunities. <b>'+high.length+' high-match jobs</b> are prioritized. Next: review each recommendation, explain missing skills, and prepare the application before you submit it.</div>';
+}
 </script>
 </body>
 </html>
