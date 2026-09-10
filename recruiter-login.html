@@ -132,7 +132,73 @@
         .features, .left-bottom { display: none; }
         .right-panel { width: 100%; padding: 40px 24px 60px; box-shadow: none; }
     }
-    </style>
+    
+
+    /* ── PROFESSIONAL COMPANY QUICK LINKS ── */
+    .company-links{
+        margin-top:22px;
+        padding-top:18px;
+        border-top:1px solid var(--border-color);
+    }
+    .company-links-heading{
+        display:flex;
+        align-items:center;
+        gap:8px;
+        color:var(--navy);
+        font-size:13px;
+        font-weight:800;
+    }
+    .company-links-heading i{color:var(--primary);}
+    .company-links-text{
+        margin:7px 0 13px;
+        color:var(--text-muted);
+        font-size:11.5px;
+        line-height:1.5;
+    }
+    .quick-links-grid{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        gap:8px;
+    }
+    .quick-links-grid a{
+        display:flex;
+        align-items:center;
+        gap:7px;
+        padding:9px 10px;
+        border:1px solid var(--border-color);
+        border-radius:9px;
+        background:#fff;
+        color:var(--text-body);
+        text-decoration:none;
+        font-size:11.5px;
+        font-weight:700;
+        transition:.2s ease;
+    }
+    .quick-links-grid a:hover{
+        color:var(--primary);
+        border-color:#93c5fd;
+        background:#f8fbff;
+    }
+    .quick-links-grid i{color:var(--primary); width:14px; text-align:center;}
+    .company-status{
+        display:flex;
+        flex-wrap:wrap;
+        gap:8px 14px;
+        margin-top:12px;
+        color:var(--text-muted);
+        font-size:10.5px;
+        font-weight:600;
+    }
+    .company-status i{color:var(--green); margin-right:4px;}
+    @media(max-width:900px){
+        .right-panel{overflow-y:auto;}
+    }
+    @media(max-width:480px){
+        .quick-links-grid a{font-size:10.5px;padding:8px;}
+        .company-status{flex-direction:column;gap:6px;}
+    }
+
+</style>
 </head>
 <body>
 
@@ -210,6 +276,28 @@
         <a href="login.html" class="back-link">
             <i class="fa-solid fa-arrow-left"></i> Job Seeker Login
         </a>
+
+        <!-- PROFESSIONAL COMPANY LINKS -->
+        <div class="company-links">
+            <div class="company-links-heading">
+                <i class="fa-solid fa-building"></i>
+                <span>Indupalli Services</span>
+            </div>
+            <p class="company-links-text">A modern Talent &amp; Recruitment ATS connecting employers with the right talent.</p>
+
+            <div class="quick-links-grid">
+                <a href="index.html"><i class="fa-solid fa-house"></i><span>Home</span></a>
+                <a href="jobs.html"><i class="fa-solid fa-briefcase"></i><span>Browse Jobs</span></a>
+                <a href="login.html"><i class="fa-solid fa-user"></i><span>Job Seeker Login</span></a>
+                <a href="index.html#about"><i class="fa-solid fa-circle-info"></i><span>About Company</span></a>
+            </div>
+
+            <div class="company-status">
+                <span><i class="fa-solid fa-shield-halved"></i> Secure Recruiter Access</span>
+                <span><i class="fa-solid fa-users"></i> Talent &amp; Recruitment ATS</span>
+            </div>
+        </div>
+
     </div>
 </div>
 
