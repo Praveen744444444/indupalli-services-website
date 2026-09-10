@@ -812,6 +812,35 @@ footer {
 }
 </style>
 
+
+<style id="share-role-below-active">
+.job-status-row{
+  display:flex !important;
+  flex-direction:column !important;
+  align-items:flex-start !important;
+  gap:8px !important;
+}
+.share-role-btn{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  border:0;
+  background:transparent;
+  padding:2px 0;
+  color:#3567a8;
+  font-size:13px;
+  font-weight:700;
+  cursor:pointer;
+}
+.share-role-btn:hover{
+  color:#174b91;
+  text-decoration:underline;
+}
+.share-role-btn i{
+  font-size:13px;
+}
+</style>
+
 </head>
 
 
@@ -1555,6 +1584,14 @@ function renderJobsGrid(jobsArray, requestedPage = 1) {
             <span class="active-dot"></span>
             Active
           </span>
+
+          <button
+            type="button"
+            class="share-role-btn"
+            data-index="${originalIndex}">
+            <i class="fa-solid fa-share-nodes"></i>
+            Share this role
+          </button>
         </div>
 
         <div>
@@ -1671,6 +1708,34 @@ function renderJobsGrid(jobsArray, requestedPage = 1) {
     btn.addEventListener("click", (e) => {
       const idx = e.currentTarget.getAttribute("data-index");
       openJobModal(idx);
+    });
+  });
+
+  /* Share this role: copy the individual job's clean URL */
+  container.querySelectorAll(".share-role-btn").forEach((btn) => {
+    btn.addEventListener("click", async (e) => {
+      const idx = e.currentTarget.getAttribute("data-index");
+      const job = window.rawJobsData[idx];
+
+      if (!job) return;
+
+      const title = getJobTitle(job)
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+
+      const jobId = job.id || idx;
+      const shareUrl = `${window.location.origin}/jobs/${title}-${jobId}`;
+
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        const original = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-check"></i> Link copied';
+        setTimeout(() => { btn.innerHTML = original; }, 1800);
+      } catch (error) {
+        window.prompt("Copy this job link:", shareUrl);
+      }
     });
   });
 
