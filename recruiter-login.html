@@ -100,6 +100,22 @@
     .back-link { display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%; text-align: center; margin-top: 20px; color: var(--text-muted); font-size: 13px; font-weight: 600; text-decoration: none; transition: color 0.2s; }
     .back-link:hover { color: var(--primary); }
 
+
+    .password-wrap { position: relative; }
+    .password-wrap input { padding-right: 52px; }
+    .password-toggle {
+        position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+        width: 38px; height: 38px; border: 0; background: transparent;
+        color: var(--text-muted); cursor: pointer; border-radius: 8px;
+        display:flex; align-items:center; justify-content:center;
+    }
+    .password-toggle:hover { background:#eef2ff; color:var(--primary); }
+    .login-security {
+        display:flex; align-items:center; gap:8px; margin-top:14px;
+        color:var(--text-muted); font-size:11.5px; line-height:1.5;
+    }
+    .login-security i { color:var(--green); }
+
     /* ── POPUPS ── */
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     @keyframes popCenter { 0% { opacity: 0; transform: scale(0.92); } 100% { opacity: 1; transform: scale(1); } }
@@ -169,13 +185,23 @@
                 <label for="password">Password</label>
                 <a href="javascript:void(0)" class="forgot-link" onclick="openForgotModal()">Forgot?</a>
             </div>
-            <input type="password" id="password" placeholder="Enter your password">
+            <div class="password-wrap">
+    <input type="password" id="password" placeholder="Enter your password">
+    <button type="button" class="password-toggle" id="passwordToggle" aria-label="Show password">
+        <i class="fa-regular fa-eye"></i>
+    </button>
+</div>
         </div>
 
-        <button class="btn-login" onclick="login()">
+        <button class="btn-login" id="loginButton" onclick="login()">
             <span>Sign In to Dashboard</span>
             <i class="fa-solid fa-arrow-right" style="font-size: 13px;"></i>
         </button>
+
+        <div class="login-security">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>Your recruiter account is protected with secure authentication.</span>
+        </div>
 
         <a href="signup.html" class="btn-register">
             <i class="fa-solid fa-user-plus"></i> New Recruiter? Register Here
@@ -329,5 +355,30 @@ window.addEventListener("click", function(e) {
     }
 });
 </script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+    const password = document.getElementById("password");
+    const toggle = document.getElementById("passwordToggle");
+
+    if (toggle && password) {
+        toggle.addEventListener("click", function(){
+            const show = password.type === "password";
+            password.type = show ? "text" : "password";
+            toggle.setAttribute("aria-label", show ? "Hide password" : "Show password");
+            toggle.innerHTML = show
+                ? '<i class="fa-regular fa-eye-slash"></i>'
+                : '<i class="fa-regular fa-eye"></i>';
+        });
+    }
+
+    [document.getElementById("email"), password].forEach(function(input){
+        if (input) input.addEventListener("keydown", function(e){
+            if (e.key === "Enter" && typeof window.login === "function") window.login();
+        });
+    });
+});
+</script>
+
 </body>
 </html>
