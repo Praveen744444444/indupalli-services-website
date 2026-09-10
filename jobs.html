@@ -3280,7 +3280,7 @@ document.addEventListener("DOMContentLoaded", function(){
         <div class="filter-spacer"></div>
 
         <button class="filter-reset" type="button">Reset Filters</button>
-        <button class="filter-for-you" type="button"><i class="fa-solid fa-sparkles"></i> Jobs For You</button>
+        <div class="filter-for-you active-jobs-indicator" role="status" aria-label="Active Jobs"><span class="active-jobs-dot" aria-hidden="true"></span><span>Active Jobs</span></div>
       </div>
     `;
 
@@ -4009,6 +4009,46 @@ img{max-width:100%;height:auto;}
   .read-more-btn,.apply-btn{width:100% !important;}
   .side-info-left,.side-info-right{display:block !important; width:100% !important;}
   .side-info-card{box-sizing:border-box !important;}
+}
+</style>
+
+
+
+<!-- ACTIVE JOBS INDICATOR -->
+<style>
+.active-jobs-indicator{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  gap:10px !important;
+  min-height:48px !important;
+  padding:0 22px !important;
+  border-radius:13px !important;
+  border:1px solid #86d39d !important;
+  background:#f0fff4 !important;
+  color:#166534 !important;
+  font-size:15px !important;
+  font-weight:800 !important;
+  box-shadow:0 8px 16px rgba(34,197,94,.12) !important;
+  cursor:default !important;
+  white-space:nowrap !important;
+}
+.active-jobs-dot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:#22c55e;
+  box-shadow:0 0 0 0 rgba(34,197,94,.65);
+  animation:activeJobsPulse 1.4s infinite;
+  flex:0 0 auto;
+}
+@keyframes activeJobsPulse{
+  0%{box-shadow:0 0 0 0 rgba(34,197,94,.65);opacity:1;}
+  70%{box-shadow:0 0 0 8px rgba(34,197,94,0);opacity:.8;}
+  100%{box-shadow:0 0 0 0 rgba(34,197,94,0);opacity:1;}
+}
+@media(max-width:700px){
+  .active-jobs-indicator{width:100% !important;}
 }
 </style>
 
