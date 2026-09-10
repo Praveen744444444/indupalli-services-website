@@ -762,6 +762,56 @@ footer {
 
 </style>
 
+
+<style id="working-pagination-styles">
+.job-pagination{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:8px;
+  width:100%;
+  margin:26px 0 8px;
+  padding:8px 0;
+}
+.job-pagination button{
+  min-width:42px;
+  height:42px;
+  padding:0 12px;
+  border:1px solid #d7e1ee;
+  border-radius:10px;
+  background:#fff;
+  color:#38506d;
+  font-size:14px;
+  font-weight:700;
+  cursor:pointer;
+  transition:.2s ease;
+}
+.job-pagination button:hover:not(:disabled){
+  border-color:#2563eb;
+  color:#2563eb;
+  transform:translateY(-1px);
+}
+.job-pagination button.active{
+  background:#2563eb;
+  border-color:#2563eb;
+  color:#fff;
+  box-shadow:0 6px 14px rgba(37,99,235,.22);
+}
+.job-pagination button:disabled{
+  opacity:.45;
+  cursor:not-allowed;
+}
+.job-pagination .pagination-prev,
+.job-pagination .pagination-next{padding:0 16px;}
+.job-pagination .pagination-ellipsis{
+  min-width:30px;
+  text-align:center;
+  color:#94a3b8;
+  font-weight:800;
+}
+</style>
+
 </head>
 
 
@@ -1434,373 +1484,218 @@ async function loadAllJobs() {
 
 /* RENDER JOB CARDS */
 
-function renderJobsGrid(jobsArray) {
 
+function renderJobsGrid(jobsArray, requestedPage = 1) {
 
-  const container =
+  const container = document.getElementById("allJobsContainer");
+  if (!container) return;
 
-  document.getElementById(
+  const JOBS_PER_PAGE = 5;
 
-    "allJobsContainer"
-
-  );
-
-
-  if (
-
-    !jobsArray ||
-
-    !jobsArray.length
-
-  ) {
-
-
+  if (!jobsArray || !jobsArray.length) {
     container.innerHTML = `
-
-
-    <div
-    style="
-    grid-column:1/-1;
-    text-align:center;
-    padding:60px;
-    background:#fff;
-    border-radius:16px;
-    border:1px solid var(--border);
-    ">
-
-
-    <i
-    class="fa-solid fa-folder-open"
-    style="
-    font-size:32px;
-    color:var(--text-muted);
-    margin-bottom:12px;
-    ">
-
-    </i>
-
-
-    <p
-    style="
-    color:var(--text-muted);
-    font-weight:600;
-    font-size:15px;
-    ">
-
-    No active job openings available matching your criteria.
-
-    </p>
-
-
-    </div>
-
-
-    `;
-
-
+      <div style="
+        grid-column:1/-1;
+        text-align:center;
+        padding:60px;
+        background:#fff;
+        border-radius:16px;
+        border:1px solid var(--border);
+      ">
+        <i class="fa-solid fa-folder-open"
+           style="font-size:32px;color:var(--text-muted);margin-bottom:12px;"></i>
+        <p style="color:var(--text-muted);font-weight:600;font-size:15px;">
+          No active job openings available matching your criteria.
+        </p>
+      </div>`;
     return;
-
   }
 
+  /* Always paginate the actual Supabase results */
+  const totalPages = Math.ceil(jobsArray.length / JOBS_PER_PAGE);
+  let currentPage = Number(requestedPage) || 1;
 
+  if (currentPage < 1) currentPage = 1;
+  if (currentPage > totalPages) currentPage = totalPages;
+
+  const startIndex = (currentPage - 1) * JOBS_PER_PAGE;
+  const pageJobs = jobsArray.slice(startIndex, startIndex + JOBS_PER_PAGE);
 
   let html = "";
 
+  pageJobs.forEach((job) => {
 
-  jobsArray.forEach(
+    const originalIndex = window.rawJobsData.indexOf(job);
+    const title = getJobTitle(job);
+    const company = getCompany(job);
+    const location = job.location || "Remote";
+    const salary = job.salary || "Standard";
+    const experience = job.experience || "1 Year";
 
-    (job, index) => {
-
-
-      const originalIndex =
-
-      window.rawJobsData.indexOf(job);
-
-
-
-      const title =
-
-      getJobTitle(job);
-
-
-
-      const company =
-
-      getCompany(job);
-
-
-
-      const location =
-
-      job.location ||
-
-      "Remote";
-
-
-      const salary =
-
-      job.salary ||
-
-      "Standard";
-
-
-      const experience =
-
-      job.experience ||
-
-      "1 Year";
-
-
-      const rawDate =
-
+    const rawDate =
       job.closingdate ||
-
       job.closing_date ||
-
       job.closingDate ||
-
       job.deadline;
 
+    const closingDateStr = rawDate
+      ? new Date(rawDate).toLocaleDateString("en-GB")
+      : "Open until filled";
 
-      const closingDateStr =
+    const descText = job.description || "No description provided.";
+    const snippet =
+      descText.substring(0, 110) +
+      (descText.length > 110 ? "..." : "");
 
-      rawDate
-
-      ?
-
-      new Date(rawDate)
-
-      .toLocaleDateString(
-
-        'en-GB'
-
-      )
-
-      :
-
-      "Open until filled";
-
-
-      const descText =
-
-      job.description ||
-
-      "No description provided.";
-
-
-      const snippet =
-
-      descText.substring(
-
-        0,
-
-        110
-
-      )
-
-      +
-
-      (
-
-        descText.length > 110
-
-        ?
-
-        "..."
-
-        :
-
-        ""
-
-      );
-
-
-
-      html += `
-
-
+    html += `
       <div class="job-card">
 
-
-      <div class="job-status-row">
-
-
-      <span class="active-status">
-
-      <span class="active-dot"></span>
-
-      Active
-
-      </span>
-
-
-      </div>
-
-
-
-      <div>
-
-
-      <div class="job-title-main">
-
-      ${title}
-
-      </div>
-
-
-      <div class="job-company">
-
-      ${company}
-
-      </div>
-
-
-      </div>
-
-
-
-      <div class="job-meta">
-
-
-      <span>
-
-      <i class="fa-solid fa-location-dot"></i>
-
-      ${location}
-
-      </span>
-
-
-
-      <span>
-
-      <i class="fa-solid fa-indian-rupee-sign"></i>
-
-      ${salary}
-
-      </span>
-
-
-
-      <span>
-
-      <i class="fa-solid fa-briefcase"></i>
-
-      ${experience}
-
-      </span>
-
-
-
-      <span class="urgent">
-
-      <i class="fa-regular fa-clock"></i>
-
-      Closes:
-
-      ${closingDateStr}
-
-      </span>
-
-
-      </div>
-
-
-
-      <p class="job-desc-snippet">
-
-      ${snippet}
-
-      </p>
-
-
-
-      <div class="card-actions">
-
-
-      <button
-      class="read-more-btn"
-      data-index="${originalIndex}">
-
-      Read Details
-
-      </button>
-
-
-
-      <a
-      href="login.html"
-      class="apply-btn">
-
-      Apply Now
-
-      </a>
-
-
-      </div>
-
-
-      </div>
-
-
-      `;
-
-
+        <div class="job-status-row">
+          <span class="active-status">
+            <span class="active-dot"></span>
+            Active
+          </span>
+        </div>
+
+        <div>
+          <div class="job-title-main">${title}</div>
+          <div class="job-company">${company}</div>
+        </div>
+
+        <div class="job-meta">
+          <span>
+            <i class="fa-solid fa-location-dot"></i>
+            ${location}
+          </span>
+
+          <span>
+            <i class="fa-solid fa-indian-rupee-sign"></i>
+            ${salary}
+          </span>
+
+          <span>
+            <i class="fa-solid fa-briefcase"></i>
+            ${experience}
+          </span>
+
+          <span class="urgent">
+            <i class="fa-regular fa-clock"></i>
+            Closes: ${closingDateStr}
+          </span>
+        </div>
+
+        <p class="job-desc-snippet">${snippet}</p>
+
+        <div class="card-actions">
+          <button
+            class="read-more-btn"
+            data-index="${originalIndex}">
+            Read Details
+          </button>
+
+          <a href="login.html" class="apply-btn">
+            Apply Now
+          </a>
+        </div>
+
+      </div>`;
+  });
+
+  /* Pagination: Previous | 1 2 3 ... | Next */
+  if (totalPages > 1) {
+
+    let pages = `
+      <div class="job-pagination" aria-label="Job pagination">
+
+        <button
+          type="button"
+          class="pagination-prev"
+          data-page="${currentPage - 1}"
+          ${currentPage === 1 ? "disabled" : ""}>
+          <i class="fa-solid fa-chevron-left"></i> Previous
+        </button>`;
+
+    const addPageButton = (page) => {
+      pages += `
+        <button
+          type="button"
+          class="${page === currentPage ? "active" : ""}"
+          data-page="${page}">
+          ${page}
+        </button>`;
+    };
+
+    if (totalPages <= 7) {
+      for (let page = 1; page <= totalPages; page++) {
+        addPageButton(page);
+      }
+    } else {
+      addPageButton(1);
+
+      if (currentPage > 4) {
+        pages += `<span class="pagination-ellipsis">...</span>`;
+      }
+
+      const from = Math.max(2, currentPage - 1);
+      const to = Math.min(totalPages - 1, currentPage + 1);
+
+      for (let page = from; page <= to; page++) {
+        addPageButton(page);
+      }
+
+      if (currentPage < totalPages - 3) {
+        pages += `<span class="pagination-ellipsis">...</span>`;
+      }
+
+      addPageButton(totalPages);
     }
 
-  );
+    pages += `
+        <button
+          type="button"
+          class="pagination-next"
+          data-page="${currentPage + 1}"
+          ${currentPage === totalPages ? "disabled" : ""}>
+          Next <i class="fa-solid fa-chevron-right"></i>
+        </button>
 
+      </div>`;
 
+    html += pages;
+  }
 
   container.innerHTML = html;
 
+  /* Existing Read Details functionality */
+  container.querySelectorAll(".read-more-btn").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      const idx = e.currentTarget.getAttribute("data-index");
+      openJobModal(idx);
+    });
+  });
 
+  /* Working pagination using the same jobs array */
+  container.querySelectorAll(".job-pagination button[data-page]").forEach((btn) => {
+    btn.addEventListener("click", () => {
 
-  document
+      if (btn.disabled) return;
 
-  .querySelectorAll(
+      const page = Number(btn.getAttribute("data-page"));
 
-    ".read-more-btn"
+      renderJobsGrid(jobsArray, page);
 
-  )
+      const jobsTop = document.querySelector(".jobs-side-layout")
+        || document.querySelector(".container")
+        || container;
 
-  .forEach(
-
-    btn => {
-
-
-      btn.addEventListener(
-
-        "click",
-
-        (e) => {
-
-
-          const idx =
-
-          e.currentTarget
-
-          .getAttribute(
-
-            "data-index"
-
-          );
-
-
-          openJobModal(idx);
-
-
-        }
-
-      );
-
-
-    }
-
-  );
-
-
+      jobsTop.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+    });
+  });
 }
+
 
 
 
@@ -1901,7 +1796,7 @@ function filterJobs() {
   );
 
 
-  renderJobsGrid(filtered);
+  renderJobsGrid(filtered, 1);
 
 
 }
@@ -3660,277 +3555,5 @@ document.addEventListener("DOMContentLoaded",function(){
   });
 })();
 </script>
-
-
-<!-- =========================================================
- ADD-ONLY: JOB PAGINATION
- Shows 5 jobs per page: 1 2 3 ... Next
- Existing Supabase, search, modal and clean URL logic remain.
-========================================================= -->
-<style>
-.job-pagination{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  flex-wrap:wrap;
-  gap:8px;
-  width:100%;
-  margin:26px 0 8px;
-  padding:8px 0;
-}
-
-.job-pagination button{
-  min-width:42px;
-  height:42px;
-  padding:0 12px;
-  border:1px solid #d7e1ee;
-  border-radius:10px;
-  background:#fff;
-  color:#38506d;
-  font-size:14px;
-  font-weight:700;
-  cursor:pointer;
-  transition:.2s ease;
-}
-
-.job-pagination button:hover:not(:disabled){
-  border-color:#2563eb;
-  color:#2563eb;
-  transform:translateY(-1px);
-}
-
-.job-pagination button.active{
-  background:#2563eb;
-  border-color:#2563eb;
-  color:#fff;
-  box-shadow:0 6px 14px rgba(37,99,235,.22);
-}
-
-.job-pagination button:disabled{
-  opacity:.45;
-  cursor:not-allowed;
-}
-
-.job-pagination .pagination-next,
-.job-pagination .pagination-prev{
-  padding:0 16px;
-}
-
-.job-pagination .pagination-ellipsis{
-  min-width:32px;
-  color:#94a3b8;
-  font-weight:800;
-  text-align:center;
-}
-</style>
-
-<script>
-/* ADD ONLY: Pagination override for the existing job renderer */
-(function(){
-
-  const JOBS_PER_PAGE = 5;
-
-  function buildPagination(totalPages, currentPage){
-    if(totalPages <= 1) return "";
-
-    let html = '<div class="job-pagination" aria-label="Job pages">';
-
-    html += '<button type="button" class="pagination-prev" data-page="' +
-      Math.max(1, currentPage - 1) + '"' +
-      (currentPage === 1 ? ' disabled' : '') +
-      '><i class="fa-solid fa-chevron-left"></i> Previous</button>';
-
-    function pageButton(page){
-      return '<button type="button" class="' +
-        (page === currentPage ? 'active' : '') +
-        '" data-page="' + page + '">' + page + '</button>';
-    }
-
-    if(totalPages <= 7){
-      for(let p=1; p<=totalPages; p++) html += pageButton(p);
-    }else{
-      html += pageButton(1);
-
-      if(currentPage > 4){
-        html += '<span class="pagination-ellipsis">...</span>';
-      }
-
-      const start = Math.max(2, currentPage - 1);
-      const end = Math.min(totalPages - 1, currentPage + 1);
-
-      for(let p=start; p<=end; p++) html += pageButton(p);
-
-      if(currentPage < totalPages - 3){
-        html += '<span class="pagination-ellipsis">...</span>';
-      }
-
-      html += pageButton(totalPages);
-    }
-
-    html += '<button type="button" class="pagination-next" data-page="' +
-      Math.min(totalPages, currentPage + 1) + '"' +
-      (currentPage === totalPages ? ' disabled' : '') +
-      '>Next <i class="fa-solid fa-chevron-right"></i></button>';
-
-    html += '</div>';
-    return html;
-  }
-
-  /* This replaces only the visual rendering of job cards.
-     Existing Supabase data, search and job modal functions are reused. */
-  window.renderJobsGrid = function(jobsArray, requestedPage){
-
-    const container = document.getElementById("allJobsContainer");
-    if(!container) return;
-
-    if(!jobsArray || !jobsArray.length){
-      container.innerHTML = `
-        <div style="
-          text-align:center;
-          padding:60px;
-          background:#fff;
-          border-radius:16px;
-          border:1px solid var(--border);
-        ">
-          <i class="fa-solid fa-folder-open"
-             style="font-size:32px;color:var(--text-muted);margin-bottom:12px;"></i>
-          <p style="color:var(--text-muted);font-weight:600;font-size:15px;">
-            No active job openings available matching your criteria.
-          </p>
-        </div>`;
-      return;
-    }
-
-    const totalPages = Math.ceil(jobsArray.length / JOBS_PER_PAGE);
-    let currentPage = Number(requestedPage || window.currentJobsPage || 1);
-
-    if(currentPage < 1) currentPage = 1;
-    if(currentPage > totalPages) currentPage = totalPages;
-
-    window.currentJobsPage = currentPage;
-    window.currentJobsArray = jobsArray;
-
-    const start = (currentPage - 1) * JOBS_PER_PAGE;
-    const pageJobs = jobsArray.slice(start, start + JOBS_PER_PAGE);
-
-    let html = "";
-
-    pageJobs.forEach(function(job){
-
-      const originalIndex = (window.rawJobsData || []).indexOf(job);
-      const title = getJobTitle(job);
-      const company = getCompany(job);
-      const location = job.location || "Remote";
-      const salary = job.salary || "Standard";
-      const experience = job.experience || "1 Year";
-
-      const rawDate =
-        job.closingdate ||
-        job.closing_date ||
-        job.closingDate ||
-        job.deadline;
-
-      const closingDateStr = rawDate
-        ? new Date(rawDate).toLocaleDateString("en-GB")
-        : "Open until filled";
-
-      const descText = job.description || "No description provided.";
-      const snippet = descText.substring(0, 110) +
-        (descText.length > 110 ? "..." : "");
-
-      html += `
-        <div class="job-card">
-          <div class="job-status-row">
-            <span class="active-status">
-              <span class="active-dot"></span>
-              Active
-            </span>
-          </div>
-
-          <div>
-            <div class="job-title-main">${title}</div>
-            <div class="job-company">${company}</div>
-          </div>
-
-          <div class="job-meta">
-            <span>
-              <i class="fa-solid fa-location-dot"></i>
-              ${location}
-            </span>
-
-            <span>
-              <i class="fa-solid fa-indian-rupee-sign"></i>
-              ${salary}
-            </span>
-
-            <span>
-              <i class="fa-solid fa-briefcase"></i>
-              ${experience}
-            </span>
-
-            <span class="urgent">
-              <i class="fa-regular fa-clock"></i>
-              Closes: ${closingDateStr}
-            </span>
-          </div>
-
-          <p class="job-desc-snippet">${snippet}</p>
-
-          <div class="card-actions">
-            <button class="read-more-btn" data-index="${originalIndex}">
-              Read Details
-            </button>
-
-            <a href="login.html" class="apply-btn">
-              Apply Now
-            </a>
-          </div>
-        </div>`;
-    });
-
-    html += buildPagination(totalPages, currentPage);
-    container.innerHTML = html;
-
-    container.querySelectorAll(".read-more-btn").forEach(function(btn){
-      btn.addEventListener("click", function(e){
-        const idx = e.currentTarget.getAttribute("data-index");
-        openJobModal(idx);
-      });
-    });
-
-    container.querySelectorAll(".job-pagination button[data-page]").forEach(function(btn){
-      btn.addEventListener("click", function(){
-        if(btn.disabled) return;
-
-        const page = Number(btn.getAttribute("data-page"));
-        window.currentJobsPage = page;
-        window.renderJobsGrid(window.currentJobsArray || jobsArray, page);
-
-        const jobsSection = document.querySelector(".jobs-side-layout") ||
-                            document.getElementById("allJobsContainer");
-
-        if(jobsSection){
-          jobsSection.scrollIntoView({
-            behavior:"smooth",
-            block:"start"
-          });
-        }
-      });
-    });
-  };
-
-  /* Reset to page 1 whenever the user performs a new search. */
-  const originalFilterJobs = window.filterJobs;
-  if(typeof originalFilterJobs === "function"){
-    window.filterJobs = function(){
-      window.currentJobsPage = 1;
-      return originalFilterJobs.apply(this, arguments);
-    };
-  }
-
-})();
-</script>
-
 </body>
-
 </html>
