@@ -386,39 +386,6 @@ body.dark-mode .premium-support-copy span{color:#94a3b8;}
   .premium-support-copy span{font-size:10.5px;}
 }
 
-
-
-/* ===== Professional AI Application Approval Modal ===== */
-.ai-approval-overlay{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(4,13,30,.72);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
-.ai-approval-overlay.is-open{display:flex;animation:aiOverlayIn .22s ease-out}
-.ai-approval-modal{width:min(680px,100%);max-height:min(760px,calc(100vh - 48px));overflow:auto;position:relative;border-radius:26px;background:linear-gradient(145deg,#ffffff 0%,#f7f9ff 100%);box-shadow:0 28px 90px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,.7);color:#17233a;padding:26px 28px 20px;text-align:center;animation:aiModalIn .28s cubic-bezier(.2,.9,.25,1.15)}
-.ai-approval-close{position:absolute;right:20px;top:16px;width:38px;height:38px;border:0;background:transparent;color:#24324b;font-size:29px;line-height:38px;border-radius:50%;cursor:pointer;transition:.2s}
-.ai-approval-close:hover{background:#eef3fb;transform:rotate(90deg)}
-.ai-approval-hero{height:150px;position:relative;display:flex;align-items:center;justify-content:center;margin:0 auto 8px}
-.ai-approval-orb{position:absolute;width:122px;height:122px;border-radius:50%;background:radial-gradient(circle,rgba(91,134,255,.17),rgba(124,92,255,.03) 66%,transparent 67%);filter:blur(.1px)}
-.ai-approval-bot{position:relative;z-index:2;width:92px;height:104px;display:flex;align-items:center;justify-content:center;font-size:72px;filter:drop-shadow(0 12px 12px rgba(31,74,142,.22));transform:translateY(2px)}
-.ai-approval-bot::after{content:'AI';position:absolute;bottom:3px;left:50%;transform:translateX(-50%);font:800 18px/1 Arial,sans-serif;letter-spacing:.5px;color:#fff;background:linear-gradient(135deg,#2570dc,#6c4fe5);padding:8px 11px;border-radius:10px;box-shadow:0 6px 16px rgba(57,87,206,.25)}
-.ai-approval-side{position:absolute;z-index:1;top:50%;transform:translateY(-50%);width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;color:white;box-shadow:0 12px 26px rgba(68,78,150,.18)}
-.ai-approval-side.left{left:calc(50% - 190px);background:linear-gradient(135deg,#9b6df4,#6040d7)}
-.ai-approval-side.right{right:calc(50% - 190px);background:linear-gradient(135deg,#4d8cf0,#315ac8)}
-.ai-approval-modal h2{margin:0 36px 7px;font-size:30px;line-height:1.18;font-weight:800;letter-spacing:-.7px;color:#1b2942}
-.ai-approval-sub{margin:0 auto 20px;max-width:530px;font-size:18px;line-height:1.5;color:#3b4b63}
-.ai-approval-sub strong{display:block;font-size:18px;color:#26364f}
-.ai-approval-features{margin:0 0 14px;padding:18px 22px;border-radius:18px;background:linear-gradient(135deg,#f0f4fb,#e9eef8);display:grid;grid-template-columns:1fr 1fr;gap:15px 28px;text-align:left}
-.ai-approval-feature{display:flex;align-items:center;gap:13px;font-size:16px;font-weight:600;color:#33425b}
-.ai-approval-feature i{width:29px;height:29px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:14px;flex:0 0 auto}
-.ai-approval-feature .check{background:#28a66a}.ai-approval-feature .bolt{background:#f0b532}.ai-approval-feature .resume{background:#2d77c5}.ai-approval-feature .target{background:#db5b79}.ai-approval-feature .time{background:#8657d6}.ai-approval-feature .lock{background:#2f70ba}
-.ai-approval-note{margin:12px 0 20px;padding:13px 18px;border-radius:15px;background:linear-gradient(90deg,#eaf3ff,#edf5ff);color:#27589a;font-size:15px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:10px}
-.ai-approval-note i{font-size:18px}
-.ai-approval-actions{display:grid;grid-template-columns:1fr 1.7fr;gap:14px;align-items:center}
-.ai-approval-btn{height:54px;border-radius:16px;border:0;font-size:16px;font-weight:800;cursor:pointer;transition:transform .16s ease,box-shadow .16s ease,filter .16s ease}
-.ai-approval-btn:hover{transform:translateY(-1px)}
-.ai-approval-cancel{background:#fff;border:1px solid #b9c8dc;color:#31425c}.ai-approval-cancel:hover{background:#f7f9fc}
-.ai-approval-submit{color:#fff;background:linear-gradient(100deg,#1266d6,#245ed2 45%,#7640df);box-shadow:0 10px 22px rgba(58,74,194,.28)}.ai-approval-submit:hover{filter:brightness(1.05);box-shadow:0 14px 28px rgba(58,74,194,.34)}
-.ai-approval-footer{margin-top:12px;color:#63718a;font-size:13px;font-weight:600}.ai-approval-footer span{color:#f0b432}
-@keyframes aiOverlayIn{from{opacity:0}to{opacity:1}}@keyframes aiModalIn{from{opacity:0;transform:translateY(18px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
-@media(max-width:620px){.ai-approval-modal{padding:22px 16px 18px;border-radius:22px}.ai-approval-hero{height:125px}.ai-approval-side{display:none}.ai-approval-modal h2{font-size:24px}.ai-approval-sub{font-size:16px}.ai-approval-features{grid-template-columns:1fr;gap:11px;padding:16px}.ai-approval-actions{grid-template-columns:1fr}.ai-approval-submit{grid-row:1}.ai-approval-cancel{grid-row:2}}
-
 </style>
 
 <style>
@@ -4742,7 +4709,7 @@ document.addEventListener('DOMContentLoaded',syncVideoSummary);
   window.approveSelectedAIAgentJobs=async function(){
     const ids=[...document.querySelectorAll('.ai-agent-job-check:checked')].map(x=>x.dataset.jobId).filter(Boolean);
     if(!ids.length){ alert('Select at least one job to approve.'); return; }
-    if(!(await window.showAIAgentApprovalModal(ids.length))) return;
+    if(!confirm(`Approve and submit ${ids.length} application(s)? The AI will submit only the jobs you selected.`)) return;
     const jobs=ids.map(id=>window.allJobsData?.[id]).filter(Boolean);
     if(!jobs.length){ alert('Approved jobs could not be loaded.'); return; }
     const button=[...document.querySelectorAll('button')].find(b=>b.textContent.includes('Approve Selected'));
@@ -4760,7 +4727,7 @@ document.addEventListener('DOMContentLoaded',syncVideoSummary);
       localStorage.setItem('aiAgentApprovedJobIds',JSON.stringify(ids));
       setFeed(`<div class="agent-feed-title">Applications Submitted</div><div class="agent-message"><b>Candidate approval received.</b> ${success} application(s) submitted successfully.${failed?` ${failed} failed and can be retried.`:''}</div>`);
       if(window.triggerRefreshApplications) await window.triggerRefreshApplications();
-      alert(`${success} application(s) submitted.${failed?` ${failed} failed.`:''}`);
+      showAIAgentSubmissionSuccess(success, failed);
     }catch(e){
       console.error('AI Agent batch submission failed',e);
       alert('Some applications could not be submitted. Please try again.');
@@ -4783,67 +4750,64 @@ document.addEventListener('DOMContentLoaded',syncVideoSummary);
 })();
 </script>
 
-<!-- AI Agent Approval Modal -->
-<div class="ai-approval-overlay" id="aiApprovalOverlay" aria-hidden="true">
-  <div class="ai-approval-modal" role="dialog" aria-modal="true" aria-labelledby="aiApprovalTitle">
-    <button class="ai-approval-close" id="aiApprovalClose" type="button" aria-label="Close">×</button>
-    <div class="ai-approval-hero">
-      <div class="ai-approval-orb"></div>
-      <div class="ai-approval-side left"><i class="fa-solid fa-file-lines"></i></div>
-      <div class="ai-approval-bot">🤖</div>
-      <div class="ai-approval-side right"><i class="fa-solid fa-briefcase"></i></div>
+
+<!-- AI AGENT PROFESSIONAL SUCCESS POPUP: popup-only enhancement -->
+<style>
+  .ai-success-overlay{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(3,10,24,.72);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);animation:aiSuccessFade .22s ease}
+  .ai-success-overlay.show{display:flex}
+  .ai-success-modal{width:min(560px,96vw);position:relative;overflow:hidden;border-radius:24px;background:linear-gradient(145deg,#ffffff 0%,#f7f9ff 55%,#eef3ff 100%);box-shadow:0 28px 80px rgba(0,0,0,.38),0 0 0 1px rgba(255,255,255,.9);color:#17233a;animation:aiSuccessPop .28s cubic-bezier(.2,.9,.25,1.15)}
+  .ai-success-modal:before{content:'';position:absolute;width:280px;height:280px;border-radius:50%;top:-160px;left:50%;transform:translateX(-50%);background:radial-gradient(circle,rgba(82,116,255,.20),rgba(124,76,255,.04) 58%,transparent 70%);pointer-events:none}
+  .ai-success-close{position:absolute;right:18px;top:14px;border:0;background:transparent;color:#34445f;font-size:27px;line-height:1;cursor:pointer;width:40px;height:40px;border-radius:12px;z-index:2}.ai-success-close:hover{background:#edf1fa}
+  .ai-success-body{position:relative;padding:38px 34px 30px;text-align:center}
+  .ai-success-robot{width:106px;height:96px;margin:0 auto 14px;position:relative;display:flex;align-items:center;justify-content:center}
+  .ai-success-antenna{position:absolute;top:0;left:50%;width:4px;height:22px;background:linear-gradient(#3b82f6,#2456bd);transform:translateX(-50%);border-radius:4px}.ai-success-antenna:after{content:'';position:absolute;width:12px;height:12px;border-radius:50%;background:#3b82f6;left:50%;top:-6px;transform:translateX(-50%);box-shadow:0 0 14px rgba(59,130,246,.7)}
+  .ai-success-head{width:88px;height:62px;margin-top:14px;border-radius:23px;background:linear-gradient(145deg,#edf5ff,#b9d5ff);box-shadow:inset 0 2px 5px rgba(255,255,255,.9),0 8px 18px rgba(37,99,235,.18);display:flex;align-items:center;justify-content:center;position:relative}
+  .ai-success-face{width:68px;height:40px;border-radius:15px;background:linear-gradient(145deg,#1d365c,#07152c);display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:inset 0 2px 8px rgba(255,255,255,.08)}
+  .ai-success-eye{width:8px;height:8px;background:#d9ebff;border-radius:50%;box-shadow:0 0 8px #78b5ff}.ai-success-smile{position:absolute;width:24px;height:11px;border-bottom:3px solid #d9ebff;border-radius:0 0 20px 20px;margin-top:15px}
+  .ai-success-check{position:absolute;right:-5px;bottom:4px;width:31px;height:31px;border-radius:50%;background:linear-gradient(135deg,#23c483,#11945d);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:900;box-shadow:0 8px 18px rgba(16,185,129,.28)}
+  .ai-success-title{margin:0;color:#18263d;font-size:28px;line-height:1.2;font-weight:800;letter-spacing:-.5px}.ai-success-sub{margin:10px auto 0;max-width:440px;color:#53627a;font-size:16px;line-height:1.55}.ai-success-sub b{color:#245fc0}
+  .ai-success-card{margin:24px 0 18px;padding:18px 20px;border-radius:18px;background:linear-gradient(135deg,#f0f5ff,#e9f0fb);border:1px solid rgba(72,107,173,.10);display:flex;align-items:center;gap:14px;text-align:left}.ai-success-card-icon{flex:0 0 44px;width:44px;height:44px;border-radius:14px;background:linear-gradient(135deg,#2f8eeb,#3f5ee9);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 8px 18px rgba(47,94,233,.24)}.ai-success-card h4{margin:0 0 3px;font-size:15px;color:#1d2e49}.ai-success-card p{margin:0;color:#66758c;font-size:13px;line-height:1.4}
+  .ai-success-info{padding:12px 15px;border-radius:13px;background:#edf5ff;color:#24538e;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px}.ai-success-info i{font-size:16px}
+  .ai-success-action{margin-top:22px;width:100%;border:0;border-radius:14px;padding:15px 20px;color:#fff;font-size:16px;font-weight:800;cursor:pointer;background:linear-gradient(100deg,#1f66c9,#2f5fd9 52%,#7442d7);box-shadow:0 12px 24px rgba(50,82,190,.25);transition:transform .15s,box-shadow .15s}.ai-success-action:hover{transform:translateY(-1px);box-shadow:0 16px 28px rgba(50,82,190,.3)}
+  .ai-success-footer{margin-top:14px;color:#7a879b;font-size:12px}.ai-success-footer span{color:#f2b632}
+  @keyframes aiSuccessFade{from{opacity:0}to{opacity:1}}@keyframes aiSuccessPop{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+  @media(max-width:560px){.ai-success-body{padding:32px 20px 24px}.ai-success-title{font-size:23px}.ai-success-sub{font-size:14px}}
+</style>
+<div class="ai-success-overlay" id="aiSuccessOverlay" role="dialog" aria-modal="true" aria-labelledby="aiSuccessTitle">
+  <div class="ai-success-modal">
+    <button class="ai-success-close" type="button" onclick="closeAIAgentSubmissionSuccess()" aria-label="Close">×</button>
+    <div class="ai-success-body">
+      <div class="ai-success-robot" aria-hidden="true">
+        <div class="ai-success-antenna"></div><div class="ai-success-head"><div class="ai-success-face"><span class="ai-success-eye"></span><span class="ai-success-eye"></span><span class="ai-success-smile"></span></div></div><div class="ai-success-check">✓</div>
+      </div>
+      <h2 class="ai-success-title" id="aiSuccessTitle">Applications Submitted Successfully!</h2>
+      <p class="ai-success-sub">Your AI Career Agent has successfully submitted <b id="aiSuccessCount">0 applications</b>.</p>
+      <div class="ai-success-card"><div class="ai-success-card-icon">✓</div><div><h4 id="aiSuccessCardTitle">Applications sent</h4><p id="aiSuccessCardText">Your selected jobs have been submitted using your latest profile and resume.</p></div></div>
+      <div class="ai-success-info"><i class="fa-solid fa-robot"></i><span>Your AI agent will continue helping you discover new opportunities.</span></div>
+      <button class="ai-success-action" type="button" onclick="closeAIAgentSubmissionSuccess()"><i class="fa-solid fa-check"></i>&nbsp; Done</button>
+      <div class="ai-success-footer">Your career journey, powered by AI <span>✦</span></div>
     </div>
-    <h2 id="aiApprovalTitle">Approve and Submit Applications?</h2>
-    <p class="ai-approval-sub">The AI will submit only the jobs you selected.<strong id="aiApprovalCount">0 application(s) will be submitted.</strong></p>
-    <div class="ai-approval-features">
-      <div class="ai-approval-feature"><i class="fa-solid fa-check check"></i><span id="aiApprovalSubmitText">Submit applications</span></div>
-      <div class="ai-approval-feature"><i class="fa-solid fa-bolt bolt"></i><span>AI-powered job matching</span></div>
-      <div class="ai-approval-feature"><i class="fa-solid fa-file-lines resume"></i><span>Uses your latest resume</span></div>
-      <div class="ai-approval-feature"><i class="fa-solid fa-bullseye target"></i><span>Only selected jobs</span></div>
-      <div class="ai-approval-feature"><i class="fa-solid fa-clock time"></i><span>Saves time &amp; effort</span></div>
-      <div class="ai-approval-feature"><i class="fa-solid fa-lock lock"></i><span>Secure &amp; confidential</span></div>
-    </div>
-    <div class="ai-approval-note"><i class="fa-solid fa-circle-info"></i><span>You can review and unselect any job before confirming.</span></div>
-    <div class="ai-approval-actions">
-      <button class="ai-approval-btn ai-approval-cancel" id="aiApprovalCancel" type="button">Cancel</button>
-      <button class="ai-approval-btn ai-approval-submit" id="aiApprovalSubmit" type="button"><i class="fa-solid fa-paper-plane"></i>&nbsp; <span>Approve &amp; Submit Applications</span></button>
-    </div>
-    <div class="ai-approval-footer">Your career journey, powered by AI <span>✦</span></div>
   </div>
 </div>
 <script>
-(function(){
-  window.showAIAgentApprovalModal=function(count){
-    return new Promise(resolve=>{
-      const overlay=document.getElementById('aiApprovalOverlay');
-      const countEl=document.getElementById('aiApprovalCount');
-      const submitText=document.getElementById('aiApprovalSubmitText');
-      const submitBtn=document.getElementById('aiApprovalSubmit');
-      const cancelBtn=document.getElementById('aiApprovalCancel');
-      const closeBtn=document.getElementById('aiApprovalClose');
-      if(!overlay){ resolve(false); return; }
-      const n=Number(count)||0;
-      const applications=`${n} application${n===1?'':'s'}`;
-      countEl.textContent=`${applications} will be submitted.`;
-      submitText.textContent=`Submit ${applications}`;
-      submitBtn.innerHTML='<i class="fa-solid fa-paper-plane"></i>&nbsp; Approve &amp; Submit '+applications;
-      overlay.classList.add('is-open'); overlay.setAttribute('aria-hidden','false');
-      const cleanup=(value)=>{
-        overlay.classList.remove('is-open'); overlay.setAttribute('aria-hidden','true');
-        submitBtn.onclick=null; cancelBtn.onclick=null; closeBtn.onclick=null; overlay.onclick=null;
-        document.removeEventListener('keydown',onKey);
-        resolve(value);
-      };
-      const onKey=(e)=>{if(e.key==='Escape') cleanup(false);};
-      submitBtn.onclick=()=>cleanup(true);
-      cancelBtn.onclick=()=>cleanup(false);
-      closeBtn.onclick=()=>cleanup(false);
-      overlay.onclick=(e)=>{if(e.target===overlay) cleanup(false);};
-      document.addEventListener('keydown',onKey);
-      setTimeout(()=>submitBtn.focus(),0);
-    });
-  };
-})();
+  function showAIAgentSubmissionSuccess(success, failed){
+    const overlay=document.getElementById('aiSuccessOverlay');
+    if(!overlay) return;
+    const count=Number(success)||0;
+    document.getElementById('aiSuccessCount').textContent=`${count} application${count===1?'':'s'}`;
+    document.getElementById('aiSuccessCardTitle').textContent=`${count} application${count===1?'':'s'} submitted`;
+    const text=document.getElementById('aiSuccessCardText');
+    if(failed){ text.textContent=`${count} submitted successfully. ${failed} could not be submitted and can be retried.`; }
+    else { text.textContent='Your selected jobs have been submitted using your latest profile and resume.'; }
+    overlay.classList.add('show');
+    document.body.style.overflow='hidden';
+  }
+  function closeAIAgentSubmissionSuccess(){
+    const overlay=document.getElementById('aiSuccessOverlay');
+    if(overlay) overlay.classList.remove('show');
+    document.body.style.overflow='';
+  }
+  document.addEventListener('keydown',function(e){if(e.key==='Escape') closeAIAgentSubmissionSuccess();});
 </script>
 
 </body>
