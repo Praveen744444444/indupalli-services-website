@@ -1934,6 +1934,31 @@ body.dark-mode .sidebar{background:#090d16!important;}
 
 <div class="sb-overlay" id="sbOverlay" onclick="closeSB()"></div>
 
+
+<!-- PERSONAL AI JOB AGENT -->
+<style>
+.ai-agent-panel{margin:20px 0;padding:22px;border:1px solid rgba(34,197,94,.25);border-radius:18px;background:linear-gradient(135deg,#071a12,#0d2319);color:#fff;box-shadow:0 12px 30px rgba(0,0,0,.15)}
+.ai-agent-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap}.ai-agent-title{font-size:22px;font-weight:800}.ai-agent-status{font-size:13px;color:#86efac}.ai-agent-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#22c55e;box-shadow:0 0 0 0 rgba(34,197,94,.7);animation:agentPulse 1.4s infinite;margin-right:6px}@keyframes agentPulse{70%{box-shadow:0 0 0 8px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+.ai-agent-stats{display:flex;gap:12px;flex-wrap:wrap;margin:16px 0}.ai-stat{background:rgba(255,255,255,.08);padding:12px 16px;border-radius:12px;min-width:120px}.ai-stat b{display:block;font-size:22px}.ai-agent-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.ai-agent-btn{border:0;border-radius:10px;padding:11px 16px;font-weight:700;cursor:pointer}.ai-agent-run{background:#22c55e;color:#06220f}.ai-agent-approve{background:#fff;color:#111}.ai-agent-list{display:grid;gap:10px;margin-top:16px}.ai-agent-job{background:rgba(255,255,255,.07);padding:14px;border-radius:12px;display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}.ai-agent-job small{color:#cbd5e1}.ai-agent-job button{padding:8px 12px;border:0;border-radius:8px;font-weight:700;cursor:pointer}.ai-agent-message{margin-top:10px;color:#d1fae5}.ai-agent-warn{color:#fde68a}
+</style>
+
+<div id="personalAiAgent" class="ai-agent-panel" style="display:none">
+  <div class="ai-agent-head">
+    <div><div class="ai-agent-title">🤖 Your Personal AI Job Agent</div><div class="ai-agent-status"><span class="ai-agent-dot"></span><span id="aiAgentStatus">READY</span></div></div>
+    <div id="aiAgentMessage" class="ai-agent-message">Upload your Master Resume once. Your agent will then analyze active jobs automatically.</div>
+  </div>
+  <div class="ai-agent-stats">
+    <div class="ai-stat"><b id="aiAgentScanned">0</b><small>Jobs scanned</small></div>
+    <div class="ai-stat"><b id="aiAgentSuitable">0</b><small>Suitable jobs</small></div>
+    <div class="ai-stat"><b id="aiAgentPending">0</b><small>Pending approval</small></div>
+  </div>
+  <div class="ai-agent-actions">
+    <button class="ai-agent-btn ai-agent-run" onclick="window.runPersonalAiAgent(true)">▶ Run AI Agent</button>
+    <button class="ai-agent-btn ai-agent-approve" id="aiApproveAllBtn" onclick="window.approveAllAiApplications()" style="display:none">✓ Approve All & Apply</button>
+  </div>
+  <div id="aiAgentQueue" class="ai-agent-list"></div>
+</div>
+
 <!-- SUPABASE ENGINE -->
 <script type="module" src="chat.js"></script>
 <script type="module">
@@ -4576,6 +4601,127 @@ function runAIAgent(){
  const feed=document.getElementById('agentFeed');
  feed.innerHTML='<div class="agent-feed-title"><i class="fa-solid fa-sparkles"></i> Agent Activity • Updated now</div><div class="agent-message"><b>AI Agent:</b> I analyzed the currently loaded opportunities. <b>'+high.length+' high-match jobs</b> are prioritized. Next: review each recommendation, explain missing skills, and prepare the application before you submit it.</div>';
 }
+
+
+  // ===== PERSONAL AI JOB AGENT =====
+  // Uses the existing secure score-resume function and existing application flow.
+  // The agent prepares a queue; nothing is submitted until the candidate approves.
+  window.aiAgentQueue = [];
+  window.aiAgentRunning = false;
+
+  function aiAgentSetStatus(text, message) {
+      const st = document.getElementById('aiAgentStatus');
+      const msg = document.getElementById('aiAgentMessage');
+      if (st) st.textContent = text;
+      if (msg) msg.textContent = message || '';
+  }
+  function aiAgentUpdateStats(scanned, suitable, pending) {
+      const a=document.getElementById('aiAgentScanned'), b=document.getElementById('aiAgentSuitable'), c=document.getElementById('aiAgentPending');
+      if(a) a.textContent=scanned; if(b) b.textContent=suitable; if(c) c.textContent=pending;
+  }
+  function aiAgentRenderQueue() {
+      const box=document.getElementById('aiAgentQueue');
+      const allBtn=document.getElementById('aiApproveAllBtn');
+      if(!box) return;
+      box.innerHTML='';
+      const pending=window.aiAgentQueue.filter(x=>x.status==='pending');
+      if(!pending.length){ box.innerHTML='<div class="ai-agent-job"><div><b>No applications waiting for approval.</b><br><small>Your agent will add strong matches here.</small></div></div>'; if(allBtn) allBtn.style.display='none'; return; }
+      pending.forEach(item=>{
+          const d=document.createElement('div'); d.className='ai-agent-job';
+          d.innerHTML=`<div><b>${escapeHtml(String(item.job.title||'Untitled Job'))}</b><br><small>${escapeHtml(String(item.job.company||''))} • ${item.score}% AI match • Application prepared</small></div><div><button onclick="window.approveAiApplication('${String(item.id)}')">Approve & Apply</button> <button onclick="window.rejectAiApplication('${String(item.id)}')">Reject</button></div>`;
+          box.appendChild(d);
+      });
+      if(allBtn) allBtn.style.display='inline-block';
+  }
+  function escapeHtml(v){return v.replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m]));}
+
+  async function getAiAgentJobs(){
+      const data=window.allJobsData;
+      if(Array.isArray(data)) return data;
+      if(data && typeof data==='object') return Object.values(data);
+      // Fallback to the existing jobs table if the dashboard cache is not populated yet.
+      try {
+          const {data:jobs,error}=await supabase.from('jobs').select('*');
+          if(error) throw error;
+          return Array.isArray(jobs)?jobs:[];
+      } catch(e){ console.warn('AI Agent jobs load failed',e); return []; }
+  }
+
+  window.runPersonalAiAgent = async function(force){
+      if(window.aiAgentRunning) return;
+      const panel=document.getElementById('personalAiAgent'); if(panel) panel.style.display='block';
+      if(!getResumeMatchUrl || !getResumeMatchUrl()){
+          aiAgentSetStatus('RESUME NEEDED','Upload your Master Resume first. The AI Agent cannot safely match jobs without it.');
+          return;
+      }
+      window.aiAgentRunning=true; window.aiAgentQueue=[]; aiAgentRenderQueue();
+      aiAgentSetStatus('ANALYZING','Reading your Master Resume and checking active jobs...');
+      const jobs=(await getAiAgentJobs()).filter(j=>j && (!window.isJobActive || isJobActive(j)));
+      // Cost control: reuse cached scores. Only score jobs not already cached.
+      const limit=50; const work=jobs.slice(0,limit); let scanned=0, suitable=0;
+      aiAgentUpdateStats(0,0,0);
+      for(const job of work){
+          scanned++; aiAgentSetStatus('ANALYZING',`Analyzing ${scanned} of ${work.length} active jobs...`);
+          let score=getSavedJobScore ? getSavedJobScore(job) : null;
+          if(!Number.isFinite(score)){
+              const result=await scoreJobForDiscovery(job);
+              if(result && result.status==='ready' && Number.isFinite(result.score)) score=result.score;
+          }
+          if(Number.isFinite(score) && score>=80){
+              suitable++;
+              window.aiAgentQueue.push({id:String(job.id),job,score:Math.round(score),status:'pending'});
+          }
+          aiAgentUpdateStats(scanned,suitable,window.aiAgentQueue.filter(x=>x.status==='pending').length);
+      }
+      aiAgentRenderQueue();
+      aiAgentSetStatus('READY FOR APPROVAL', suitable ? `I found ${suitable} strong matches and prepared them for your approval.` : 'No strong matches found yet. I will not recommend poor matches.');
+      window.aiAgentRunning=false;
+  };
+
+  window.rejectAiApplication=function(id){
+      const item=window.aiAgentQueue.find(x=>String(x.id)===String(id)); if(item) item.status='rejected';
+      aiAgentRenderQueue(); aiAgentUpdateStats(Number(document.getElementById('aiAgentScanned')?.textContent||0),window.aiAgentQueue.filter(x=>x.score>=80).length,window.aiAgentQueue.filter(x=>x.status==='pending').length);
+  };
+
+  async function aiSubmitItem(item){
+      if(!item || item.status!=='pending') return;
+      item.status='approved';
+      // Reuse the page's existing application function when available.
+      // This keeps the existing database/application schema intact.
+      if(typeof window.submitToFirebase==='function'){
+          await window.submitToFirebase(item.job.id);
+      } else if(typeof window.applyForJob==='function'){
+          await window.applyForJob(item.job.id);
+      } else {
+          throw new Error('Existing application submission function was not found.');
+      }
+      item.status='submitted';
+  }
+  window.approveAiApplication=async function(id){
+      const item=window.aiAgentQueue.find(x=>String(x.id)===String(id)); if(!item) return;
+      try{ aiAgentSetStatus('APPLYING',`Submitting application for ${item.job.title||'selected job'}...`); await aiSubmitItem(item); aiAgentSetStatus('READY', 'Application submitted successfully.'); }
+      catch(e){ item.status='pending'; aiAgentSetStatus('ERROR', e.message||'Application could not be submitted.'); }
+      aiAgentRenderQueue();
+  };
+  window.approveAllAiApplications=async function(){
+      const pending=window.aiAgentQueue.filter(x=>x.status==='pending');
+      if(!pending.length) return;
+      if(!confirm(`Approve and submit ${pending.length} AI-prepared application(s)?`)) return;
+      let done=0;
+      for(const item of pending){
+          try{ aiAgentSetStatus('APPLYING',`Submitting ${done+1} of ${pending.length} applications...`); await aiSubmitItem(item); done++; }
+          catch(e){ console.warn('AI Agent application failed',item.id,e); item.status='pending'; }
+      }
+      aiAgentRenderQueue();
+      aiAgentSetStatus('READY',`${done} application(s) submitted. Remaining items need attention.`);
+  };
+
+  // Start automatically after the existing dashboard has had time to load the candidate and jobs.
+  setTimeout(()=>{
+      const panel=document.getElementById('personalAiAgent'); if(panel) panel.style.display='block';
+      if(getResumeMatchUrl && getResumeMatchUrl()) window.runPersonalAiAgent(false);
+      else aiAgentSetStatus('RESUME NEEDED','Upload your Master Resume once. Then your Personal AI Job Agent can work automatically.');
+  },3500);
 </script>
 </body>
 </html>
