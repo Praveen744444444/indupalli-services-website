@@ -3266,6 +3266,401 @@ document.addEventListener("DOMContentLoaded", function(){
 });
 </script>
 
+
+<!-- =========================================================
+ ADD-ONLY LAYOUT FIX
+ Forces: LEFT INFO | JOBS IN CENTER | RIGHT INFO
+ Existing data and functionality remain untouched.
+========================================================= -->
+<style>
+/* Main page: exactly three visible columns */
+.jobs-side-layout{
+  width:min(1440px, calc(100% - 48px)) !important;
+  margin:0 auto !important;
+  padding:32px 0 60px !important;
+  display:grid !important;
+  grid-template-columns:280px minmax(0, 1fr) 280px !important;
+  gap:30px !important;
+  align-items:start !important;
+}
+
+/* LEFT and RIGHT information panels */
+.side-info-left{
+  grid-column:1 !important;
+  display:block !important;
+  width:100% !important;
+}
+
+.side-info-right{
+  grid-column:3 !important;
+  display:block !important;
+  width:100% !important;
+}
+
+/* JOB LIST: force it into the middle column */
+.jobs-side-layout > #allJobsContainer{
+  grid-column:2 !important;
+  grid-row:1 !important;
+  display:flex !important;
+  flex-direction:column !important;
+  gap:16px !important;
+  width:100% !important;
+  min-width:0 !important;
+  max-width:none !important;
+  margin:0 !important;
+  padding:0 !important;
+}
+
+/* Existing job cards stay unchanged in content,
+   only their position is corrected to the center column */
+.jobs-side-layout > #allJobsContainer .job-card{
+  grid-column:auto !important;
+  width:100% !important;
+  max-width:none !important;
+  margin:0 !important;
+}
+
+/* Keep the information cards visible while scrolling */
+.side-info-left .side-info-card,
+.side-info-right .side-info-card{
+  position:sticky !important;
+  top:24px !important;
+  width:100% !important;
+}
+
+/* Make side cards clearly visible and balanced */
+.side-info-left .side-info-card,
+.side-info-right .side-info-card{
+  min-height:470px;
+}
+
+/* Tablet */
+@media(max-width:1150px){
+  .jobs-side-layout{
+    width:min(960px, calc(100% - 32px)) !important;
+    grid-template-columns:230px minmax(0,1fr) !important;
+  }
+
+  .side-info-right{
+    display:none !important;
+  }
+
+  .jobs-side-layout > #allJobsContainer{
+    grid-column:2 !important;
+  }
+}
+
+/* Mobile */
+@media(max-width:800px){
+  .jobs-side-layout{
+    width:calc(100% - 24px) !important;
+    display:flex !important;
+    flex-direction:column !important;
+    gap:18px !important;
+  }
+
+  .side-info-left,
+  .side-info-right{
+    display:block !important;
+    width:100% !important;
+    order:2;
+  }
+
+  .jobs-side-layout > #allJobsContainer{
+    display:flex !important;
+    width:100% !important;
+    order:1;
+  }
+
+  .side-info-left .side-info-card,
+  .side-info-right .side-info-card{
+    position:relative !important;
+    top:auto !important;
+    min-height:auto;
+  }
+}
+</style>
+
+
+<!-- =========================================================
+ ADD-ONLY: RIGHT INFO + FULLY CLICKABLE FILTERS
+ Existing code, Supabase and job logic are not removed.
+========================================================= -->
+<style>
+/* Ensure all three columns remain visible on desktop */
+@media (min-width:1151px){
+  .jobs-side-layout{
+    grid-template-columns:280px minmax(520px, 1fr) 280px !important;
+  }
+  .side-info-left{grid-column:1 !important; display:block !important;}
+  .jobs-side-layout > #allJobsContainer{grid-column:2 !important;}
+  .side-info-right{grid-column:3 !important; display:block !important;}
+}
+
+/* Improve right-side recruiter information */
+.side-info-right .side-info-card{
+  display:block !important;
+  visibility:visible !important;
+  opacity:1 !important;
+}
+
+.side-info-right .side-image{
+  height:175px !important;
+  object-fit:cover !important;
+}
+
+.side-info-right .side-info-top{
+  display:block !important;
+}
+
+.side-info-right .side-info-content{
+  display:block !important;
+}
+
+/* Make every filter heading clearly clickable */
+.professional-filter-bar button,
+.filter-trigger,
+.filter-option,
+.filter-reset,
+.filter-for-you{
+  pointer-events:auto !important;
+  cursor:pointer !important;
+  -webkit-tap-highlight-color:transparent;
+}
+
+.filter-trigger{
+  display:inline-flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+}
+
+.filter-trigger:focus,
+.filter-reset:focus,
+.filter-for-you:focus,
+.filter-option:focus{
+  outline:2px solid #4f86ce !important;
+  outline-offset:2px;
+}
+
+/* Active filter state */
+.filter-trigger.has-selection{
+  background:#edf4ff !important;
+  color:#245a9f !important;
+  box-shadow:inset 0 0 0 1px #b8cce8;
+}
+
+/* Jobs For You active state */
+.filter-for-you.active{
+  transform:translateY(-1px);
+  box-shadow:0 10px 22px rgba(245,158,11,.28) !important;
+}
+</style>
+
+<script>
+/* ADD ONLY: Make all heading/filter controls actually clickable */
+document.addEventListener("DOMContentLoaded", function(){
+
+  const bar = document.querySelector(".professional-filter-bar");
+  if(!bar) return;
+
+  /* Close menus when clicking outside */
+  document.addEventListener("click", function(e){
+    if(!bar.contains(e.target)){
+      bar.querySelectorAll(".filter-control").forEach(c => c.classList.remove("open"));
+    }
+  });
+
+  /* Ensure dropdown headings open */
+  bar.querySelectorAll(".filter-trigger").forEach(function(trigger){
+    trigger.addEventListener("click", function(e){
+      e.preventDefault();
+      e.stopPropagation();
+
+      const control = trigger.closest(".filter-control");
+      bar.querySelectorAll(".filter-control").forEach(function(other){
+        if(other !== control) other.classList.remove("open");
+      });
+      control.classList.toggle("open");
+    });
+  });
+
+  /* Clicking every option selects it visibly */
+  bar.querySelectorAll(".filter-option").forEach(function(option){
+    option.addEventListener("click", function(e){
+      e.preventDefault();
+      e.stopPropagation();
+
+      const control = option.closest(".filter-control");
+      const trigger = control.querySelector(".filter-trigger");
+
+      trigger.innerHTML = option.textContent + ' <i class="fa-solid fa-chevron-down"></i>';
+      trigger.classList.add("has-selection");
+      control.classList.remove("open");
+
+      /* Dispatch a custom event without touching existing job logic */
+      document.dispatchEvent(new CustomEvent("jobFilterSelected", {
+        detail:{filter: trigger.textContent.trim(), value: option.textContent.trim()}
+      }));
+    });
+  });
+
+  /* Reset all visual filters */
+  const reset = bar.querySelector(".filter-reset");
+  if(reset){
+    reset.addEventListener("click", function(){
+      const defaults = ["Closing Anytime","Job Type","Work Style","Salary"];
+      bar.querySelectorAll(".filter-trigger").forEach(function(trigger,index){
+        trigger.innerHTML = defaults[index] + ' <i class="fa-solid fa-chevron-down"></i>';
+        trigger.classList.remove("has-selection");
+      });
+
+      /* If existing page has a search input, keep it unchanged */
+      document.dispatchEvent(new CustomEvent("jobFiltersReset"));
+    });
+  }
+
+  /* Jobs For You button is clickable and visually active */
+  const forYou = bar.querySelector(".filter-for-you");
+  if(forYou){
+    forYou.addEventListener("click", function(){
+      forYou.classList.toggle("active");
+      document.dispatchEvent(new CustomEvent("jobsForYouClicked"));
+    });
+  }
+
+});
+</script>
+
+
+<!-- ADD-ONLY: EXTRA PROFESSIONAL PAGE INFORMATION -->
+<style>
+.extra-page-info{max-width:1400px;width:calc(100% - 48px);margin:0 auto 60px;display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.extra-info-card{background:#fff;border:1px solid #dde5ef;border-radius:18px;padding:26px;box-shadow:0 10px 25px rgba(27,48,79,.07)}
+.extra-info-icon{width:48px;height:48px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:#edf4ff;color:#285a9f;font-size:20px;margin-bottom:16px}
+.extra-info-card h3{margin:0 0 10px;color:#24344d;font-size:19px}.extra-info-card p{margin:0;color:#667085;line-height:1.65;font-size:14px}
+.page-how-it-works{max-width:1400px;width:calc(100% - 48px);margin:0 auto 60px;background:#fff;border:1px solid #dde5ef;border-radius:20px;padding:34px;box-sizing:border-box}
+.page-how-it-works h2{margin:0 0 8px;text-align:center;color:#24344d;font-size:27px}.page-how-it-works>p{text-align:center;color:#667085;margin:0 0 28px}
+.steps-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}.step-item{padding:18px;text-align:center}
+.step-number{width:42px;height:42px;border-radius:50%;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;background:#285a9f;color:#fff;font-weight:800}
+.step-item h4{margin:0 0 8px;color:#2d3d54;font-size:16px}.step-item p{margin:0;color:#667085;font-size:14px;line-height:1.55}
+@media(max-width:800px){.extra-page-info,.steps-grid{grid-template-columns:1fr}.extra-page-info,.page-how-it-works{width:calc(100% - 24px)}.page-how-it-works{padding:24px 18px}}
+</style>
+<script>
+document.addEventListener("DOMContentLoaded",function(){
+ document.querySelectorAll(".side-info-btn.hire-btn").forEach(function(b){b.href="recruiter-login.html";b.textContent="Start Hiring"});
+ if(document.querySelector(".extra-page-info"))return;
+ const info=document.createElement("section");info.className="extra-page-info";info.innerHTML='<article class="extra-info-card"><div class="extra-info-icon"><i class="fa-solid fa-briefcase"></i></div><h3>Find the Right Opportunity</h3><p>Browse available roles and discover opportunities that match your skills, experience and career goals.</p></article><article class="extra-info-card"><div class="extra-info-icon"><i class="fa-solid fa-bolt"></i></div><h3>Simple Job Search</h3><p>Use search and filters to explore relevant jobs and quickly review important role information.</p></article><article class="extra-info-card"><div class="extra-info-icon"><i class="fa-solid fa-building"></i></div><h3>For Employers</h3><p>Connect with potential candidates and manage your hiring journey through Indupalli Services.</p></article>';
+ const how=document.createElement("section");how.className="page-how-it-works";how.innerHTML='<h2>How It Works</h2><p>A straightforward way to discover jobs and take your next career step.</p><div class="steps-grid"><div class="step-item"><div class="step-number">1</div><h4>Search Jobs</h4><p>Explore available opportunities based on your interests.</p></div><div class="step-item"><div class="step-number">2</div><h4>Review Details</h4><p>Check the role information, requirements and important details.</p></div><div class="step-item"><div class="step-number">3</div><h4>Take the Next Step</h4><p>Apply for suitable opportunities and continue your career journey.</p></div></div>';
+ const footer=document.querySelector("footer");document.body.insertBefore(info,footer||null);document.body.insertBefore(how,info.nextSibling);
+});
+</script>
+
+
+<!-- =========================================================
+ ADD-ONLY CLEAN JOB URL ROUTING
+ Example: /jobs/software-developer-<unique-job-id>
+ Existing Supabase and job logic remain untouched.
+========================================================= -->
+<script>
+(function(){
+  function jobId(job,index){
+    return String(job.id || job.job_id || job.jobId || `job-${index}`);
+  }
+  function jobTitle(job){
+    return String(job.jobtitle || job.job_title || job.title || job.jobTitle || job.position || 'position');
+  }
+  function slugify(text){
+    return String(text).toLowerCase().trim()
+      .replace(/&/g,' and ')
+      .replace(/[^a-z0-9]+/g,'-')
+      .replace(/^-+|-+$/g,'') || 'job';
+  }
+  function jobSlug(job,index){
+    return slugify(jobTitle(job)) + '-' + jobId(job,index).toLowerCase();
+  }
+  function jobUrl(job,index){
+    return window.location.origin + '/jobs/' + encodeURIComponent(jobSlug(job,index));
+  }
+
+  window.createIndupalliJobUrl = jobUrl;
+
+  function setShareLink(index){
+    const jobs=window.rawJobsData || [];
+    const job=jobs[index];
+    const input=document.getElementById('jobShareLink');
+    if(job && input){ input.value=jobUrl(job,index); }
+  }
+
+  function openCleanUrlJob(){
+    const match=window.location.pathname.match(/^\/jobs\/([^/]+)\/?$/i);
+    if(!match) return false;
+    const requested=decodeURIComponent(match[1]).toLowerCase();
+    const jobs=window.rawJobsData || [];
+    const index=jobs.findIndex((job,i)=>jobSlug(job,i).toLowerCase()===requested);
+    if(index===-1) return false;
+    const btn=document.querySelector(`.read-more-btn[data-index="${index}"]`);
+    if(btn){ btn.click(); setTimeout(()=>setShareLink(index),50); return true; }
+    return false;
+  }
+
+  function wireJobCards(){
+    document.querySelectorAll('.job-card').forEach(card=>{
+      if(card.dataset.cleanUrlWired) return;
+      card.dataset.cleanUrlWired='1';
+      const details=card.querySelector('.read-more-btn');
+      const title=card.querySelector('.job-title-main');
+      if(title && details){
+        title.style.cursor='pointer';
+        title.setAttribute('title','Open this job');
+        title.addEventListener('click',()=>details.click());
+      }
+      if(details){
+        details.addEventListener('click',()=>{
+          const index=Number(details.dataset.index);
+          setTimeout(()=>setShareLink(index),30);
+        });
+      }
+    });
+  }
+
+  function syncUrlFromModal(){
+    const input=document.getElementById('jobShareLink');
+    if(!input) return;
+    // If old ?job= links are produced by existing code, replace them with clean links.
+    const old=input.value;
+    if(old && old.includes('?job=')){
+      try{
+        const id=new URL(old).searchParams.get('job');
+        const jobs=window.rawJobsData || [];
+        const index=jobs.findIndex((job,i)=>jobId(job,i)===String(id));
+        if(index!==-1) setShareLink(index);
+      }catch(e){}
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    let attempts=0;
+    const timer=setInterval(()=>{
+      attempts++;
+      if(Array.isArray(window.rawJobsData) && window.rawJobsData.length){
+        wireJobCards();
+        syncUrlFromModal();
+        if(openCleanUrlJob() || attempts>60) clearInterval(timer);
+      }
+      if(attempts>100) clearInterval(timer);
+    },150);
+
+    // Keep clean links after every existing render/filter operation.
+    const observer=new MutationObserver(()=>{
+      wireJobCards();
+      syncUrlFromModal();
+    });
+    const container=document.getElementById('allJobsContainer');
+    if(container) observer.observe(container,{childList:true,subtree:true});
+  });
+})();
+</script>
+
 </body>
 
 </html>
