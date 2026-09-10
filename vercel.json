@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/jobs/:path*",
+      "destination": "/jobs.html"
+    }
+  ]
+}
