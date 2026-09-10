@@ -1283,14 +1283,9 @@ All Rights Reserved.
 <script type="module">
 
 
-import { createClient }
-from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
-
-const SUPABASE_URL = 'https://lfjgtwiivdqvcgzbfkmu.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_ciq7OcJz7kRgDbaD2Pbn-g_Echw4BfY';
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-  auth: { persistSession: false }
-});
+/* Use the project's existing Supabase client.
+   This is the same client used by the rest of the Indupalli website. */
+import { supabase } from './supabase.js';
 
 
 window.rawJobsData = [];
@@ -1442,19 +1437,12 @@ async function loadAllJobs() {
       return;
     }
 
-    /* Main Current Job Openings page: fetch all active jobs in one request. */
-    const jobsRequest = supabase
+    /* Main Current Job Openings page.
+       Do not race this request against a timeout: on slower mobile networks
+       that was producing a false failure even while Supabase was still working. */
+    const { data: jobs, error } = await supabase
       .from("jobs")
       .select("*");
-
-    const timeoutRequest = new Promise((_, reject) =>
-      setTimeout(() => reject(new Error("Job listings are taking too long to load. Please refresh once.")), 12000)
-    );
-
-    const { data: jobs, error } = await Promise.race([
-      jobsRequest,
-      timeoutRequest
-    ]);
 
     if (error) throw error;
 
@@ -3895,6 +3883,24 @@ img{max-width:100%;height:auto;}
 
   .modal-overlay{padding:10px !important;}
   .modal-box{width:100% !important;max-height:90vh !important;padding:22px 16px !important;border-radius:16px !important;}
+}
+</style>
+
+
+<!-- FINAL MOBILE CARD LAYOUT FIX -->
+<style>
+@media (max-width:800px){
+  .container{padding:0 10px !important;}
+  .jobs-side-layout{padding:14px 10px 24px !important;}
+  .jobs-side-layout > #allJobsContainer{display:flex !important; width:100% !important;}
+  #allJobsContainer .job-card{box-sizing:border-box !important; width:100% !important; margin:0 !important;}
+  .job-status-row{justify-content:flex-end !important; margin-bottom:8px !important;}
+  .job-title-main{font-size:18px !important;}
+  .job-meta{display:flex !important; width:100% !important;}
+  .card-actions{display:grid !important; grid-template-columns:1fr 1fr !important; width:100% !important;}
+  .read-more-btn,.apply-btn{width:100% !important;}
+  .side-info-left,.side-info-right{display:block !important; width:100% !important;}
+  .side-info-card{box-sizing:border-box !important;}
 }
 </style>
 
