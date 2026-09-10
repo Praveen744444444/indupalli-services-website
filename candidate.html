@@ -4754,51 +4754,40 @@ document.addEventListener('DOMContentLoaded',syncVideoSummary);
 
 <!-- AI AGENT PROFESSIONAL SUCCESS POPUP: popup-only enhancement -->
 <style>
-  .ai-success-overlay{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(3,10,24,.75);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);animation:aiSuccessFade .22s ease}
+  .ai-success-overlay{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(15,23,42,.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);animation:aiSuccessFade .18s ease}
   .ai-success-overlay.show{display:flex}
-  .ai-success-modal{width:min(680px,97vw);position:relative;overflow:hidden;border-radius:28px;background:linear-gradient(145deg,#ffffff 0%,#f7f9ff 55%,#eef3ff 100%);box-shadow:0 32px 90px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.9);color:#17233a;animation:aiSuccessPop .28s cubic-bezier(.2,.9,.25,1.15)}
-  .ai-success-modal:before{content:'';position:absolute;width:340px;height:340px;border-radius:50%;top:-190px;left:50%;transform:translateX(-50%);background:radial-gradient(circle,rgba(82,116,255,.22),rgba(124,76,255,.05) 58%,transparent 70%);pointer-events:none}
-  .ai-success-close{position:absolute;right:20px;top:18px;border:0;background:transparent;color:#34445f;font-size:29px;line-height:1;cursor:pointer;width:42px;height:42px;border-radius:12px;z-index:2}.ai-success-close:hover{background:#edf1fa}
-  .ai-success-body{position:relative;padding:52px 48px 40px;text-align:center}
-  .ai-success-robot{width:128px;height:116px;margin:0 auto 18px;position:relative;display:flex;align-items:center;justify-content:center}
-  .ai-success-antenna{position:absolute;top:0;left:50%;width:5px;height:26px;background:linear-gradient(#3b82f6,#2456bd);transform:translateX(-50%);border-radius:4px}.ai-success-antenna:after{content:'';position:absolute;width:14px;height:14px;border-radius:50%;background:#3b82f6;left:50%;top:-7px;transform:translateX(-50%);box-shadow:0 0 18px rgba(59,130,246,.7)}
-  .ai-success-head{width:106px;height:75px;margin-top:17px;border-radius:26px;background:linear-gradient(145deg,#edf5ff,#b9d5ff);box-shadow:inset 0 2px 6px rgba(255,255,255,.9),0 10px 22px rgba(37,99,235,.2);display:flex;align-items:center;justify-content:center;position:relative}
-  .ai-success-face{width:82px;height:48px;border-radius:17px;background:linear-gradient(145deg,#1d365c,#07152c);display:flex;align-items:center;justify-content:center;gap:12px;box-shadow:inset 0 2px 8px rgba(255,255,255,.08)}
-  .ai-success-eye{width:10px;height:10px;background:#d9ebff;border-radius:50%;box-shadow:0 0 9px #78b5ff}.ai-success-smile{position:absolute;width:29px;height:13px;border-bottom:3px solid #d9ebff;border-radius:0 0 22px 22px;margin-top:18px}
-  .ai-success-check{position:absolute;right:-6px;bottom:5px;width:37px;height:37px;border-radius:50%;background:linear-gradient(135deg,#23c483,#11945d);color:#fff;display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:900;box-shadow:0 10px 20px rgba(16,185,129,.3)}
-  .ai-success-title{margin:0;color:#18263d;font-size:32px;line-height:1.2;font-weight:800;letter-spacing:-.5px}.ai-success-sub{margin:12px auto 0;max-width:500px;color:#53627a;font-size:17px;line-height:1.6}.ai-success-sub b{color:#245fc0}
-  .ai-success-card{margin:28px 0 20px;padding:20px 22px;border-radius:20px;background:linear-gradient(135deg,#f0f5ff,#e9f0fb);border:1px solid rgba(72,107,173,.10);display:flex;align-items:center;gap:16px;text-align:left}.ai-success-card-icon{flex:0 0 48px;width:48px;height:48px;border-radius:15px;background:linear-gradient(135deg,#2f8eeb,#3f5ee9);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 10px 20px rgba(47,94,233,.26)}.ai-success-card h4{margin:0 0 4px;font-size:16px;color:#1d2e49}.ai-success-card p{margin:0;color:#66758c;font-size:14px;line-height:1.45}
-  .ai-success-info{padding:14px 16px;border-radius:14px;background:#edf5ff;color:#24538e;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:9px}.ai-success-info i{font-size:17px}
-  .ai-success-action{margin-top:26px;width:100%;border:0;border-radius:15px;padding:17px 20px;color:#fff;font-size:17px;font-weight:800;cursor:pointer;background:linear-gradient(100deg,#1f66c9,#2f5fd9 52%,#7442d7);box-shadow:0 14px 28px rgba(50,82,190,.26);transition:transform .15s,box-shadow .15s}.ai-success-action:hover{transform:translateY(-1px);box-shadow:0 18px 32px rgba(50,82,190,.32)}
-  .ai-success-footer{margin-top:16px;color:#7a879b;font-size:12.5px}.ai-success-footer span{color:#f2b632}
-  @keyframes aiSuccessFade{from{opacity:0}to{opacity:1}}@keyframes aiSuccessPop{from{opacity:0;transform:translateY(12px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
-  @media(max-width:640px){.ai-success-body{padding:38px 22px 28px}.ai-success-title{font-size:24px}.ai-success-sub{font-size:14.5px}.ai-success-robot{width:104px;height:94px}}
+  .ai-success-modal{width:min(400px,94vw);position:relative;overflow:hidden;border-radius:18px;background:#ffffff;box-shadow:0 20px 50px rgba(15,23,42,.22),0 0 0 1px rgba(15,23,42,.05);color:#17233a;animation:aiSuccessPop .22s cubic-bezier(.2,.9,.25,1.1)}
+  .ai-success-close{position:absolute;right:12px;top:12px;border:0;background:transparent;color:#94a3b8;font-size:19px;line-height:1;cursor:pointer;width:30px;height:30px;border-radius:8px;z-index:2}.ai-success-close:hover{background:#f1f5f9;color:#475569}
+  .ai-success-body{position:relative;padding:32px 28px 24px;text-align:center}
+  .ai-success-robot{width:56px;height:56px;margin:0 auto 16px;position:relative;display:flex;align-items:center;justify-content:center;border-radius:16px;background:linear-gradient(135deg,#2563eb,#4f46e5)}
+  .ai-success-robot i{color:#fff;font-size:26px}
+  .ai-success-check{position:absolute;right:-6px;bottom:-6px;width:22px;height:22px;border-radius:50%;background:#16a34a;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;box-shadow:0 0 0 3px #fff}
+  .ai-success-title{margin:0;color:#0f172a;font-size:19px;line-height:1.3;font-weight:700;letter-spacing:-.2px}.ai-success-sub{margin:8px auto 0;max-width:320px;color:#64748b;font-size:13.5px;line-height:1.5}.ai-success-sub b{color:#2563eb;font-weight:700}
+  .ai-success-card{margin:18px 0 12px;padding:13px 14px;border-radius:12px;background:#f8fafc;border:1px solid #eef2f7;display:flex;align-items:flex-start;gap:11px;text-align:left}.ai-success-card-icon{flex:0 0 26px;width:26px;height:26px;border-radius:50%;background:#dcfce7;color:#16a34a;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800}.ai-success-card h4{margin:0 0 2px;font-size:13.5px;color:#1e293b;font-weight:700}.ai-success-card p{margin:0;color:#64748b;font-size:12.5px;line-height:1.4}
+  .ai-success-info{padding:10px 12px;border-radius:10px;background:#eff6ff;color:#1d4ed8;font-size:12px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:7px}.ai-success-info i{font-size:13px}
+  .ai-success-action{margin-top:18px;width:100%;border:0;border-radius:11px;padding:12px 20px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;background:#2563eb;box-shadow:0 6px 14px rgba(37,99,235,.22);transition:background .15s,transform .15s}.ai-success-action:hover{background:#1d4ed8;transform:translateY(-1px)}
+  .ai-success-footer{margin-top:12px;color:#94a3b8;font-size:11px}.ai-success-footer span{color:#f2b632}
+  @keyframes aiSuccessFade{from{opacity:0}to{opacity:1}}@keyframes aiSuccessPop{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+  @media(max-width:420px){.ai-success-body{padding:26px 20px 20px}.ai-success-title{font-size:17px}.ai-success-sub{font-size:13px}}
 
   /* AI AGENT PROFESSIONAL CONFIRM POPUP */
-  .ai-confirm-overlay{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;padding:24px;background:rgba(3,10,24,.75);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);animation:aiSuccessFade .22s ease}
+  .ai-confirm-overlay{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(15,23,42,.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);animation:aiSuccessFade .18s ease}
   .ai-confirm-overlay.show{display:flex}
-  .ai-confirm-modal{width:min(500px,96vw);position:relative;overflow:hidden;border-radius:26px;background:linear-gradient(145deg,#ffffff 0%,#f7f9ff 55%,#eef3ff 100%);box-shadow:0 30px 84px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.9);color:#17233a;animation:aiSuccessPop .28s cubic-bezier(.2,.9,.25,1.15)}
-  .ai-confirm-modal:before{content:'';position:absolute;width:260px;height:260px;border-radius:50%;top:-150px;left:50%;transform:translateX(-50%);background:radial-gradient(circle,rgba(82,116,255,.2),rgba(124,76,255,.04) 58%,transparent 70%);pointer-events:none}
-  .ai-confirm-body{position:relative;padding:44px 38px 34px;text-align:center}
-  .ai-confirm-robot{width:92px;height:84px;margin:0 auto 16px;position:relative;display:flex;align-items:center;justify-content:center}
-  .ai-confirm-robot .ai-success-antenna{height:20px}
-  .ai-confirm-robot .ai-success-head{width:78px;height:56px;margin-top:12px;border-radius:20px}
-  .ai-confirm-robot .ai-success-face{width:60px;height:36px;border-radius:13px;gap:9px}
-  .ai-confirm-robot .ai-success-eye{width:7px;height:7px}
-  .ai-confirm-robot .ai-success-smile{width:22px;height:10px;margin-top:13px}
-  .ai-confirm-title{margin:0;color:#18263d;font-size:24px;line-height:1.25;font-weight:800;letter-spacing:-.3px}
-  .ai-confirm-sub{margin:12px auto 0;max-width:400px;color:#5a6980;font-size:15px;line-height:1.6}.ai-confirm-sub b{color:#245fc0}
-  .ai-confirm-note{margin:22px 0 6px;padding:13px 16px;border-radius:14px;background:#edf5ff;color:#24538e;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px;text-align:left}.ai-confirm-note i{font-size:15px;flex:0 0 auto}
-  .ai-confirm-actions{margin-top:24px;display:flex;gap:12px}
-  .ai-confirm-cancel{flex:1;border:1.5px solid #dde5f3;background:#fff;color:#3b4a63;font-size:15px;font-weight:700;padding:14px 18px;border-radius:14px;cursor:pointer;transition:background .15s,border-color .15s}.ai-confirm-cancel:hover{background:#f4f7fc;border-color:#c8d5ea}
-  .ai-confirm-ok{flex:1.4;border:0;border-radius:14px;padding:14px 18px;color:#fff;font-size:15px;font-weight:800;cursor:pointer;background:linear-gradient(100deg,#1f66c9,#2f5fd9 52%,#7442d7);box-shadow:0 12px 24px rgba(50,82,190,.26);transition:transform .15s,box-shadow .15s}.ai-confirm-ok:hover{transform:translateY(-1px);box-shadow:0 16px 28px rgba(50,82,190,.32)}
-  @media(max-width:520px){.ai-confirm-body{padding:34px 22px 26px}.ai-confirm-title{font-size:20px}.ai-confirm-actions{flex-direction:column-reverse}}
+  .ai-confirm-modal{width:min(380px,94vw);position:relative;overflow:hidden;border-radius:18px;background:#ffffff;box-shadow:0 20px 50px rgba(15,23,42,.22),0 0 0 1px rgba(15,23,42,.05);color:#17233a;animation:aiSuccessPop .22s cubic-bezier(.2,.9,.25,1.1)}
+  .ai-confirm-body{position:relative;padding:30px 26px 24px;text-align:center}
+  .ai-confirm-title{margin:0;color:#0f172a;font-size:18px;line-height:1.3;font-weight:700;letter-spacing:-.2px}
+  .ai-confirm-sub{margin:8px auto 0;max-width:300px;color:#64748b;font-size:13.5px;line-height:1.5}.ai-confirm-sub b{color:#2563eb;font-weight:700}
+  .ai-confirm-note{margin:16px 0 4px;padding:10px 12px;border-radius:10px;background:#eff6ff;color:#1d4ed8;font-size:12px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:7px;text-align:left}.ai-confirm-note i{font-size:13px;flex:0 0 auto}
+  .ai-confirm-actions{margin-top:20px;display:flex;gap:10px}
+  .ai-confirm-cancel{flex:1;border:1px solid #e2e8f0;background:#fff;color:#475569;font-size:13.5px;font-weight:600;padding:11px 16px;border-radius:10px;cursor:pointer;transition:background .15s,border-color .15s}.ai-confirm-cancel:hover{background:#f8fafc;border-color:#cbd5e1}
+  .ai-confirm-ok{flex:1.4;border:0;border-radius:10px;padding:11px 16px;color:#fff;font-size:13.5px;font-weight:700;cursor:pointer;background:#2563eb;box-shadow:0 6px 14px rgba(37,99,235,.22);transition:background .15s,transform .15s}.ai-confirm-ok:hover{background:#1d4ed8;transform:translateY(-1px)}
+  @media(max-width:400px){.ai-confirm-body{padding:26px 20px 20px}.ai-confirm-title{font-size:16.5px}.ai-confirm-actions{flex-direction:column-reverse}}
 </style>
 <div class="ai-confirm-overlay" id="aiConfirmOverlay" role="dialog" aria-modal="true" aria-labelledby="aiConfirmTitle">
   <div class="ai-confirm-modal">
     <div class="ai-confirm-body">
       <div class="ai-confirm-robot ai-success-robot" aria-hidden="true">
-        <div class="ai-success-antenna"></div><div class="ai-success-head"><div class="ai-success-face"><span class="ai-success-eye"></span><span class="ai-success-eye"></span><span class="ai-success-smile"></span></div></div>
+        <i class="fa-solid fa-robot"></i>
       </div>
       <h2 class="ai-confirm-title" id="aiConfirmTitle">Approve &amp; Submit Applications?</h2>
       <p class="ai-confirm-sub">Your AI agent is ready to submit <b id="aiConfirmCount">0 applications</b> on your behalf. It will apply only to the jobs you selected.</p>
@@ -4843,7 +4832,7 @@ document.addEventListener('DOMContentLoaded',syncVideoSummary);
     <button class="ai-success-close" type="button" onclick="closeAIAgentSubmissionSuccess()" aria-label="Close">×</button>
     <div class="ai-success-body">
       <div class="ai-success-robot" aria-hidden="true">
-        <div class="ai-success-antenna"></div><div class="ai-success-head"><div class="ai-success-face"><span class="ai-success-eye"></span><span class="ai-success-eye"></span><span class="ai-success-smile"></span></div></div><div class="ai-success-check">✓</div>
+        <i class="fa-solid fa-robot"></i><div class="ai-success-check">✓</div>
       </div>
       <h2 class="ai-success-title" id="aiSuccessTitle">Applications Submitted Successfully!</h2>
       <p class="ai-success-sub">Your AI Career Agent has successfully submitted <b id="aiSuccessCount">0 applications</b>.</p>
