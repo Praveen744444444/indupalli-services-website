@@ -1771,6 +1771,7 @@ body.dark-mode .sidebar{background:#090d16!important;}
       <div class="agent-feed-title"><i class="fa-solid fa-sparkles"></i> Agent Activity</div>
       <div class="agent-message"><b>AI Agent:</b> Complete your profile and resume. Then I can rank jobs and explain why they match you.</div>
     </div>
+    <div id="agentApprovalQueue" style="margin-top:16px;"></div>
   </div>
 </div>
 
@@ -2464,6 +2465,9 @@ body.dark-mode .sidebar{background:#090d16!important;}
 
           await loadCandidateProfile(email);
           await window.loadJobsList();
+          // Start the Personal AI Career Agent automatically after login.
+          // It only analyzes/prepares recommendations; it never submits without candidate approval.
+          if (window.startAIAgentAfterLogin) window.startAIAgentAfterLogin();
           await window.triggerRefreshApplications();
           await window.triggerRefreshSubscriptions();
       });
@@ -4566,103 +4570,127 @@ document.addEventListener('DOMContentLoaded',syncVideoSummary);
 </script>
 
 <script>
-// REAL PERSONAL AI CAREER AGENT
-// Uses the existing secure score-resume Edge Function already present in this file.
-window.aiAgentResults = [];
+/* ============================================================
+   PERSONAL AI CAREER AGENT
+   Login -> Resume -> Analyze active jobs -> Prepare approval queue
+   IMPORTANT: AI never submits until the candidate approves.
+   ============================================================ */
+(function(){
+  const MATCH_THRESHOLD = 25;
+  const CONCURRENCY = 2;
+  let agentRunning = false;
 
-window.runAIAgent = async function(){
-  const btn = document.querySelector('.agent-primary');
-  const highEl = document.getElementById('agentHighMatch');
-  const readyEl = document.getElementById('agentReady');
-  const gapsEl = document.getElementById('agentGaps');
-  const feed = document.getElementById('agentFeed');
+  function candidateProfile(){
+    return {
+      name: document.getElementById('candidateFullName')?.value || document.getElementById('applyName')?.value || '',
+      experience: document.getElementById('candidateExperience')?.value || document.getElementById('applyExperience')?.value || '',
+      skills: document.getElementById('candidateSkills')?.value || '',
+      about: document.getElementById('candidateAbout')?.value || ''
+    };
+  }
+  function resumeUrl(){ return window.candidateMasterResumeUrl || window.currentApplyingResumeUrl || ''; }
+  function activeJobs(){ return Object.values(window.allJobsData || {}).filter(j => !window.isJobActive || window.isJobActive(j)); }
+  function cacheKey(job){
+    const email=(localStorage.getItem('candidateLoggedInEmail')||'candidate').toLowerCase();
+    return `aiAgentMatch:${email}:${job.id}:${resumeUrl()}`;
+  }
+  function setFeed(html){ const f=document.getElementById('agentFeed'); if(f) f.innerHTML=html; }
+  function esc(v){ const d=document.createElement('div'); d.textContent=String(v||''); return d.innerHTML; }
 
-  const resumeUrl = String(window.candidateMasterResumeUrl || '').trim();
-  if (!resumeUrl) {
-    if (feed) feed.innerHTML = '<div class="agent-feed-title"><i class="fa-solid fa-triangle-exclamation"></i> Resume required</div><div class="agent-message">Upload your Master Resume first. The AI Agent cannot verify jobs without it.</div>';
-    return;
-  }
-  if (!window.invokeScoreResume) {
-    if (feed) feed.innerHTML = '<div class="agent-message"><b>AI Agent error:</b> AI scoring service is not available.</div>';
-    return;
+  async function scoreJob(job){
+    const key=cacheKey(job);
+    try{
+      const saved=JSON.parse(localStorage.getItem(key)||'null');
+      if(saved && typeof saved.score==='number') return saved;
+    }catch(e){}
+    const data=await window.invokeScoreResume({
+      resumeUrl: resumeUrl(),
+      job:{
+        title: job.jobtitle || job.title || 'Open Position',
+        company: job.companyname || job.company || 'Indupalli Services',
+        description: job.description || '',
+        experience: job.experience || '', location: job.location || '', salary: job.salary || ''
+      },
+      candidateProfile: candidateProfile()
+    });
+    const raw=data?.overallScore;
+    const score=typeof raw==='number' ? raw : Number(String(raw||'').replace(/[^0-9.]/g,''));
+    if(!Number.isFinite(score)) throw new Error('AI returned an invalid match score');
+    const result={score:Math.max(0,Math.min(100,Math.round(score))), analysis:data};
+    localStorage.setItem(key,JSON.stringify(result));
+    return result;
   }
 
-  let jobs = Object.values(window.allJobsData || {}).filter(j => window.isJobActive ? window.isJobActive(j) : true);
-  if (!jobs.length && window.loadJobsList) {
-    await window.loadJobsList();
-    jobs = Object.values(window.allJobsData || {}).filter(j => window.isJobActive ? window.isJobActive(j) : true);
-  }
-  if (!jobs.length) {
-    if (feed) feed.innerHTML = '<div class="agent-message"><b>AI Agent:</b> No active jobs are currently available to analyze.</div>';
-    return;
+  function renderQueue(items){
+    const q=document.getElementById('agentApprovalQueue'); if(!q) return;
+    if(!items.length){ q.innerHTML='<div class="agent-message"><b>No suitable jobs found yet.</b> Your AI Agent did not find jobs meeting the current 25% match threshold.</div>'; return; }
+    q.innerHTML=`<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin:12px 0;"><b>🤖 AI Prepared Jobs — Candidate Approval Required</b><button class="agent-primary" type="button" onclick="approveSelectedAIAgentJobs()">Approve Selected</button></div>`+
+      items.map(x=>`<div class="agent-message" style="margin:10px 0;border:1px solid var(--border);padding:14px;border-radius:12px;">
+        <label style="display:flex;gap:12px;align-items:flex-start;cursor:pointer;">
+          <input type="checkbox" class="ai-agent-job-check" data-job-id="${esc(x.job.id)}" checked style="margin-top:5px;transform:scale(1.2);">
+          <span><b>${esc(x.job.jobtitle||x.job.title||'Open Position')}</b> — ${esc(x.job.companyname||x.job.company||'Indupalli Services')}<br>
+          <b style="color:#16a34a;">${x.score}% AI Match</b><br>
+          <small>${esc(x.analysis?.summary || 'AI verified this resume against the job requirements.')}</small></span>
+        </label>
+      </div>`).join('');
   }
 
-  // Safety limit prevents exhausting the AI quota on a single click.
-  const MAX_JOBS_PER_RUN = 20;
-  jobs = jobs.slice(0, MAX_JOBS_PER_RUN);
-  const candidateProfile = {
-    name: document.getElementById('candidateFullName')?.value || document.getElementById('applyName')?.value || '',
-    experience: document.getElementById('candidateExperience')?.value || document.getElementById('applyExperience')?.value || '',
-    skills: document.getElementById('candidateSkills')?.value || '',
-    about: document.getElementById('candidateAbout')?.value || ''
+  window.runAIAgent=async function(auto=false){
+    if(agentRunning) return;
+    if(!resumeUrl()){
+      document.getElementById('agentGaps').textContent='Resume needed';
+      setFeed('<div class="agent-feed-title">Agent Activity</div><div class="agent-message"><b>AI Agent:</b> Upload your Master Resume first. I cannot verify jobs without it.</div>');
+      return;
+    }
+    const jobs=activeJobs().filter(j=>String(j.description||'').trim());
+    if(!jobs.length){ setFeed('<div class="agent-feed-title">Agent Activity</div><div class="agent-message"><b>AI Agent:</b> No active jobs with usable job descriptions were found.</div>'); return; }
+    agentRunning=true;
+    document.getElementById('agentHighMatch').textContent='…';
+    document.getElementById('agentReady').textContent='…';
+    document.getElementById('agentGaps').textContent='Analyzing';
+    setFeed(`<div class="agent-feed-title"><i class="fa-solid fa-spinner fa-spin"></i> AI Agent Working</div><div class="agent-message"><b>AI Agent:</b> ${auto?'Started automatically after login. ':''}Analyzing your resume against ${jobs.length} active jobs...</div>`);
+    const results=[]; let cursor=0; let failures=0;
+    async function worker(){
+      while(true){
+        const i=cursor++; if(i>=jobs.length) return;
+        const job=jobs[i];
+        try{ const r=await scoreJob(job); if(r.score>=MATCH_THRESHOLD) results.push({job,score:r.score,analysis:r.analysis}); }
+        catch(e){ failures++; console.warn('AI Agent job analysis failed',job.id,e); }
+      }
+    }
+    try{
+      await Promise.all(Array.from({length:Math.min(CONCURRENCY,jobs.length)},worker));
+      results.sort((a,b)=>b.score-a.score);
+      document.getElementById('agentHighMatch').textContent=results.length;
+      document.getElementById('agentReady').textContent=results.length;
+      document.getElementById('agentGaps').textContent=results.length?'Verified':'Review';
+      setFeed(`<div class="agent-feed-title"><i class="fa-solid fa-sparkles"></i> Agent Activity • Updated now</div><div class="agent-message"><b>AI Agent:</b> I analyzed ${jobs.length} active jobs and found <b>${results.length} suitable jobs (${MATCH_THRESHOLD}%+)</b>. Select the jobs you approve, then submit them through the existing application flow.${failures?` ${failures} jobs could not be analyzed.`:''}</div>`);
+      renderQueue(results);
+    }catch(e){
+      console.error(e);
+      setFeed('<div class="agent-feed-title">Agent Error</div><div class="agent-message"><b>AI Agent:</b> Analysis could not be completed. Check the AI Edge Function and resume access.</div>');
+    }finally{ agentRunning=false; }
   };
 
-  if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> AI analyzing...'; }
-  if (feed) feed.innerHTML = '<div class="agent-feed-title"><i class="fa-solid fa-robot"></i> AI Agent • Working</div><div class="agent-message">Reading your resume and analyzing '+jobs.length+' active jobs...</div>';
-  window.aiAgentResults = [];
+  window.approveSelectedAIAgentJobs=function(){
+    const ids=[...document.querySelectorAll('.ai-agent-job-check:checked')].map(x=>x.dataset.jobId).filter(Boolean);
+    if(!ids.length){ alert('Select at least one job to approve.'); return; }
+    // Store explicit candidate approval. Submission still uses your existing application flow.
+    localStorage.setItem('aiAgentApprovedJobIds',JSON.stringify(ids));
+    localStorage.setItem('aiAgentApprovalPending','true');
+    const first=window.allJobsData?.[ids[0]];
+    if(!first){ alert('Approved jobs could not be loaded.'); return; }
+    setFeed(`<div class="agent-feed-title">Approval Saved</div><div class="agent-message"><b>Candidate approval received for ${ids.length} job(s).</b> Opening the first approved application. Your existing submission flow will handle the final submission.</div>`);
+    window.openApplyModalForJob?.(first.id, first.jobtitle||first.title||'Open Position', first.companyname||first.company||'Indupalli Services');
+  };
 
-  let failed = 0;
-  for (let i=0; i<jobs.length; i++) {
-    const job = jobs[i];
-    if (feed) feed.innerHTML = '<div class="agent-feed-title"><i class="fa-solid fa-robot"></i> AI Agent • Working</div><div class="agent-message">Analyzing job '+(i+1)+' of '+jobs.length+': <b>'+escapeHtml(job.jobtitle || 'Open Position')+'</b></div>';
-    try {
-      const analysis = await window.invokeScoreResume({
-        resumeUrl,
-        job: {
-          title: job.jobtitle || 'Open Position',
-          company: job.companyname || 'Indupalli Services',
-          description: job.description || '',
-          experience: job.experience || '',
-          location: job.location || '',
-          salary: job.salary || ''
-        },
-        candidateProfile
-      });
-      const score = typeof normalizeScoreValue === 'function' ? normalizeScoreValue(analysis.overallScore) : Math.max(0, Math.min(100, Number(analysis.overallScore)||0));
-      window.aiAgentResults.push({ job, analysis, score });
-    } catch(e) {
-      failed++;
-      console.error('AI Agent analysis failed for job', job.id, e);
-    }
-  }
-
-  window.aiAgentResults.sort((a,b)=>b.score-a.score);
-  const high = window.aiAgentResults.filter(x=>x.score>=80);
-  const review = window.aiAgentResults.filter(x=>x.score>=60 && x.score<80);
-  if (highEl) highEl.textContent = high.length;
-  if (readyEl) readyEl.textContent = high.length;
-  if (gapsEl) gapsEl.textContent = review.length ? review.length+' Review' : 'Profile';
-
-  const cards = high.map((x,idx)=>{
-    const jobId = String(x.job.id);
-    const missing = Array.isArray(x.analysis.missingOrWeakSkills) ? x.analysis.missingOrWeakSkills.slice(0,4).join(', ') : '';
-    return '<div class="agent-message" style="margin-top:10px"><b>'+escapeHtml(x.job.jobtitle || 'Open Position')+'</b> — <b>'+x.score+'% Match</b><br><span>'+escapeHtml(x.analysis.summary || 'AI verified this job against your resume.')+'</span>'+(missing?'<br><small>Missing/weak: '+escapeHtml(missing)+'</small>':'')+'<br><button class="view-btn" style="margin-top:8px" onclick="window.aiAgentApproveJob(\''+jobId+'\')">Review & Approve</button></div>';
-  }).join('');
-
-  if (feed) feed.innerHTML = '<div class="agent-feed-title"><i class="fa-solid fa-sparkles"></i> Agent Activity • Analysis complete</div><div class="agent-message"><b>AI Agent:</b> Analyzed '+window.aiAgentResults.length+' jobs. <b>'+high.length+' suitable jobs</b> are ready for your approval.'+(review.length?' '+review.length+' more need review.':'')+(failed?' '+failed+' job analyses failed.':'')+'</div>'+(high.length?'<div style="margin-top:10px"><button class="agent-primary" onclick="window.aiAgentReviewAll()"><i class="fa-solid fa-list-check"></i> Review '+high.length+' Suitable Jobs</button></div>'+cards:'<div class="agent-message">No jobs reached the current 80% suitability threshold.</div>');
-
-  if (btn) { btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-rotate"></i> Run AI Agent Again'; }
-};
-
-window.aiAgentApproveJob = function(jobId){
-  // Candidate approval happens in the existing application flow; no submission occurs silently.
-  if (window.openJobDetailsModalById) window.openJobDetailsModalById(String(jobId));
-};
-window.aiAgentReviewAll = function(){
-  const first = (window.aiAgentResults||[]).find(x=>x.score>=80);
-  if (first) window.aiAgentApproveJob(first.job.id);
-};
-function escapeHtml(v){ return String(v||'').replace(/[&<>'"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
+  // Called automatically after candidate login and job list loading.
+  window.startAIAgentAfterLogin=function(){
+    if(sessionStorage.getItem('aiAgentAutoStarted')==='1') return;
+    sessionStorage.setItem('aiAgentAutoStarted','1');
+    setTimeout(()=>window.runAIAgent(true),800);
+  };
+})();
 </script>
 </body>
 </html>
