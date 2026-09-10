@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Seeker Login – Indupalli Services</title>
-    
+    <title>Recruiter Portal Login – Indupalli Services</title>
+
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,7 +27,6 @@
         --text-body: #334155;
         --text-muted: #64748b;
         --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-        --shadow-md: 0 10px 25px -5px rgba(15, 23, 42, 0.08);
         --shadow-lg: 0 25px 50px -12px rgba(15, 23, 42, 0.25);
     }
 
@@ -57,21 +56,19 @@
 
     .brand { display: flex; align-items: center; gap: 14px; position: relative; z-index: 2; }
     .brand img { height: 48px; width: 48px; border-radius: 12px; background: #fff; padding: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); object-fit: contain; }
-    .brand-text h2 { font-size: 21px; font-weight: 800; color: #fff; letter-spacing: -0.5px; margin: 0; }
-    .brand-text p { font-size: 10.5px; color: #60a5fa; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; margin: 2px 0 0 0; }
+    .brand-text h2 { font-size: 21px; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
+    .brand-text p { font-size: 10.5px; color: #60a5fa; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; margin-top: 1px; }
 
     .left-center { flex: 1; display: flex; flex-direction: column; justify-content: center; position: relative; z-index: 2; margin: 40px 0; max-width: 480px; }
     .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); padding: 6px 14px; border-radius: 30px; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 20px; width: fit-content; backdrop-filter: blur(4px); }
     .left-panel h1 { font-size: 38px; font-weight: 800; line-height: 1.2; margin-bottom: 14px; letter-spacing: -1px; }
     .left-panel h1 span { color: #60a5fa; text-shadow: 0 0 40px rgba(96, 165, 250, 0.3); }
-    .left-panel p.tagline { font-size: 15.5px; line-height: 1.7; color: #cbd5e1; margin-bottom: 30px; }
+    .left-panel p { font-size: 15.5px; line-height: 1.7; color: #cbd5e1; }
 
-    .features-list { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 420px; }
-    .feature-item { display: flex; align-items: center; gap: 14px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); padding: 14px 18px; border-radius: 14px; backdrop-filter: blur(6px); transition: transform 0.2s; }
-    .feature-item:hover { transform: translateX(6px); background: rgba(255, 255, 255, 0.08); }
-    .feature-icon { width: 36px; height: 36px; border-radius: 10px; background: rgba(37, 99, 235, 0.3); color: #60a5fa; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
-    .feature-text h4 { font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 2px; }
-    .feature-text p { font-size: 12px; color: #94a3b8; margin: 0; }
+    .features { margin-top: 32px; display: flex; flex-direction: column; gap: 12px; width: 100%; }
+    .feature { display: flex; align-items: center; gap: 14px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); padding: 12px 18px; border-radius: 14px; font-size: 13.5px; color: #f1f5f9; font-weight: 600; backdrop-filter: blur(6px); transition: transform 0.2s; }
+    .feature:hover { transform: translateX(6px); background: rgba(255, 255, 255, 0.08); }
+    .feature-icon { width: 32px; height: 32px; border-radius: 8px; background: rgba(37, 99, 235, 0.3); color: #60a5fa; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
 
     .left-bottom { position: relative; z-index: 2; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; width: 100%; }
     .left-bottom p { font-size: 12.5px; color: #94a3b8; margin: 0; }
@@ -79,72 +76,63 @@
     .trust-badge { background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; color: #cbd5e1; display: inline-flex; align-items: center; gap: 6px; }
 
     /* ── RIGHT AUTH PANEL ── */
-    .right-panel { width: 520px; display: flex; align-items: center; justify-content: center; padding: 50px 40px; background: #ffffff; flex-shrink: 0; box-shadow: -10px 0 30px rgba(0, 0, 0, 0.02); overflow-y: auto; }
+    .right-panel { width: 520px; display: flex; align-items: center; justify-content: center; padding: 50px 40px; background: #ffffff; flex-shrink: 0; box-shadow: -10px 0 30px rgba(0, 0, 0, 0.02); }
     .form-box { width: 100%; max-width: 400px; }
-    .form-badge { display: inline-flex; align-items: center; gap: 6px; background: #eff6ff; color: var(--primary); font-size: 11.5px; font-weight: 800; padding: 5px 14px; border-radius: 20px; margin-bottom: 16px; letter-spacing: 0.5px; text-transform: uppercase; border: 1px solid #dbeafe; }
+    .form-badge { display: inline-flex; align-items: center; gap: 6px; background: #fff7ed; color: var(--orange-hover); font-size: 11.5px; font-weight: 800; padding: 5px 14px; border-radius: 20px; margin-bottom: 16px; letter-spacing: 0.5px; text-transform: uppercase; border: 1px solid #ffedd5; }
     .form-box h2 { font-size: 28px; font-weight: 800; color: var(--navy); margin-bottom: 6px; letter-spacing: -0.5px; }
     .form-box .sub { color: var(--text-muted); font-size: 14px; margin-bottom: 28px; line-height: 1.6; }
 
-    .input-group { display: flex; flex-direction: column; margin-bottom: 18px; position: relative; }
+    .form-group { display: flex; flex-direction: column; margin-bottom: 18px; }
     .label-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-    .input-group label { font-size: 12.5px; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
-    
+    label { font-size: 12.5px; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: 0.5px; }
     .forgot-link { font-size: 12.5px; color: var(--primary); font-weight: 700; text-decoration: none; cursor: pointer; transition: color 0.2s; }
     .forgot-link:hover { text-decoration: underline; color: var(--primary-dark); }
 
-    .input-wrap { position: relative; }
-    .input-wrap i { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 14px; pointer-events: none; }
-    .input-wrap input { width: 100%; padding: 13px 16px 13px 44px; border: 1.5px solid var(--border-color); border-radius: 12px; font-size: 14.5px; background: var(--bg-light); transition: all 0.2s ease; font-family: inherit; color: var(--navy); outline: none; }
-    .input-wrap input:focus { border-color: var(--primary); background: #ffffff; box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
-    .input-wrap input:focus + i { color: var(--primary); }
+    input { width: 100%; padding: 13px 16px; border: 1.5px solid var(--border-color); border-radius: 12px; font-size: 14.5px; background: var(--bg-light); transition: all 0.2s ease; font-family: inherit; color: var(--navy); outline: none; }
+    input:focus { border-color: var(--primary); background: #ffffff; box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1); }
 
-    .btn-login { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: #fff; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 6px; transition: all 0.2s ease; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25); display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-login { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: #fff; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 10px; transition: all 0.2s ease; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25); display: flex; align-items: center; justify-content: center; gap: 8px; }
     .btn-login:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(37, 99, 235, 0.35); }
-    .btn-login:disabled { background: #94a3b8; cursor: not-allowed; box-shadow: none; transform: none; }
 
-    .divider { display: flex; align-items: center; gap: 14px; margin: 20px 0; }
-    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border-color); }
-    .divider span { font-size: 12px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .btn-register { width: 100%; padding: 13px; background: #fff; color: var(--orange-hover); border: 1.5px solid #fed7aa; border-radius: 12px; font-size: 14.5px; font-weight: 700; cursor: pointer; margin-top: 12px; transition: all 0.2s ease; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-register:hover { background: #fff7ed; border-color: var(--orange); transform: translateY(-1px); }
 
-    .btn-register { width: 100%; padding: 13px; background: #ffffff; color: var(--navy); border: 1.5px solid var(--border-color); border-radius: 12px; font-size: 14.5px; font-weight: 700; cursor: pointer; transition: all 0.2s ease; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: var(--shadow-sm); }
-    .btn-register:hover { background: #f8fafc; border-color: #cbd5e1; transform: translateY(-1px); }
+    .back-link { display: inline-flex; align-items: center; justify-content: center; gap: 6px; width: 100%; text-align: center; margin-top: 20px; color: var(--text-muted); font-size: 13px; font-weight: 600; text-decoration: none; transition: color 0.2s; }
+    .back-link:hover { color: var(--primary); }
 
-    /* ── RECRUITER ACCESS BOX ── */
-    .recruiter-access-box { margin-top: 24px; padding: 16px 20px; background: #fff7ed; border: 1px solid #ffedd5; border-left: 4px solid var(--orange); border-radius: 12px; display: flex; align-items: center; justify-content: space-between; gap: 12px; transition: 0.2s; }
-    .recruiter-access-box:hover { box-shadow: var(--shadow-sm); }
-    .rec-info h5 { font-size: 14px; font-weight: 800; color: var(--navy); margin-bottom: 2px; }
-    .rec-info p { font-size: 12px; color: var(--text-muted); margin: 0; }
-    .btn-recruiter { padding: 8px 14px; background: var(--orange); color: #fff; border: none; border-radius: 8px; font-size: 12.5px; font-weight: 700; text-decoration: none; white-space: nowrap; transition: .2s; }
-    .btn-recruiter:hover { background: var(--orange-hover); }
-
-    .security-row { display: flex; align-items: center; justify-content: center; gap: 18px; margin-top: 28px; padding-top: 18px; border-top: 1px solid var(--border-color); }
-    .sec-badge { display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--text-muted); font-weight: 600; }
-
-    /* ── POPUPS / MODALS (CENTERED) ── */
+    /* ── POPUPS ── */
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     @keyframes popCenter { 0% { opacity: 0; transform: scale(0.92); } 100% { opacity: 1; transform: scale(1); } }
 
-    .popup-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); justify-content: center; align-items: center; z-index: 99999; padding: 20px; animation: fadeIn 0.25s ease forwards; }
-    .popup-box { background: #ffffff; width: 100%; max-width: 420px; padding: 40px 32px 32px; border-radius: 20px; text-align: center; box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.35); position: relative; overflow: hidden; animation: popCenter 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-    .popup-box button { background: var(--primary); color: #fff; border: none; padding: 14px 28px; border-radius: 12px; font-size: 14.5px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
-    .popup-box button:hover { filter: brightness(0.92); transform: translateY(-1px); }
-
-    /* ── PROFESSIONAL POPUP ACCENT + ICON BADGE ── */
-    .popup-accent-bar { position: absolute; top: 0; left: 0; right: 0; height: 5px; background: var(--accent-color, var(--primary)); }
-    .popup-icon-badge { width: 68px; height: 68px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 6px auto 20px; font-size: 26px; background: var(--accent-bg, #eff6ff); color: var(--accent-color, var(--primary)); }
-
-    .modal-close-btn { position: absolute; top: 16px; right: 16px; background: #f1f5f9; border: none; width: 32px; height: 32px; border-radius: 50%; font-size: 14px; cursor: pointer; color: var(--text-muted); display: flex; align-items: center; justify-content: center; transition: 0.2s; z-index: 2; }
-    .modal-close-btn:hover { background: #e2e8f0; color: var(--red); }
+    .popup-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(6px); justify-content: center; align-items: center; z-index: 99999; padding: 20px; animation: fadeIn 0.25s ease forwards; }
+    .popup-box { background: #ffffff; width: 100%; max-width: 440px; padding: 36px 32px; border-radius: 24px; text-align: center; box-shadow: var(--shadow-lg); position: relative; animation: popCenter 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .popup-box button { background: var(--primary); color: #fff; border: none; padding: 14px 28px; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+    .popup-box button:hover { background: var(--primary-dark); }
 
     @media(max-width: 900px) {
         body { flex-direction: column; }
         .left-panel { padding: 40px 24px; min-height: auto; }
         .brand img { height: 42px; width: 42px; }
-        .features-list { display: none; }
-        .left-bottom { display: none; }
+        .features, .left-bottom { display: none; }
         .right-panel { width: 100%; padding: 40px 24px 60px; box-shadow: none; }
     }
-    </style>
+    
+/* Professional login usability additions */
+.password-wrap{position:relative;}
+.password-wrap input{padding-right:52px !important;}
+.password-toggle{
+  position:absolute;right:10px;top:50%;transform:translateY(-50%);
+  width:38px;height:38px;border:0;background:transparent;cursor:pointer;
+  border-radius:8px;color:#64748b;display:flex;align-items:center;justify-content:center;
+}
+.password-toggle:hover{background:#eef2ff;color:#2563eb;}
+.login-security{
+  display:flex;align-items:center;gap:8px;margin-top:14px;
+  color:#64748b;font-size:11.5px;line-height:1.5;
+}
+.login-security i{color:#16a34a;}
+
+</style>
 </head>
 <body>
 
@@ -154,52 +142,28 @@
         <img src="1000174411.png" alt="Indupalli Services Logo">
         <div class="brand-text">
             <h2>Indupalli Services</h2>
-            <p>Candidate Career Portal</p>
+            <p>Recruiter Portal</p>
         </div>
     </div>
-  
+
     <div class="left-center">
-        <div class="hero-badge"><i class="fa-solid fa-user-astronaut"></i> Job Seeker Dashboard</div>
-        <h1>Access Your<br><span>Dream Career.</span></h1>
-        <p class="tagline">Log in to track your applications, optimize your resume with AI, and chat directly with recruiters.</p>
-        
-        <div class="features-list">
-            <div class="feature-item">
-                <div class="feature-icon"><i class="fa-solid fa-briefcase"></i></div>
-                <div class="feature-text">
-                    <h4>1-Click Job Applications</h4>
-                    <p>Apply directly to top openings across India</p>
-                </div>
-            </div>
-            <div class="feature-item">
-                <div class="feature-icon"><i class="fa-solid fa-chart-pie"></i></div>
-                <div class="feature-text">
-                    <h4>Live Application Tracking</h4>
-                    <p>Monitor your review status in real time</p>
-                </div>
-            </div>
-            <div class="feature-item">
-                <div class="feature-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
-                <div class="feature-text">
-                    <h4>AI Resume Master Builder</h4>
-                    <p>Optimize your profile & skills with Gemini AI</p>
-                </div>
-            </div>
-            <div class="feature-item">
-                <div class="feature-icon"><i class="fa-solid fa-comments"></i></div>
-                <div class="feature-text">
-                    <h4>Direct Recruiter Chat</h4>
-                    <p>Communicate directly with hiring managers</p>
-                </div>
-            </div>
+        <div class="hero-badge"><i class="fa-solid fa-building-user"></i> Enterprise ATS Workspace</div>
+        <h1>Streamline Hiring & <span>Find Top Talent.</span></h1>
+        <p>Post mandates, review candidate pitch statements, track applications, and directly chat with job seekers across India.</p>
+
+        <div class="features">
+            <div class="feature"><div class="feature-icon"><i class="fa-solid fa-bullhorn"></i></div><span>Publish and edit job mandates instantly</span></div>
+            <div class="feature"><div class="feature-icon"><i class="fa-solid fa-id-card"></i></div><span>Review AI candidate profiles and resumes</span></div>
+            <div class="feature"><div class="feature-icon"><i class="fa-solid fa-comments"></i></div><span>Live direct messaging with applicants</span></div>
+            <div class="feature"><div class="feature-icon"><i class="fa-solid fa-list-check"></i></div><span>Interactive candidate pipeline management</span></div>
         </div>
     </div>
 
     <div class="left-bottom">
         <p>© 2026 Indupalli Services. All rights reserved.</p>
         <div class="trust-badges">
-            <div class="trust-badge"><i class="fa-solid fa-shield-halved" style="color:#10b981;"></i> Secure</div>
-            <div class="trust-badge"><i class="fa-solid fa-circle-check" style="color:#60a5fa;"></i> Verified</div>
+            <div class="trust-badge"><i class="fa-solid fa-shield-halved" style="color:#10b981;"></i> Secure ATS</div>
+            <div class="trust-badge"><i class="fa-solid fa-circle-check" style="color:#60a5fa;"></i> Verified System</div>
         </div>
     </div>
 </div>
@@ -207,352 +171,173 @@
 <!-- ── RIGHT LOGIN PANEL ── -->
 <div class="right-panel">
     <div class="form-box">
-        <div class="form-badge"><i class="fa-regular fa-user"></i> Candidate Login</div>
-        <h2>Welcome Back</h2>
-        <p class="sub">Log in to your account to manage your profile and view application statuses.</p>
+        <div class="form-badge"><i class="fa-solid fa-lock"></i> Employer Login</div>
+        <h2>Recruiter Sign In</h2>
+        <p class="sub">Access your recruiter control panel to manage candidates and job postings.</p>
 
-        <div style="display:flex; gap:8px; margin-bottom:20px; background:var(--bg-light); border:1px solid var(--border-color); border-radius:12px; padding:4px;">
-            <button type="button" id="tabEmailBtn" onclick="switchLoginTab('email')" style="flex:1; padding:9px; border:none; border-radius:9px; background:#fff; color:var(--navy); font-weight:700; font-size:13.5px; cursor:pointer; box-shadow:var(--shadow-sm);">Email</button>
-            <button type="button" id="tabPhoneBtn" onclick="switchLoginTab('phone')" style="flex:1; padding:9px; border:none; border-radius:9px; background:transparent; color:var(--text-muted); font-weight:700; font-size:13.5px; cursor:pointer;">Phone OTP</button>
+        <div class="form-group">
+            <label for="email">Recruiter Email</label>
+            <input type="email" id="email" placeholder="recruiter@company.com">
         </div>
 
-        <!-- EMAIL LOGIN -->
-        <div id="emailLoginPanel">
-            <div class="input-group">
-                <label>Email Address</label>
-                <div class="input-wrap">
-                    <i class="fa-regular fa-envelope"></i>
-                    <input type="email" id="email" placeholder="you@example.com" required>
-                </div>
+        <div class="form-group">
+            <div class="label-row">
+                <label for="password">Password</label>
+                <a href="javascript:void(0)" class="forgot-link" onclick="openForgotModal()">Forgot?</a>
             </div>
-
-            <div class="input-group">
-                <div class="label-row">
-                    <label>Password</label>
-                    <a href="javascript:void(0)" class="forgot-link" onclick="openForgotModal()">Forgot Password?</a>
-                </div>
-                <div class="input-wrap">
-                    <i class="fa-solid fa-lock"></i>
-                    <input type="password" id="password" placeholder="Enter your password" required>
-                </div>
-            </div>
-
-            <button class="btn-login" onclick="handleLogin()">
-                <span>Login to Dashboard</span>
-                <i class="fa-solid fa-arrow-right" style="font-size: 13px;"></i>
-            </button>
+            <div class="password-wrap">
+    <input type="password" id="password" placeholder="Enter your password">
+    <button type="button" class="password-toggle" id="passwordToggle" aria-label="Show password">
+        <i class="fa-regular fa-eye"></i>
+    </button>
+</div>
         </div>
 
-        <!-- PHONE OTP LOGIN -->
-        <div id="phoneLoginPanel" style="display:none;">
-            <div id="phoneLoginEntryStep">
-                <div class="input-group">
-                    <label>Phone Number</label>
-                    <div class="input-wrap">
-                        <i class="fa-solid fa-phone"></i>
-                        <input type="tel" id="phoneLoginInput" placeholder="10-digit mobile number" maxlength="10" inputmode="numeric" autocomplete="off">
-                    </div>
-                </div>
-                <div id="recaptcha-container-login" style="margin-bottom:14px;"></div>
-                <button class="btn-login" onclick="sendLoginOtp()">
-                    <span>Send OTP</span>
-                    <i class="fa-solid fa-paper-plane" style="font-size:13px;"></i>
-                </button>
-            </div>
-            <div id="phoneLoginOtpStep" style="display:none;">
-                <div class="input-group">
-                    <label>Enter OTP</label>
-                    <div class="input-wrap">
-                        <i class="fa-solid fa-key"></i>
-                        <input type="text" id="phoneLoginOtpCode" placeholder="6-digit code" maxlength="6" inputmode="numeric">
-                    </div>
-                </div>
-                <button class="btn-login" onclick="confirmLoginOtp()">
-                    <span>Verify & Login</span>
-                    <i class="fa-solid fa-check" style="font-size:13px;"></i>
-                </button>
-                <div style="margin-top:14px; font-size:13.5px; color:var(--text-muted); text-align:center;">
-                    Wrong number? <a onclick="resetLoginPhoneStep()" style="color:var(--primary); font-weight:700; cursor:pointer; text-decoration:underline;">Change it</a>
-                </div>
-            </div>
+        <button class="btn-login" onclick="login()">
+            <span>Sign In to Dashboard</span>
+            <i class="fa-solid fa-arrow-right" style="font-size: 13px;"></i>
+        </button>
+        <div class="login-security">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>Your recruiter account is protected with secure authentication.</span>
         </div>
-
-        <div class="divider"><span>Don't have an account?</span></div>
 
         <a href="signup.html" class="btn-register">
-            <i class="fa-solid fa-user-plus" style="color:var(--text-muted);"></i> Create Free Candidate Account
+            <i class="fa-solid fa-user-plus"></i> New Recruiter? Register Here
         </a>
 
-        <!-- RECRUITER UPSELL CARD -->
-        <div class="recruiter-access-box">
-            <div class="rec-info">
-                <h5>Are you an Employer?</h5>
-                <p>Post mandates & review applicants</p>
-            </div>
-            <a href="recruiter-login.html" class="btn-recruiter">Recruiter Portal <i class="fa-solid fa-arrow-right" style="font-size: 11px; margin-left: 2px;"></i></a>
-        </div>
-
-        <div class="security-row">
-            <div class="sec-badge"><i class="fa-brands fa-google" style="color:#94a3b8;"></i> Firebase Auth</div>
-            <div class="sec-badge"><i class="fa-solid fa-shield-check" style="color:#94a3b8;"></i> Data Protected</div>
-        </div>
+        <a href="login.html" class="back-link">
+            <i class="fa-solid fa-arrow-left"></i> Job Seeker Login
+        </a>
     </div>
 </div>
 
-<!-- ── FORGOT PASSWORD MODAL ── -->
-<div class="popup-overlay" id="forgotModal">
-    <div class="popup-box" style="text-align:left; max-width: 440px;">
-        <button onclick="closeForgotModal()" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
-        <h3 style="font-size:20px; font-weight:800; color:var(--navy); margin-bottom:8px;">
-            <i class="fa-solid fa-key" style="color:var(--primary); margin-right:6px;"></i> Reset Password
-        </h3>
-        <p style="font-size:13.5px; color:var(--text-muted); line-height:1.6; margin-bottom:20px;">
-            Enter your registered email address and we'll send you a password reset link.
-        </p>
-        
-        <div class="input-group" style="margin-bottom: 0;">
-            <label>Candidate Email</label>
-            <div class="input-wrap">
-                <i class="fa-regular fa-envelope"></i>
-                <input type="email" id="resetEmail" placeholder="you@example.com">
-            </div>
-        </div>
-        
-        <div style="display:flex; gap:10px; margin-top:24px;">
-            <button onclick="closeForgotModal()" style="flex:1; background:#f1f5f9; color:var(--navy); border:1px solid var(--border-color);">Cancel</button>
-            <button id="sendResetBtn" style="flex:1; background:var(--primary); color:#fff;">Send Link</button>
-        </div>
-    </div>
-</div>
-
-<!-- ── PROFESSIONAL SAAS POPUP (NOTIFICATIONS) ── -->
+<!-- POPUP (SUCCESS/ERROR) -->
 <div class="popup-overlay" id="popup">
     <div class="popup-box">
-        <div id="popupAccentBar" class="popup-accent-bar"></div>
-        <div id="popupIconBadge" class="popup-icon-badge"><i class="fa-solid fa-circle-check"></i></div>
-        <h4 id="popupTitle" style="font-size:20px; font-weight:800; color:var(--navy); margin-bottom:8px; letter-spacing:-0.2px;">System Notification</h4>
-        <p id="popupText" style="font-size:14.5px; color:var(--text-muted); line-height:1.65; margin:0 0 26px; padding: 0 6px;"></p>
-        
-        <div id="popupActions" style="display:flex; gap:12px; justify-content:center;">
-            <button id="popupOkBtn" onclick="closePopup()" style="flex:1;">Okay</button>
-            <a id="popupRegisterBtn" href="signup.html" style="display:none; flex:1; background:var(--orange); color:#fff; text-decoration:none; padding:14px 20px; border-radius:12px; font-size:14.5px; font-weight:700; align-items:center; justify-content:center; transition: .2s;">Register Now</a>
+        <div id="popupIconBadge" style="width:64px; height:64px; border-radius:50%; background:var(--primary); color:#fff; font-size:28px; font-weight:800; display:flex; align-items:center; justify-content:center; margin:0 auto 20px;">✓</div>
+        <h4 id="popupTitle" style="font-size:20px; font-weight:800; color:var(--navy); margin-bottom:8px;"></h4>
+        <p id="popupText" style="font-size:15px; color:var(--text-muted); line-height:1.6; margin:0 0 28px;"></p>
+        <button id="popupOkBtn" onclick="closePopup()" style="width: 100%;">Okay</button>
+    </div>
+</div>
+
+<!-- FORGOT PASSWORD MODAL (FIREBASE INTEGRATED) -->
+<div class="popup-overlay" id="forgotModal">
+    <div class="popup-box">
+        <div style="width:64px; height:64px; border-radius:50%; background:#eff6ff; color:var(--primary); font-size:26px; display:flex; align-items:center; justify-content:center; margin:0 auto 16px;">
+            <i class="fa-solid fa-key"></i>
+        </div>
+        <h4 style="font-size:20px; font-weight:800; color:var(--navy); margin-bottom:8px;">Reset Password</h4>
+        <p style="font-size:14px; color:var(--text-muted); line-height:1.6; margin-bottom:20px;">
+            Enter your registered recruiter email to reset your password.
+        </p>
+
+        <div style="margin-bottom: 20px; text-align: left;">
+            <label for="resetEmail" style="display:block; margin-bottom:6px;">Registered Email</label>
+            <input type="email" id="resetEmail" placeholder="recruiter@company.com">
+        </div>
+
+        <div style="display:flex; gap:10px;">
+            <button type="button" onclick="closeForgotModal()" style="flex:1; background:#f1f5f9; color:var(--text-muted);">Cancel</button>
+            <button type="button" id="btnSendReset" onclick="sendPasswordReset()" style="flex:1.4;">Send Reset Link</button>
         </div>
     </div>
 </div>
 
-<!-- FIREBASE AUTHENTICATION SCRIPT -->
+<!-- FIREBASE AUTHENTICATION LOGIC -->
 <script type="module">
 import { auth } from "./firebase.js";
-import { signInWithEmailAndPassword, sendPasswordResetEmail, RecaptchaVerifier, signInWithPhoneNumber } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { 
+    signInWithEmailAndPassword, 
+    sendPasswordResetEmail 
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-// Point the reset email at our own reset-password.html (instead of relying
-// on Firebase's generic hosted action page), so the link always lands on a
-// page we control and can debug — and so it uses the same safe
-// "validate first, only apply on explicit submit" pattern as email
-// verification, which protects against email-security link scanners
-// silently consuming the one-time code before the real user clicks.
-const passwordResetActionCodeSettings = {
-    url: window.location.origin + "/reset-password.html",
-    handleCodeInApp: true
-};
-
-let loginRecaptchaVerifier = null;
-let loginConfirmationResult = null;
-
-window.switchLoginTab = function(tab) {
-    const emailBtn = document.getElementById("tabEmailBtn");
-    const phoneBtn = document.getElementById("tabPhoneBtn");
-    const emailPanel = document.getElementById("emailLoginPanel");
-    const phonePanel = document.getElementById("phoneLoginPanel");
-
-    if (tab === "email") {
-        emailBtn.style.background = "#fff"; emailBtn.style.color = "var(--navy)"; emailBtn.style.boxShadow = "var(--shadow-sm)";
-        phoneBtn.style.background = "transparent"; phoneBtn.style.color = "var(--text-muted)"; phoneBtn.style.boxShadow = "none";
-        emailPanel.style.display = "block";
-        phonePanel.style.display = "none";
-    } else {
-        phoneBtn.style.background = "#fff"; phoneBtn.style.color = "var(--navy)"; phoneBtn.style.boxShadow = "var(--shadow-sm)";
-        emailBtn.style.background = "transparent"; emailBtn.style.color = "var(--text-muted)"; emailBtn.style.boxShadow = "none";
-        phonePanel.style.display = "block";
-        emailPanel.style.display = "none";
-    }
-};
-
-function normalizeIndianPhoneLogin(raw) {
-    const digits = raw.replace(/\D/g, "");
-    if (digits.length === 10) return "+91" + digits;
-    if (digits.length === 12 && digits.startsWith("91")) return "+" + digits;
-    if (raw.startsWith("+")) return raw;
-    return null;
-}
-
-window.sendLoginOtp = async function() {
-    const rawPhone = document.getElementById("phoneLoginInput").value.trim();
-    const digitsOnly = rawPhone.replace(/\D/g, "");
-    if (digitsOnly.length !== 10 && !(digitsOnly.length === 12 && digitsOnly.startsWith("91"))) {
-        showPopup("⚠️ Invalid Number", "Please enter a valid 10-digit mobile number (no extra digits).");
-        return;
-    }
-    const phone = normalizeIndianPhoneLogin(rawPhone);
-    if (!phone) { showPopup("⚠️ Invalid Number", "Please enter a valid 10-digit mobile number."); return; }
-
-    const btn = document.querySelector("#phoneLoginEntryStep .btn-login");
-    btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Sending...`;
-    btn.disabled = true;
-
-    try {
-        if (!loginRecaptchaVerifier) {
-            loginRecaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container-login", { size: "normal" });
-        }
-        loginConfirmationResult = await signInWithPhoneNumber(auth, phone, loginRecaptchaVerifier);
-        document.getElementById("phoneLoginEntryStep").style.display = "none";
-        document.getElementById("phoneLoginOtpStep").style.display = "block";
-    } catch (e) {
-        btn.innerHTML = `<span>Send OTP</span><i class="fa-solid fa-paper-plane"></i>`;
-        btn.disabled = false;
-        if (loginRecaptchaVerifier) { try { loginRecaptchaVerifier.clear(); } catch(_) {} loginRecaptchaVerifier = null; }
-        if (e.code === 'auth/billing-not-enabled' || e.code === 'auth/operation-not-allowed') {
-            showPopup("⚠️ Service Unavailable", "Phone login is temporarily unavailable. Please log in with your email and password instead.");
-            return;
-        }
-        showPopup("❌ Error", e.message || "Could not send OTP. Please try again.");
-    }
-};
-
-window.confirmLoginOtp = async function() {
-    const code = document.getElementById("phoneLoginOtpCode").value.trim();
-    if (!code || code.length < 6) { showPopup("⚠️ Invalid Code", "Enter the 6-digit code sent to your phone."); return; }
-    if (!loginConfirmationResult) { showPopup("❌ Error", "No OTP session found. Please resend the code."); return; }
-
-    const btn = document.querySelector("#phoneLoginOtpStep .btn-login");
-    btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Verifying...`;
-    btn.disabled = true;
-
-    try {
-        // This signs the user in as whichever Firebase account this phone
-        // number is linked to (linked via linkWithCredential during signup),
-        // so it authenticates the same account as email/password login.
-        const userCredential = await loginConfirmationResult.confirm(code);
-        const user = userCredential.user;
-
-        localStorage.setItem("userEmail", user.email || "");
-        localStorage.setItem("userPhone", user.phoneNumber || "");
-        localStorage.setItem("userRole", "candidate");
-
-        if (loginRecaptchaVerifier) { try { loginRecaptchaVerifier.clear(); } catch(_) {} loginRecaptchaVerifier = null; }
-
-        showPopup("✅ Authentication Successful", "Welcome back! Click below to continue to your dashboard.");
-        const okBtn = document.querySelector("#popupOkBtn");
-        okBtn.textContent = "Enter Dashboard";
-        okBtn.onclick = () => { window.location.href = "candidate.html"; };
-    } catch (e) {
-        btn.innerHTML = `<span>Verify & Login</span><i class="fa-solid fa-check"></i>`;
-        btn.disabled = false;
-        showPopup("❌ Verification Failed", e.message || "Invalid or expired code. Please try again.");
-    }
-};
-
-window.resetLoginPhoneStep = function() {
-    document.getElementById("phoneLoginOtpStep").style.display = "none";
-    document.getElementById("phoneLoginEntryStep").style.display = "block";
-    document.getElementById("phoneLoginOtpCode").value = "";
-    loginConfirmationResult = null;
-};
-
-window.handleLogin = async function() {
+// Sign In Logic
+window.login = async function() {
     const email = document.getElementById("email").value.trim();
-    const password = document.getElementById("password").value;
+    const pw = document.getElementById("password").value;
 
-    if (!email || !password) {
-        showPopup("⚠️ Missing Information", "Please enter both your email and password.");
-        return;
+    if (!email || !pw) { 
+        showPopup("⚠️ Missing Credentials", "Please enter your email and password."); 
+        return; 
     }
 
-    const btn = document.querySelector(".btn-login");
-    btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Authenticating...`;
-    btn.disabled = true;
-
     try {
-        const userCredential = await signInWithEmailAndPassword(auth, email, password);
-        const user = userCredential.user;
+        const userCredential = await signInWithEmailAndPassword(auth, email, pw);
+        const userEmail = userCredential.user.email;
+        const isAdmin = userEmail === "praveencenaindupalli@gmail.com";
 
-        await user.reload();
-        if (!user.emailVerified) {
-            btn.innerHTML = `<span>Login to Dashboard</span><i class="fa-solid fa-arrow-right"></i>`;
-            btn.disabled = false;
-            showPopup("⚠️ Email Not Verified", "Your email is not verified yet. Please check your inbox and click the verification link before logging in.");
-            return;
-        }
+        localStorage.setItem("recruiterEmail", userEmail);
+        localStorage.setItem("isAdmin", isAdmin ? "true" : "false");
 
-        localStorage.setItem("userEmail", user.email);
-        localStorage.setItem("userRole", "candidate");
+        showPopup("✅ Authentication Successful", "Welcome back! Securely connecting to your dashboard...");
 
-        // Require explicit confirmation before redirecting to the dashboard
-        showPopup("✅ Authentication Successful", "Welcome back! Click below to continue to your dashboard.");
+        document.querySelector("#popupOkBtn").onclick = () => { 
+            window.location.href = "recruiter-dashboard.html"; 
+        };
 
-        const okBtn = document.querySelector("#popupOkBtn");
-        okBtn.textContent = "Enter Dashboard";
-        okBtn.onclick = () => { window.location.href = "candidate.html"; };
-
-    } catch (error) {
-        btn.innerHTML = `<span>Login to Dashboard</span><i class="fa-solid fa-arrow-right"></i>`;
-        btn.disabled = false;
-        
-        let errorMsg = error.message;
-        if (error.code === 'auth/invalid-credential' || error.code === 'auth/wrong-password' || error.code === 'auth/user-not-found') {
-            errorMsg = "Invalid email or password. Please try again.";
-        }
-        showPopup("❌ Login Failed", errorMsg);
+    } catch (e) {
+        showPopup("❌ Login Failed", "Invalid email or password. Please try again.");
     }
 };
 
-// Pure Firebase Auth Forgot Password Flow
-document.getElementById("sendResetBtn").addEventListener("click", async () => {
-    const resetEmail = document.getElementById("resetEmail").value.trim().toLowerCase();
-    const sendBtn = document.getElementById("sendResetBtn");
+// Firebase Password Reset Logic
+window.sendPasswordReset = async function() {
+    const resetEmail = document.getElementById("resetEmail").value.trim();
+    const btn = document.getElementById("btnSendReset");
 
     if (!resetEmail) {
-        showPopup("⚠️ Email Required", "Please enter your email address to receive a reset link.");
+        showPopup("⚠️ Missing Email", "Please enter your registered email address.");
         return;
     }
 
-    sendBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i>`;
-    sendBtn.disabled = true;
-
     try {
-        await sendPasswordResetEmail(auth, resetEmail, passwordResetActionCodeSettings);
-        
-        sendBtn.textContent = "Send Link";
-        sendBtn.disabled = false;
-        closeForgotModal();
-        showPopup("✅ Password Reset Sent", "A secure password reset link has been delivered to " + resetEmail + ". Please check your inbox.");
+        btn.disabled = true;
+        btn.textContent = "Sending...";
 
+        await sendPasswordResetEmail(auth, resetEmail);
+
+        closeForgotModal();
+        showPopup("✉️ Reset Link Sent", `A password reset link has been sent to ${resetEmail}. Please check your inbox or spam folder.`);
     } catch (error) {
-        sendBtn.textContent = "Send Link";
-        sendBtn.disabled = false;
-        closeForgotModal();
-
-        if (error.code === 'auth/user-not-found' || error.message.includes('user-not-found')) {
-            showNotRegisteredPopup(resetEmail);
-        } else if (error.code === 'auth/invalid-email') {
-            showPopup("❌ Invalid Email", "Please enter a valid email address.");
-        } else {
-            showPopup("❌ Request Failed", error.message);
+        let msg = "Failed to send reset link. Please check the email address and try again.";
+        if (error.code === "auth/user-not-found") {
+            msg = "No account found with this email address.";
+        } else if (error.code === "auth/invalid-email") {
+            msg = "Please enter a valid email address.";
         }
+        showPopup("❌ Reset Error", msg);
+    } finally {
+        btn.disabled = false;
+        btn.textContent = "Send Reset Link";
     }
-});
-
-// Trigger login on Enter key
-document.getElementById("password").addEventListener("keydown", e => {
-    if (e.key === "Enter") window.handleLogin();
-});
+};
 </script>
 
 <script>
+function showPopup(title, text) {
+    let color = "#2563eb", icon = "✓";
+    if (title.includes("❌")) color = "#ef4444";
+    if (title.includes("⚠️")) color = "#f59e0b";
+    if (title.includes("✉️")) color = "#10b981";
+
+    document.getElementById("popupTitle").textContent = title;
+    document.getElementById("popupText").textContent = text;
+    document.getElementById("popupIconBadge").textContent = icon;
+    document.getElementById("popupIconBadge").style.background = color;
+    document.getElementById("popupOkBtn").style.background = color;
+    document.getElementById("popup").style.display = "flex";
+}
+
+function closePopup() { 
+    document.getElementById("popup").style.display = "none"; 
+}
+
 function openForgotModal() {
-    const currentEmail = document.getElementById("email").value.trim();
-    if (currentEmail) {
-        document.getElementById("resetEmail").value = currentEmail;
+    const mainEmail = document.getElementById("email").value.trim();
+    if (mainEmail) {
+        document.getElementById("resetEmail").value = mainEmail;
     }
     document.getElementById("forgotModal").style.display = "flex";
 }
@@ -561,80 +346,35 @@ function closeForgotModal() {
     document.getElementById("forgotModal").style.display = "none";
 }
 
-// Soft-tint icon badge + accent bar palette for each notification type
-const POPUP_PALETTE = {
-    success: { color: "#10b981", bg: "#ecfdf5", icon: "fa-solid fa-circle-check" },
-    error:   { color: "#ef4444", bg: "#fef2f2", icon: "fa-solid fa-circle-exclamation" },
-    warning: { color: "#f59e0b", bg: "#fffbeb", icon: "fa-solid fa-triangle-exclamation" },
-    info:    { color: "#2563eb", bg: "#eff6ff", icon: "fa-solid fa-circle-info" }
-};
-
-function showPopup(titleOrMsg, bodyMsg = "") {
-    let type = "info", title = titleOrMsg, text = bodyMsg;
-
-    if (!bodyMsg) {
-        text = titleOrMsg;
-        title = "System Notification";
+// Close modals when clicking background overlay
+window.addEventListener("click", function(e) {
+    const forgot = document.getElementById("forgotModal");
+    if (e.target === forgot) {
+        forgot.style.display = "none";
     }
-
-    // Detect type from leading emoji, then strip it from the display text
-    const emojiToType = { "✅": "success", "🎉": "success", "❌": "error", "⚠️": "warning" };
-    for (const key in emojiToType) {
-        if (title.startsWith(key)) { type = emojiToType[key]; title = title.replace(key, "").trim(); break; }
-        if (text.startsWith(key)) { type = emojiToType[key]; text = text.replace(key, "").trim(); break; }
-    }
-
-    applyPopupStyle(type);
-    document.getElementById("popupTitle").textContent = title;
-    document.getElementById("popupText").textContent = text;
-
-    const okBtn = document.getElementById("popupOkBtn");
-    okBtn.textContent = "Okay";
-    okBtn.onclick = closePopup; // reset to default; callers can override after showPopup()
-
-    document.getElementById("popupRegisterBtn").style.display = "none";
-    document.getElementById("popup").style.display = "flex";
-}
-
-function showNotRegisteredPopup(email) {
-    applyPopupStyle("warning");
-    document.getElementById("popupTitle").textContent = "Account Not Found";
-    document.getElementById("popupText").textContent = "The email address " + email + " is not registered in our system as a job seeker. Please create an account to get started.";
-
-    const okBtn = document.getElementById("popupOkBtn");
-    okBtn.style.background = "#94a3b8"; // Gray secondary action
-    okBtn.textContent = "Close";
-    okBtn.onclick = closePopup;
-
-    const regBtn = document.getElementById("popupRegisterBtn");
-    regBtn.style.display = "inline-flex";
-
-    document.getElementById("popup").style.display = "flex";
-}
-
-function applyPopupStyle(type) {
-    const p = POPUP_PALETTE[type] || POPUP_PALETTE.info;
-    const box = document.querySelector("#popup .popup-box");
-    box.style.setProperty("--accent-color", p.color);
-    box.style.setProperty("--accent-bg", p.bg);
-
-    const iconBadge = document.getElementById("popupIconBadge");
-    iconBadge.innerHTML = `<i class="${p.icon}"></i>`;
-
-    document.getElementById("popupOkBtn").style.background = p.color;
-}
-
-function closePopup() {
-    document.getElementById("popup").style.display = "none";
-    document.getElementById("popupOkBtn").textContent = "Okay";
-    document.getElementById("popupOkBtn").onclick = closePopup;
-}
-
-// Background overlay click close
-window.addEventListener("click", (e) => {
-    if (e.target.id === "forgotModal") closeForgotModal();
-    if (e.target.id === "popup") closePopup();
 });
 </script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+  const password=document.getElementById("password");
+  const toggle=document.getElementById("passwordToggle");
+  if(toggle && password){
+    toggle.addEventListener("click",function(){
+      const show=password.type==="password";
+      password.type=show?"text":"password";
+      toggle.innerHTML=show
+        ? '<i class="fa-regular fa-eye-slash"></i>'
+        : '<i class="fa-regular fa-eye"></i>';
+    });
+  }
+  [document.getElementById("email"),password].forEach(function(input){
+    if(input) input.addEventListener("keydown",function(e){
+      if(e.key==="Enter" && typeof window.login==="function") window.login();
+    });
+  });
+});
+</script>
+
 </body>
 </html>
