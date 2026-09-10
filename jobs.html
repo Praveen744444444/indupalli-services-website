@@ -1511,15 +1511,33 @@ function renderJobsGrid(jobsArray, requestedPage = 1) {
     return;
   }
 
-  /* Always paginate the actual Supabase results */
-  const totalPages = Math.ceil(jobsArray.length / JOBS_PER_PAGE);
+  /* CUSTOM PAGINATION:
+     Page 1 = first 3 jobs.
+     Page 2 and every remaining page = 5 jobs per page. */
+  const FIRST_PAGE_JOBS = 3;
+  const REMAINING_PAGE_JOBS = 5;
+
+  const totalPages = jobsArray.length <= FIRST_PAGE_JOBS
+    ? 1
+    : 1 + Math.ceil((jobsArray.length - FIRST_PAGE_JOBS) / REMAINING_PAGE_JOBS);
+
   let currentPage = Number(requestedPage) || 1;
 
   if (currentPage < 1) currentPage = 1;
   if (currentPage > totalPages) currentPage = totalPages;
 
-  const startIndex = (currentPage - 1) * JOBS_PER_PAGE;
-  const pageJobs = jobsArray.slice(startIndex, startIndex + JOBS_PER_PAGE);
+  let startIndex;
+  let pageSize;
+
+  if (currentPage === 1) {
+    startIndex = 0;
+    pageSize = FIRST_PAGE_JOBS;
+  } else {
+    startIndex = FIRST_PAGE_JOBS + ((currentPage - 2) * REMAINING_PAGE_JOBS);
+    pageSize = REMAINING_PAGE_JOBS;
+  }
+
+  const pageJobs = jobsArray.slice(startIndex, startIndex + pageSize);
 
   let html = "";
 
