@@ -882,6 +882,54 @@ footer {
 }
 </style>
 
+
+<style id="social-share-panel-styles">
+.social-share-panel{
+  display:none;
+  margin-top:10px;
+  padding:12px;
+  background:#f8fafc;
+  border:1px solid #dbe4ef;
+  border-radius:12px;
+}
+.social-share-panel.show{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.social-share-option{
+  border:1px solid #dbe4ef;
+  background:#fff;
+  border-radius:10px;
+  padding:9px 12px;
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  font-size:12.5px;
+  font-weight:800;
+  cursor:pointer;
+  color:#334155;
+  transition:.2s ease;
+}
+.social-share-option:hover{
+  transform:translateY(-1px);
+  box-shadow:0 5px 12px rgba(15,23,42,.08);
+}
+.social-share-option.linkedin{color:#0a66c2;}
+.social-share-option.whatsapp{color:#16803c;}
+.social-share-option.facebook{color:#1877f2;}
+.social-share-option.instagram{color:#c13584;}
+.social-share-option.copy{color:#475569;}
+.social-share-hint{
+  width:100%;
+  margin-top:2px;
+  color:#64748b;
+  font-size:11.5px;
+  line-height:1.45;
+}
+</style>
+
 </head>
 
 
@@ -1629,10 +1677,32 @@ function renderJobsGrid(jobsArray, requestedPage = 1) {
           <button
             type="button"
             class="share-role-btn"
-            data-index="${originalIndex}">
+            data-index="${originalIndex}"
+            aria-expanded="false">
             <i class="fa-solid fa-share-nodes"></i>
             Share this role
           </button>
+
+          <div class="social-share-panel" data-share-index="${originalIndex}">
+            <button type="button" class="social-share-option linkedin" data-share="linkedin" data-index="${originalIndex}">
+              <i class="fa-brands fa-linkedin"></i> LinkedIn
+            </button>
+            <button type="button" class="social-share-option whatsapp" data-share="whatsapp" data-index="${originalIndex}">
+              <i class="fa-brands fa-whatsapp"></i> WhatsApp
+            </button>
+            <button type="button" class="social-share-option instagram" data-share="instagram" data-index="${originalIndex}">
+              <i class="fa-brands fa-instagram"></i> Instagram
+            </button>
+            <button type="button" class="social-share-option facebook" data-share="facebook" data-index="${originalIndex}">
+              <i class="fa-brands fa-facebook"></i> Facebook
+            </button>
+            <button type="button" class="social-share-option copy" data-share="copy" data-index="${originalIndex}">
+              <i class="fa-regular fa-copy"></i> Copy Link
+            </button>
+            <div class="social-share-hint">
+              Instagram does not provide a standard browser URL-sharing endpoint, so its button copies the job link and opens Instagram.
+            </div>
+          </div>
         </div>
 
         <div>
@@ -1775,6 +1845,108 @@ function renderJobsGrid(jobsArray, requestedPage = 1) {
         btn.innerHTML = '<i class="fa-solid fa-check"></i> Link copied';
         setTimeout(() => { btn.innerHTML = original; }, 1800);
       } catch (error) {
+        window.prompt("Copy this job link:", shareUrl);
+      }
+    });
+  });
+
+  /* Social sharing buttons for the current job */
+  container.querySelectorAll(".share-role-btn").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const panel = btn.parentElement.querySelector(".social-share-panel");
+      if (!panel) return;
+
+      const isOpen = panel.classList.toggle("show");
+      btn.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    });
+  });
+
+  container.querySelectorAll(".social-share-option").forEach((btn) => {
+    btn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      const idx = Number(e.currentTarget.getAttribute("data-index"));
+      const job = window.rawJobsData[idx];
+      if (!job) return;
+
+      const title = getJobTitle(job)
+        .trim()
+        .replace(/\s+/g, " ");
+
+      const slug = title
+        .toLowerCase()
+        .replace(/&/g, " and ")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "") || "job";
+
+      const jobId =
+        job.id ||
+        job.job_id ||
+        job.jobId ||
+        idx;
+
+      const shareUrl =
+        `${window.location.origin}/jobs/${slug}-${String(jobId).toLowerCase()}`;
+
+      const shareText =
+        `${title} — ${getCompany(job)}\n${shareUrl}`;
+
+      const platform = e.currentTarget.getAttribute("data-share");
+
+      try {
+        if (platform === "linkedin") {
+          window.open(
+            `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`,
+            "_blank",
+            "noopener,noreferrer"
+          );
+        }
+
+        if (platform === "whatsapp") {
+          window.open(
+            `https://wa.me/?text=${encodeURIComponent(shareText)}`,
+            "_blank",
+            "noopener,noreferrer"
+          );
+        }
+
+        if (platform === "facebook") {
+          window.open(
+            `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`,
+            "_blank",
+            "noopener,noreferrer"
+          );
+        }
+
+        if (platform === "instagram") {
+          await navigator.clipboard.writeText(shareUrl);
+          window.open(
+            "https://www.instagram.com/",
+            "_blank",
+            "noopener,noreferrer"
+          );
+          const original = e.currentTarget.innerHTML;
+          e.currentTarget.innerHTML =
+            '<i class="fa-solid fa-check"></i> Link copied';
+          setTimeout(() => {
+            e.currentTarget.innerHTML = original;
+          }, 1800);
+        }
+
+        if (platform === "copy") {
+          await navigator.clipboard.writeText(shareUrl);
+          const original = e.currentTarget.innerHTML;
+          e.currentTarget.innerHTML =
+            '<i class="fa-solid fa-check"></i> Copied';
+          setTimeout(() => {
+            e.currentTarget.innerHTML = original;
+          }, 1800);
+        }
+      } catch (err) {
         window.prompt("Copy this job link:", shareUrl);
       }
     });
