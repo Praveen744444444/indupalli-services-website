@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recruiter Portal Login – Indupalli Services</title>
+    <title>Candidate Portal Login – Indupalli Services</title>
 
     <!-- Fonts & Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -142,7 +142,7 @@
         <img src="1000174411.png" alt="Indupalli Services Logo">
         <div class="brand-text">
             <h2>Indupalli Services</h2>
-            <p>Recruiter Portal</p>
+            <p>Candidate Portal</p>
         </div>
     </div>
 
@@ -172,12 +172,12 @@
 <div class="right-panel">
     <div class="form-box">
         <div class="form-badge"><i class="fa-solid fa-lock"></i> Employer Login</div>
-        <h2>Recruiter Sign In</h2>
-        <p class="sub">Access your recruiter control panel to manage candidates and job postings.</p>
+        <h2>Candidate Sign In</h2>
+        <p class="sub">Access your candidate control panel to manage candidates and job postings.</p>
 
         <div class="form-group">
-            <label for="email">Recruiter Email</label>
-            <input type="email" id="email" placeholder="recruiter@company.com">
+            <label for="email">Candidate Email</label>
+            <input type="email" id="email" placeholder="candidate@company.com">
         </div>
 
         <div class="form-group">
@@ -199,11 +199,11 @@
         </button>
         <div class="login-security">
             <i class="fa-solid fa-shield-halved"></i>
-            <span>Your recruiter account is protected with secure authentication.</span>
+            <span>Your candidate account is protected with secure authentication.</span>
         </div>
 
         <a href="signup.html" class="btn-register">
-            <i class="fa-solid fa-user-plus"></i> New Recruiter? Register Here
+            <i class="fa-solid fa-user-plus"></i> New Candidate? Register Here
         </a>
 
         <a href="login.html" class="back-link">
@@ -230,12 +230,12 @@
         </div>
         <h4 style="font-size:20px; font-weight:800; color:var(--navy); margin-bottom:8px;">Reset Password</h4>
         <p style="font-size:14px; color:var(--text-muted); line-height:1.6; margin-bottom:20px;">
-            Enter your registered recruiter email to reset your password.
+            Enter your registered candidate email to reset your password.
         </p>
 
         <div style="margin-bottom: 20px; text-align: left;">
             <label for="resetEmail" style="display:block; margin-bottom:6px;">Registered Email</label>
-            <input type="email" id="resetEmail" placeholder="recruiter@company.com">
+            <input type="email" id="resetEmail" placeholder="candidate@company.com">
         </div>
 
         <div style="display:flex; gap:10px;">
@@ -266,15 +266,14 @@ window.login = async function() {
     try {
         const userCredential = await signInWithEmailAndPassword(auth, email, pw);
         const userEmail = userCredential.user.email;
-        const isAdmin = userEmail === "praveencenaindupalli@gmail.com";
+        // Candidate login: keep candidate session separate from candidate/admin session.
+        localStorage.setItem("candidateEmail", userEmail);
+        localStorage.setItem("userEmail", userEmail);
 
-        localStorage.setItem("recruiterEmail", userEmail);
-        localStorage.setItem("isAdmin", isAdmin ? "true" : "false");
-
-        showPopup("✅ Authentication Successful", "Welcome back! Securely connecting to your dashboard...");
+        showPopup("✅ Authentication Successful", "Welcome back! Securely connecting to your candidate dashboard...");
 
         document.querySelector("#popupOkBtn").onclick = () => { 
-            window.location.href = "recruiter-dashboard.html"; 
+            window.location.href = "candidate.html"; 
         };
 
     } catch (e) {
