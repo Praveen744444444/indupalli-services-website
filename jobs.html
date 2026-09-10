@@ -4363,3 +4363,343 @@ img{max-width:100%;height:auto;}
   }
 }
 </style>
+
+
+<!-- =========================================================
+ FINAL RELIABLE FILTER FIX
+ Closing Anytime | Job Type | Work Style | Salary |
+ Reset Filters | Jobs For You
+========================================================= -->
+<style>
+.professional-filter-bar,
+.professional-filter-bar *{
+  pointer-events:auto !important;
+}
+.filter-menu{z-index:9999 !important;}
+.filter-control{position:relative !important;}
+.filter-control.open .filter-menu{display:flex !important;}
+</style>
+
+<script>
+(function(){
+  function startFinalFilters(){
+    const oldBar = document.querySelector(".professional-filter-bar");
+    if (!oldBar) return;
+
+    /* Clone the filter bar to remove older duplicate click handlers. */
+    const bar = oldBar.cloneNode(true);
+    oldBar.replaceWith(bar);
+
+    const state = {
+      closing: "",
+      jobType: "",
+      workStyle: "",
+      salary: "",
+      jobsForYou: false
+    };
+
+    const defaults = ["Closing Anytime", "Job Type", "Work Style", "Salary"];
+    const keys = ["closing", "jobType", "workStyle", "salary"];
+
+    const normalize = value => String(value ?? "")
+      .toLowerCase()
+      .replace(/[_-]/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+
+    const field = (job, names) => {
+      for (const name of names) {
+        if (job && job[name] !== undefined && job[name] !== null &&
+            String(job[name]).trim() !== "") {
+          return job[name];
+        }
+      }
+      return "";
+    };
+
+    function parseDate(value){
+      if (!value) return null;
+      if (value instanceof Date && !isNaN(value)) return value;
+
+      const text = String(value).trim();
+
+      /* DD/MM/YYYY or DD-MM-YYYY */
+      const dmy = text.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{4})$/);
+      if (dmy) {
+        const date = new Date(+dmy[3], +dmy[2] - 1, +dmy[1]);
+        return isNaN(date) ? null : date;
+      }
+
+      const date = new Date(text);
+      return isNaN(date) ? null : date;
+    }
+
+    function parseSalary(value){
+      if (typeof value === "number") return value;
+      const text = String(value ?? "").toLowerCase().replace(/,/g, "");
+      const numbers = text.match(/\d+(?:\.\d+)?/g);
+      if (!numbers || !numbers.length) return NaN;
+
+      const nums = numbers.map(Number);
+      let amount = nums.length > 1 ? (nums[0] + nums[1]) / 2 : nums[0];
+
+      /* Convert LPA / lakhs yearly salary into approximate monthly salary */
+      if (/\blpa\b|\blakh\b|\blakhs\b/.test(text)) {
+        amount = amount * 100000 / 12;
+      }
+      return amount;
+    }
+
+    function matchesJobType(job, selected){
+      if (!selected) return true;
+      const value = normalize(field(job, [
+        "jobtype","job_type","jobType",
+        "employment_type","employmentType","type",
+        "employment"
+      ]));
+      const wanted = normalize(selected);
+
+      if (!value) return false;
+
+      const aliases = {
+        "full time": ["full time","fulltime","permanent"],
+        "part time": ["part time","parttime"],
+        "contract": ["contract","contractual","freelance"]
+      };
+
+      return (aliases[wanted] || [wanted]).some(x => value.includes(x));
+    }
+
+    function matchesWorkStyle(job, selected){
+      if (!selected) return true;
+
+      const value = normalize(field(job, [
+        "workstyle","work_style","workStyle",
+        "work_type","workType","work_mode","workMode",
+        "remote_type","location_type"
+      ]));
+
+      const wanted = normalize(selected);
+      if (!value) return false;
+
+      const aliases = {
+        "remote": ["remote","work from home","wfh"],
+        "hybrid": ["hybrid"],
+        "on site": ["on site","onsite","office","in office"]
+      };
+
+      return (aliases[wanted] || [wanted]).some(x => value.includes(x));
+    }
+
+    function matchesClosing(job, selected){
+      if (!selected) return true;
+
+      const value = field(job, [
+        "closingdate","closing_date","closingDate",
+        "deadline","closing","last_date","lastDate"
+      ]);
+
+      const date = parseDate(value);
+      if (!date) return false;
+
+      const today = new Date();
+      today.setHours(0,0,0,0);
+
+      date.setHours(23,59,59,999);
+
+      if (selected === "Closing Today") {
+        const end = new Date(today);
+        end.setHours(23,59,59,999);
+        return date >= today && date <= end;
+      }
+
+      if (selected === "Closing This Week") {
+        const end = new Date(today);
+        end.setDate(end.getDate() + 7);
+        end.setHours(23,59,59,999);
+        return date >= today && date <= end;
+      }
+
+      if (selected === "Closing This Month") {
+        const end = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+        end.setHours(23,59,59,999);
+        return date >= today && date <= end;
+      }
+
+      return true;
+    }
+
+    function matchesSalary(job, selected){
+      if (!selected) return true;
+
+      const value = field(job, [
+        "salary","salary_range","salaryRange",
+        "monthly_salary","monthlySalary",
+        "pay","compensation"
+      ]);
+
+      const salary = parseSalary(value);
+      if (isNaN(salary)) return false;
+
+      if (selected === "Under ₹25,000") return salary < 25000;
+      if (selected === "₹25,000 – ₹50,000") return salary >= 25000 && salary <= 50000;
+      if (selected === "Above ₹50,000") return salary > 50000;
+
+      return true;
+    }
+
+    function titleOf(job){
+      return String(field(job, [
+        "jobtitle","job_title","jobTitle","title","position"
+      ])).toLowerCase();
+    }
+
+    function companyOf(job){
+      return String(field(job, [
+        "company","companyname","company_name","companyName",
+        "organization","employer"
+      ])).toLowerCase();
+    }
+
+    function descriptionOf(job){
+      return String(field(job, [
+        "description","jobdescription","job_description","summary"
+      ])).toLowerCase();
+    }
+
+    function filteredJobs(){
+      let jobs = Array.isArray(window.rawJobsData)
+        ? [...window.rawJobsData]
+        : [];
+
+      jobs = jobs.filter(job =>
+        matchesClosing(job, state.closing) &&
+        matchesJobType(job, state.jobType) &&
+        matchesWorkStyle(job, state.workStyle) &&
+        matchesSalary(job, state.salary)
+      );
+
+      if (state.jobsForYou) {
+        const searchInput =
+          document.getElementById("jobSearchInput") ||
+          document.querySelector(".search-bar input") ||
+          document.querySelector('input[type="search"]');
+
+        const search = normalize(searchInput?.value || "");
+
+        jobs.sort((a,b) => {
+          const score = job => {
+            if (!search) return 0;
+            let score = 0;
+            if (titleOf(job).includes(search)) score += 10;
+            if (companyOf(job).includes(search)) score += 5;
+            if (descriptionOf(job).includes(search)) score += 2;
+            return score;
+          };
+
+          const scoreDifference = score(b) - score(a);
+          if (scoreDifference) return scoreDifference;
+
+          const dateA = parseDate(field(a, ["created_at","createdAt","posteddate","posted_date","postedDate"]))?.getTime() || 0;
+          const dateB = parseDate(field(b, ["created_at","createdAt","posteddate","posted_date","postedDate"]))?.getTime() || 0;
+          return dateB - dateA;
+        });
+      }
+
+      return jobs;
+    }
+
+    function render(){
+      const jobs = filteredJobs();
+
+      if (typeof window.renderJobsGrid === "function") {
+        window.renderJobsGrid(jobs, 1);
+      } else if (typeof renderJobsGrid === "function") {
+        renderJobsGrid(jobs, 1);
+      }
+    }
+
+    /* Dropdown open/close */
+    bar.querySelectorAll(".filter-trigger").forEach(trigger => {
+      trigger.addEventListener("click", function(event){
+        event.preventDefault();
+        event.stopPropagation();
+
+        const control = trigger.closest(".filter-control");
+        bar.querySelectorAll(".filter-control").forEach(item => {
+          if (item !== control) item.classList.remove("open");
+        });
+        control.classList.toggle("open");
+      });
+    });
+
+    /* Filter options */
+    bar.querySelectorAll(".filter-control").forEach((control, index) => {
+      control.querySelectorAll(".filter-option").forEach(option => {
+        option.addEventListener("click", function(event){
+          event.preventDefault();
+          event.stopPropagation();
+
+          const value = option.textContent.trim();
+          state[keys[index]] = value;
+
+          const trigger = control.querySelector(".filter-trigger");
+          trigger.innerHTML =
+            value + ' <i class="fa-solid fa-chevron-down"></i>';
+          trigger.classList.add("has-selection");
+
+          control.classList.remove("open");
+          render();
+        });
+      });
+    });
+
+    /* Reset Filters */
+    const reset = bar.querySelector(".filter-reset");
+    reset?.addEventListener("click", function(event){
+      event.preventDefault();
+
+      state.closing = "";
+      state.jobType = "";
+      state.workStyle = "";
+      state.salary = "";
+      state.jobsForYou = false;
+
+      bar.querySelectorAll(".filter-trigger").forEach((trigger, index) => {
+        trigger.innerHTML =
+          defaults[index] + ' <i class="fa-solid fa-chevron-down"></i>';
+        trigger.classList.remove("has-selection");
+      });
+
+      bar.querySelector(".filter-for-you")?.classList.remove("active");
+      render();
+    });
+
+    /* Jobs For You */
+    const forYou = bar.querySelector(".filter-for-you");
+    forYou?.addEventListener("click", function(event){
+      event.preventDefault();
+
+      state.jobsForYou = !state.jobsForYou;
+      forYou.classList.toggle("active", state.jobsForYou);
+      render();
+    });
+
+    document.addEventListener("click", function(event){
+      if (!bar.contains(event.target)) {
+        bar.querySelectorAll(".filter-control")
+          .forEach(control => control.classList.remove("open"));
+      }
+    });
+
+    /* Public helper for testing/debugging */
+    window.indupalliApplyJobFilters = render;
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startFinalFilters);
+  } else {
+    startFinalFilters();
+  }
+})();
+</script>
