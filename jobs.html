@@ -940,9 +940,9 @@ footer {
 
 <header>
 
-<a href="index.html" class="logo">
+<a href="/index.html" class="logo">
 
-<img src="1000174411.png" alt="Logo">
+<img src="/1000174411.png" alt="Logo">
 
 <div class="logo-text">
 
@@ -957,11 +957,11 @@ footer {
 
 <nav>
 
-<a href="index.html">Home</a>
+<a href="/index.html">Home</a>
 
-<a href="jobs.html">Browse Jobs</a>
+<a href="/jobs.html">Browse Jobs</a>
 
-<a href="login.html" class="nav-login">
+<a href="/login.html" class="nav-login">
 Job Seeker Login
 </a>
 
@@ -1154,7 +1154,7 @@ Copy Link
 
 
 <a
-href="login.html"
+href="/login.html"
 class="apply-btn">
 
 Apply For This Role
@@ -1189,7 +1189,7 @@ style="margin-left:6px;">
 
 
 <img
-src="1000174411.png"
+src="/1000174411.png"
 alt="Indupalli Services"
 
 style="
@@ -1222,9 +1222,9 @@ Next-generation talent connectivity and staffing platform empowering careers and
 
 <h5>Navigation</h5>
 
-<a href="index.html">Home</a>
+<a href="/index.html">Home</a>
 
-<a href="jobs.html">Browse Jobs</a>
+<a href="/jobs.html">Browse Jobs</a>
 
 <a href="index.html#pricing">Pricing</a>
 
@@ -1236,17 +1236,17 @@ Next-generation talent connectivity and staffing platform empowering careers and
 
 <h5>Portals & Legal</h5>
 
-<a href="login.html">Candidate Login</a>
+<a href="/login.html">Candidate Login</a>
 
-<a href="recruiter-login.html">
+<a href="/recruiter-login.html">
 Recruiter Login
 </a>
 
-<a href="terms.html">
+<a href="/terms.html">
 Terms of Service
 </a>
 
-<a href="privacy.html">
+<a href="/privacy.html">
 Privacy Policy
 </a>
 
@@ -1283,8 +1283,14 @@ All Rights Reserved.
 <script type="module">
 
 
-import { supabase }
-from './supabase.js';
+import { createClient }
+from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+const SUPABASE_URL = 'https://lfjgtwiivdqvcgzbfkmu.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_ciq7OcJz7kRgDbaD2Pbn-g_Echw4BfY';
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+  auth: { persistSession: false }
+});
 
 
 window.rawJobsData = [];
@@ -1391,211 +1397,99 @@ function formatJobDescription(text) {
 
 async function loadAllJobs() {
 
+  const container = document.getElementById("allJobsContainer");
+  if (!container) return;
 
-  const container =
-
-  document.getElementById(
-
-    "allJobsContainer"
-
-  );
-
+  /* Show an immediate state so the page never looks frozen. */
+  container.setAttribute("aria-busy", "true");
 
   try {
-
-
-    const {
-
-      data: jobs,
-
-      error
-
-    }
-
-    =
-
-    await supabase
-
-    .from('jobs')
-
-    .select('*');
-
-
-    if (error) {
-
-      throw error;
-
-    }
-
-
-
-    if (jobs && container) {
-
-
-      window.rawJobsData = [];
-
-
-      const today = new Date();
-
-
-      today.setHours(
-
-        0,
-
-        0,
-
-        0,
-
-        0
-
-      );
-
-
-      jobs.forEach((job) => {
-
-
-        const isArchived =
-
-        job.isarchived ??
-
-        job.is_archived ??
-
-        job.isArchived ??
-
-        false;
-
-
-
-        const rawClosingDate =
-
-        job.closingdate ??
-
-        job.closing_date ??
-
-        job.closingDate;
-
-
-
-        /* HIDE ARCHIVED */
-
-        if (isArchived) {
-
-          return;
-
-        }
-
-
-
-        /* HIDE EXPIRED */
-
-        if (rawClosingDate) {
-
-
-          const closeDate =
-
-          new Date(
-
-            rawClosingDate
-
-          );
-
-
-          closeDate.setHours(
-
-            23,
-
-            59,
-
-            59,
-
-            999
-
-          );
-
-
-          if (today > closeDate) {
-
-            return;
-
-          }
-
-        }
-
-
-
-        window.rawJobsData.push(job);
-
-
-      });
-
-
-
-      renderJobsGrid(
-
-        window.rawJobsData
-
-      );
-
-
-
-      /* OPEN SHARED JOB */
-
-      openSharedJob();
-
-
-    }
-
-
-  }
-
-
-  catch (e) {
-
-
-    console.error(
-
-      "Error loading jobs:",
-
-      e
-
+    const path = window.location.pathname;
+    const cleanMatch = path.match(
+      /^\/jobs\/[^/]+-([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\/?$/i
     );
 
+    /* Shared link: fetch ONLY the requested job. */
+    if (cleanMatch) {
+      const requestedId = cleanMatch[1];
 
-    if (container) {
+      const { data: job, error } = await supabase
+        .from("jobs")
+        .select("*")
+        .eq("id", requestedId)
+        .maybeSingle();
 
+      if (error) throw error;
+      if (!job) throw new Error("This job posting could not be found.");
 
-      container.innerHTML = `
+      const archived = job.isarchived ?? job.is_archived ?? job.isArchived ?? false;
+      const closing = job.closingdate ?? job.closing_date ?? job.closingDate;
 
+      if (archived) throw new Error("This job posting is no longer available.");
+      if (closing) {
+        const closeDate = new Date(closing);
+        closeDate.setHours(23,59,59,999);
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        if (today > closeDate) throw new Error("This job posting has expired.");
+      }
 
-      <p
-      style="
-      grid-column:1/-1;
-      text-align:center;
-      color:#dc2626;
-      padding:40px;
-      font-weight:600;
-      ">
+      window.rawJobsData = [job];
+      renderJobsGrid(window.rawJobsData, 1);
 
-
-      <i class="fa-solid fa-triangle-exclamation"></i>
-
-      Failed to load job openings.
-
-      Please refresh or try again later.
-
-
-      </p>
-
-
-      `;
-
-
+      /* Open the exact matching job after its card exists. */
+      requestAnimationFrame(() => openJobModal(0));
+      return;
     }
 
+    /* Main Current Job Openings page: fetch all active jobs in one request. */
+    const jobsRequest = supabase
+      .from("jobs")
+      .select("*");
 
+    const timeoutRequest = new Promise((_, reject) =>
+      setTimeout(() => reject(new Error("Job listings are taking too long to load. Please refresh once.")), 12000)
+    );
+
+    const { data: jobs, error } = await Promise.race([
+      jobsRequest,
+      timeoutRequest
+    ]);
+
+    if (error) throw error;
+
+    const today = new Date();
+    today.setHours(0,0,0,0);
+
+    window.rawJobsData = (jobs || []).filter((job) => {
+      const archived = job.isarchived ?? job.is_archived ?? job.isArchived ?? false;
+      if (archived) return false;
+
+      const closing = job.closingdate ?? job.closing_date ?? job.closingDate;
+      if (!closing) return true;
+
+      const closeDate = new Date(closing);
+      closeDate.setHours(23,59,59,999);
+      return today <= closeDate;
+    });
+
+    /* Render ALL active openings from Supabase. Pagination still applies if enabled in renderJobsGrid. */
+    renderJobsGrid(window.rawJobsData, 1);
+    openSharedJob();
+
+  } catch (e) {
+    console.error("Error loading jobs:", e);
+    container.innerHTML = `
+      <div style="grid-column:1/-1;text-align:center;padding:48px;background:#fff;border:1px solid #e2e8f0;border-radius:16px;">
+        <i class="fa-solid fa-triangle-exclamation" style="font-size:28px;color:#dc2626;margin-bottom:14px;"></i>
+        <p style="font-weight:700;color:#b91c1c;margin-bottom:7px;">Unable to load job openings.</p>
+        <p style="font-size:13px;color:#64748b;">${e?.message || "Please refresh and try again."}</p>
+        <button type="button" id="retryJobsBtn" style="margin-top:16px;padding:10px 18px;border:1px solid #bfdbfe;border-radius:10px;background:#eff6ff;color:#2563eb;font-weight:700;cursor:pointer;">Retry</button>
+      </div>`;
+    document.getElementById("retryJobsBtn")?.addEventListener("click", loadAllJobs);
+  } finally {
+    container.removeAttribute("aria-busy");
   }
-
-
 }
 
 
@@ -1741,7 +1635,7 @@ function renderJobsGrid(jobsArray, requestedPage = 1) {
             Read Details
           </button>
 
-          <a href="login.html" class="apply-btn">
+          <a href="/login.html" class="apply-btn">
             Apply Now
           </a>
         </div>
@@ -1892,8 +1786,13 @@ function renderJobsGrid(jobsArray, requestedPage = 1) {
       const shareUrl =
         `${window.location.origin}/jobs/${slug}-${String(jobId).toLowerCase()}`;
 
+      const location = job.location || "Remote";
+      const salary = job.salary || "Standard";
+      const experience = job.experience || "Not specified";
+      const rawClosing = job.closingdate || job.closing_date || job.closingDate || job.deadline;
+      const closing = rawClosing ? new Date(rawClosing).toLocaleDateString("en-GB") : "Open until filled";
       const shareText =
-        `${title} — ${getCompany(job)}\n${shareUrl}`;
+        `${title}\n${getCompany(job)}\n\nLocation: ${location}\nSalary: ${salary}\nExperience: ${experience}\nClosing: ${closing}\n\nView this job:\n${shareUrl}`;
 
       const platform = e.currentTarget.getAttribute("data-share");
 
@@ -2883,7 +2782,7 @@ document.addEventListener("DOMContentLoaded", function () {
           Discover opportunities that match your skills, experience
           and career goals.
         </p>
-        <a href="login.html" class="side-info-btn join">
+        <a href="/login.html" class="side-info-btn join">
           Sign up for free
         </a>
       </div>
@@ -3415,7 +3314,7 @@ document.addEventListener("DOMContentLoaded", function(){
         </div>
         <div class="side-info-content">
           <p>Explore opportunities, showcase your skills, and take the next step in your professional journey.</p>
-          <a href="login.html" class="side-info-btn join">Create your profile</a>
+          <a href="/login.html" class="side-info-btn join">Create your profile</a>
         </div>
       </div>`;
   }
@@ -3720,7 +3619,7 @@ document.addEventListener("DOMContentLoaded", function(){
 </style>
 <script>
 document.addEventListener("DOMContentLoaded",function(){
- document.querySelectorAll(".side-info-btn.hire-btn").forEach(function(b){b.href="recruiter-login.html";b.textContent="Start Hiring"});
+ document.querySelectorAll(".side-info-btn.hire-btn").forEach(function(b){b.href="/recruiter-login.html";b.textContent="Start Hiring"});
  if(document.querySelector(".extra-page-info"))return;
  const info=document.createElement("section");info.className="extra-page-info";info.innerHTML='<article class="extra-info-card"><div class="extra-info-icon"><i class="fa-solid fa-briefcase"></i></div><h3>Find the Right Opportunity</h3><p>Browse available roles and discover opportunities that match your skills, experience and career goals.</p></article><article class="extra-info-card"><div class="extra-info-icon"><i class="fa-solid fa-bolt"></i></div><h3>Simple Job Search</h3><p>Use search and filters to explore relevant jobs and quickly review important role information.</p></article><article class="extra-info-card"><div class="extra-info-icon"><i class="fa-solid fa-building"></i></div><h3>For Employers</h3><p>Connect with potential candidates and manage your hiring journey through Indupalli Services.</p></article>';
  const how=document.createElement("section");how.className="page-how-it-works";how.innerHTML='<h2>How It Works</h2><p>A straightforward way to discover jobs and take your next career step.</p><div class="steps-grid"><div class="step-item"><div class="step-number">1</div><h4>Search Jobs</h4><p>Explore available opportunities based on your interests.</p></div><div class="step-item"><div class="step-number">2</div><h4>Review Details</h4><p>Check the role information, requirements and important details.</p></div><div class="step-item"><div class="step-number">3</div><h4>Take the Next Step</h4><p>Apply for suitable opportunities and continue your career journey.</p></div></div>';
@@ -3833,5 +3732,171 @@ document.addEventListener("DOMContentLoaded",function(){
   });
 })();
 </script>
+
+
+<!-- FINAL MOBILE RESPONSIVE FIX -->
+<style id="final-mobile-responsive-fix">
+/* Prevent desktop-width layouts from shrinking on real phones */
+html, body{
+  width:100% !important;
+  max-width:100% !important;
+  min-width:0 !important;
+  overflow-x:hidden !important;
+}
+img{max-width:100%;height:auto;}
+
+@media (max-width:800px){
+  body{display:block !important;}
+
+  header{
+    width:100% !important;
+    height:64px !important;
+    min-height:64px !important;
+    padding:0 14px !important;
+  }
+
+  .logo{gap:8px !important; min-width:0 !important;}
+  .logo img{width:38px !important;height:38px !important;}
+  .logo-text h2{font-size:16px !important;white-space:nowrap;}
+  .logo-text p{font-size:8px !important;letter-spacing:.8px !important;}
+
+  .container{
+    width:100% !important;
+    max-width:none !important;
+    margin:0 !important;
+    padding:0 12px !important;
+  }
+
+  .page-title{margin:24px 0 18px !important;}
+  .page-title h1{font-size:26px !important;line-height:1.2 !important;}
+  .page-title p{font-size:13px !important;padding:0 8px !important;}
+
+  .search-bar{
+    width:100% !important;
+    max-width:none !important;
+    margin:24px 0 26px !important;
+    min-height:58px !important;
+    padding:6px 10px !important;
+    gap:8px !important;
+    border-radius:12px !important;
+  }
+  .search-bar::before{top:-24px !important;bottom:-26px !important;}
+  .search-bar::after{
+    min-width:92px !important;
+    min-height:42px !important;
+    font-size:12px !important;
+  }
+  .search-bar input{
+    min-width:0 !important;
+    min-height:42px !important;
+    font-size:12px !important;
+    padding:0 8px !important;
+  }
+
+  .professional-filter-bar{width:100% !important;}
+  .professional-filter-inner{
+    width:100% !important;
+    padding:8px 10px !important;
+    gap:6px !important;
+    overflow-x:auto !important;
+    -webkit-overflow-scrolling:touch;
+    flex-wrap:nowrap !important;
+  }
+  .filter-control,.filter-trigger,.filter-reset,.filter-for-you{flex:0 0 auto !important;}
+  .filter-trigger{padding:10px 11px !important;font-size:12px !important;}
+  .filter-reset,.filter-for-you{min-height:40px !important;padding:0 12px !important;font-size:12px !important;}
+
+  /* One clean full-width column on phones */
+  .jobs-side-layout{
+    width:100% !important;
+    max-width:none !important;
+    margin:0 !important;
+    padding:18px 12px 28px !important;
+    display:flex !important;
+    flex-direction:column !important;
+    gap:18px !important;
+    grid-template-columns:none !important;
+  }
+
+  .jobs-side-layout > #allJobsContainer{
+    width:100% !important;
+    max-width:none !important;
+    min-width:0 !important;
+    display:flex !important;
+    flex-direction:column !important;
+    order:1 !important;
+    gap:12px !important;
+  }
+
+  .jobs-side-layout > #allJobsContainer .job-card,
+  #allJobsContainer .job-card{
+    width:100% !important;
+    max-width:none !important;
+    min-width:0 !important;
+    padding:18px !important;
+    border-radius:14px !important;
+  }
+
+  .job-title-main{font-size:17px !important;}
+  .job-company{font-size:11px !important;margin-bottom:12px !important;}
+  .job-meta{gap:6px !important;margin-bottom:12px !important;}
+  .job-meta span{font-size:10px !important;padding:5px 7px !important;}
+  .job-desc-snippet{font-size:12px !important;line-height:1.5 !important;margin-bottom:14px !important;}
+  .card-actions{gap:8px !important;}
+  .read-more-btn,.apply-btn{min-height:42px !important;padding:10px 8px !important;font-size:12px !important;}
+
+  /* Side information becomes full-width below the jobs */
+  .side-info-left,.side-info-right{
+    width:100% !important;
+    max-width:none !important;
+    display:block !important;
+    order:2 !important;
+    grid-column:auto !important;
+  }
+  .side-info-left .side-info-card,.side-info-right .side-info-card{
+    width:100% !important;
+    min-height:0 !important;
+    position:relative !important;
+    top:auto !important;
+    margin:0 !important;
+  }
+  .side-info-card .side-image{width:100% !important;height:150px !important;object-fit:cover !important;display:block !important;}
+  .side-info-top{min-height:0 !important;padding:20px !important;}
+  .side-info-card h3,.side-info-card.hire h3{font-size:22px !important;}
+  .side-info-content{padding:18px !important;}
+
+  .job-pagination{margin:14px 0 4px !important;gap:5px !important;}
+  .job-pagination button{min-width:36px !important;height:36px !important;font-size:12px !important;}
+
+  .extra-page-info{
+    width:calc(100% - 24px) !important;
+    max-width:none !important;
+    margin:0 12px 28px !important;
+    display:grid !important;
+    grid-template-columns:1fr !important;
+    gap:12px !important;
+  }
+  .extra-info-card{padding:18px !important;}
+  .page-how-it-works{
+    width:calc(100% - 24px) !important;
+    max-width:none !important;
+    margin:0 12px 28px !important;
+    padding:20px 14px !important;
+  }
+  .steps-grid{grid-template-columns:1fr !important;gap:8px !important;}
+
+  footer{
+    width:100% !important;
+    max-width:none !important;
+    padding:36px 18px 24px !important;
+    margin:0 !important;
+  }
+  .footer-grid{display:grid !important;grid-template-columns:1fr !important;gap:22px !important;}
+
+  .modal-overlay{padding:10px !important;}
+  .modal-box{width:100% !important;max-height:90vh !important;padding:22px 16px !important;border-radius:16px !important;}
+}
+</style>
+
 </body>
 </html>
