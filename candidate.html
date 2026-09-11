@@ -1316,6 +1316,106 @@ body.dark-mode .sidebar{background:#090d16!important;}
   .agent-queue-head{flex-direction:column}
 }
 </style>
+
+<style id="ai-jd-scanner-style">
+/* ── ON-SCREEN AI JD SCANNER ── */
+.job-jd-ai-scan{
+  margin-top:12px;
+  padding:12px 13px;
+  border:1px solid #dbeafe;
+  border-radius:12px;
+  background:linear-gradient(135deg,#f8fbff 0%,#eef6ff 100%);
+  color:#244264;
+  overflow:hidden;
+}
+.job-jd-ai-scan.hidden{display:none;}
+.job-jd-ai-head{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  margin-bottom:9px;
+}
+.job-jd-ai-title{
+  display:flex;align-items:center;gap:8px;
+  font-size:11.5px;font-weight:900;color:#1d4ed8;
+  text-transform:uppercase;letter-spacing:.45px;
+}
+.job-jd-ai-title i{font-size:12px;}
+.job-jd-ai-state{
+  font-size:10.5px;font-weight:800;color:#2563eb;white-space:nowrap;
+}
+.job-jd-ai-subtitle{
+  font-size:10.5px;color:#64748b;line-height:1.5;margin-bottom:8px;
+}
+.job-jd-ai-progress{
+  height:6px;border-radius:999px;background:#dbeafe;overflow:hidden;position:relative;
+  margin-bottom:10px;
+}
+.job-jd-ai-progress span{
+  display:block;height:100%;width:18%;border-radius:999px;
+  background:linear-gradient(90deg,#2563eb,#60a5fa,#8b5cf6);
+  animation:jdScanProgress 7s cubic-bezier(.2,.7,.2,1) forwards;
+}
+@keyframes jdScanProgress{
+  0%{width:8%}
+  25%{width:28%}
+  55%{width:56%}
+  80%{width:82%}
+  100%{width:100%}
+}
+.job-jd-ai-points{
+  display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;
+}
+.job-jd-ai-point{
+  display:flex;align-items:center;gap:7px;
+  font-size:10.5px;color:#52677f;
+}
+.job-jd-ai-point i{color:#2563eb;font-size:9px;}
+.job-jd-ai-result{
+  display:none;
+  margin-top:8px;padding-top:9px;border-top:1px solid #dbeafe;
+}
+.job-jd-ai-result.show{display:block;}
+.job-jd-ai-result-head{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px;
+}
+.job-jd-ai-match{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:5px 9px;border-radius:999px;font-size:10.5px;font-weight:900;
+  background:#ecfdf5;color:#047857;border:1px solid #bbf7d0;
+}
+.job-jd-ai-match.mid{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe;}
+.job-jd-ai-match.low{background:#fff7ed;color:#c2410c;border-color:#fed7aa;}
+.job-jd-ai-ready{
+  font-size:10.5px;font-weight:900;color:#047857;
+}
+.job-jd-ai-summary{
+  font-size:10.5px;line-height:1.55;color:#51657e;margin-bottom:6px;
+}
+.job-jd-ai-keypoints{
+  display:flex;flex-wrap:wrap;gap:5px;
+}
+.job-jd-ai-chip{
+  display:inline-flex;align-items:center;gap:4px;padding:4px 7px;border-radius:999px;
+  background:#fff;border:1px solid #dbe4ef;font-size:9.5px;color:#3d536d;font-weight:700;
+}
+.job-jd-ai-chip.good{background:#f0fdf4;border-color:#bbf7d0;color:#166534;}
+.job-jd-ai-chip.gap{background:#fff7ed;border-color:#fed7aa;color:#c2410c;}
+.job-jd-ai-actions{
+  display:flex;justify-content:flex-end;margin-top:8px;
+}
+.job-jd-ai-approve{
+  display:inline-flex;align-items:center;gap:6px;
+  border:0;border-radius:8px;padding:7px 10px;cursor:pointer;
+  background:#0f172a;color:#fff;font-size:10.5px;font-weight:800;
+}
+.job-jd-ai-approve:hover{background:#2563eb;}
+.job-jd-ai-error{font-size:10.5px;color:#b91c1c;font-weight:700;}
+@media(max-width:768px){
+  .job-jd-ai-scan{padding:11px;}
+  .job-jd-ai-points{grid-template-columns:1fr;}
+  .job-jd-ai-head{align-items:flex-start;flex-direction:column;gap:3px;}
+  .job-jd-ai-state{white-space:normal;}
+}
+</style>
 </head>
 <body>
 
@@ -3259,6 +3359,79 @@ body.dark-mode .sidebar{background:#090d16!important;}
       return result;
   }
 
+  function getAiJdScanCard(job){
+      return document.querySelector(`.job-jd-ai-scan[data-ai-jd-scan="${CSS.escape(String(job?.id || ""))}"]`);
+  }
+
+  function setAiJdScanState(job, state, subtitle){
+      const box=getAiJdScanCard(job);
+      if(!box) return;
+      const stateEl=box.querySelector("[data-ai-state]");
+      const subEl=box.querySelector("[data-ai-subtitle]");
+      if(stateEl) stateEl.textContent=state;
+      if(subEl && subtitle) subEl.textContent=subtitle;
+  }
+
+  function renderAiJdResult(job, result){
+      const box=getAiJdScanCard(job);
+      if(!box) return;
+      const stateEl=box.querySelector("[data-ai-state]");
+      const subEl=box.querySelector("[data-ai-subtitle]");
+      const progress=box.querySelector("[data-ai-progress]");
+      const resultEl=box.querySelector("[data-ai-result]");
+      if(progress) progress.style.animationPlayState="paused";
+
+      if(result?.status==="ready" && Number.isFinite(result.score)){
+          const score=Math.round(result.score);
+          const analysis=result.analysis||{};
+          const matched=Array.isArray(analysis.matchedSkills)?analysis.matchedSkills.filter(Boolean).slice(0,5):[];
+          const missing=Array.isArray(analysis.missingOrWeakSkills)?analysis.missingOrWeakSkills.filter(Boolean).slice(0,3):[];
+          const summary=String(analysis.summary||"The AI found a job-specific match between this JD and your profile.").trim();
+          const matchClass=score>=75?"":(score>=25?"mid":"low");
+          const ready=score>=25;
+          const chips=[
+              ...matched.map(s=>`<span class="job-jd-ai-chip good"><i class="fa-solid fa-check"></i>${esc(s)}</span>`),
+              ...missing.map(s=>`<span class="job-jd-ai-chip gap"><i class="fa-solid fa-minus"></i>${esc(s)}</span>`)
+          ].join('');
+          if(stateEl) stateEl.textContent="Scan complete";
+          if(subEl) subEl.textContent="AI finished reading this JD and comparing it with your resume.";
+          if(resultEl){
+              resultEl.innerHTML=`
+                <div class="job-jd-ai-result-head">
+                  <span class="job-jd-ai-match ${matchClass}"><i class="fa-solid fa-bullseye"></i> ${score}% Match</span>
+                  <span class="job-jd-ai-ready">${ready?"Ready to apply":"Low match"}</span>
+                </div>
+                <div class="job-jd-ai-summary">${esc(summary)}</div>
+                ${chips?`<div class="job-jd-ai-keypoints">${chips}</div>`:""}
+                ${ready?`<div class="job-jd-ai-actions"><button type="button" class="job-jd-ai-approve" onclick="window.openJobDetailsModalById('${esc(job.id)}')"><i class="fa-solid fa-paper-plane"></i> Review & Apply</button></div>`:""}
+              `;
+              resultEl.classList.add("show");
+          }
+          return;
+      }
+
+      if(result?.status==="no-resume"){
+          setAiJdScanState(job,"Resume needed","Upload your Master Resume to let AI compare this JD with your experience.");
+          if(resultEl){ resultEl.classList.add("show"); resultEl.innerHTML='<div class="job-jd-ai-error">Upload your resume to start the scan.</div>'; }
+          return;
+      }
+
+      if(result?.status==="no-jd"){
+          setAiJdScanState(job,"JD unavailable","This job does not contain a usable job description for AI analysis.");
+          if(resultEl){ resultEl.classList.add("show"); resultEl.innerHTML='<div class="job-jd-ai-error">No usable job description was found.</div>'; }
+          return;
+      }
+
+      if(result?.status==="quota"){
+          setAiJdScanState(job,"AI unavailable","The AI matching service is temporarily unavailable because its usage limit was reached.");
+          if(resultEl){ resultEl.classList.add("show"); resultEl.innerHTML='<div class="job-jd-ai-error">AI scan temporarily unavailable. You can still open the job normally.</div>'; }
+          return;
+      }
+
+      setAiJdScanState(job,"Scan failed","The AI could not complete this JD analysis. Please try again.");
+      if(resultEl){ resultEl.classList.add("show"); resultEl.innerHTML='<div class="job-jd-ai-error">AI analysis failed. Use Try Again on the match score.</div>'; }
+  }
+
   async function updateSingleJobDiscoveryScore(job) {
       const card = document.querySelector(
           `.job-card[data-job-id="${CSS.escape(String(job.id))}"]`
@@ -3271,6 +3444,9 @@ body.dark-mode .sidebar{background:#090d16!important;}
 
       if (Number.isFinite(savedScore)) {
           setJobScoreUI(scoreEl, savedScore, "cached");
+          setAiJdScanState(job,"Previously analyzed","This job's JD was already analyzed with your saved Master Resume.");
+          const cachedResult={status:"ready",score:savedScore,cached:true,analysis:null};
+          renderAiJdResult(job,cachedResult);
           return;
       }
 
@@ -3280,6 +3456,7 @@ body.dark-mode .sidebar{background:#090d16!important;}
               "Resume Needed",
               "Upload a Master Resume to calculate a job-specific match score."
           );
+          setAiJdScanState(job,"Waiting for resume","Upload your Master Resume so the AI can compare this JD with your profile.");
           return;
       }
 
@@ -3289,6 +3466,7 @@ body.dark-mode .sidebar{background:#090d16!important;}
               "JD Needed",
               "This job does not contain a usable job description for scoring."
           );
+          setAiJdScanState(job,"JD unavailable","This job does not contain enough JD text for AI analysis.");
           return;
       }
 
@@ -3298,10 +3476,23 @@ body.dark-mode .sidebar{background:#090d16!important;}
           "Gemini is comparing your Master Resume against this specific job description."
       );
 
+      setAiJdScanState(
+          job,
+          "AI is scanning the JD…",
+          "Reading responsibilities, requirements and keywords, then comparing them with your resume."
+      );
+
+      const scanStart=performance.now();
       const result = await scoreJobForDiscovery(job);
+      const elapsed=performance.now()-scanStart;
+      const minimumScanMs=6500;
+      if(elapsed < minimumScanMs){
+          await new Promise(resolve=>setTimeout(resolve,minimumScanMs-elapsed));
+      }
 
       if (result.status === "ready" && Number.isFinite(result.score)) {
           setJobScoreUI(scoreEl, result.score, result.cached ? "cached" : "ai");
+          renderAiJdResult(job,result);
           return;
       }
 
@@ -3311,6 +3502,7 @@ body.dark-mode .sidebar{background:#090d16!important;}
               "Resume Needed",
               "Upload a Master Resume to calculate a job-specific match score."
           );
+          renderAiJdResult(job,result);
           return;
       }
 
@@ -3320,6 +3512,7 @@ body.dark-mode .sidebar{background:#090d16!important;}
               "JD Needed",
               "This job does not contain a usable job description for scoring."
           );
+          renderAiJdResult(job,result);
           return;
       }
 
@@ -3329,18 +3522,18 @@ body.dark-mode .sidebar{background:#090d16!important;}
               "AI Limit Reached",
               "AI matching is temporarily unavailable because the current usage limit has been reached."
           );
+          renderAiJdResult(job,result);
           showAiQuotaNoticeOnce();
           return;
       }
 
-      // Never display a fake score.
-      // Keep the card informative and allow a retry button if needed.
       setJobScoreState(
           scoreEl,
           "Try Again",
           result.error || "AI scoring is temporarily unavailable. Click to retry.",
           true
       );
+      renderAiJdResult(job,result);
   }
 
   async function updateJobDiscoveryScores(jobs) {
@@ -3483,6 +3676,21 @@ body.dark-mode .sidebar{background:#090d16!important;}
                               <span><i class="fa-solid fa-location-dot"></i> ${location}</span>
                               <span><i class="fa-solid fa-briefcase"></i> ${experience}</span>
                               <span><i class="fa-solid fa-circle-check"></i> Required</span>
+                          </div>
+                          <div class="job-jd-ai-scan" data-ai-jd-scan="${jobId}">
+                              <div class="job-jd-ai-head">
+                                  <div class="job-jd-ai-title"><i class="fa-solid fa-robot"></i> AI Job Description Scan</div>
+                                  <div class="job-jd-ai-state" data-ai-state>Waiting to scan</div>
+                              </div>
+                              <div class="job-jd-ai-subtitle" data-ai-subtitle>AI will read this job description, compare the requirements with your resume, and explain the match.</div>
+                              <div class="job-jd-ai-progress"><span data-ai-progress></span></div>
+                              <div class="job-jd-ai-points">
+                                  <div class="job-jd-ai-point"><i class="fa-solid fa-circle-check"></i><span>Reading responsibilities</span></div>
+                                  <div class="job-jd-ai-point"><i class="fa-solid fa-circle-check"></i><span>Checking required skills</span></div>
+                                  <div class="job-jd-ai-point"><i class="fa-solid fa-circle-check"></i><span>Comparing your resume</span></div>
+                                  <div class="job-jd-ai-point"><i class="fa-solid fa-circle-check"></i><span>Calculating match</span></div>
+                              </div>
+                              <div class="job-jd-ai-result" data-ai-result></div>
                           </div>
                       </div>
                       <div class="job-match-score ${Number.isFinite(cachedScore) ? (cachedScore >= 75 ? "strong" : "") : "pending"}">${initialScoreHtml}</div>
