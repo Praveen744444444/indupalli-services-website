@@ -2672,6 +2672,28 @@ body.dark-mode .sidebar{background:#090d16!important;}
               return;
           }
 
+          // ── EMAIL VERIFICATION GATE ──
+          // A Firebase session existing is NOT the same as a verified account.
+          // This runs on every load (including an already-active session that
+          // was signed in before this check existed), so an unverified user
+          // can never reach the Candidate Dashboard, AI Agent, applications,
+          // or subscription features just by holding a session or opening the
+          // dashboard URL directly. Reload first so a just-verified user
+          // (who verified in another tab) isn't incorrectly blocked by a
+          // stale cached flag.
+          try {
+              await user.reload();
+          } catch (reloadErr) {
+              console.warn("Could not refresh auth state before verification check:", reloadErr);
+          }
+          if (!user.emailVerified) {
+              console.warn("Unverified email detected. Signing out and redirecting to login.");
+              try { await auth.signOut(); } catch (signOutErr) { console.warn("Sign-out during verification check failed:", signOutErr); }
+              localStorage.removeItem("candidateLoggedInEmail");
+              window.location.href = "login.html?verify=1";
+              return;
+          }
+
           // Always use the authenticated account email. Google/Firebase users
           // normally expose it as user.email; providerData is a safe fallback.
           const providerEmail = user.providerData
@@ -3007,6 +3029,34 @@ body.dark-mode .sidebar{background:#090d16!important;}
           console.error("Error checking subscription requirement, falling back to local count:", err);
           const freeCount = parseInt(localStorage.getItem("freeApplicationsCount") || "0");
           return freeCount >= 3;
+      }
+  };
+
+  // Same underlying rule as checkSubscriptionRequirement (3 free applications,
+  // Supabase jobApplications as the source of truth), but returns the actual
+  // remaining count so the AI Agent can cap a batch instead of only getting
+  // a yes/no answer.
+  window.getAIAgentFreeSlots = async function() {
+      const email = localStorage.getItem("candidateLoggedInEmail");
+      const isPremium = await syncPremiumStatus(email);
+      if (isPremium) return { isPremium: true, appliedCount: 0, remaining: Infinity };
+      if (!email) return { isPremium: false, appliedCount: 0, remaining: 0 };
+
+      try {
+          const { count, error } = await supabase
+              .from('jobApplications')
+              .select('*', { count: 'exact', head: true })
+              .ilike('email', email);
+
+          if (error) throw error;
+
+          const appliedCount = count || 0;
+          localStorage.setItem("freeApplicationsCount", appliedCount);
+          return { isPremium: false, appliedCount, remaining: Math.max(0, 3 - appliedCount) };
+      } catch (err) {
+          console.error("Error checking AI Agent free slots, falling back to local count:", err);
+          const appliedCount = parseInt(localStorage.getItem("freeApplicationsCount") || "0");
+          return { isPremium: false, appliedCount, remaining: Math.max(0, 3 - appliedCount) };
       }
   };
 
@@ -5058,6 +5108,22 @@ document.addEventListener('DOMContentLoaded',syncVideoSummary);
 
   window.runAIAgent=async function(auto=false){
     if(agentRunning) return;
+
+    // ── FREE USAGE LIMIT ──
+    // Once a candidate has used all 3 free AI job applications, the agent
+    // must not run again until they subscribe. On an automatic post-login
+    // start we just stay quiet (no modal); a manual "Run AI Agent" click
+    // shows the subscription modal, per the required flow.
+    if(window.getAIAgentFreeSlots){
+      const slots=await window.getAIAgentFreeSlots();
+      if(!slots.isPremium && slots.remaining<=0){
+        if(auto) return;
+        if(window.showPremiumModal) window.showPremiumModal();
+        setFeed('<div class="agent-feed-title">Subscription Required</div><div class="agent-message"><b>AI Agent:</b> You\'ve used all 3 free AI job applications. Choose a subscription plan to keep using the AI Agent.</div>');
+        return;
+      }
+    }
+
     if(!resumeUrl()){
       document.getElementById('agentGaps').textContent='Resume needed';
       setFeed('<div class="agent-feed-title">Agent Activity</div><div class="agent-message"><b>AI Agent:</b> Upload your Master Resume first. The agent will start automatically after the resume is available.</div>');
@@ -5105,8 +5171,28 @@ document.addEventListener('DOMContentLoaded',syncVideoSummary);
   };
 
   window.approveSelectedAIAgentJobs=async function(){
-    const ids=[...document.querySelectorAll('.ai-agent-job-check:checked')].map(x=>x.dataset.jobId).filter(Boolean);
+    let ids=[...document.querySelectorAll('.ai-agent-job-check:checked')].map(x=>x.dataset.jobId).filter(Boolean);
     if(!ids.length){ alert('Select at least one job to approve.'); return; }
+
+    // ── FREE USAGE LIMIT ──
+    // Re-check right before submitting (the run above may be stale — the
+    // candidate could have used up free applications elsewhere since then)
+    // and cap this batch to whatever is left of the 3 free AI applications.
+    if(window.getAIAgentFreeSlots){
+      const slots=await window.getAIAgentFreeSlots();
+      if(!slots.isPremium){
+        if(slots.remaining<=0){
+          if(window.showPremiumModal) window.showPremiumModal();
+          alert("You've used all 3 free AI job applications. Please choose a subscription plan to continue.");
+          return;
+        }
+        if(ids.length>slots.remaining){
+          alert(`Only ${slots.remaining} free AI application${slots.remaining===1?'':'s'} remain. The agent will submit ${slots.remaining} of your selected jobs now — subscribe to apply to the rest.`);
+          ids=ids.slice(0,slots.remaining);
+        }
+      }
+    }
+
     const confirmed=await showAIAgentConfirm(ids.length);
     if(!confirmed) return;
     const jobs=ids.map(id=>window.allJobsData?.[id]).filter(Boolean);
@@ -5127,6 +5213,15 @@ document.addEventListener('DOMContentLoaded',syncVideoSummary);
       setFeed(`<div class="agent-feed-title">Applications Submitted</div><div class="agent-message"><b>Candidate approval received.</b> ${success} application(s) submitted successfully.${failed?` ${failed} failed and can be retried.`:''}</div>`);
       if(window.triggerRefreshApplications) await window.triggerRefreshApplications();
       showAIAgentSubmissionSuccess(success, failed);
+
+      // If this batch used up the last free application, surface the
+      // subscription modal right away rather than waiting for the next click.
+      if(window.getAIAgentFreeSlots){
+        const after=await window.getAIAgentFreeSlots();
+        if(!after.isPremium && after.remaining<=0 && window.showPremiumModal){
+          window.showPremiumModal();
+        }
+      }
     }catch(e){
       console.error('AI Agent batch submission failed',e);
       alert('Some applications could not be submitted. Please try again.');
