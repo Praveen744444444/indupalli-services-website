@@ -760,6 +760,248 @@ footer {
 
 }
 
+
+/* =========================================================
+   PERSONAL AI CAREER AGENT — JOBS PAGE FEATURE
+   Distinct from homepage: compact product explainer + visuals
+========================================================= */
+.ai-jobs-feature{
+  position:relative;
+  max-width:1240px;
+  margin:10px auto 72px;
+  padding:0 5%;
+}
+.ai-jobs-feature-shell{
+  position:relative;
+  overflow:hidden;
+  border:1px solid #dbe7f4;
+  border-radius:26px;
+  background:#ffffff;
+  box-shadow:0 18px 45px rgba(15,23,42,.08);
+  display:grid;
+  grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr);
+  gap:34px;
+  align-items:stretch;
+}
+.ai-jobs-feature-copy{
+  padding:42px 0 42px 42px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+.ai-jobs-eyebrow{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  width:max-content;
+  margin-bottom:13px;
+  padding:7px 11px;
+  border-radius:999px;
+  background:#ecfdf3;
+  color:#15803d;
+  border:1px solid #bbf7d0;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+.ai-jobs-eyebrow .dot{
+  width:8px;height:8px;border-radius:50%;background:#22c55e;
+  animation:aiJobsPulse 1.4s ease-in-out infinite;
+}
+@keyframes aiJobsPulse{
+  0%,100%{opacity:.45;transform:scale(.82);box-shadow:0 0 0 0 rgba(34,197,94,.35)}
+  50%{opacity:1;transform:scale(1.18);box-shadow:0 0 0 7px rgba(34,197,94,0)}
+}
+.ai-jobs-feature-copy h2{
+  margin:0 0 14px;
+  color:#0f172a;
+  font-size:34px;
+  line-height:1.14;
+  letter-spacing:-.9px;
+  font-weight:850;
+}
+.ai-jobs-feature-copy h2 span{color:#2563eb}
+.ai-jobs-feature-copy > p{
+  margin:0 0 22px;
+  max-width:610px;
+  color:#64748b;
+  font-size:14.5px;
+  line-height:1.72;
+}
+.ai-jobs-points{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:11px 15px;
+  margin-bottom:24px;
+}
+.ai-jobs-point{
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  color:#334155;
+  font-size:12.5px;
+  line-height:1.45;
+  font-weight:700;
+}
+.ai-jobs-point i{
+  width:30px;height:30px;border-radius:9px;
+  background:#eff6ff;color:#2563eb;
+  display:flex;align-items:center;justify-content:center;
+  flex:0 0 auto;font-size:13px;
+}
+.ai-jobs-cta{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:9px;
+  width:max-content;
+  padding:12px 18px;
+  border-radius:11px;
+  background:#0f172a;
+  color:#fff !important;
+  text-decoration:none;
+  font-size:13px;
+  font-weight:800;
+  box-shadow:0 9px 22px rgba(15,23,42,.14);
+  transition:.18s ease;
+}
+.ai-jobs-cta:hover{background:#2563eb;transform:translateY(-1px)}
+.ai-jobs-control-note{
+  margin-top:10px;
+  color:#64748b;
+  font-size:11px;
+  line-height:1.5;
+}
+
+/* Visual side: mini product UI with "image-like" information cards */
+.ai-jobs-visual{
+  margin:18px 18px 18px 0;
+  min-height:420px;
+  border-radius:21px;
+  padding:22px;
+  background:
+    radial-gradient(circle at 78% 12%, rgba(96,165,250,.25), transparent 34%),
+    linear-gradient(145deg,#071a33 0%,#102c52 58%,#222052 100%);
+  position:relative;
+  overflow:hidden;
+}
+.ai-jobs-visual::before{
+  content:"";
+  position:absolute;inset:0;pointer-events:none;opacity:.18;
+  background-image:radial-gradient(rgba(255,255,255,.6) 1px,transparent 1px);
+  background-size:28px 28px;
+}
+.ai-jobs-window{
+  position:relative;z-index:1;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.13);
+  border-radius:17px;
+  padding:16px;
+  backdrop-filter:blur(10px);
+}
+.ai-jobs-window-top{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:10px;margin-bottom:13px;
+}
+.ai-jobs-window-brand{
+  display:flex;align-items:center;gap:9px;
+  color:#fff;font-size:12.5px;font-weight:800;
+}
+.ai-jobs-bot{
+  width:32px;height:32px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#38bdf8,#8b5cf6);
+  color:#fff;font-size:16px;
+  box-shadow:0 8px 20px rgba(59,130,246,.25);
+}
+.ai-jobs-status{
+  color:#86efac;font-size:9.5px;font-weight:900;
+  letter-spacing:.08em;
+}
+.ai-jobs-mini{
+  background:rgba(255,255,255,.96);
+  border-radius:13px;
+  padding:13px;
+  margin-top:10px;
+  color:#0f172a;
+}
+.ai-jobs-mini-head{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:10px;margin-bottom:9px;
+}
+.ai-jobs-mini-title{
+  display:flex;align-items:center;gap:8px;
+  font-size:12px;font-weight:800;
+}
+.ai-jobs-mini-title i{color:#2563eb}
+.ai-jobs-ready{
+  padding:4px 8px;border-radius:999px;
+  background:#ecfdf3;color:#15803d;
+  font-size:9px;font-weight:900;
+}
+.ai-jobs-mini p{
+  margin:0;color:#64748b;font-size:11px;line-height:1.5;
+}
+.ai-jobs-progress{
+  margin-top:15px;
+  display:grid;grid-template-columns:repeat(4,1fr);gap:7px;
+}
+.ai-jobs-progress-step{
+  text-align:center;
+  padding:9px 5px;
+  background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:10px;
+  color:#dbeafe;
+  font-size:8.8px;
+  font-weight:800;
+  line-height:1.3;
+}
+.ai-jobs-progress-step .num{
+  width:21px;height:21px;border-radius:50%;
+  margin:0 auto 5px;
+  display:flex;align-items:center;justify-content:center;
+  background:#2563eb;color:#fff;font-size:9px;
+}
+.ai-jobs-approval{
+  margin-top:12px;
+  padding:12px 13px;
+  border-radius:12px;
+  background:linear-gradient(90deg,rgba(37,99,235,.22),rgba(139,92,246,.2));
+  border:1px solid rgba(147,197,253,.28);
+  color:#eff6ff;
+  display:flex;align-items:flex-start;gap:9px;
+  font-size:10.5px;line-height:1.5;font-weight:700;
+}
+.ai-jobs-approval i{margin-top:2px;color:#67e8f9}
+.ai-jobs-float{
+  position:absolute;right:18px;bottom:18px;z-index:2;
+  display:flex;align-items:center;gap:8px;
+  background:#fff;color:#0f172a;
+  padding:9px 12px;border-radius:12px;
+  box-shadow:0 12px 28px rgba(0,0,0,.18);
+  font-size:10.5px;font-weight:900;
+}
+.ai-jobs-float i{color:#f59e0b}
+
+/* Mobile */
+@media (max-width: 900px){
+  .ai-jobs-feature-shell{grid-template-columns:1fr;gap:0}
+  .ai-jobs-feature-copy{padding:34px 30px 24px}
+  .ai-jobs-visual{margin:0 20px 20px;min-height:390px}
+}
+@media (max-width: 600px){
+  .ai-jobs-feature{padding:0 18px;margin-bottom:52px}
+  .ai-jobs-feature-copy{padding:28px 22px 22px}
+  .ai-jobs-feature-copy h2{font-size:27px}
+  .ai-jobs-feature-copy > p{font-size:13px}
+  .ai-jobs-points{grid-template-columns:1fr;gap:10px}
+  .ai-jobs-visual{margin:0 12px 12px;padding:14px;min-height:360px}
+  .ai-jobs-progress{grid-template-columns:1fr 1fr}
+  .ai-jobs-float{right:12px;bottom:12px}
+}
+
 </style>
 
 
@@ -1049,6 +1291,115 @@ Loading active job postings...
 </div>
 
 
+
+
+<!-- =========================================================
+     PERSONAL AI CAREER AGENT FEATURE
+     Positioned between the live jobs list and job modal.
+========================================================= -->
+<section class="ai-jobs-feature" aria-labelledby="aiJobsFeatureTitle">
+  <div class="ai-jobs-feature-shell">
+
+    <div class="ai-jobs-feature-copy">
+      <div class="ai-jobs-eyebrow">
+        <span class="dot" aria-hidden="true"></span>
+        Personal AI Career Agent
+      </div>
+
+      <h2 id="aiJobsFeatureTitle">
+        Stop doing the repetitive work.<br>
+        Let your <span>AI career agent</span> help.
+      </h2>
+
+      <p>
+        While you explore jobs here, your Personal AI Career Agent can understand
+        your career profile, review suitable opportunities, organize applications,
+        and bring the best next steps back to you.
+      </p>
+
+      <div class="ai-jobs-points">
+        <div class="ai-jobs-point">
+          <i class="fa-solid fa-file-lines"></i>
+          <span>Understand your resume, skills and experience</span>
+        </div>
+        <div class="ai-jobs-point">
+          <i class="fa-solid fa-magnifying-glass-chart"></i>
+          <span>Review active jobs for profile relevance</span>
+        </div>
+        <div class="ai-jobs-point">
+          <i class="fa-solid fa-list-check"></i>
+          <span>Prepare the opportunities worth your attention</span>
+        </div>
+        <div class="ai-jobs-point">
+          <i class="fa-solid fa-user-check"></i>
+          <span>You review and approve before submission</span>
+        </div>
+      </div>
+
+      <a class="ai-jobs-cta" href="/login.html" target="_blank" rel="noopener noreferrer">
+        <i class="fa-solid fa-robot"></i>
+        Meet Your Personal AI Agent
+        <i class="fa-solid fa-arrow-right"></i>
+      </a>
+
+      <div class="ai-jobs-control-note">
+        Your AI can prepare opportunities. <strong>You stay in control of what moves forward.</strong>
+      </div>
+    </div>
+
+    <div class="ai-jobs-visual" aria-label="Illustrated Personal AI Career Agent workflow">
+      <div class="ai-jobs-window">
+        <div class="ai-jobs-window-top">
+          <div class="ai-jobs-window-brand">
+            <span class="ai-jobs-bot"><i class="fa-solid fa-robot"></i></span>
+            Personal AI Agent
+          </div>
+          <span class="ai-jobs-status">● ACTIVE</span>
+        </div>
+
+        <div class="ai-jobs-mini">
+          <div class="ai-jobs-mini-head">
+            <div class="ai-jobs-mini-title">
+              <i class="fa-solid fa-file-lines"></i>
+              Resume &amp; Career Profile
+            </div>
+            <span class="ai-jobs-ready">READY</span>
+          </div>
+          <p>Your profile gives the agent the context it needs to understand which opportunities are worth reviewing.</p>
+        </div>
+
+        <div class="ai-jobs-mini">
+          <div class="ai-jobs-mini-head">
+            <div class="ai-jobs-mini-title">
+              <i class="fa-solid fa-briefcase"></i>
+              Active Job Opportunities
+            </div>
+            <span class="ai-jobs-ready">AI SCAN</span>
+          </div>
+          <p>The agent reviews available jobs, prioritizes relevant opportunities and organizes them for your dashboard.</p>
+        </div>
+
+        <div class="ai-jobs-progress" aria-label="AI agent steps">
+          <div class="ai-jobs-progress-step"><div class="num">1</div>Profile</div>
+          <div class="ai-jobs-progress-step"><div class="num">2</div>Analyze</div>
+          <div class="ai-jobs-progress-step"><div class="num">3</div>Prepare</div>
+          <div class="ai-jobs-progress-step"><div class="num">4</div>Approve</div>
+        </div>
+
+        <div class="ai-jobs-approval">
+          <i class="fa-solid fa-circle-check"></i>
+          <span>Candidate approval required — the agent prepares the workflow, but applications move forward only after your decision.</span>
+        </div>
+      </div>
+
+      <div class="ai-jobs-float">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+        Smarter job search
+      </div>
+    </div>
+
+  </div>
+</section>
 
 <!-- JOB MODAL -->
 
