@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms of Service | Indupalli Services ATS</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --navy: #0f172a;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #334155;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --shadow-md: 0 10px 25px -5px rgba(15, 23, 42, 0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+
+        /* ── BULLETPROOF HEADER (PERFECT SCALING) ── */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            padding: 0 6%;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            height: 85px; 
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            position: sticky; 
+            top: 0; 
+            z-index: 500;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo { 
+            display: flex; 
+            align-items: center; 
+            gap: 16px; 
+            text-decoration: none; 
+            flex-shrink: 0;
+        }
+        .logo img { 
+            width: 56px; 
+            height: 56px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
+            object-fit: contain; 
+            background: #fff;
+            padding: 4px;
+        }
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .logo-text h2 { 
+            font-size: 21px; 
+            font-weight: 800; 
+            color: var(--navy); 
+            line-height: 1.1; 
+            letter-spacing: -0.5px; 
+            margin: 0;
+            padding: 0;
+        }
+        .logo-text p { 
+            font-size: 10.5px; 
+            color: var(--primary); 
+            font-weight: 800; 
+            letter-spacing: 1px; 
+            text-transform: uppercase; 
+            margin: 4px 0 0 0; 
+            padding: 0;
+            line-height: 1;
+            white-space: nowrap;
+        }
+
+        nav { display: flex; gap: 20px; align-items: center; }
+        nav a { text-decoration: none; color: var(--text-muted); font-weight: 600; font-size: 14.5px; transition: color 0.2s; }
+        nav a:hover { color: var(--primary); }
+
+        /* ── LEGAL CONTENT ── */
+        .legal-wrap {
+            max-width: 840px;
+            width: 90%;
+            margin: 60px auto;
+            background: var(--card);
+            padding: 60px;
+            border-radius: 24px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border);
+        }
+
+        .updated { font-size: 13px; color: var(--primary); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; }
+        h1 { font-size: 40px; font-weight: 800; color: var(--navy); margin-bottom: 40px; letter-spacing: -1px; }
+        
+        h2 { font-size: 20px; font-weight: 800; color: var(--navy); margin: 40px 0 16px 0; border-left: 4px solid var(--primary); padding-left: 14px; letter-spacing: -0.3px; }
+        
+        p, li { font-size: 15px; line-height: 1.8; color: var(--text-body); margin-bottom: 16px; }
+        
+        ul { padding-left: 20px; margin-bottom: 20px; }
+        li { margin-bottom: 10px; }
+
+        .legal-wrap a { color: var(--primary); font-weight: 700; text-decoration: none; }
+        .legal-wrap a:hover { text-decoration: underline; }
+
+        /* ── FOOTER ── */
+        footer { background: var(--navy); color: #fff; padding: 70px 6% 30px; margin-top: auto; }
+        .footer-grid { max-width: 1240px; margin: auto; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 50px; margin-bottom: 50px; }
+        .footer-brand h3 { font-size: 22px; font-weight: 800; margin-bottom: 12px; }
+        .footer-brand p { color: #94a3b8; font-size: 14px; line-height: 1.7; max-width: 380px; }
+        .footer-col h5 { font-size: 13px; font-weight: 800; color: #60a5fa; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 20px; }
+        .footer-col a { display: block; color: #cbd5e1; text-decoration: none; font-size: 14px; margin-bottom: 12px; transition: 0.2s ease; }
+        .footer-col a:hover { color: #fff; padding-left: 5px; }
+        .footer-bottom { max-width: 1240px; margin: auto; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.08); text-align: center; color: #64748b; font-size: 13.5px; }
+
+        @media(max-width: 768px) {
+            .logo img { width: 44px; height: 44px; }
+            .logo-text h2 { font-size: 17px; }
+            .logo-text p { font-size: 9px; }
+            .legal-wrap { padding: 35px 25px; }
+            h1 { font-size: 32px; }
+            .footer-grid { grid-template-columns: 1fr; gap: 30px; }
+            nav { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="logo">
+        <img src="1000174411.png" alt="Logo">
+        <div class="logo-text">
+            <h2>Indupalli Services</h2>
+            <p>TALENT & RECRUITMENT ATS</p>
+        </div>
+    </a>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="jobs.html">Jobs</a>
+        <a href="login.html">Job Seeker</a>
+        <a href="recruiter-login.html">Recruiter</a>
+    </nav>
+</header>
+
+<div class="legal-wrap">
+    <div class="updated">Last updated: August 15, 2026</div>
+    <h1>Terms of Service</h1>
+    
+    <p>These Terms of Service ("Terms") govern your access to and use of Indupalli Services (the "Platform"), operated by Indupalli Services, Hyderabad, Telangana, India ("we", "us", "our"). By creating an account or using the Platform, you agree to these Terms.</p>
+
+    <h2>1. Who Can Use the Platform</h2>
+    <p>The Platform is intended for individuals who are at least 18 years old and legally eligible to work, and for organizations recruiting for genuine job openings. By registering, you confirm the information you provide is accurate and that you meet these requirements.</p>
+
+    <h2>2. Account Types</h2>
+    <p>The Platform supports two account types:</p>
+    <ul>
+        <li><strong>Job Seekers ("Candidates")</strong> — create a profile, browse job listings, and apply to open roles.</li>
+        <li><strong>Recruiters</strong> — post job openings, review applications, and communicate with candidates who apply.</li>
+    </ul>
+    <p>You are responsible for maintaining the confidentiality of your login credentials and for all activity under your account.</p>
+
+    <h2>3. Job Postings and Applications</h2>
+    <p>Recruiters are solely responsible for the accuracy and legality of the job postings they create. Indupalli Services does not guarantee that any candidate will be hired, or that any job posting is genuine, and does not act as an employer, agent, or guarantor for any position listed on the Platform. Candidates are encouraged to independently verify a recruiter or company before sharing sensitive information or attending interviews.</p>
+
+    <h2>4. Fees and Payments</h2>
+    <p>Certain features (such as recruiter dashboard access or resume database access) may be offered free of charge during periods of active development, and may become paid features in the future. Where payment is required, pricing will be clearly displayed before you are charged, and payments are processed through a third-party payment gateway (currently Razorpay). We do not store your card, UPI, or banking details ourselves.</p>
+
+    <h2>5. Acceptable Use</h2>
+    <p>You agree not to:</p>
+    <ul>
+        <li>Post false, misleading, or fraudulent job listings or profile information;</li>
+        <li>Use the Platform to harass, discriminate against, or deceive another user;</li>
+        <li>Upload malicious files, or attempt to disrupt or gain unauthorized access to the Platform;</li>
+        <li>Scrape, copy, or resell data from the Platform without our written permission;</li>
+        <li>Use candidate data obtained through the Platform for any purpose other than genuine recruitment.</li>
+    </ul>
+
+    <h2>6. Your Content</h2>
+    <p>You retain ownership of the information, resumes, and other content you upload. By submitting content to the Platform, you grant us a limited license to store, display, and share it as necessary to operate the service — for example, showing your resume to a recruiter you've applied to.</p>
+
+    <h2>7. Termination</h2>
+    <p>We may suspend or terminate accounts that violate these Terms, engage in fraudulent activity, or misuse the Platform. You may stop using the Platform and request account deletion at any time by contacting us.</p>
+
+    <h2>8. Disclaimer and Limitation of Liability</h2>
+    <p>The Platform is provided "as is" without warranties of any kind. We are not liable for hiring decisions, employment outcomes, or interactions between candidates and recruiters that take place outside the Platform. To the maximum extent permitted by law, our liability for any claim relating to the Platform is limited to the amount (if any) you paid us in the twelve months preceding the claim.</p>
+
+    <h2>9. Changes to These Terms</h2>
+    <p>We may update these Terms from time to time. Material changes will be reflected by updating the "Last updated" date above. Continued use of the Platform after changes take effect constitutes acceptance of the revised Terms.</p>
+
+    <h2>10. Governing Law</h2>
+    <p>These Terms are governed by the laws of India, and any disputes will be subject to the exclusive jurisdiction of the courts in Hyderabad, Telangana.</p>
+
+    <h2>11. Contact Us</h2>
+    <p>Questions about these Terms can be sent to <a href="mailto:contact@indupalliservices.com">contact@indupalliservices.com</a>.</p>
+</div>
+
+<footer id="contact">
+    <div class="footer-grid">
+        <div class="footer-brand">
+            <img src="1000174411.png" alt="Indupalli Services" style="height:60px; width:60px; object-fit:contain; border-radius:12px; margin-bottom:18px; background: #fff; padding: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+            <h3>Indupalli Services</h3>
+            <p>Next-generation talent connectivity and staffing platform empowering careers and accelerating enterprise hiring across India.</p>
+        </div>
+
+        <div class="footer-col">
+            <h5>Navigation</h5>
+            <a href="index.html">Home</a>
+            <a href="jobs.html">Browse Jobs</a>
+            <a href="index.html#pricing">Pricing</a>
+        </div>
+
+        <div class="footer-col">
+            <h5>Portals & Legal</h5>
+            <a href="login.html">Candidate Login</a>
+            <a href="recruiter-login.html">Recruiter Login</a>
+            <a href="terms.html">Terms of Service</a>
+            <a href="privacy.html">Privacy Policy</a>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>📧 contact@indupalliservices.com &nbsp;|&nbsp; © 2026 Indupalli Services. All Rights Reserved.</p>
+    </div>
+</footer>
+
+</body>
+</html>

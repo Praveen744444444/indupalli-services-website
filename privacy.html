@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy | Indupalli Services ATS</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --navy: #0f172a;
+            --bg: #f8fafc;
+            --card: #ffffff;
+            --text: #334155;
+            --text-muted: #64748b;
+            --border: #e2e8f0;
+            --shadow-md: 0 10px 25px -5px rgba(15, 23, 42, 0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        body { background: var(--bg); color: var(--text); min-height: 100vh; display: flex; flex-direction: column; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+
+        /* ── BULLETPROOF HEADER (PERFECT SCALING) ── */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            padding: 0 6%;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            height: 85px; /* Slightly taller to fit larger logo */
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            position: sticky; 
+            top: 0; 
+            z-index: 500;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo { 
+            display: flex; 
+            align-items: center; 
+            gap: 16px; /* Increased gap for better balance */
+            text-decoration: none; 
+            flex-shrink: 0;
+        }
+        .logo img { 
+            width: 56px; /* Increased from 48px */
+            height: 56px; /* Increased from 48px */
+            border-radius: 12px; /* Smoother curves for bigger logo */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
+            object-fit: contain; 
+            background: #fff;
+            padding: 4px;
+        }
+        .logo-text {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .logo-text h2 { 
+            font-size: 21px; /* Scaled up to match larger logo */
+            font-weight: 800; 
+            color: var(--navy); 
+            line-height: 1.1; 
+            letter-spacing: -0.5px; 
+            margin: 0;
+            padding: 0;
+        }
+        .logo-text p { 
+            font-size: 10.5px; 
+            color: var(--primary); 
+            font-weight: 800; 
+            letter-spacing: 1px; 
+            text-transform: uppercase; 
+            margin: 4px 0 0 0; 
+            padding: 0;
+            line-height: 1;
+            white-space: nowrap;
+        }
+
+        nav { display: flex; gap: 20px; align-items: center; }
+        nav a { text-decoration: none; color: var(--text-muted); font-weight: 600; font-size: 14.5px; transition: color 0.2s; }
+        nav a:hover { color: var(--primary); }
+
+        /* ── LEGAL CONTENT ── */
+        .legal-wrap {
+            max-width: 840px;
+            width: 90%;
+            margin: 60px auto;
+            background: var(--card);
+            padding: 60px;
+            border-radius: 24px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border);
+        }
+
+        .updated { font-size: 13px; color: var(--primary); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; }
+        h1 { font-size: 40px; font-weight: 800; color: var(--navy); margin-bottom: 40px; letter-spacing: -1px; }
+        
+        h2 { font-size: 20px; font-weight: 800; color: var(--navy); margin: 40px 0 16px 0; border-left: 4px solid var(--primary); padding-left: 14px; letter-spacing: -0.3px; }
+        
+        p, li { font-size: 15px; line-height: 1.8; color: var(--text-body); margin-bottom: 16px; }
+        
+        ul { padding-left: 20px; margin-bottom: 20px; }
+        li { margin-bottom: 10px; }
+
+        table { width: 100%; border-collapse: collapse; margin: 24px 0; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+        th { background: #f8fafc; color: var(--navy); text-align: left; padding: 14px; font-size: 13.5px; border-bottom: 2px solid var(--border); }
+        td { padding: 14px; border-bottom: 1px solid var(--border); font-size: 14px; color: var(--text-muted); }
+        tr:last-child td { border-bottom: none; }
+
+        /* ── FOOTER ── */
+        footer { background: var(--navy); color: #fff; padding: 70px 6% 30px; margin-top: auto; }
+        .footer-grid { max-width: 1240px; margin: auto; display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 50px; margin-bottom: 50px; }
+        .footer-brand h3 { font-size: 22px; font-weight: 800; margin-bottom: 12px; }
+        .footer-brand p { color: #94a3b8; font-size: 14px; line-height: 1.7; max-width: 380px; }
+        .footer-col h5 { font-size: 13px; font-weight: 800; color: #60a5fa; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 20px; }
+        .footer-col a { display: block; color: #cbd5e1; text-decoration: none; font-size: 14px; margin-bottom: 12px; transition: 0.2s ease; }
+        .footer-col a:hover { color: #fff; padding-left: 5px; }
+        .footer-bottom { max-width: 1240px; margin: auto; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.08); text-align: center; color: #64748b; font-size: 13.5px; }
+
+        @media(max-width: 768px) {
+            .logo img { width: 44px; height: 44px; }
+            .logo-text h2 { font-size: 17px; }
+            .logo-text p { font-size: 9px; }
+            .legal-wrap { padding: 35px 25px; }
+            h1 { font-size: 32px; }
+            .footer-grid { grid-template-columns: 1fr; gap: 30px; }
+            nav { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <a href="index.html" class="logo">
+        <img src="1000174411.png" alt="Logo">
+        <div class="logo-text">
+            <h2>Indupalli Services</h2>
+            <p>TALENT & RECRUITMENT ATS</p>
+        </div>
+    </a>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="jobs.html">Jobs</a>
+        <a href="login.html">Job Seeker</a>
+        <a href="recruiter-login.html">Recruiter</a>
+    </nav>
+</header>
+
+<div class="legal-wrap">
+    <div class="updated">Last updated: July 26, 2026</div>
+    <h1>Privacy Policy</h1>
+    
+    <p>This Privacy Policy explains how Indupalli Services ("we", "us", "our") collects, uses, and shares information when you use our website and services (the "Platform"). By using the Platform, you agree to the collection and use of information as described here.</p>
+
+    <h2>1. Information We Collect</h2>
+    <table>
+        <tr><th>Category</th><th>Examples</th></tr>
+        <tr><td><strong>Account information</strong></td><td>Name, email address, phone number, password</td></tr>
+        <tr><td><strong>Profile information</strong></td><td>Location, work experience, skills, "about me" summary, profile photo</td></tr>
+        <tr><td><strong>Resume & application data</strong></td><td>Uploaded resume files, cover letters, job applications and their status</td></tr>
+        <tr><td><strong>Recruiter data</strong></td><td>Company name, job postings, applicant reviews, chat messages with candidates</td></tr>
+        <tr><td><strong>Sign-in data</strong></td><td>If you use Google or Facebook sign-in, basic profile info they share with us (name, email)</td></tr>
+        <tr><td><strong>Payment data</strong></td><td>Transaction confirmation from our payment processor — we do not receive or store your full card/bank details</td></tr>
+    </table>
+
+    <h2>2. How We Use Your Information</h2>
+    <ul>
+        <li>To create and manage your account securely.</li>
+        <li>To match candidates with relevant job listings and let recruiters review applicants.</li>
+        <li>To let recruiters and candidates communicate through the Platform's chat feature.</li>
+        <li>To process payments for premium features, where applicable.</li>
+        <li>To send account-related notifications (e.g. application updates).</li>
+        <li>To maintain the security and proper functioning of the Platform.</li>
+    </ul>
+
+    <h2>3. Who We Share Information With</h2>
+    <p>We share your information only as necessary to operate the Platform:</p>
+    <ul>
+        <li><strong>Recruiters</strong> can see the profile and resume of any candidate who applies to their job posting.</li>
+        <li><strong>Candidates</strong> can see basic job and company information provided by the recruiter.</li>
+        <li><strong>Service providers</strong> — we use Supabase for authentication, database, and cloud storage, and Razorpay for payment processing. These providers process data on our behalf under their own strict security and privacy standards.</li>
+    </ul>
+    <p><em>We do not sell your personal information to third parties.</em></p>
+
+    <h2>4. Data Storage and Security</h2>
+    <p>Your data is stored using Supabase's secure cloud infrastructure. We take robust technical measures (such as authentication requirements and access controls) to protect your information, but no online service can guarantee absolute security. Please use a strong, unique password for your account.</p>
+
+    <h2>5. Your Choices and Rights</h2>
+    <ul>
+        <li>You can review and update your profile information at any time from your dashboard.</li>
+        <li>You can request a copy of the personal data we hold about you, or request that it be corrected or deleted, by emailing us.</li>
+        <li>You can delete your uploaded resume or profile photo at any time by replacing or removing it from your profile.</li>
+        <li>Deleting your account will remove your profile from active use; some records (such as past applications) may be retained where necessary for legitimate business or legal purposes.</li>
+    </ul>
+
+    <h2>6. Cookies and Local Storage</h2>
+    <p>We use browser local storage to keep you signed in and remember basic preferences (such as light/dark mode). We do not use third-party advertising trackers.</p>
+
+    <h2>7. Children's Privacy</h2>
+    <p>The Platform is intended for individuals aged 18 and older who are eligible to work. We do not knowingly collect information from children.</p>
+
+    <h2>8. Changes to This Policy</h2>
+    <p>We may update this Privacy Policy from time to time. Material changes will be reflected by updating the "Last updated" date above.</p>
+
+    <h2>9. Contact Us</h2>
+    <p>For any privacy-related questions or requests, contact us at <a href="mailto:contact@indupalliservices.com" style="color:var(--primary); font-weight:700; text-decoration:none;">contact@indupalliservices.com</a>.</p>
+</div>
+
+<footer id="contact">
+    <div class="footer-grid">
+        <div class="footer-brand">
+            <img src="1000174411.png" alt="Indupalli Services" style="height:60px; width:60px; object-fit:contain; border-radius:12px; margin-bottom:18px; background: #fff; padding: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+            <h3>Indupalli Services</h3>
+            <p>Next-generation talent connectivity and staffing platform empowering careers and accelerating enterprise hiring across India.</p>
+        </div>
+
+        <div class="footer-col">
+            <h5>Navigation</h5>
+            <a href="index.html">Home</a>
+            <a href="jobs.html">Browse Jobs</a>
+            <a href="index.html#pricing">Pricing</a>
+        </div>
+
+        <div class="footer-col">
+            <h5>Portals & Legal</h5>
+            <a href="login.html">Candidate Login</a>
+            <a href="recruiter-login.html">Recruiter Login</a>
+            <a href="terms.html">Terms of Service</a>
+            <a href="privacy.html">Privacy Policy</a>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <p>📧 contact@indupalliservices.com &nbsp;|&nbsp; © 2026 Indupalli Services. All Rights Reserved.</p>
+    </div>
+</footer>
+
+</body>
+</html>

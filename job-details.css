@@ -1,0 +1,453 @@
+/* =========================================
+   JOB DETAILS PAGE
+========================================= */
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+body{
+background:#f5f7fb;
+color:#1e293b;
+}
+
+/* ==========================
+HEADER
+========================== */
+
+header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:18px 6%;
+background:#ffffff;
+box-shadow:0 2px 15px rgba(0,0,0,.08);
+position:sticky;
+top:0;
+z-index:1000;
+}
+
+.logo{
+display:flex;
+align-items:center;
+gap:12px;
+}
+
+.logo img{
+width:55px;
+height:55px;
+border-radius:10px;
+}
+
+.logo h2{
+font-size:22px;
+color:#0056d2;
+}
+
+.logo p{
+font-size:12px;
+color:#64748b;
+}
+
+nav{
+display:flex;
+gap:25px;
+}
+
+nav a{
+text-decoration:none;
+color:#334155;
+font-weight:600;
+transition:.3s;
+}
+
+nav a:hover{
+color:#0056d2;
+}
+
+/* ==========================
+HERO
+========================== */
+
+.details-hero{
+
+background:linear-gradient(135deg,#0056d2,#001b5e);
+
+padding:80px 20px;
+
+text-align:center;
+
+color:#fff;
+
+}
+
+.details-hero h1{
+
+font-size:42px;
+
+font-weight:800;
+
+margin-bottom:15px;
+
+}
+
+.details-hero p{
+
+font-size:18px;
+
+opacity:.9;
+
+}
+
+/* ==========================
+DETAIL CARD
+========================== */
+
+.job-details{
+
+max-width:1100px;
+
+margin:50px auto;
+
+padding:0 20px;
+
+}
+
+.details-card{
+
+background:#fff;
+
+border-radius:20px;
+
+padding:35px;
+
+box-shadow:0 12px 35px rgba(0,0,0,.08);
+
+}
+
+.job-meta{
+
+display:grid;
+
+grid-template-columns:repeat(2,1fr);
+
+gap:18px;
+
+margin-bottom:35px;
+
+}
+
+.job-meta div{
+
+background:#f8fafc;
+
+padding:16px;
+
+border-radius:12px;
+
+font-weight:600;
+
+display:flex;
+
+align-items:center;
+
+gap:10px;
+
+}
+
+.job-meta i{
+
+color:#0056d2;
+
+font-size:18px;
+
+}
+
+.details-card h2{
+
+margin-top:25px;
+
+margin-bottom:15px;
+
+color:#0056d2;
+
+font-size:24px;
+
+}
+
+#description{
+
+line-height:1.9;
+
+color:#475569;
+
+white-space:pre-line;
+
+}
+
+#recruiterName{
+
+font-weight:600;
+
+margin-top:10px;
+
+color:#0f172a;
+
+}
+/* =========================================
+   PART 2B
+   BUTTONS • FOOTER • RESPONSIVE
+========================================= */
+
+/* Buttons */
+
+.buttons{
+
+display:flex;
+
+gap:20px;
+
+margin-top:35px;
+
+flex-wrap:wrap;
+
+}
+
+.apply-btn{
+
+background:#0056d2;
+
+color:#fff;
+
+padding:14px 30px;
+
+border-radius:10px;
+
+text-decoration:none;
+
+font-weight:700;
+
+transition:.3s;
+
+}
+
+.apply-btn:hover{
+
+background:#003ea8;
+
+transform:translateY(-2px);
+
+}
+
+.back-btn{
+
+background:#eef2ff;
+
+color:#0056d2;
+
+padding:14px 30px;
+
+border-radius:10px;
+
+text-decoration:none;
+
+font-weight:700;
+
+transition:.3s;
+
+}
+
+.back-btn:hover{
+
+background:#dbeafe;
+
+transform:translateY(-2px);
+
+}
+
+/* Footer */
+
+footer{
+
+margin-top:70px;
+
+background:#001b5e;
+
+color:#fff;
+
+}
+
+.footer-container{
+
+max-width:1200px;
+
+margin:auto;
+
+display:grid;
+
+grid-template-columns:2fr 1fr 1fr;
+
+gap:40px;
+
+padding:50px 20px;
+
+}
+
+.footer-about img{
+
+width:60px;
+
+margin-bottom:15px;
+
+}
+
+.footer-about h3{
+
+margin-bottom:10px;
+
+}
+
+.footer-about p{
+
+line-height:1.8;
+
+color:#dbeafe;
+
+}
+
+.footer-links h4,
+
+.footer-contact h4{
+
+margin-bottom:15px;
+
+}
+
+.footer-links a{
+
+display:block;
+
+margin-bottom:10px;
+
+color:#fff;
+
+text-decoration:none;
+
+transition:.3s;
+
+}
+
+.footer-links a:hover{
+
+color:#60a5fa;
+
+padding-left:6px;
+
+}
+
+.footer-contact p{
+
+margin-bottom:10px;
+
+color:#dbeafe;
+
+}
+
+.footer-bottom{
+
+background:#000d38;
+
+padding:18px;
+
+text-align:center;
+
+font-size:14px;
+
+}
+
+/* Responsive */
+
+@media(max-width:768px){
+
+header{
+
+flex-direction:column;
+
+gap:15px;
+
+}
+
+nav{
+
+flex-wrap:wrap;
+
+justify-content:center;
+
+}
+
+.details-hero h1{
+
+font-size:30px;
+
+}
+
+.job-meta{
+
+grid-template-columns:1fr;
+
+}
+
+.buttons{
+
+flex-direction:column;
+
+}
+
+.apply-btn,
+
+.back-btn{
+
+text-align:center;
+
+}
+
+.footer-container{
+
+grid-template-columns:1fr;
+
+text-align:center;
+
+}
+
+}
+
+@media(max-width:480px){
+
+.details-card{
+
+padding:22px;
+
+}
+
+.details-hero{
+
+padding:60px 20px;
+
+}
+
+.details-hero h1{
+
+font-size:26px;
+
+}
+
+.job-meta div{
+
+font-size:14px;
+
+}
+
+}
