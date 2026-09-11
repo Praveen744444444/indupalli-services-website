@@ -1352,6 +1352,16 @@
             }
         }
 
+
+        /* ── PERSONAL AI FEATURE: IMAGE BESIDE EXPLANATION ── */
+        .personal-ai-feature-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,0.85fr);gap:34px;align-items:center}
+        .personal-ai-image-wrap{padding:18px}
+        .personal-ai-feature-image{display:block;width:100%;max-width:100%;height:auto;border-radius:20px;box-shadow:0 18px 45px rgba(15,23,42,.18)}
+        .personal-ai-feature-grid .ai-explainer{margin-top:0;display:flex;flex-direction:column;gap:18px}
+        .personal-ai-feature-grid .ai-explainer h3{font-size:30px;line-height:1.15}
+        .personal-ai-feature-grid .ai-explainer>div>p{font-size:15px}
+        @media(max-width:900px){.personal-ai-feature-grid{grid-template-columns:1fr}.personal-ai-image-wrap{padding:14px}.personal-ai-feature-grid .ai-explainer{margin-top:6px}}
+        @media(max-width:520px){.personal-ai-image-wrap{padding:10px;border-radius:20px}.personal-ai-feature-grid .ai-explainer h3{font-size:26px}.personal-ai-feature-grid .ai-explainer>div>p{font-size:14px}.personal-ai-feature-grid .ai-flow{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -1471,41 +1481,27 @@
                 <p>Inside the Candidate Dashboard, your Personal AI Career Agent is designed to understand your profile, analyze active opportunities and organize suitable jobs before you decide what to do next.</p>
             </div>
 
-            <div class="personal-ai-dashboard" aria-label="Personal AI Career Agent dashboard preview">
-                <div class="ai-dash-head">
+            <div class="personal-ai-feature-grid">
+                <div class="personal-ai-dashboard personal-ai-image-wrap" aria-label="Personal AI Career Agent feature preview">
+                    <img
+                        src="personal-ai-agent-dashboard-medium.png"
+                        alt="Personal AI Career Agent dashboard showing AI job matching and candidate approval workflow"
+                        class="personal-ai-feature-image"
+                        loading="lazy">
+                </div>
+
+                <div class="ai-explainer">
                     <div>
-                        <div class="ai-dash-status"><span class="personal-ai-live"></span> Personal AI Career Agent • Active</div>
-                        <h3 class="ai-dash-title"><i class="fa-solid fa-robot"></i> Your AI is working for your career</h3>
-                        <p class="ai-dash-sub">It analyzes your profile and active jobs, prioritizes relevant opportunities, and prepares your job search workflow before you apply.</p>
+                        <h3>How the Personal AI Agent works</h3>
+                        <p>This is not simply another job search filter. Your Personal AI Career Agent works alongside your job search by using your resume and profile as context, reviewing available opportunities, and organizing the next steps for you.</p>
+                        <div class="personal-ai-control"><i class="fa-solid fa-user-shield"></i><span><strong>You stay in control.</strong> The AI can analyze and prepare opportunities, but the candidate reviews the selected jobs before any submission workflow.</span></div>
                     </div>
-                    <a href="login.html" target="_blank" class="ai-run-btn"><i class="fa-solid fa-wand-magic-sparkles"></i> Run AI Agent</a>
-                </div>
-
-                <div class="ai-dash-stats">
-                    <div class="ai-dash-stat"><i class="fa-solid fa-bullseye"></i><div><b>...</b><span>High-match jobs</span></div></div>
-                    <div class="ai-dash-stat"><i class="fa-solid fa-file-circle-check"></i><div><b>...</b><span>Ready to prepare</span></div></div>
-                    <div class="ai-dash-stat"><i class="fa-solid fa-triangle-exclamation"></i><div><b>Analyzing</b><span>Profile & skill relevance</span></div></div>
-                </div>
-
-                <div class="ai-working-box">
-                    <div class="ai-working-label"><i class="fa-solid fa-spinner"></i> AI Agent Working • Analyzing opportunities</div>
-                    <div class="ai-job-line"><i class="fa-solid fa-circle-check"></i> Reviews active job requirements against your profile</div>
-                    <div class="ai-job-line"><i class="fa-solid fa-circle-check"></i> Organizes relevant opportunities for your review</div>
-                    <div class="ai-job-line"><i class="fa-solid fa-circle-check"></i> Keeps your application workflow in one place</div>
-                </div>
-            </div>
-
-            <div class="ai-explainer">
-                <div>
-                    <h3>How the Personal AI Agent works</h3>
-                    <p>This is not simply another job search filter. The goal is to give each candidate an AI-assisted workflow inside their dashboard. Your resume and profile provide context, active opportunities are reviewed, and the agent helps organize the next steps.</p>
-                    <div class="personal-ai-control"><i class="fa-solid fa-user-shield"></i><span><strong>You stay in control.</strong> The AI can analyze and prepare opportunities, but the candidate reviews the selected jobs before any submission workflow.</span></div>
-                </div>
-                <div class="ai-flow">
-                    <div class="ai-flow-card"><div class="num">01</div><h4>Build your profile</h4><p>Upload your resume and keep your skills, experience and career information ready.</p></div>
-                    <div class="ai-flow-card"><div class="num">02</div><h4>AI analyzes jobs</h4><p>The agent checks active opportunities against the information available in your profile.</p></div>
-                    <div class="ai-flow-card"><div class="num">03</div><h4>Prepare & organize</h4><p>Relevant opportunities can be organized into a clearer application workflow.</p></div>
-                    <div class="ai-flow-card"><div class="num">04</div><h4>Review before action</h4><p>You review and approve the jobs you want to move forward with.</p></div>
+                    <div class="ai-flow">
+                        <div class="ai-flow-card"><div class="num">01</div><h4>Build your profile</h4><p>Upload your resume once and keep your skills, experience and career preferences ready.</p></div>
+                        <div class="ai-flow-card"><div class="num">02</div><h4>AI scans job descriptions</h4><p>The agent reviews responsibilities, requirements and profile relevance to understand the opportunity.</p></div>
+                        <div class="ai-flow-card"><div class="num">03</div><h4>See the match</h4><p>View a match score, key matching skills and the main points the AI found in the role.</p></div>
+                        <div class="ai-flow-card"><div class="num">04</div><h4>Approve before applying</h4><p>You review the prepared application and approve the jobs you want the AI to submit.</p></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2513,22 +2509,6 @@ You may answer questions about:
 5. Indupalli Services AI/ATS capabilities.
 6. Unnanu, as described below.
 7. Navigation and links available on this homepage.
-8. The Personal AI Career Agent and its candidate workflow.
-
-PERSONAL AI CAREER AGENT RULES
-- Personal AI Agent page: https://indupalli-services-website.vercel.app/index.html#personal-ai-agent
-- Describe it as a Personal AI Career Agent designed to assist job seekers with their job-search and application workflow.
-- The agent uses the candidate's resume and profile as context, reviews active job opportunities, and helps identify relevant opportunities.
-- When a job is opened or evaluated, the agent can review the job description against the candidate profile and surface a match assessment and key points when that capability is available in the platform.
-- The candidate should be shown important findings before moving forward, including matched skills, potential gaps, and the overall suitability/match information when available.
-- Intended workflow: candidate profile/resume -> AI reviews the job description -> AI explains key match points -> candidate reviews the recommendation -> candidate approves -> application submission proceeds.
-- Candidate approval is required before an application is submitted. Nikki must never tell a user that an application has been submitted merely because the AI analyzed or prepared a job.
-- If asked whether the Personal AI Agent applies automatically, explain that the agent can prepare and organize suitable opportunities, but the candidate remains in control and must approve selected job(s) before submission.
-- If no match percentage is available, Nikki may explain that a fallback relevance assessment can be used, but must not invent a precise percentage.
-- Do not claim the agent has scanned a specific job, analyzed a specific resume, prepared an application, or submitted an application unless the platform context explicitly provides that result.
-- Do not promise guaranteed interviews, placements, or job offers.
-- When users ask how to access the feature, direct them to Candidate Login / Candidate Dashboard and the Personal AI Agent section on the homepage.
-- Helpful link: Personal AI Agent — https://indupalli-services-website.vercel.app/index.html#personal-ai-agent
 
 FOUNDER / PRAVEEN INFORMATION
 - If a user asks "Who is the founder?", "Who is Praveen?", "Tell me about Praveen", or asks similar questions about the founder of Indupalli Services, respond with:
@@ -2606,6 +2586,19 @@ AI-FIRST TROUBLESHOOTING
   - The issue may require a website-side fix.
 - Nikki should remain concise and solution-focused.
 
+PERSONAL AI AGENT RULES
+- Personal AI Agent is Indupalli Services' career-assistance feature for candidates.
+- Official section: https://indupalli-services-website.vercel.app/index.html#personal-ai-agent
+- When a user asks about Personal AI Agent, explain that it is designed to help candidates review suitable jobs, understand job requirements, and organize applications using their resume/profile context.
+- The intended workflow is: candidate provides a resume/profile → AI reviews active job opportunities → AI analyzes the job description against the candidate profile → AI identifies relevant matches and key points → the candidate reviews the recommendation → the candidate approves the job(s) → only approved application(s) move forward to submission.
+- The candidate remains in control of the final approval. Do not say that applications are submitted automatically without candidate approval.
+- When discussing job matching, explain that the agent can compare skills, experience, and job requirements and present a match/relevance result when the platform has the required data.
+- When discussing the JD scan experience, explain that the agent can show a visible scanning/analyzing step, then surface useful points such as matched skills, gaps or weaker areas, and an overall match/relevance indication when available.
+- Do not invent a specific match percentage, scan duration, number of jobs, or application result unless that information is explicitly available on the current page or supplied by the user.
+- If a user asks how to start, direct them to the Personal AI Agent section above or to Candidate Sign In when access to the candidate dashboard is required.
+- If a user asks whether the AI can apply for them, say that the agent is intended to prepare and organize suitable applications, but the candidate must review/approve the selected job(s) before submission.
+- Use the phrase “Personal AI Career Agent” when it helps distinguish this feature from the general Nikki chatbot.
+
 RESPONSE RULES
 - Stay within the scope above.
 - If a question is unrelated, politely say Nikki is focused on Indupalli Services, hiring, jobs, ATS, careers, and Unnanu.
@@ -2644,9 +2637,6 @@ RESPONSE RULES
                     </button>
                     <button class="chat-chip" onclick="triggerQuickChip('Explain the pricing options')">
                         <span>💳 Platform pricing</span> <i class="fa-solid fa-chevron-right"></i>
-                    </button>
-                    <button class="chat-chip" onclick="triggerQuickChip('What is the Personal AI Agent and how does it work?')">
-                        <span>🤖 Personal AI Agent</span> <i class="fa-solid fa-chevron-right"></i>
                     </button>
                 </div>
             `;
