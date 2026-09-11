@@ -1353,6 +1353,35 @@
         }
 
 </style>
+
+<style id="personal-ai-dashboard-image">
+/* Personal AI Agent dashboard preview — medium, responsive */
+.personal-ai-image-wrap{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    margin:0 auto;
+    padding:18px;
+    border-radius:24px;
+    background:linear-gradient(135deg,#f8fbff 0%,#eef4ff 100%);
+    border:1px solid #dbe7f6;
+    box-shadow:0 18px 44px rgba(15,23,42,.10);
+    overflow:hidden;
+}
+.personal-ai-feature-image{
+    display:block;
+    width:min(100%, 900px);
+    max-width:900px;
+    height:auto;
+    border-radius:16px;
+    object-fit:contain;
+}
+@media (max-width: 768px){
+    .personal-ai-image-wrap{padding:10px;border-radius:18px;}
+    .personal-ai-feature-image{width:100%;border-radius:12px;}
+}
+</style>
+
 </head>
 <body>
 
@@ -1471,28 +1500,12 @@
                 <p>Inside the Candidate Dashboard, your Personal AI Career Agent is designed to understand your profile, analyze active opportunities and organize suitable jobs before you decide what to do next.</p>
             </div>
 
-            <div class="personal-ai-dashboard" aria-label="Personal AI Career Agent dashboard preview">
-                <div class="ai-dash-head">
-                    <div>
-                        <div class="ai-dash-status"><span class="personal-ai-live"></span> Personal AI Career Agent • Active</div>
-                        <h3 class="ai-dash-title"><i class="fa-solid fa-robot"></i> Your AI is working for your career</h3>
-                        <p class="ai-dash-sub">It analyzes your profile and active jobs, prioritizes relevant opportunities, and prepares your job search workflow before you apply.</p>
-                    </div>
-                    <a href="login.html" target="_blank" class="ai-run-btn"><i class="fa-solid fa-wand-magic-sparkles"></i> Run AI Agent</a>
-                </div>
-
-                <div class="ai-dash-stats">
-                    <div class="ai-dash-stat"><i class="fa-solid fa-bullseye"></i><div><b>...</b><span>High-match jobs</span></div></div>
-                    <div class="ai-dash-stat"><i class="fa-solid fa-file-circle-check"></i><div><b>...</b><span>Ready to prepare</span></div></div>
-                    <div class="ai-dash-stat"><i class="fa-solid fa-triangle-exclamation"></i><div><b>Analyzing</b><span>Profile & skill relevance</span></div></div>
-                </div>
-
-                <div class="ai-working-box">
-                    <div class="ai-working-label"><i class="fa-solid fa-spinner"></i> AI Agent Working • Analyzing opportunities</div>
-                    <div class="ai-job-line"><i class="fa-solid fa-circle-check"></i> Reviews active job requirements against your profile</div>
-                    <div class="ai-job-line"><i class="fa-solid fa-circle-check"></i> Organizes relevant opportunities for your review</div>
-                    <div class="ai-job-line"><i class="fa-solid fa-circle-check"></i> Keeps your application workflow in one place</div>
-                </div>
+            <div class="personal-ai-dashboard personal-ai-image-wrap" aria-label="Personal AI Career Agent feature preview">
+                <img
+                    src="personal-ai-agent-preview-medium.png"
+                    alt="Personal AI Career Agent scanning jobs, showing match scores and approval workflow"
+                    class="personal-ai-feature-image"
+                    loading="lazy">
             </div>
 
             <div class="ai-explainer">
