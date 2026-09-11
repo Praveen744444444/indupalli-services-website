@@ -1352,36 +1352,17 @@
             }
         }
 
-</style>
 
-<style id="personal-ai-dashboard-image">
-/* Personal AI Agent dashboard preview — medium, responsive */
-.personal-ai-image-wrap{
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    margin:0 auto;
-    padding:18px;
-    border-radius:24px;
-    background:linear-gradient(135deg,#f8fbff 0%,#eef4ff 100%);
-    border:1px solid #dbe7f6;
-    box-shadow:0 18px 44px rgba(15,23,42,.10);
-    overflow:hidden;
-}
-.personal-ai-feature-image{
-    display:block;
-    width:min(100%, 900px);
-    max-width:900px;
-    height:auto;
-    border-radius:16px;
-    object-fit:contain;
-}
-@media (max-width: 768px){
-    .personal-ai-image-wrap{padding:10px;border-radius:18px;}
-    .personal-ai-feature-image{width:100%;border-radius:12px;}
-}
+        /* ── PERSONAL AI FEATURE: IMAGE BESIDE EXPLANATION ── */
+        .personal-ai-feature-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,0.85fr);gap:34px;align-items:center}
+        .personal-ai-image-wrap{padding:18px}
+        .personal-ai-feature-image{display:block;width:100%;max-width:100%;height:auto;border-radius:20px;box-shadow:0 18px 45px rgba(15,23,42,.18)}
+        .personal-ai-feature-grid .ai-explainer{margin-top:0;display:flex;flex-direction:column;gap:18px}
+        .personal-ai-feature-grid .ai-explainer h3{font-size:30px;line-height:1.15}
+        .personal-ai-feature-grid .ai-explainer>div>p{font-size:15px}
+        @media(max-width:900px){.personal-ai-feature-grid{grid-template-columns:1fr}.personal-ai-image-wrap{padding:14px}.personal-ai-feature-grid .ai-explainer{margin-top:6px}}
+        @media(max-width:520px){.personal-ai-image-wrap{padding:10px;border-radius:20px}.personal-ai-feature-grid .ai-explainer h3{font-size:26px}.personal-ai-feature-grid .ai-explainer>div>p{font-size:14px}.personal-ai-feature-grid .ai-flow{grid-template-columns:1fr}}
 </style>
-
 </head>
 <body>
 
@@ -1500,25 +1481,27 @@
                 <p>Inside the Candidate Dashboard, your Personal AI Career Agent is designed to understand your profile, analyze active opportunities and organize suitable jobs before you decide what to do next.</p>
             </div>
 
-            <div class="personal-ai-dashboard personal-ai-image-wrap" aria-label="Personal AI Career Agent feature preview">
-                <img
-                    src="personal-ai-agent-dashboard-medium.png"
-                    alt="Personal AI Career Agent scanning jobs, showing match scores and approval workflow"
-                    class="personal-ai-feature-image"
-                    loading="lazy">
-            </div>
-
-            <div class="ai-explainer">
-                <div>
-                    <h3>How the Personal AI Agent works</h3>
-                    <p>This is not simply another job search filter. The goal is to give each candidate an AI-assisted workflow inside their dashboard. Your resume and profile provide context, active opportunities are reviewed, and the agent helps organize the next steps.</p>
-                    <div class="personal-ai-control"><i class="fa-solid fa-user-shield"></i><span><strong>You stay in control.</strong> The AI can analyze and prepare opportunities, but the candidate reviews the selected jobs before any submission workflow.</span></div>
+            <div class="personal-ai-feature-grid">
+                <div class="personal-ai-dashboard personal-ai-image-wrap" aria-label="Personal AI Career Agent feature preview">
+                    <img
+                        src="personal-ai-agent-dashboard-medium.png"
+                        alt="Personal AI Career Agent dashboard showing AI job matching and candidate approval workflow"
+                        class="personal-ai-feature-image"
+                        loading="lazy">
                 </div>
-                <div class="ai-flow">
-                    <div class="ai-flow-card"><div class="num">01</div><h4>Build your profile</h4><p>Upload your resume and keep your skills, experience and career information ready.</p></div>
-                    <div class="ai-flow-card"><div class="num">02</div><h4>AI analyzes jobs</h4><p>The agent checks active opportunities against the information available in your profile.</p></div>
-                    <div class="ai-flow-card"><div class="num">03</div><h4>Prepare & organize</h4><p>Relevant opportunities can be organized into a clearer application workflow.</p></div>
-                    <div class="ai-flow-card"><div class="num">04</div><h4>Review before action</h4><p>You review and approve the jobs you want to move forward with.</p></div>
+
+                <div class="ai-explainer">
+                    <div>
+                        <h3>How the Personal AI Agent works</h3>
+                        <p>This is not simply another job search filter. Your Personal AI Career Agent works alongside your job search by using your resume and profile as context, reviewing available opportunities, and organizing the next steps for you.</p>
+                        <div class="personal-ai-control"><i class="fa-solid fa-user-shield"></i><span><strong>You stay in control.</strong> The AI can analyze and prepare opportunities, but the candidate reviews the selected jobs before any submission workflow.</span></div>
+                    </div>
+                    <div class="ai-flow">
+                        <div class="ai-flow-card"><div class="num">01</div><h4>Build your profile</h4><p>Upload your resume once and keep your skills, experience and career preferences ready.</p></div>
+                        <div class="ai-flow-card"><div class="num">02</div><h4>AI scans job descriptions</h4><p>The agent reviews responsibilities, requirements and profile relevance to understand the opportunity.</p></div>
+                        <div class="ai-flow-card"><div class="num">03</div><h4>See the match</h4><p>View a match score, key matching skills and the main points the AI found in the role.</p></div>
+                        <div class="ai-flow-card"><div class="num">04</div><h4>Approve before applying</h4><p>You review the prepared application and approve the jobs you want the AI to submit.</p></div>
+                    </div>
                 </div>
             </div>
         </div>
