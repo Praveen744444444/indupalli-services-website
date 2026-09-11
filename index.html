@@ -1078,44 +1078,279 @@
             .job-actions .btn-view-job { flex:1; }
         }
 
-        /* ── PERSONAL AI CAREER AGENT ── */
-        .nav-personal-ai-new{display:inline-flex!important;align-items:center;gap:7px;}
-        .nav-personal-ai-new>i{color:#2563eb;font-size:13px;}
-        .personal-ai-section{padding:82px 0;background:linear-gradient(180deg,#f8fbff 0%,#fff 100%);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
-        .personal-ai-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(430px,.95fr);gap:54px;align-items:center;}
-        .personal-ai-eyebrow{display:inline-flex;align-items:center;gap:8px;padding:7px 12px;border-radius:999px;background:#eff6ff;color:#1d4ed8;font-size:11px;font-weight:900;letter-spacing:.09em;text-transform:uppercase;}
-        .personal-ai-title{font-size:42px;line-height:1.15;letter-spacing:-.04em;color:var(--navy);margin:18px 0 16px;}
-        .personal-ai-title span{color:#2563eb;}
-        .personal-ai-lead{font-size:16px;line-height:1.8;color:var(--text-muted);max-width:620px;}
-        .personal-ai-flow{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin:26px 0 28px;}
-        .personal-ai-step{display:flex;gap:12px;align-items:flex-start;padding:15px;border:1px solid var(--border);border-radius:14px;background:#fff;box-shadow:var(--shadow-xs);}
-        .personal-ai-step i{width:34px;height:34px;display:grid;place-items:center;border-radius:10px;background:#eff6ff;color:#2563eb;flex:0 0 auto;}
-        .personal-ai-step h4{font-size:13px;color:var(--navy);margin:1px 0 3px;}
-        .personal-ai-step p{font-size:11.5px;color:var(--text-muted);line-height:1.5;margin:0;}
-        .personal-ai-note{display:flex;gap:10px;align-items:center;padding:13px 15px;border-radius:12px;background:#ecfdf3;color:#166534;font-size:13px;font-weight:700;border:1px solid #bbf7d0;}
-        .personal-ai-note i{font-size:16px;}
-        .personal-ai-actions{display:flex;gap:12px;margin-top:22px;flex-wrap:wrap;}
-        .personal-ai-dashboard{position:relative;border-radius:22px;padding:18px;background:linear-gradient(135deg,#10233a,#171b4a 55%,#2e2360);box-shadow:0 24px 60px rgba(15,23,42,.2);color:#fff;overflow:hidden;}
-        .personal-ai-dashboard:before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:24px 24px;pointer-events:none;}
-        .ai-demo-top,.ai-demo-stats,.ai-demo-list{position:relative;z-index:1;}
-        .ai-demo-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;}
-        .ai-live{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:900;letter-spacing:.08em;color:#8de6dc;}
-        .ai-live:before{content:'';width:9px;height:9px;border-radius:50%;background:#43d6a4;box-shadow:0 0 14px #43d6a4;}
-        .ai-demo-top h3{font-size:23px;line-height:1.25;margin:8px 0 0;letter-spacing:-.02em;}
-        .ai-run{border:0;border-radius:12px;padding:11px 15px;background:linear-gradient(90deg,#45c7dc,#8f6ee8);color:#fff;font-weight:800;font-size:12px;white-space:nowrap;}
-        .ai-demo-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
-        .ai-stat{padding:14px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.07);border-radius:14px;}
-        .ai-stat i{color:#86c8ff;font-size:18px;}
-        .ai-stat strong{display:block;font-size:23px;margin:8px 0 2px;}
-        .ai-stat span{font-size:10.5px;color:#b9c7d8;}
-        .ai-demo-list{padding:16px;border:1px solid rgba(255,255,255,.13);border-radius:15px;background:rgba(7,15,31,.55);}
-        .ai-demo-list .list-title{font-size:11px;font-weight:900;color:#8de6dc;letter-spacing:.08em;margin-bottom:11px;}
-        .ai-job{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.09);font-size:12px;}
-        .ai-job:last-child{border-bottom:0;}
-        .ai-job .match{color:#75e6b7;font-weight:800;font-size:11px;}
-        .ai-control{margin-top:12px;padding:11px 12px;border-radius:10px;background:rgba(69,199,220,.1);border:1px solid rgba(69,199,220,.22);font-size:11px;color:#d9f7ff;}
-        @media(max-width:980px){.personal-ai-grid{grid-template-columns:1fr;gap:34px;}.personal-ai-title{font-size:36px;}.personal-ai-dashboard{max-width:680px;}.nav-personal-ai-new{display:none!important;}}
-        @media(max-width:620px){.personal-ai-section{padding:60px 0;}.personal-ai-title{font-size:31px;}.personal-ai-flow{grid-template-columns:1fr;}.ai-demo-top{gap:12px;}.ai-demo-top h3{font-size:19px;}.ai-run{padding:9px 11px;}.ai-demo-stats{grid-template-columns:1fr;}.personal-ai-dashboard{padding:14px;}.personal-ai-actions{flex-direction:column;}.personal-ai-actions a{text-align:center;}}
+
+    /* ── PERSONAL AI CAREER AGENT ── */
+    .personal-ai-section{background:var(--surface);padding:86px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+    .personal-ai-intro{text-align:center;max-width:850px;margin:0 auto 42px}
+    .personal-ai-kicker{display:inline-flex;align-items:center;gap:9px;font-size:12px;font-weight:800;letter-spacing:1.1px;color:#2167c7;margin-bottom:14px}
+    .personal-ai-live{width:9px;height:9px;border-radius:50%;background:#38c985;box-shadow:0 0 0 6px rgba(56,201,133,.12)}
+    .personal-ai-intro h2{font-size:clamp(34px,4vw,54px);line-height:1.08;letter-spacing:-1.7px;margin:0 0 16px;color:#17243a}
+    .personal-ai-intro h2 span{color:#2563c8}
+    .personal-ai-intro p{font-size:17px;line-height:1.75;color:var(--text-muted);margin:0 auto;max-width:760px}
+    .personal-ai-dashboard{position:relative;border-radius:28px;padding:38px;background:linear-gradient(110deg,#11263b 0%,#182943 55%,#2b2459 100%);box-shadow:0 25px 60px rgba(16,36,65,.22);overflow:hidden;color:#fff}
+    .personal-ai-dashboard:before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:32px 32px;pointer-events:none}
+    .personal-ai-dashboard>*{position:relative;z-index:1}
+    .ai-dash-head{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;margin-bottom:28px}
+    .ai-dash-status{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:800;letter-spacing:1px;color:#9be9e0;text-transform:uppercase;margin-bottom:11px}
+    .ai-dash-title{display:flex;align-items:center;gap:13px;font-size:clamp(26px,3vw,38px);font-weight:850;letter-spacing:-1px;margin:0 0 8px}
+    .ai-dash-title i{font-size:30px;color:#8bd4ff}
+    .ai-dash-sub{margin:0;color:#c4d2e4;font-size:16px;line-height:1.65;max-width:760px}
+    .ai-run-btn{flex:0 0 auto;display:inline-flex;align-items:center;gap:9px;padding:14px 20px;border-radius:14px;background:linear-gradient(135deg,#4bd0df,#a77df0);color:#12213b;text-decoration:none;font-weight:850;box-shadow:0 12px 28px rgba(87,180,238,.22)}
+    .ai-run-btn:hover{transform:translateY(-2px)}
+    .ai-dash-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
+    .ai-dash-stat{padding:20px;border-radius:18px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.075);display:flex;align-items:center;gap:15px}
+    .ai-dash-stat i{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg,#75d9e7,#9a84ef);color:#10213c;font-size:20px}
+    .ai-dash-stat b{display:block;font-size:27px;line-height:1.05}.ai-dash-stat span{display:block;color:#c5d2e4;font-size:13px;margin-top:5px}
+    .ai-working-box{border-radius:18px;padding:20px;border:1px solid rgba(255,255,255,.12);background:rgba(5,15,32,.5)}
+    .ai-working-label{display:flex;align-items:center;gap:9px;font-size:13px;font-weight:850;letter-spacing:.7px;color:#91e8e0;margin-bottom:12px;text-transform:uppercase}
+    .ai-job-line{display:flex;align-items:center;gap:10px;padding:10px 2px;border-top:1px solid rgba(255,255,255,.09);color:#e4edf8;font-size:14px}.ai-job-line:first-of-type{border-top:0}.ai-job-line i{color:#65d9a2}
+    .ai-explainer{display:grid;grid-template-columns:1fr 1fr;gap:34px;margin-top:44px;align-items:start}
+    .ai-explainer h3{font-size:29px;letter-spacing:-.7px;margin:0 0 13px;color:#17243a}.ai-explainer>div>p{color:var(--text-muted);line-height:1.75;margin:0}
+    .ai-flow{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.ai-flow-card{padding:18px;border:1px solid var(--border);border-radius:16px;background:var(--bg-page)}
+    .ai-flow-card .num{width:32px;height:32px;border-radius:10px;display:grid;place-items:center;background:#eaf2ff;color:#2361bb;font-size:13px;font-weight:850;margin-bottom:11px}.ai-flow-card h4{margin:0 0 7px;color:#17243a;font-size:15px}.ai-flow-card p{margin:0;color:var(--text-muted);font-size:13px;line-height:1.55}
+    .personal-ai-control{margin-top:24px;padding:16px 18px;border-radius:14px;background:#edf5ff;color:#24518d;font-size:14px;font-weight:700;display:flex;gap:10px;align-items:flex-start}.personal-ai-control i{margin-top:2px;color:#2563eb}
+    @media(max-width:900px){.personal-ai-dashboard{padding:28px}.ai-dash-head{flex-direction:column}.ai-dash-stats{grid-template-columns:1fr}.ai-explainer{grid-template-columns:1fr}.ai-flow{grid-template-columns:1fr}}
+    @media(max-width:520px){.personal-ai-section{padding:62px 0}.personal-ai-dashboard{padding:22px;border-radius:20px}.ai-dash-title{font-size:27px}.ai-run-btn{width:100%;justify-content:center}.ai-dash-stat{padding:16px}.ai-flow-card{padding:16px}}
+
+
+        /* ── PERSONAL AI AGENT: ACTIVE DOT + MOBILE POLISH ── */
+        .personal-ai-live{
+            position:relative;
+            width:10px;
+            height:10px;
+            min-width:10px;
+            border-radius:50%;
+            background:#22c55e;
+            box-shadow:0 0 0 0 rgba(34,197,94,.55);
+            animation:personalAiPulse 1.5s ease-out infinite;
+        }
+        .personal-ai-live::after{
+            content:"";
+            position:absolute;
+            inset:0;
+            border-radius:50%;
+            background:#22c55e;
+            animation:personalAiBlink 1.5s ease-in-out infinite;
+        }
+        @keyframes personalAiPulse{
+            0%{box-shadow:0 0 0 0 rgba(34,197,94,.55)}
+            70%{box-shadow:0 0 0 9px rgba(34,197,94,0)}
+            100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}
+        }
+        @keyframes personalAiBlink{
+            0%,100%{opacity:.55;transform:scale(.82)}
+            50%{opacity:1;transform:scale(1)}
+        }
+
+        /* Keep the live status visually stable in the dashboard */
+        .ai-dash-status .personal-ai-live,
+        .personal-ai-kicker .personal-ai-live{
+            flex:0 0 10px;
+        }
+
+        /* ── MOBILE NAVIGATION ── */
+        @media (max-width:960px){
+            .header-container{
+                position:relative;
+                padding-left:18px !important;
+                padding-right:18px !important;
+            }
+            .header-container .logo{
+                min-width:0 !important;
+                max-width:calc(100% - 58px);
+            }
+            .header-container .logo img{
+                width:58px !important;
+                height:58px !important;
+                max-width:58px !important;
+            }
+            .header-container .logo-text h1{
+                font-size:17px !important;
+            }
+            .header-container .logo-text span{
+                font-size:7.5px !important;
+                letter-spacing:.7px !important;
+            }
+            #mainNav{
+                display:none !important;
+            }
+            #mainNav.ai-mobile-open{
+                display:flex !important;
+                position:absolute !important;
+                top:calc(100% + 1px) !important;
+                left:10px !important;
+                right:10px !important;
+                width:auto !important;
+                max-height:calc(100vh - 90px) !important;
+                overflow-y:auto !important;
+                flex-direction:column !important;
+                align-items:stretch !important;
+                justify-content:flex-start !important;
+                gap:4px !important;
+                padding:12px !important;
+                background:rgba(255,255,255,.98) !important;
+                backdrop-filter:blur(14px) !important;
+                border:1px solid var(--border) !important;
+                border-radius:16px !important;
+                box-shadow:0 20px 45px rgba(15,23,42,.18) !important;
+            }
+            #mainNav.ai-mobile-open > a,
+            #mainNav.ai-mobile-open .nav-menu-trigger{
+                width:100% !important;
+                justify-content:flex-start !important;
+                padding:12px 13px !important;
+                font-size:14px !important;
+                border-radius:10px !important;
+            }
+            #mainNav.ai-mobile-open .nav-divider{
+                width:100% !important;
+                height:1px !important;
+                margin:6px 0 !important;
+            }
+            #mainNav.ai-mobile-open .nav-menu-group{
+                width:100%;
+            }
+            #mainNav.ai-mobile-open .nav-menu-panel{
+                position:static !important;
+                transform:none !important;
+                width:100% !important;
+                max-width:none !important;
+                margin:3px 0 5px !important;
+                grid-template-columns:1fr !important;
+                box-shadow:none !important;
+                border-radius:12px !important;
+                padding:8px !important;
+            }
+            #mainNav.ai-mobile-open .nav-menu-group:hover .nav-menu-panel{
+                display:none;
+            }
+            #mainNav.ai-mobile-open .nav-menu-group.open .nav-menu-panel{
+                display:grid !important;
+            }
+            #mainNav.ai-mobile-open .btn-nav-login,
+            #mainNav.ai-mobile-open .btn-nav-cta{
+                width:100% !important;
+                text-align:center !important;
+                justify-content:center !important;
+                margin:2px 0 !important;
+                padding:12px 14px !important;
+            }
+        }
+
+        @media (max-width:600px){
+            .personal-ai-section{
+                padding:58px 0 !important;
+            }
+            .personal-ai-intro{
+                padding:0 6px;
+                margin-bottom:28px;
+            }
+            .personal-ai-intro h2{
+                font-size:32px !important;
+                letter-spacing:-1.2px !important;
+            }
+            .personal-ai-intro p{
+                font-size:15px !important;
+                line-height:1.7 !important;
+            }
+            .personal-ai-kicker{
+                font-size:10.5px !important;
+                letter-spacing:.8px !important;
+                flex-wrap:wrap;
+                justify-content:center;
+            }
+            .personal-ai-dashboard{
+                padding:18px !important;
+                border-radius:20px !important;
+            }
+            .ai-dash-head{
+                gap:18px !important;
+                margin-bottom:20px !important;
+            }
+            .ai-dash-status{
+                font-size:11px !important;
+                letter-spacing:.7px !important;
+                margin-bottom:8px !important;
+            }
+            .ai-dash-title{
+                font-size:25px !important;
+                line-height:1.18 !important;
+                gap:10px !important;
+                letter-spacing:-.7px !important;
+            }
+            .ai-dash-title i{
+                font-size:25px !important;
+                flex:0 0 auto;
+            }
+            .ai-dash-sub{
+                font-size:14px !important;
+                line-height:1.6 !important;
+            }
+            .ai-run-btn{
+                width:100% !important;
+                min-height:48px !important;
+                justify-content:center !important;
+                padding:12px 16px !important;
+                border-radius:12px !important;
+            }
+            .ai-dash-stats{
+                grid-template-columns:1fr !important;
+                gap:10px !important;
+                margin-bottom:16px !important;
+            }
+            .ai-dash-stat{
+                padding:14px !important;
+                border-radius:14px !important;
+            }
+            .ai-dash-stat i{
+                width:42px !important;
+                height:42px !important;
+                border-radius:12px !important;
+                font-size:17px !important;
+            }
+            .ai-dash-stat b{
+                font-size:23px !important;
+            }
+            .ai-working-box{
+                padding:15px !important;
+                border-radius:15px !important;
+            }
+            .ai-working-label{
+                font-size:11px !important;
+                line-height:1.35 !important;
+            }
+            .ai-job-line{
+                font-size:12.5px !important;
+                line-height:1.5 !important;
+                align-items:flex-start !important;
+            }
+            .ai-explainer{
+                grid-template-columns:1fr !important;
+                gap:22px !important;
+                margin-top:30px !important;
+            }
+            .ai-explainer h3{
+                font-size:24px !important;
+                line-height:1.2 !important;
+            }
+            .ai-explainer>div>p{
+                font-size:14px !important;
+                line-height:1.7 !important;
+            }
+            .ai-flow{
+                grid-template-columns:1fr !important;
+                gap:10px !important;
+            }
+            .ai-flow-card{
+                padding:15px !important;
+                border-radius:14px !important;
+            }
+            .personal-ai-control{
+                font-size:13px !important;
+                line-height:1.55 !important;
+                padding:14px !important;
+            }
+        }
 
 </style>
 </head>
@@ -1134,35 +1369,35 @@
 
             <nav id="mainNav">
                 <div class="nav-menu-group">
-                    <a href="jobs.html" class="nav-menu-trigger">Jobs <i class="fa-solid fa-chevron-down" style="font-size:10px;"></i></a>
+                    <a href="jobs.html" class="nav-menu-trigger" target="_blank" rel="noopener noreferrer">Jobs <i class="fa-solid fa-chevron-down" style="font-size:10px;"></i></a>
                     <div class="nav-menu-panel">
                         <div class="mega-col">
                             <h5>Discover</h5>
-                            <a href="jobs.html">All Jobs</a>
-                            <a href="jobs.html?sort=latest">Latest Jobs</a>
-                            <a href="jobs.html?exp=fresher">Fresher Jobs</a>
-                            <a href="jobs.html?type=Remote">Remote Jobs</a>
+                            <a href="jobs.html" target="_blank" rel="noopener noreferrer">All Jobs</a>
+                            <a href="jobs.html?sort=latest" target="_blank" rel="noopener noreferrer">Latest Jobs</a>
+                            <a href="jobs.html?exp=fresher" target="_blank" rel="noopener noreferrer">Fresher Jobs</a>
+                            <a href="jobs.html?type=Remote" target="_blank" rel="noopener noreferrer">Remote Jobs</a>
                         </div>
                         <div class="mega-col">
                             <h5>Popular Searches</h5>
-                            <a href="jobs.html?cat=IT">IT & Software</a>
-                            <a href="jobs.html?cat=Finance">Finance</a>
-                            <a href="jobs.html?cat=Sales">Sales & Marketing</a>
-                            <a href="jobs.html?cat=Healthcare">Healthcare</a>
+                            <a href="jobs.html?cat=IT" target="_blank" rel="noopener noreferrer">IT & Software</a>
+                            <a href="jobs.html?cat=Finance" target="_blank" rel="noopener noreferrer">Finance</a>
+                            <a href="jobs.html?cat=Sales" target="_blank" rel="noopener noreferrer">Sales & Marketing</a>
+                            <a href="jobs.html?cat=Healthcare" target="_blank" rel="noopener noreferrer">Healthcare</a>
                         </div>
                         <div class="mega-col">
                             <h5>By Location</h5>
-                            <a href="jobs.html?location=Hyderabad">Hyderabad</a>
-                            <a href="jobs.html?location=Bangalore">Bangalore</a>
-                            <a href="jobs.html?location=Mumbai">Mumbai</a>
-                            <a href="jobs.html?location=Chennai">Chennai</a>
+                            <a href="jobs.html?location=Hyderabad" target="_blank" rel="noopener noreferrer">Hyderabad</a>
+                            <a href="jobs.html?location=Bangalore" target="_blank" rel="noopener noreferrer">Bangalore</a>
+                            <a href="jobs.html?location=Mumbai" target="_blank" rel="noopener noreferrer">Mumbai</a>
+                            <a href="jobs.html?location=Chennai" target="_blank" rel="noopener noreferrer">Chennai</a>
                         </div>
                     </div>
                 </div>
                 <a href="#categories">Job Categories</a>
                 <a href="#for-employers">For Employers</a>
                 <a href="#technology">AI & ATS</a>
-                <a href="#personal-ai-agent" class="nav-personal-ai-new"><i class="fa-solid fa-robot"></i> Personal AI Agent <span class="nav-new-badge">NEW</span></a>
+                <a href="#personal-ai-agent" class="nav-unnanu-new">Personal AI Agent <span class="nav-new-badge">NEW</span></a>
                 <a href="#unnanu-feature" class="nav-unnanu-new">Unnanu <span class="nav-new-badge">NEW</span></a>
                 <a href="#resources">Blogs</a>
                 <a href="#about">About</a>
@@ -1226,6 +1461,55 @@
         </div>
     </section>
 
+
+    <!-- ── PERSONAL AI CAREER AGENT ── -->
+    <section class="personal-ai-section" id="personal-ai-agent">
+        <div class="container">
+            <div class="personal-ai-intro">
+                <div class="personal-ai-kicker"><span class="personal-ai-live"></span> PERSONAL AI CAREER AGENT <span class="unnanu-new-badge">NEW</span></div>
+                <h2>Your AI can work <span>alongside your career.</span></h2>
+                <p>Inside the Candidate Dashboard, your Personal AI Career Agent is designed to understand your profile, analyze active opportunities and organize suitable jobs before you decide what to do next.</p>
+            </div>
+
+            <div class="personal-ai-dashboard" aria-label="Personal AI Career Agent dashboard preview">
+                <div class="ai-dash-head">
+                    <div>
+                        <div class="ai-dash-status"><span class="personal-ai-live"></span> Personal AI Career Agent • Active</div>
+                        <h3 class="ai-dash-title"><i class="fa-solid fa-robot"></i> Your AI is working for your career</h3>
+                        <p class="ai-dash-sub">It analyzes your profile and active jobs, prioritizes relevant opportunities, and prepares your job search workflow before you apply.</p>
+                    </div>
+                    <a href="login.html" target="_blank" class="ai-run-btn"><i class="fa-solid fa-wand-magic-sparkles"></i> Run AI Agent</a>
+                </div>
+
+                <div class="ai-dash-stats">
+                    <div class="ai-dash-stat"><i class="fa-solid fa-bullseye"></i><div><b>...</b><span>High-match jobs</span></div></div>
+                    <div class="ai-dash-stat"><i class="fa-solid fa-file-circle-check"></i><div><b>...</b><span>Ready to prepare</span></div></div>
+                    <div class="ai-dash-stat"><i class="fa-solid fa-triangle-exclamation"></i><div><b>Analyzing</b><span>Profile & skill relevance</span></div></div>
+                </div>
+
+                <div class="ai-working-box">
+                    <div class="ai-working-label"><i class="fa-solid fa-spinner"></i> AI Agent Working • Analyzing opportunities</div>
+                    <div class="ai-job-line"><i class="fa-solid fa-circle-check"></i> Reviews active job requirements against your profile</div>
+                    <div class="ai-job-line"><i class="fa-solid fa-circle-check"></i> Organizes relevant opportunities for your review</div>
+                    <div class="ai-job-line"><i class="fa-solid fa-circle-check"></i> Keeps your application workflow in one place</div>
+                </div>
+            </div>
+
+            <div class="ai-explainer">
+                <div>
+                    <h3>How the Personal AI Agent works</h3>
+                    <p>This is not simply another job search filter. The goal is to give each candidate an AI-assisted workflow inside their dashboard. Your resume and profile provide context, active opportunities are reviewed, and the agent helps organize the next steps.</p>
+                    <div class="personal-ai-control"><i class="fa-solid fa-user-shield"></i><span><strong>You stay in control.</strong> The AI can analyze and prepare opportunities, but the candidate reviews the selected jobs before any submission workflow.</span></div>
+                </div>
+                <div class="ai-flow">
+                    <div class="ai-flow-card"><div class="num">01</div><h4>Build your profile</h4><p>Upload your resume and keep your skills, experience and career information ready.</p></div>
+                    <div class="ai-flow-card"><div class="num">02</div><h4>AI analyzes jobs</h4><p>The agent checks active opportunities against the information available in your profile.</p></div>
+                    <div class="ai-flow-card"><div class="num">03</div><h4>Prepare & organize</h4><p>Relevant opportunities can be organized into a clearer application workflow.</p></div>
+                    <div class="ai-flow-card"><div class="num">04</div><h4>Review before action</h4><p>You review and approve the jobs you want to move forward with.</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- ── FEATURED HIRING PLATFORM ── -->
     <section class="unnanu-top-feature" id="unnanu-feature">
@@ -1333,19 +1617,19 @@
                 <p class="section-desc">Search by what you need today — a job, a career move, or the right hiring workflow.</p>
             </div>
             <div class="discovery-grid">
-                <a class="discovery-card app-card" href="jobs.html?exp=fresher">
+                <a class="discovery-card app-card" href="jobs.html?exp=fresher" target="_blank" rel="noopener noreferrer">
                     <div class="icon"><i class="fa-solid fa-user-graduate"></i></div>
                     <h3>Freshers & Graduates</h3>
                     <p>Explore entry-level opportunities, graduate roles and jobs that are suitable for candidates starting their careers.</p>
                     <span class="link">Explore fresher jobs →</span>
                 </a>
-                <a class="discovery-card app-card" href="jobs.html?type=Remote">
+                <a class="discovery-card app-card" href="jobs.html?type=Remote" target="_blank" rel="noopener noreferrer">
                     <div class="icon"><i class="fa-solid fa-house-laptop"></i></div>
                     <h3>Remote & Flexible Work</h3>
                     <p>Find remote and flexible opportunities without having to search through unrelated listings.</p>
                     <span class="link">Explore remote jobs →</span>
                 </a>
-                <a class="discovery-card app-card" href="jobs.html?sort=latest">
+                <a class="discovery-card app-card" href="jobs.html?sort=latest" target="_blank" rel="noopener noreferrer">
                     <div class="icon"><i class="fa-solid fa-bolt"></i></div>
                     <h3>Latest Opportunities</h3>
                     <p>Go straight to recently published openings and focus on active opportunities instead of stale listings.</p>
@@ -1370,7 +1654,7 @@
             </div>
 
             <div style="text-align: center; margin-top: 36px;">
-                <a href="jobs.html" class="btn-nav-cta" style="display:inline-block; padding: 12px 28px;">Browse All Job Listings <i class="fa-solid fa-arrow-right" style="margin-left:6px;"></i></a>
+                <a href="jobs.html" class="btn-nav-cta" style="display:inline-block; padding: 12px 28px;" target="_blank" rel="noopener noreferrer">Browse All Job Listings <i class="fa-solid fa-arrow-right" style="margin-left:6px;"></i></a>
             </div>
         </div>
     </section>
@@ -1387,53 +1671,6 @@
         </div>
     </section>
 
-
-    <!-- ── PERSONAL AI CAREER AGENT ── -->
-    <section class="personal-ai-section" id="personal-ai-agent">
-        <div class="container">
-            <div class="personal-ai-grid">
-                <div>
-                    <span class="personal-ai-eyebrow"><i class="fa-solid fa-robot"></i> New • Personal AI Career Agent</span>
-                    <h2 class="personal-ai-title">Your job search.<br><span>Your Personal AI Agent.</span></h2>
-                    <p class="personal-ai-lead">Inside the Candidate Portal, your Personal AI Career Agent helps turn job searching into a more organized workflow. It can analyze your profile and active opportunities, identify relevant jobs, prepare applications, and keep you in control before anything is submitted.</p>
-
-                    <div class="personal-ai-flow">
-                        <div class="personal-ai-step"><i class="fa-solid fa-file-arrow-up"></i><div><h4>1. Build your profile</h4><p>Upload your resume and keep your skills, experience and preferences ready.</p></div></div>
-                        <div class="personal-ai-step"><i class="fa-solid fa-magnifying-glass"></i><div><h4>2. Analyze active jobs</h4><p>The agent reviews available opportunities against your profile.</p></div></div>
-                        <div class="personal-ai-step"><i class="fa-solid fa-wand-magic-sparkles"></i><div><h4>3. Prepare opportunities</h4><p>Relevant jobs can be organized and prepared for your review.</p></div></div>
-                        <div class="personal-ai-step"><i class="fa-solid fa-user-check"></i><div><h4>4. You stay in control</h4><p>Review and select jobs before application submission.</p></div></div>
-                    </div>
-
-                    <div class="personal-ai-note"><i class="fa-solid fa-shield-halved"></i><span><strong>Candidate approval comes first.</strong> The AI supports the workflow; you decide which prepared applications move forward.</span></div>
-
-                    <div class="personal-ai-actions">
-                        <a href="signup.html" class="btn-nav-cta"><i class="fa-solid fa-robot"></i> Try Personal AI Agent</a>
-                        <a href="login.html" class="btn-nav-login"><i class="fa-solid fa-right-to-bracket"></i> Candidate Sign In</a>
-                    </div>
-                </div>
-
-                <div class="personal-ai-dashboard" aria-label="Personal AI Agent dashboard preview">
-                    <div class="ai-demo-top">
-                        <div><div class="ai-live">PERSONAL AI CAREER AGENT • ACTIVE</div><h3>🤖 Your AI is working for your career</h3></div>
-                        <button class="ai-run" type="button"><i class="fa-solid fa-wand-magic-sparkles"></i> Run AI Agent</button>
-                    </div>
-                    <div class="ai-demo-stats">
-                        <div class="ai-stat"><i class="fa-solid fa-bullseye"></i><strong>—</strong><span>High-match jobs</span></div>
-                        <div class="ai-stat"><i class="fa-solid fa-file-circle-check"></i><strong>—</strong><span>Ready to prepare</span></div>
-                        <div class="ai-stat"><i class="fa-solid fa-brain"></i><strong>Analyzing</strong><span>Profile & skill relevance</span></div>
-                    </div>
-                    <div class="ai-demo-list">
-                        <div class="list-title"><i class="fa-solid fa-spinner"></i> AI AGENT WORKING • ANALYZING OPPORTUNITIES</div>
-                        <div class="ai-job"><span><i class="fa-solid fa-circle-check" style="color:#5fe0ae;margin-right:8px;"></i>Reviewing job requirements</span><span class="match">PROFILE CHECK</span></div>
-                        <div class="ai-job"><span><i class="fa-solid fa-circle-check" style="color:#5fe0ae;margin-right:8px;"></i>Comparing skills and experience</span><span class="match">MATCHING</span></div>
-                        <div class="ai-job"><span><i class="fa-solid fa-circle-check" style="color:#5fe0ae;margin-right:8px;"></i>Preparing relevant opportunities</span><span class="match">READY FOR REVIEW</span></div>
-                        <div class="ai-control"><i class="fa-solid fa-user-shield"></i> Final control stays with you — review and select applications before submission.</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- ── JOB CATEGORIES ── -->
     <section class="section-py" id="categories" style="background: var(--surface); border-top: 1px solid var(--border);">
         <div class="container">
@@ -1445,42 +1682,42 @@
 
             <div class="category-grid" id="categoryGrid">
                 <!-- Fallback structured categories that update dynamically if database supports counts -->
-                <a href="jobs.html?cat=IT" class="cat-card app-card">
+                <a href="jobs.html?cat=IT" class="cat-card app-card" target="_blank" rel="noopener noreferrer">
                     <div class="cat-icon"><i class="fa-solid fa-laptop-code"></i></div>
                     <div class="cat-details">
                         <h4>Software & IT</h4>
                         <span id="cat-count-it">Explore Positions</span>
                     </div>
                 </a>
-                <a href="jobs.html?cat=Finance" class="cat-card app-card">
+                <a href="jobs.html?cat=Finance" class="cat-card app-card" target="_blank" rel="noopener noreferrer">
                     <div class="cat-icon"><i class="fa-solid fa-chart-line"></i></div>
                     <div class="cat-details">
                         <h4>Finance & Banking</h4>
                         <span id="cat-count-finance">Explore Positions</span>
                     </div>
                 </a>
-                <a href="jobs.html?cat=Sales" class="cat-card app-card">
+                <a href="jobs.html?cat=Sales" class="cat-card app-card" target="_blank" rel="noopener noreferrer">
                     <div class="cat-icon"><i class="fa-solid fa-bullhorn"></i></div>
                     <div class="cat-details">
                         <h4>Sales & Marketing</h4>
                         <span id="cat-count-sales">Explore Positions</span>
                     </div>
                 </a>
-                <a href="jobs.html?cat=Healthcare" class="cat-card app-card">
+                <a href="jobs.html?cat=Healthcare" class="cat-card app-card" target="_blank" rel="noopener noreferrer">
                     <div class="cat-icon"><i class="fa-solid fa-heart-pulse"></i></div>
                     <div class="cat-details">
                         <h4>Healthcare & Medical</h4>
                         <span id="cat-count-health">Explore Positions</span>
                     </div>
                 </a>
-                <a href="jobs.html?cat=HR" class="cat-card app-card">
+                <a href="jobs.html?cat=HR" class="cat-card app-card" target="_blank" rel="noopener noreferrer">
                     <div class="cat-icon"><i class="fa-solid fa-people-roof"></i></div>
                     <div class="cat-details">
                         <h4>Human Resources</h4>
                         <span id="cat-count-hr">Explore Positions</span>
                     </div>
                 </a>
-                <a href="jobs.html?cat=Operations" class="cat-card app-card">
+                <a href="jobs.html?cat=Operations" class="cat-card app-card" target="_blank" rel="noopener noreferrer">
                     <div class="cat-icon"><i class="fa-solid fa-gears"></i></div>
                     <div class="cat-details">
                         <h4>Operations & Logistics</h4>
@@ -1495,27 +1732,27 @@
                 <h3 style="font-size: 20px; font-weight: 700; color: var(--navy); margin-bottom: 10px;">Find Jobs in Popular Cities</h3>
             </div>
             <div class="location-grid">
-                <a href="jobs.html?location=Hyderabad" class="loc-card app-card">
+                <a href="jobs.html?location=Hyderabad" class="loc-card app-card" target="_blank" rel="noopener noreferrer">
                     <h4>Hyderabad</h4>
                     <span>IT & Enterprise Hub</span>
                 </a>
-                <a href="jobs.html?location=Bangalore" class="loc-card app-card">
+                <a href="jobs.html?location=Bangalore" class="loc-card app-card" target="_blank" rel="noopener noreferrer">
                     <h4>Bangalore</h4>
                     <span>Tech & Startups</span>
                 </a>
-                <a href="jobs.html?location=Mumbai" class="loc-card app-card">
+                <a href="jobs.html?location=Mumbai" class="loc-card app-card" target="_blank" rel="noopener noreferrer">
                     <h4>Mumbai</h4>
                     <span>Finance & Corporate</span>
                 </a>
-                <a href="jobs.html?location=Chennai" class="loc-card app-card">
+                <a href="jobs.html?location=Chennai" class="loc-card app-card" target="_blank" rel="noopener noreferrer">
                     <h4>Chennai</h4>
                     <span>Engineering & Auto</span>
                 </a>
-                <a href="jobs.html?location=Delhi" class="loc-card app-card">
+                <a href="jobs.html?location=Delhi" class="loc-card app-card" target="_blank" rel="noopener noreferrer">
                     <h4>Delhi NCR</h4>
                     <span>Operations & Tech</span>
                 </a>
-                <a href="jobs.html?type=Remote" class="loc-card app-card">
+                <a href="jobs.html?type=Remote" class="loc-card app-card" target="_blank" rel="noopener noreferrer">
                     <h4>Remote</h4>
                     <span>Work From Anywhere</span>
                 </a>
@@ -1758,7 +1995,7 @@
                 <p class="section-desc">Keep the homepage useful without forcing every feature into the main navigation.</p>
             </div>
             <div class="discovery-grid">
-                <a class="discovery-card app-card" href="jobs.html">
+                <a class="discovery-card app-card" href="jobs.html" target="_blank" rel="noopener noreferrer">
                     <div class="icon"><i class="fa-solid fa-filter"></i></div>
                     <h3>I want to find a job</h3>
                     <p>Search active openings, filter your options and open the full job details before applying.</p>
@@ -1859,8 +2096,8 @@
                 <div class="footer-col">
                     <h5>For Candidates</h5>
                     <a href="https://jobs.unnanu.com/">Unnanu Jobs</a>
-                    <a href="jobs.html?exp=fresher">Fresher Jobs</a>
-                    <a href="jobs.html?type=Remote">Remote Jobs</a>
+                    <a href="jobs.html?exp=fresher" target="_blank" rel="noopener noreferrer">Fresher Jobs</a>
+                    <a href="jobs.html?type=Remote" target="_blank" rel="noopener noreferrer">Remote Jobs</a>
                     <a href="login.html" target="_blank">Candidate Portal</a>
                     <a href="signup.html" target="_blank">Create Profile</a>
                     <a href="#resources">Career Resources</a>
@@ -2010,31 +2247,31 @@
 
             const renderJobLinks = () => `
                 <div class="job-discovery-links">
-                    <a href="jobs.html"><i class="fa-solid fa-briefcase"></i> All Jobs</a>
-                    <a href="jobs.html?exp=fresher"><i class="fa-solid fa-user-graduate"></i> Fresher Jobs</a>
-                    <a href="jobs.html?type=Remote"><i class="fa-solid fa-house-laptop"></i> Remote Jobs</a>
-                    <a href="jobs.html?location=Hyderabad"><i class="fa-solid fa-location-dot"></i> Hyderabad Jobs</a>
-                    <a href="jobs.html?location=Bangalore"><i class="fa-solid fa-location-dot"></i> Bangalore Jobs</a>
-                    <a href="jobs.html?location=Chennai"><i class="fa-solid fa-location-dot"></i> Chennai Jobs</a>
+                    <a href="jobs.html" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-briefcase"></i> All Jobs</a>
+                    <a href="jobs.html?exp=fresher" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-user-graduate"></i> Fresher Jobs</a>
+                    <a href="jobs.html?type=Remote" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-house-laptop"></i> Remote Jobs</a>
+                    <a href="jobs.html?location=Hyderabad" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-location-dot"></i> Hyderabad Jobs</a>
+                    <a href="jobs.html?location=Bangalore" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-location-dot"></i> Bangalore Jobs</a>
+                    <a href="jobs.html?location=Chennai" target="_blank" rel="noopener noreferrer"><i class="fa-solid fa-location-dot"></i> Chennai Jobs</a>
                 </div>
             `;
 
             const renderFallback = () => {
                 container.innerHTML = `
                     <div class="jobs-fallback">
-                        <a href="jobs.html" class="app-card">
+                        <a href="jobs.html" class="app-card" target="_blank" rel="noopener noreferrer">
                             <h4>Latest Job Openings</h4>
                             <p>View the newest opportunities currently available.</p>
                         </a>
-                        <a href="jobs.html?exp=fresher" class="app-card">
+                        <a href="jobs.html?exp=fresher" class="app-card" target="_blank" rel="noopener noreferrer">
                             <h4>Fresher Jobs</h4>
                             <p>Explore entry-level and graduate opportunities.</p>
                         </a>
-                        <a href="jobs.html?type=Remote" class="app-card">
+                        <a href="jobs.html?type=Remote" class="app-card" target="_blank" rel="noopener noreferrer">
                             <h4>Remote Jobs</h4>
                             <p>Find work-from-home and remote opportunities.</p>
                         </a>
-                        <a href="jobs.html?location=Hyderabad" class="app-card">
+                        <a href="jobs.html?location=Hyderabad" class="app-card" target="_blank" rel="noopener noreferrer">
                             <h4>Hyderabad Jobs</h4>
                             <p>Explore opportunities in Hyderabad.</p>
                         </a>
@@ -2147,7 +2384,7 @@
 
                 container.innerHTML = html + `
                     <div style="text-align:center;margin-top:8px;">
-                        <a href="jobs.html" class="btn-nav-cta" style="display:inline-block;padding:12px 28px;">
+                        <a href="jobs.html" class="btn-nav-cta" style="display:inline-block;padding:12px 28px;" target="_blank" rel="noopener noreferrer">
                             View All Jobs <i class="fa-solid fa-arrow-right" style="margin-left:6px;"></i>
                         </a>
                     </div>
@@ -2199,18 +2436,22 @@
     <script>
         function toggleNav() {
             const nav = document.getElementById("mainNav");
-            nav.style.display = nav.style.display === "flex" ? "none" : "flex";
-            if (nav.style.display === "flex") {
-                nav.style.flexDirection = "column";
-                nav.style.position = "absolute";
-                nav.style.top = "100%";
-                nav.style.left = "0";
-                nav.style.width = "100%";
-                nav.style.background = "var(--surface)";
-                nav.style.padding = "20px";
-                nav.style.borderBottom = "1px solid var(--border)";
-            }
+            if (!nav) return;
+            nav.classList.toggle("ai-mobile-open");
         }
+
+
+        document.addEventListener("click", function(e) {
+            const nav = document.getElementById("mainNav");
+            const hamburger = document.getElementById("hamburger");
+            if (!nav || !hamburger || !nav.classList.contains("ai-mobile-open")) return;
+            if (e.target.closest("#mainNav a") && !e.target.closest(".nav-menu-trigger")) {
+                nav.classList.remove("ai-mobile-open");
+            }
+            if (!e.target.closest("#mainNav") && !e.target.closest("#hamburger")) {
+                nav.classList.remove("ai-mobile-open");
+            }
+        });
 
         function toggleDark() {
             document.body.classList.toggle("dark");
