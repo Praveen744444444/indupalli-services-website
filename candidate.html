@@ -1232,6 +1232,70 @@ body.dark-mode .sidebar{background:#090d16!important;}
 .agent-primary:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(129,140,248,.4),0 0 0 1px rgba(255,255,255,.3) inset}
 .agent-primary:active{transform:translateY(0)}
 
+/* PREMIUM RUN AI AGENT BUTTONS */
+.agent-primary{
+  min-width:220px;
+  min-height:64px;
+  position:relative;
+  overflow:hidden;
+  display:inline-flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap:11px;
+  padding:8px 13px 8px 9px;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.34);
+  background:linear-gradient(135deg,#20d7e8 0%,#5d8ff3 48%,#a879f4 100%);
+  color:#071325;
+  box-shadow:0 12px 30px rgba(34,211,238,.24),0 8px 24px rgba(129,140,248,.22),inset 0 1px 0 rgba(255,255,255,.42);
+  transition:transform .22s ease,box-shadow .22s ease,filter .22s ease;
+}
+.agent-primary:before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(110deg,transparent 18%,rgba(255,255,255,.34) 43%,transparent 68%);
+  transform:translateX(-130%);transition:transform .65s ease;
+}
+.agent-primary:hover{transform:translateY(-3px) scale(1.01);filter:saturate(1.08);box-shadow:0 18px 40px rgba(34,211,238,.34),0 12px 30px rgba(129,140,248,.32),inset 0 1px 0 rgba(255,255,255,.45)}
+.agent-primary:hover:before{transform:translateX(130%)}
+.agent-primary:active{transform:translateY(0) scale(.985)}
+.ai-btn-icon{
+  position:relative;z-index:1;flex:0 0 45px;width:45px;height:45px;border-radius:14px;
+  display:grid;place-items:center;background:rgba(5,17,35,.15);color:#071325;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 5px 13px rgba(5,17,35,.12);
+}
+.ai-btn-icon>i:first-child{font-size:20px;animation:aiBotFloat 2.8s ease-in-out infinite}
+.ai-btn-spark{position:absolute!important;right:4px;top:4px;font-size:10px;color:#fff;filter:drop-shadow(0 0 4px rgba(255,255,255,.8));animation:aiSparkPulse 1.6s ease-in-out infinite}
+.ai-btn-copy{position:relative;z-index:1;display:flex;flex-direction:column;align-items:flex-start;line-height:1.05}
+.ai-btn-copy strong{font-size:12px;letter-spacing:.75px;font-weight:900;color:#071325}
+.ai-btn-copy small{margin-top:5px;font-size:9.5px;letter-spacing:.2px;font-weight:700;color:rgba(7,19,37,.68)}
+.ai-btn-arrow{position:relative;z-index:1;margin-left:auto;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.22);font-size:12px;transition:transform .22s ease,background .22s ease}
+.agent-primary:hover .ai-btn-arrow{transform:translateX(3px);background:rgba(255,255,255,.34)}
+.ai-btn-orbit{position:absolute;width:58px;height:58px;left:-19px;top:2px;border:1px solid rgba(255,255,255,.26);border-radius:50%;animation:aiOrbitSpin 7s linear infinite}
+.ai-btn-orbit-dot{position:absolute;width:5px;height:5px;border-radius:50%;background:#fff;right:7px;top:4px;box-shadow:0 0 9px rgba(255,255,255,.9)}
+@keyframes aiBotFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+@keyframes aiSparkPulse{0%,100%{transform:scale(.75);opacity:.65}50%{transform:scale(1.15);opacity:1}}
+@keyframes aiOrbitSpin{to{transform:rotate(360deg)}}
+
+.agent-job-run-btn{
+  position:relative;overflow:hidden;width:100%;min-height:42px;
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  padding:9px 12px;border:1px solid rgba(102,232,249,.38);border-radius:11px;
+  background:linear-gradient(135deg,#122a45,#182a52 48%,#31265b);
+  color:#eaf7ff;font-size:11px;font-weight:900;letter-spacing:.55px;cursor:pointer;
+  box-shadow:0 7px 18px rgba(15,23,42,.2),inset 0 1px 0 rgba(255,255,255,.08);
+  transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease,background .2s ease;
+}
+.agent-job-run-btn:before{content:'';position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(94,234,212,.12) 50%,transparent 70%);transform:translateX(-120%);transition:transform .6s ease}
+.agent-job-run-btn:hover{transform:translateY(-2px);border-color:rgba(94,234,212,.75);background:linear-gradient(135deg,#163b5c,#253a70 48%,#49337e);box-shadow:0 11px 24px rgba(34,211,238,.15),0 0 18px rgba(129,140,248,.12),inset 0 1px 0 rgba(255,255,255,.1)}
+.agent-job-run-btn:hover:before{transform:translateX(120%)}
+.agent-job-run-btn:active{transform:translateY(0)}
+.agent-job-btn-icon{position:relative;width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:linear-gradient(135deg,#5eead4,#60a5fa 60%,#a78bfa);color:#081827;box-shadow:0 0 14px rgba(94,234,212,.22)}
+.agent-job-btn-icon>i:first-child{font-size:13px}
+.agent-job-btn-icon>i:last-child{position:absolute;right:-4px;top:-4px;font-size:7px;color:#f8fafc;filter:drop-shadow(0 0 3px rgba(255,255,255,.8));animation:aiSparkPulse 1.5s ease-in-out infinite}
+.agent-job-btn-arrow{font-size:10px;opacity:.8;transition:transform .2s ease}.agent-job-run-btn:hover .agent-job-btn-arrow{transform:translateX(3px)}
+.agent-job-run-btn:disabled,.agent-primary:disabled{cursor:not-allowed;opacity:.62;transform:none!important;filter:grayscale(.25)}
+
+
 .agent-grid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:24px 0}
 .agent-card{
   position:relative;overflow:hidden;background:rgba(255,255,255,.045);
@@ -1260,6 +1324,22 @@ body.dark-mode .sidebar{background:#090d16!important;}
 .agent-feed-title i{filter:drop-shadow(0 0 6px rgba(103,232,249,.6))}
 .agent-message{font-size:13.5px;line-height:1.65;color:#c7d2f0}
 .agent-message b{color:#a7f3ff}
+
+/* ===== LIVE ON-SCREEN AI MISSION ===== */
+.agent-card-live{margin-left:auto;font-style:normal;font-size:8px;font-weight:900;letter-spacing:.8px;color:#7dd3fc;padding:4px 7px;border:1px solid rgba(125,211,252,.22);border-radius:999px;background:rgba(125,211,252,.07)}
+.agent-mission{position:relative;z-index:1;margin:2px 0 16px;padding:15px 16px;border-radius:16px;background:rgba(3,10,25,.54);border:1px solid rgba(103,232,249,.17);overflow:hidden}
+.agent-mission:before{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(94,234,212,.06),transparent);transform:translateX(-100%)}
+.agent-mission.running:before{animation:agentMissionSweep 2.1s linear infinite}
+@keyframes agentMissionSweep{to{transform:translateX(100%)}}
+.agent-mission-head{display:grid;grid-template-columns:minmax(210px,1fr) minmax(120px,1.2fr) auto;gap:14px;align-items:center;margin-bottom:14px}
+.agent-mission-head>div:first-child{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.agent-mission-dot{width:7px;height:7px;border-radius:50%;background:#64748b}.agent-mission.running .agent-mission-dot{background:#34d399;box-shadow:0 0 0 0 rgba(52,211,153,.6);animation:agentPulseRing 1.4s infinite}.agent-mission.done .agent-mission-dot{background:#4ade80}
+.agent-mission-head b{font-size:10px;letter-spacing:.8px;color:#a7f3ff}.agent-mission-head small{font-size:10px;color:#8191ae;width:100%}
+.agent-mission-progress{height:5px;border-radius:99px;background:rgba(148,163,184,.15);overflow:hidden}.agent-mission-progress span{display:block;height:100%;width:0;border-radius:inherit;background:linear-gradient(90deg,#22d3ee,#5eead4,#a78bfa);transition:width .55s ease;box-shadow:0 0 14px rgba(94,234,212,.65)}
+.agent-mission-percent{font-size:11px}.agent-mission-head strong{font-size:11px;color:#dffbff;min-width:32px;text-align:right}
+.agent-mission-flow{display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr auto 1fr;gap:7px;align-items:center}.agent-mission-step{min-width:0;position:relative;display:flex;gap:8px;align-items:center;padding:9px;border-radius:10px;border:1px solid rgba(148,163,184,.12);background:rgba(255,255,255,.025);transition:.3s}.agent-step-icon{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:rgba(148,163,184,.09);color:#718096;font-size:10px;flex:0 0 auto}.agent-mission-step div{min-width:0}.agent-mission-step b{display:block;font-size:8px;letter-spacing:.45px;color:#8b9ab4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.agent-mission-step small{display:block;font-size:8px;color:#60708b;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.agent-mission-step em{display:none;font-style:normal;font-size:7px;font-weight:900;color:#64748b}.agent-mission-step.active{border-color:rgba(94,234,212,.55);background:rgba(45,212,191,.07);box-shadow:0 0 0 1px rgba(94,234,212,.08),0 0 22px rgba(45,212,191,.08)}.agent-mission-step.active .agent-step-icon{color:#06101e;background:linear-gradient(135deg,#5eead4,#67e8f9);box-shadow:0 0 14px rgba(94,234,212,.45);animation:agentNodePulse 1s ease-in-out infinite}.agent-mission-step.active b{color:#eafffb}.agent-mission-step.active small{color:#7dd3fc}.agent-mission-step.active em{display:block;color:#5eead4}.agent-mission-step.done{border-color:rgba(74,222,128,.3);background:rgba(34,197,94,.055)}.agent-mission-step.done .agent-step-icon{color:#86efac;background:rgba(34,197,94,.12)}.agent-mission-step.done b{color:#dfffea}.agent-mission-step.done em{display:block;color:#86efac}.agent-mission-line{height:2px;width:100%;min-width:12px;background:rgba(148,163,184,.18);position:relative;overflow:hidden}.agent-mission-line.active:after,.agent-mission-line.done:after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,#22d3ee,#5eead4);transform:translateX(-100%);animation:agentSignal .8s linear forwards}.agent-mission-line.done{background:#3dd6b2}@keyframes agentSignal{to{transform:translateX(0)}}@keyframes agentNodePulse{50%{transform:scale(1.06)}}
+.agent-job-card{opacity:0;transform:translateY(14px);transition:opacity .45s ease,transform .45s ease,border-color .2s ease,background .2s ease}.agent-job-card.reveal{opacity:1;transform:translateY(0)}
+@media(max-width:1100px){.agent-mission-flow{grid-template-columns:1fr;gap:5px}.agent-mission-line{width:2px;height:13px;margin:0 0 0 21px}.agent-mission-head{grid-template-columns:1fr auto}.agent-mission-progress{grid-column:1/-1;grid-row:2}.agent-mission-head strong{grid-column:2;grid-row:1}.agent-mission-step em{margin-left:auto}}
+@media(max-width:640px){.agent-mission{padding:13px}.agent-mission-head{gap:9px}.agent-mission-head small{font-size:9px}.agent-card-live{display:none}}
 
 @media(max-width:768px){
   .ai-agent-panel{padding:22px}
@@ -2004,15 +2084,41 @@ body.dark-mode .sidebar{background:#090d16!important;}
       <div><div class="agent-kicker"><span class="agent-live-dot"></span> PERSONAL AI CAREER AGENT • ACTIVE</div>
       <h2><i class="fa-solid fa-robot"></i> Your AI is working for your career</h2>
       <p>It analyzes your profile and active jobs, prioritizes the best opportunities, and prepares you before you apply.</p></div>
-      <button class="agent-primary" onclick="runAIAgent()"><i class="fa-solid fa-wand-magic-sparkles"></i> Run AI Agent</button>
+      <button class="agent-primary" type="button" onclick="runAIAgent()" aria-label="Run AI Agent">
+        <span class="ai-btn-orbit"><span class="ai-btn-orbit-dot"></span></span>
+        <span class="ai-btn-icon"><i class="fa-solid fa-robot"></i><i class="fa-solid fa-sparkles ai-btn-spark"></i></span>
+        <span class="ai-btn-copy"><strong>RUN AI AGENT</strong><small>Start career mission</small></span>
+        <span class="ai-btn-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+      </button>
     </div>
     <div class="agent-grid">
-      <div class="agent-card"><i class="fa-solid fa-bullseye"></i><div><b id="agentHighMatch">0</b><span>High-match jobs</span></div></div>
-      <div class="agent-card"><i class="fa-solid fa-file-circle-check"></i><div><b id="agentReady">0</b><span>Ready to prepare</span></div></div>
-      <div class="agent-card"><i class="fa-solid fa-triangle-exclamation"></i><div><b id="agentGaps">Profile</b><span>Skill-gap analysis</span></div></div>
+      <div class="agent-card"><i class="fa-solid fa-bullseye"></i><div><b id="agentHighMatch">0</b><span>High-match jobs</span></div><em class="agent-card-live" id="agentHighMatchLive">STANDBY</em></div>
+      <div class="agent-card"><i class="fa-solid fa-file-circle-check"></i><div><b id="agentReady">0</b><span>Ready to prepare</span></div><em class="agent-card-live" id="agentReadyLive">STANDBY</em></div>
+      <div class="agent-card"><i class="fa-solid fa-triangle-exclamation"></i><div><b id="agentGaps">Profile</b><span>Skill-gap analysis</span></div><em class="agent-card-live" id="agentGapsLive">WAITING</em></div>
     </div>
+
+    <!-- LIVE ON-SCREEN AI MISSION: updates while the agent scans dashboard jobs -->
+    <div class="agent-mission" id="agentMission" aria-live="polite">
+      <div class="agent-mission-head">
+        <div><span class="agent-mission-dot"></span><b id="agentMissionState">AI AGENT • STANDBY</b><small id="agentMissionMeta">Ready to scan your active opportunities</small></div>
+        <div class="agent-mission-progress"><span id="agentMissionProgress" style="width:0%"></span></div>
+        <strong id="agentMissionPercent">0%</strong>
+      </div>
+      <div class="agent-mission-flow" id="agentMissionFlow">
+        <div class="agent-mission-step" data-step="0"><span class="agent-step-icon"><i class="fa-solid fa-satellite-dish"></i></span><div><b>CONNECTING TO JOBS</b><small>Waiting for mission</small></div><em>QUEUED</em></div>
+        <div class="agent-mission-line"></div>
+        <div class="agent-mission-step" data-step="1"><span class="agent-step-icon"><i class="fa-solid fa-magnifying-glass"></i></span><div><b>SCANNING ACTIVE JOBS</b><small>Reading descriptions</small></div><em>QUEUED</em></div>
+        <div class="agent-mission-line"></div>
+        <div class="agent-mission-step" data-step="2"><span class="agent-step-icon"><i class="fa-solid fa-user-gear"></i></span><div><b>COMPARING YOUR PROFILE</b><small>Resume + profile signals</small></div><em>QUEUED</em></div>
+        <div class="agent-mission-line"></div>
+        <div class="agent-mission-step" data-step="3"><span class="agent-step-icon"><i class="fa-solid fa-brain"></i></span><div><b>CALCULATING RELEVANCE</b><small>Ranking opportunities</small></div><em>QUEUED</em></div>
+        <div class="agent-mission-line"></div>
+        <div class="agent-mission-step" data-step="4"><span class="agent-step-icon"><i class="fa-solid fa-file-circle-check"></i></span><div><b>PREPARING OPPORTUNITIES</b><small>Waiting for your approval</small></div><em>QUEUED</em></div>
+      </div>
+    </div>
+
     <div class="agent-feed" id="agentFeed">
-      <div class="agent-feed-title"><i class="fa-solid fa-sparkles"></i> Agent Activity</div>
+      <div class="agent-feed-title"><i class="fa-solid fa-sparkles"></i> AI Agent Activity • Live</div>
       <div class="agent-message"><b>AI Agent:</b> Complete your profile and resume. Then I can rank jobs and explain why they match you.</div>
     </div>
     <div id="agentApprovalQueue" style="margin-top:16px;"></div>
@@ -3747,7 +3853,11 @@ body.dark-mode .sidebar{background:#090d16!important;}
                       <div class="job-action-cell">
                           <div style="display:flex;flex-direction:column;gap:7px;width:100%;">
 <button class="apply-btn" onclick="window.openJobDetailsModalById('${jobId}')">Apply</button>
-<button class="agent-job-run-btn" type="button" onclick="window.startAIAgentForJob('${jobId}')"><i class="fa-solid fa-robot"></i> Run AI Agent</button>
+<button class="agent-job-run-btn" type="button" onclick="window.startAIAgentForJob('${jobId}')" aria-label="Run AI Agent for this job">
+    <span class="agent-job-btn-icon"><i class="fa-solid fa-robot"></i><i class="fa-solid fa-sparkles"></i></span>
+    <span>RUN AI AGENT</span>
+    <i class="fa-solid fa-arrow-right agent-job-btn-arrow"></i>
+</button>
 </div>
                       </div>
                   </div>
@@ -5107,6 +5217,29 @@ document.addEventListener('DOMContentLoaded',syncVideoSummary);
       </div>
       ${cards}
     </div>`;
+    q.querySelectorAll('.agent-job-card').forEach((card,i)=>setTimeout(()=>card.classList.add('reveal'),180+i*220));
+  }
+
+  function setAgentLiveLabel(id,text){const e=document.getElementById(id);if(e)e.textContent=text;}
+  function updateAgentMission(step,percent,state,meta){
+    const root=document.getElementById('agentMission'); if(!root)return;
+    root.classList.add('running'); root.classList.remove('done');
+    document.getElementById('agentMissionState').textContent=state||'AI AGENT • RUNNING';
+    document.getElementById('agentMissionMeta').textContent=meta||'Processing mission data...';
+    document.getElementById('agentMissionProgress').style.width=Math.max(0,Math.min(100,percent||0))+'%';
+    document.getElementById('agentMissionPercent').textContent=Math.round(percent||0)+'%';
+    document.querySelectorAll('#agentMissionFlow .agent-mission-step').forEach((n,i)=>{n.classList.toggle('done',i<step);n.classList.toggle('active',i===step);});
+    document.querySelectorAll('#agentMissionFlow .agent-mission-line').forEach((n,i)=>{n.classList.toggle('done',i<step);n.classList.toggle('active',i===step);});
+  }
+  function finishAgentMission(total,prepared){
+    const root=document.getElementById('agentMission'); if(!root)return;
+    root.classList.remove('running');root.classList.add('done');
+    document.getElementById('agentMissionState').textContent='AI MISSION COMPLETE • WAITING FOR APPROVAL';
+    document.getElementById('agentMissionMeta').textContent=`${total} active job${total===1?'':'s'} scanned • ${prepared} prepared for your review`;
+    document.getElementById('agentMissionProgress').style.width='100%';document.getElementById('agentMissionPercent').textContent='100%';
+    document.querySelectorAll('#agentMissionFlow .agent-mission-step').forEach(n=>{n.classList.add('done');n.classList.remove('active');});
+    document.querySelectorAll('#agentMissionFlow .agent-mission-line').forEach(n=>{n.classList.add('done');n.classList.remove('active');});
+    setAgentLiveLabel('agentHighMatchLive','UPDATED');setAgentLiveLabel('agentReadyLive','READY');setAgentLiveLabel('agentGapsLive','COMPLETE');
   }
 
   window.runAIAgent=async function(auto=false){
@@ -5138,12 +5271,18 @@ document.addEventListener('DOMContentLoaded',syncVideoSummary);
       return;
     }
     agentRunning=true;
+    updateAgentMission(0,4,'AI AGENT • MISSION STARTED','Connecting to '+jobs.length+' active job'+(jobs.length===1?'':'s')+'...');
+    setAgentLiveLabel('agentHighMatchLive','SCANNING');setAgentLiveLabel('agentReadyLive','SCANNING');setAgentLiveLabel('agentGapsLive','ANALYZING');
     document.getElementById('agentHighMatch').textContent='…';
     document.getElementById('agentReady').textContent='…';
     document.getElementById('agentGaps').textContent='Analyzing';
     setFeed(`<div class="agent-feed-title"><i class="fa-solid fa-spinner fa-spin"></i> AI Agent Working • 0/${jobs.length} analyzed</div><div class="agent-message"><b>AI Agent:</b> ${auto?'Started automatically after login. ':''}Opening each active job and comparing it against your resume and profile...</div>`);
     const results=[]; let cursor=0; let fallbackCount=0; let done=0; const scanLog=[];
     function renderScanFeed(){
+      const pct=18+(done/jobs.length)*64;
+      updateAgentMission(done<1?1:2,pct,'AI AGENT • SCANNING '+done+'/'+jobs.length,'Scanning '+done+' of '+jobs.length+' active jobs • comparing resume and profile signals');
+      document.getElementById('agentHighMatch').textContent=results.filter(x=>x.mode==='percentage').length;
+      document.getElementById('agentReady').textContent=results.length;
       const rows=scanLog.slice(-6).map(s=>`<div class="agent-scan-row ${s.matched?'match':'skip'}"><i class="fa-solid ${s.matched?'fa-circle-check':'fa-circle-minus'}"></i><span>${esc(s.title)}</span>${s.score!=null?`<b>${s.score}%</b>`:''}</div>`).join('');
       setFeed(`<div class="agent-feed-title"><i class="fa-solid fa-spinner fa-spin"></i> AI Agent Working • ${done}/${jobs.length} analyzed</div>${rows}`);
     }
@@ -5162,13 +5301,19 @@ document.addEventListener('DOMContentLoaded',syncVideoSummary);
     try{
       await Promise.all(Array.from({length:Math.min(CONCURRENCY,jobs.length)},worker));
       results.sort((a,b)=>(b.score??-1)-(a.score??-1));
+      updateAgentMission(3,86,'AI AGENT • CALCULATING RESULTS','Ranking analyzed opportunities and preparing the strongest available matches...');
       document.getElementById('agentHighMatch').textContent=results.filter(x=>x.mode==='percentage').length;
       document.getElementById('agentReady').textContent=results.length;
       document.getElementById('agentGaps').textContent=results.length?'Prepared':'Review';
       setFeed(`<div class="agent-feed-title"><i class="fa-solid fa-sparkles"></i> Agent Activity • Updated now</div><div class="agent-message"><b>AI Agent:</b> I opened and reviewed ${jobs.length} active job${jobs.length===1?'':'s'} against your resume and prepared <b>${results.length} job${results.length===1?'':'s'}</b> ready for your approval. ${fallbackCount?`For ${fallbackCount} job(s), no AI percentage was available, so I used a fallback relevance check.`:''} Nothing will be submitted until you review and approve each one below.</div>`);
+      updateAgentMission(4,95,'AI AGENT • PREPARING OPPORTUNITIES','Revealing prepared opportunities one by one for your review...');
       renderQueue(results);
+      setTimeout(()=>finishAgentMission(jobs.length,results.length),Math.max(700,results.length*220+350));
     }catch(e){
       console.error(e);
+      const mission=document.getElementById('agentMission'); if(mission)mission.classList.remove('running');
+      document.getElementById('agentMissionState').textContent='AI MISSION INTERRUPTED';
+      document.getElementById('agentMissionMeta').textContent='Analysis could not be completed. Check the AI service and resume access.';
       setFeed('<div class="agent-feed-title">Agent Error</div><div class="agent-message"><b>AI Agent:</b> Analysis could not be completed. Check the AI service and resume access.</div>');
     }finally{ agentRunning=false; }
   };
@@ -5248,150 +5393,48 @@ document.addEventListener('DOMContentLoaded',syncVideoSummary);
 </script>
 
 
-<!-- AI AGENT PROFESSIONAL SUCCESS POPUP: popup-only enhancement -->
+<!-- N8N-STYLE AI AGENT EXECUTION MISSION -->
 <style>
-  .ai-success-overlay{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(15,23,42,.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);animation:aiSuccessFade .18s ease}
-  .ai-success-overlay.show{display:flex}
-  .ai-success-modal{width:min(400px,94vw);position:relative;overflow:hidden;border-radius:18px;background:#ffffff;box-shadow:0 20px 50px rgba(15,23,42,.22),0 0 0 1px rgba(15,23,42,.05);color:#17233a;animation:aiSuccessPop .22s cubic-bezier(.2,.9,.25,1.1)}
-  .ai-success-close{position:absolute;right:12px;top:12px;border:0;background:transparent;color:#94a3b8;font-size:19px;line-height:1;cursor:pointer;width:30px;height:30px;border-radius:8px;z-index:2}.ai-success-close:hover{background:#f1f5f9;color:#475569}
-  .ai-success-body{position:relative;padding:32px 28px 24px;text-align:center}
-  .ai-success-robot{width:56px;height:56px;margin:0 auto 16px;position:relative;display:flex;align-items:center;justify-content:center;border-radius:16px;background:linear-gradient(135deg,#2563eb,#4f46e5)}
-  .ai-success-robot i{color:#fff;font-size:26px}
-  .ai-success-check{position:absolute;right:-6px;bottom:-6px;width:22px;height:22px;border-radius:50%;background:#16a34a;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;box-shadow:0 0 0 3px #fff}
-  .ai-success-title{margin:0;color:#0f172a;font-size:19px;line-height:1.3;font-weight:700;letter-spacing:-.2px}.ai-success-sub{margin:8px auto 0;max-width:320px;color:#64748b;font-size:13.5px;line-height:1.5}.ai-success-sub b{color:#2563eb;font-weight:700}
-  .ai-success-card{margin:18px 0 12px;padding:13px 14px;border-radius:12px;background:#f8fafc;border:1px solid #eef2f7;display:flex;align-items:flex-start;gap:11px;text-align:left}.ai-success-card-icon{flex:0 0 26px;width:26px;height:26px;border-radius:50%;background:#dcfce7;color:#16a34a;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800}.ai-success-card h4{margin:0 0 2px;font-size:13.5px;color:#1e293b;font-weight:700}.ai-success-card p{margin:0;color:#64748b;font-size:12.5px;line-height:1.4}
-  .ai-success-info{padding:10px 12px;border-radius:10px;background:#eff6ff;color:#1d4ed8;font-size:12px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:7px}.ai-success-info i{font-size:13px}
-  .ai-success-action{margin-top:18px;width:100%;border:0;border-radius:11px;padding:12px 20px;color:#fff;font-size:14px;font-weight:700;cursor:pointer;background:#2563eb;box-shadow:0 6px 14px rgba(37,99,235,.22);transition:background .15s,transform .15s}.ai-success-action:hover{background:#1d4ed8;transform:translateY(-1px)}
-  .ai-success-footer{margin-top:12px;color:#94a3b8;font-size:11px}.ai-success-footer span{color:#f2b632}
-  @keyframes aiSuccessFade{from{opacity:0}to{opacity:1}}@keyframes aiSuccessPop{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
-  @media(max-width:420px){.ai-success-body{padding:26px 20px 20px}.ai-success-title{font-size:17px}.ai-success-sub{font-size:13px}}
-
-  /* AI AGENT PROFESSIONAL CONFIRM POPUP */
-  .ai-confirm-overlay{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(15,23,42,.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);animation:aiSuccessFade .18s ease}
-  .ai-confirm-overlay.show{display:flex}
-  .ai-confirm-modal{width:min(380px,94vw);position:relative;overflow:hidden;border-radius:18px;background:#ffffff;box-shadow:0 20px 50px rgba(15,23,42,.22),0 0 0 1px rgba(15,23,42,.05);color:#17233a;animation:aiSuccessPop .22s cubic-bezier(.2,.9,.25,1.1)}
-  .ai-confirm-body{position:relative;padding:30px 26px 24px;text-align:center}
-  .ai-confirm-title{margin:0;color:#0f172a;font-size:18px;line-height:1.3;font-weight:700;letter-spacing:-.2px}
-  .ai-confirm-sub{margin:8px auto 0;max-width:300px;color:#64748b;font-size:13.5px;line-height:1.5}.ai-confirm-sub b{color:#2563eb;font-weight:700}
-  .ai-confirm-note{margin:16px 0 4px;padding:10px 12px;border-radius:10px;background:#eff6ff;color:#1d4ed8;font-size:12px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:7px;text-align:left}.ai-confirm-note i{font-size:13px;flex:0 0 auto}
-  .ai-confirm-actions{margin-top:20px;display:flex;gap:10px}
-  .ai-confirm-cancel{flex:1;border:1px solid #e2e8f0;background:#fff;color:#475569;font-size:13.5px;font-weight:600;padding:11px 16px;border-radius:10px;cursor:pointer;transition:background .15s,border-color .15s}.ai-confirm-cancel:hover{background:#f8fafc;border-color:#cbd5e1}
-  .ai-confirm-ok{flex:1.4;border:0;border-radius:10px;padding:11px 16px;color:#fff;font-size:13.5px;font-weight:700;cursor:pointer;background:#2563eb;box-shadow:0 6px 14px rgba(37,99,235,.22);transition:background .15s,transform .15s}.ai-confirm-ok:hover{background:#1d4ed8;transform:translateY(-1px)}
-  @media(max-width:400px){.ai-confirm-body{padding:26px 20px 20px}.ai-confirm-title{font-size:16.5px}.ai-confirm-actions{flex-direction:column-reverse}}
+#aiProcessingModal{display:none;position:fixed;inset:0;z-index:200000;background:rgba(2,6,23,.82);backdrop-filter:blur(12px);padding:18px;overflow:auto;align-items:center;justify-content:center}
+.ai-mission{width:min(1450px,100%);height:min(900px,calc(100vh - 36px));background:linear-gradient(135deg,#06101e,#09172a 58%,#0b1424);border:1px solid rgba(94,234,212,.22);border-radius:24px;color:#e6f0ff;box-shadow:0 30px 100px rgba(0,0,0,.55);overflow:hidden;display:flex;flex-direction:column;position:relative}
+.ai-mission:before{content:'';position:absolute;inset:0;pointer-events:none;opacity:.22;background-image:linear-gradient(rgba(94,234,212,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(94,234,212,.08) 1px,transparent 1px);background-size:34px 34px;mask-image:radial-gradient(circle at 50% 20%,#000 0,transparent 75%)}
+.ai-mission-head{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;padding:18px 24px;border-bottom:1px solid rgba(148,163,184,.14);background:rgba(5,12,24,.72)}
+.ai-live{display:inline-flex;gap:8px;align-items:center;color:#5eead4;font-size:10px;font-weight:900;letter-spacing:1.4px}.ai-live-dot{width:8px;height:8px;background:#22c55e;border-radius:50%;box-shadow:0 0 0 0 rgba(34,197,94,.6);animation:aiRing 1.3s infinite}@keyframes aiRing{70%{box-shadow:0 0 0 8px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+.ai-mission-head h2{font-size:18px;margin:5px 0 0;color:#fff;letter-spacing:-.3px}.ai-mission-head p{font-size:11px;color:#8fa2bf;margin-top:4px}.ai-close{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);color:#cbd5e1;width:38px;height:38px;border-radius:10px;cursor:pointer}
+.ai-mission-body{position:relative;z-index:1;display:grid;grid-template-columns:minmax(500px,1.3fr) minmax(330px,.7fr);gap:18px;padding:18px;min-height:0;flex:1}
+.ai-canvas{border:1px solid rgba(148,163,184,.14);border-radius:18px;background:rgba(2,8,18,.48);overflow:auto;padding:20px;position:relative}.ai-canvas-title{font-size:10px;color:#64748b;font-weight:900;letter-spacing:1px;margin-bottom:12px}.ai-job-target{display:flex;align-items:center;gap:12px;padding:13px 14px;border:1px solid rgba(94,234,212,.2);background:rgba(45,212,191,.05);border-radius:12px;margin-bottom:16px}.ai-job-target i{color:#5eead4;font-size:17px}.ai-job-target b{color:#fff;font-size:14px}.ai-job-target span{font-size:10px;color:#8fa2bf;display:block;margin-top:3px}
+.ai-flow{display:flex;flex-direction:column;align-items:center;min-width:520px;padding:4px 0 30px}.ai-node{width:min(430px,92%);border:1px solid #22324b;background:#0b1526;border-radius:14px;padding:13px 15px;display:flex;align-items:center;gap:12px;transition:.35s;position:relative}.ai-node-icon{width:38px;height:38px;border-radius:10px;background:#111f36;color:#7083a1;display:flex;align-items:center;justify-content:center}.ai-node b{font-size:12px;color:#d9e5f5}.ai-node small{display:block;color:#64748b;font-size:9px;margin-top:3px}.ai-node-state{margin-left:auto;font-size:9px;font-weight:900;color:#64748b;white-space:nowrap}.ai-node.done{border-color:rgba(34,197,94,.4);background:rgba(34,197,94,.055)}.ai-node.done .ai-node-icon{background:rgba(34,197,94,.15);color:#4ade80}.ai-node.done .ai-node-state{color:#4ade80}.ai-node.active{border-color:#5eead4;box-shadow:0 0 0 1px rgba(94,234,212,.22),0 0 28px rgba(45,212,191,.12);background:linear-gradient(90deg,rgba(45,212,191,.09),#0b1526)}.ai-node.active .ai-node-icon{background:#5eead4;color:#04201f;animation:nodePulse 1s infinite}.ai-node.active .ai-node-state{color:#5eead4}@keyframes nodePulse{50%{transform:scale(1.08);box-shadow:0 0 18px rgba(94,234,212,.7)}}
+.ai-connector{height:30px;width:2px;background:#26354c;position:relative}.ai-connector.done{background:#22c55e}.ai-connector.active:after{content:'';position:absolute;left:50%;transform:translateX(-50%);width:8px;height:8px;border-radius:50%;background:#5eead4;box-shadow:0 0 12px #5eead4;animation:signal .85s linear infinite}@keyframes signal{0%{top:-2px;opacity:0}20%{opacity:1}100%{top:26px;opacity:0}}
+.ai-side{display:flex;flex-direction:column;gap:14px;min-height:0}.ai-robot-panel{padding:18px;border-radius:18px;border:1px solid rgba(94,234,212,.15);background:radial-gradient(circle at 50% 20%,rgba(45,212,191,.1),transparent 55%),rgba(4,11,23,.7);text-align:center;position:relative;overflow:hidden}.robot{width:86px;height:86px;margin:2px auto 8px;position:relative;animation:floatBot 2.4s ease-in-out infinite}.robot-head{position:absolute;left:10px;right:10px;top:12px;height:55px;border-radius:24px;background:linear-gradient(145deg,#d9f8ff,#7dd3fc);border:3px solid #5eead4;box-shadow:0 0 24px rgba(94,234,212,.4)}.robot-eye{position:absolute;top:23px;width:11px;height:11px;border-radius:50%;background:#062033;box-shadow:0 0 9px #22d3ee}.robot-eye.l{left:25px}.robot-eye.r{right:25px}.robot-ant{position:absolute;left:50%;top:0;width:3px;height:15px;background:#5eead4}.robot-ant:after{content:'';position:absolute;top:-5px;left:-3px;width:9px;height:9px;border-radius:50%;background:#22c55e;box-shadow:0 0 12px #22c55e}.robot-body{position:absolute;bottom:2px;left:26px;width:34px;height:24px;border-radius:10px 10px 6px 6px;background:#16304c;border:2px solid #5eead4}@keyframes floatBot{50%{transform:translateY(-6px)}}.ai-robot-panel h3{font-size:13px;color:#fff}.ai-robot-panel p{font-size:10px;color:#8fa2bf;margin-top:4px}.robot-status{margin-top:9px;font:10px ui-monospace;color:#5eead4}.ai-stage{flex:1;min-height:170px;padding:16px;border-radius:16px;background:#091424;border:1px solid rgba(148,163,184,.13)}.ai-stage-kicker{font-size:9px;color:#5eead4;font-weight:900;letter-spacing:1px}.ai-stage h3{font-size:15px;color:#fff;margin:6px 0 12px}.ai-check{padding:8px 10px;margin:6px 0;border-radius:8px;background:#0d1a2d;border:1px solid #17263b;color:#7f91aa;font-size:10px;opacity:0;transform:translateY(5px)}.ai-check.show{animation:checkIn .3s forwards;color:#cbd5e1}@keyframes checkIn{to{opacity:1;transform:none}}.ai-stage-extra{margin-top:12px;font-size:10px;color:#9fb0c9}.ai-score{font-size:40px;font-weight:900;color:#5eead4;line-height:1;margin-top:10px}.ai-score span{font-size:16px}.ai-terminal{height:150px;overflow:auto;padding:13px;border-radius:14px;background:#020814;border:1px solid rgba(94,234,212,.15);font:10px/1.7 ui-monospace,monospace;color:#8ba0ba}.ai-terminal-title{color:#e6fff9;font-weight:900;margin-bottom:4px}.ai-cursor{color:#22c55e;animation:blink .8s steps(2) infinite}@keyframes blink{50%{opacity:0}}.ai-approval{display:none;padding:15px;border-radius:14px;background:#091424;border:1px solid rgba(94,234,212,.22)}.ai-approval.show{display:block}.ai-approval h3{font-size:14px;color:#fff}.ai-approval p{font-size:10px;color:#9fb0c9;line-height:1.6;margin:7px 0 12px}.ai-actions{display:flex;gap:8px}.ai-actions button{padding:10px 12px;border-radius:8px;border:1px solid #26354c;background:#101d31;color:#d9e5f5;font-size:10px;font-weight:800;cursor:pointer}.ai-actions .primary{background:#5eead4;color:#05201f;border-color:#5eead4}
+@media(max-width:900px){#aiProcessingModal{padding:8px}.ai-mission{height:calc(100vh - 16px);border-radius:16px}.ai-mission-body{grid-template-columns:1fr;padding:10px;overflow:auto}.ai-flow{min-width:0}.ai-side{min-height:auto}.ai-canvas{min-height:520px}.ai-mission-head{padding:14px}.ai-mission-head h2{font-size:14px}.ai-robot-panel{padding:12px}.ai-terminal{height:130px}}
 </style>
-<div class="ai-confirm-overlay" id="aiConfirmOverlay" role="dialog" aria-modal="true" aria-labelledby="aiConfirmTitle">
-  <div class="ai-confirm-modal">
-    <div class="ai-confirm-body">
-      <div class="ai-confirm-robot ai-success-robot" aria-hidden="true">
-        <i class="fa-solid fa-robot"></i>
-      </div>
-      <h2 class="ai-confirm-title" id="aiConfirmTitle">Approve &amp; Submit Applications?</h2>
-      <p class="ai-confirm-sub">Your AI agent is ready to submit <b id="aiConfirmCount">0 applications</b> on your behalf. It will apply only to the jobs you selected.</p>
-      <div class="ai-confirm-note"><i class="fa-solid fa-robot"></i><span>Your latest profile and resume will be used for every submission.</span></div>
-      <div class="ai-confirm-actions">
-        <button type="button" class="ai-confirm-cancel" id="aiConfirmCancelBtn">Cancel</button>
-        <button type="button" class="ai-confirm-ok" id="aiConfirmOkBtn"><i class="fa-solid fa-check"></i>&nbsp; Approve &amp; Submit</button>
-      </div>
-    </div>
+<div id="aiProcessingModal">
+ <div class="ai-mission">
+  <div class="ai-mission-head"><div><div class="ai-live"><span class="ai-live-dot"></span>AI AGENT ACTIVE · LIVE EXECUTION</div><h2>PERSONAL AI CAREER AGENT</h2><p>Automated job mission — processing available dashboard data step by step.</p></div><button class="ai-close" onclick="window.closeAIProcessing()"><i class="fa-solid fa-xmark"></i></button></div>
+  <div class="ai-mission-body">
+   <div class="ai-canvas"><div class="ai-canvas-title">MISSION EXECUTION WORKFLOW</div><div id="aiSelectedJob" class="ai-job-target"></div><div id="aiWorkflow" class="ai-flow"></div></div>
+   <div class="ai-side"><div class="ai-robot-panel"><div class="robot"><div class="robot-ant"></div><div class="robot-head"><span class="robot-eye l"></span><span class="robot-eye r"></span></div><div class="robot-body"></div></div><h3>AI AGENT EXECUTING MISSION</h3><p id="aiRobotText">Initializing secure workflow...</p><div class="robot-status">● <span id="aiRobotStatus">SYSTEM READY</span>_</div></div><div id="aiStage" class="ai-stage"></div><div class="ai-terminal"><div class="ai-terminal-title">● LIVE AI AGENT ACTIVITY <span class="ai-cursor">_</span></div><div id="aiTerminal"></div></div><div id="aiApproval" class="ai-approval"></div></div>
   </div>
-</div>
-<script>
-  function showAIAgentConfirm(count){
-    return new Promise(function(resolve){
-      const overlay=document.getElementById('aiConfirmOverlay');
-      if(!overlay){ resolve(window.confirm(`Approve and submit ${count} application(s)? The AI will submit only the jobs you selected.`)); return; }
-      document.getElementById('aiConfirmCount').textContent=`${count} application${count===1?'':'s'}`;
-      overlay.classList.add('show');
-      document.body.style.overflow='hidden';
-      const okBtn=document.getElementById('aiConfirmOkBtn');
-      const cancelBtn=document.getElementById('aiConfirmCancelBtn');
-      function cleanup(result){
-        overlay.classList.remove('show');
-        document.body.style.overflow='';
-        okBtn.removeEventListener('click',onOk);
-        cancelBtn.removeEventListener('click',onCancel);
-        document.removeEventListener('keydown',onKey);
-        resolve(result);
-      }
-      function onOk(){ cleanup(true); }
-      function onCancel(){ cleanup(false); }
-      function onKey(e){ if(e.key==='Escape') cleanup(false); }
-      okBtn.addEventListener('click',onOk);
-      cancelBtn.addEventListener('click',onCancel);
-      document.addEventListener('keydown',onKey);
-    });
-  }
-</script>
-
-<div class="ai-success-overlay" id="aiSuccessOverlay" role="dialog" aria-modal="true" aria-labelledby="aiSuccessTitle">
-  <div class="ai-success-modal">
-    <button class="ai-success-close" type="button" onclick="closeAIAgentSubmissionSuccess()" aria-label="Close">×</button>
-    <div class="ai-success-body">
-      <div class="ai-success-robot" aria-hidden="true">
-        <i class="fa-solid fa-robot"></i><div class="ai-success-check">✓</div>
-      </div>
-      <h2 class="ai-success-title" id="aiSuccessTitle">Applications Submitted Successfully!</h2>
-      <p class="ai-success-sub">Your AI Career Agent has successfully submitted <b id="aiSuccessCount">0 applications</b>.</p>
-      <div class="ai-success-card"><div class="ai-success-card-icon">✓</div><div><h4 id="aiSuccessCardTitle">Applications sent</h4><p id="aiSuccessCardText">Your selected jobs have been submitted using your latest profile and resume.</p></div></div>
-      <div class="ai-success-info"><i class="fa-solid fa-robot"></i><span>Your AI agent will continue helping you discover new opportunities.</span></div>
-      <button class="ai-success-action" type="button" onclick="closeAIAgentSubmissionSuccess()"><i class="fa-solid fa-check"></i>&nbsp; Done</button>
-      <div class="ai-success-footer">Your career journey, powered by AI <span>✦</span></div>
-    </div>
-  </div>
-</div>
-<script>
-  function showAIAgentSubmissionSuccess(success, failed){
-    const overlay=document.getElementById('aiSuccessOverlay');
-    if(!overlay) return;
-    const count=Number(success)||0;
-    document.getElementById('aiSuccessCount').textContent=`${count} application${count===1?'':'s'}`;
-    document.getElementById('aiSuccessCardTitle').textContent=`${count} application${count===1?'':'s'} submitted`;
-    const text=document.getElementById('aiSuccessCardText');
-    if(failed){ text.textContent=`${count} submitted successfully. ${failed} could not be submitted and can be retried.`; }
-    else { text.textContent='Your selected jobs have been submitted using your latest profile and resume.'; }
-    overlay.classList.add('show');
-    document.body.style.overflow='hidden';
-  }
-  function closeAIAgentSubmissionSuccess(){
-    const overlay=document.getElementById('aiSuccessOverlay');
-    if(overlay) overlay.classList.remove('show');
-    document.body.style.overflow='';
-  }
-  document.addEventListener('keydown',function(e){if(e.key==='Escape') closeAIAgentSubmissionSuccess();});
-</script>
-
-
-<style id="ai-agent-processing-style">
-.agent-job-run-btn{width:100%;padding:9px 10px;border:1px solid #bfdbfe;border-radius:8px;background:#f8fbff;color:#2563eb;font-size:10px;font-weight:800;cursor:pointer}.agent-job-run-btn:hover{background:#eff6ff}
-#aiProcessingModal{z-index:200000!important;padding:16px}.ai-processing-shell{width:min(1180px,100%);max-height:94vh;overflow:auto;background:var(--card);border-radius:20px;padding:22px;box-shadow:0 30px 80px rgba(0,0,0,.35)}
-.ai-proc-head{display:flex;justify-content:space-between;gap:18px;padding:4px 0 18px;border-bottom:1px solid var(--border)}.ai-live{display:inline-flex;gap:7px;align-items:center;color:#059669;font-size:10px;font-weight:900;letter-spacing:.7px}.ai-pulse{width:8px;height:8px;background:#10b981;border-radius:50%;animation:aiPulse 1s infinite}.ai-proc-head h2{font-size:20px;color:var(--navy);margin:7px 0}.ai-proc-head p{font-size:12px;color:var(--text-muted)}.ai-job-chip{margin-top:12px;padding:11px 13px;background:#f8fafc;border:1px solid var(--border);border-radius:10px;font-size:12px}.ai-proc-grid{display:grid;grid-template-columns:310px 1fr;gap:18px;margin-top:18px}.ai-workflow{border:1px solid var(--border);border-radius:14px;padding:12px;background:#fbfcfe}.ai-step{position:relative;padding:10px 10px 10px 30px;border-radius:9px;font-size:11px;font-weight:800;color:#94a3b8}.ai-step:before{content:"○";position:absolute;left:9px;font-size:16px;top:8px}.ai-step.done{color:#334155}.ai-step.done:before{content:"✓";color:#10b981}.ai-step.active{background:#ecfdf5;color:#065f46;box-shadow:0 0 0 1px #a7f3d0}.ai-step.active:before{content:"●";color:#10b981;animation:aiPulse 1s infinite}.ai-step:not(:last-child):after{content:"↓";position:absolute;left:12px;bottom:-9px;color:#cbd5e1;font-size:12px}.ai-stage{min-height:360px;border:1px solid var(--border);border-radius:14px;padding:20px}.ai-stage-kicker{font-size:10px;color:#2563eb;font-weight:900;letter-spacing:.8px}.ai-stage h3{color:var(--navy);margin:7px 0 15px;font-size:19px}.ai-checklist{display:grid;gap:9px}.ai-check{padding:11px 13px;background:#f8fafc;border-radius:9px;font-size:12px;color:#64748b;border:1px solid #eef2f7}.ai-check.show{animation:aiIn .35s ease forwards;color:#334155}.ai-score{font-size:56px;font-weight:900;color:#0f172a;line-height:1}.ai-bars{display:grid;gap:10px;margin-top:16px}.ai-bar-row{font-size:11px;font-weight:700}.ai-bar{height:7px;background:#e2e8f0;border-radius:99px;margin-top:5px;overflow:hidden}.ai-bar span{display:block;height:100%;background:#10b981;border-radius:99px;transition:width .7s}.ai-terminal{margin-top:16px;background:#0b1220;color:#b7c4d8;border-radius:12px;padding:13px;font:11px/1.7 ui-monospace,SFMono-Regular,Menlo,monospace;min-height:110px}.ai-terminal-title{color:#fff;font-weight:800;margin-bottom:5px}.ai-cursor{color:#10b981;animation:blink 1s steps(2) infinite}.ai-approval{display:none;margin-top:18px;padding:18px;border-radius:12px;background:#f8fafc;border:1px solid var(--border)}.ai-approval.show{display:block;animation:aiIn .35s ease}.ai-approval h3{color:var(--navy);margin-bottom:7px}.ai-approval p{font-size:12px;color:#64748b;margin-bottom:13px}.ai-approve-actions{display:flex;gap:9px;flex-wrap:wrap}.ai-approve-actions button{padding:10px 14px;border-radius:8px;border:1px solid var(--border);font-weight:800;cursor:pointer}.ai-submit{background:var(--navy);color:#fff;border-color:var(--navy)!important}@keyframes aiPulse{50%{opacity:.35;box-shadow:0 0 0 6px rgba(16,185,129,.12)}}@keyframes aiIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}@keyframes blink{50%{opacity:0}}@media(max-width:768px){.ai-proc-grid{grid-template-columns:1fr}.ai-workflow{display:grid;grid-template-columns:1fr 1fr}.ai-step{font-size:10px}.ai-step:not(:last-child):after{display:none}.ai-proc-head{align-items:flex-start}.ai-processing-shell{padding:15px}.ai-stage{min-height:300px}}
-body.dark-mode .ai-workflow,body.dark-mode .ai-check,body.dark-mode .ai-approval{background:#0f172a;border-color:#1e293b}body.dark-mode .ai-job-chip{background:#0f172a}body.dark-mode .ai-score{color:#fff}
-</style>
-<div id="aiProcessingModal" class="modal">
- <div class="ai-processing-shell">
-  <button class="modal-close-btn" onclick="window.closeAIProcessing()"><i class="fa-solid fa-xmark"></i></button>
-  <div class="ai-proc-head"><div><div class="ai-live"><span class="ai-pulse"></span> AI AGENT ACTIVE</div><h2><i class="fa-solid fa-robot"></i> PERSONAL AI CAREER AGENT</h2><p>Analyzing Job Opportunity — visual workflow using available job and profile data.</p><div id="aiSelectedJob" class="ai-job-chip"></div></div></div>
-  <div class="ai-proc-grid"><div id="aiWorkflow" class="ai-workflow"></div><div><div id="aiStage" class="ai-stage"></div><div class="ai-terminal"><div class="ai-terminal-title">● AI AGENT ACTIVITY<span class="ai-cursor">_</span></div><div id="aiTerminal"></div></div><div id="aiApproval" class="ai-approval"></div></div></div>
  </div>
 </div>
-
 <script>
 (function(){
-const steps=['Job Analysis','Candidate Profile Analysis','Skills Matching','Qualification Analysis','Experience Matching','Salary Analysis','Location Analysis','Job Requirements','AI Job Match Score','Application Preparation','User Approval'];
-let aiJob=null, aiTimer=null;
+const steps=[['fa-magnifying-glass','JOB ANALYSIS'],['fa-file-lines','RESUME / PROFILE SCAN'],['fa-brain','SKILLS MATCHING'],['fa-graduation-cap','QUALIFICATION CHECK'],['fa-briefcase','EXPERIENCE ANALYSIS'],['fa-indian-rupee-sign','SALARY ANALYSIS'],['fa-location-dot','LOCATION ANALYSIS'],['fa-list-check','REQUIREMENTS CHECK'],['fa-chart-line','AI JOB MATCH SCORE'],['fa-paper-plane','APPLICATION PREPARATION'],['fa-user-shield','USER APPROVAL']];
+let aiJob=null, timer=null, cancelled=false;
 const esc=x=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));
-function profile(){return {name:document.getElementById('candidateFullName')?.value||'Candidate',qualification:document.getElementById('candidateEducation')?.value||'Profile data unavailable',experience:document.getElementById('candidateExperience')?.value||'Profile data unavailable',location:document.getElementById('candidateLocation')?.value||document.getElementById('candidateAddress')?.value||'Preference not specified',salary:document.getElementById('candidateSalary')?.value||'Not specified',skills:document.getElementById('candidateSkills')?.value||document.getElementById('candidateAbout')?.value||''};}
-function renderWorkflow(active){document.getElementById('aiWorkflow').innerHTML=steps.map((x,i)=>`<div class="ai-step ${i<active?'done':i===active?'active':''}">${i<active?'✓ ':''}${esc(x)}${i===active?' <small>AI PROCESSING...</small>':''}</div>`).join('')}
-function log(msg){const t=document.getElementById('aiTerminal');t.innerHTML+=`<div>&gt; ${esc(msg)}</div>`;t.parentElement.scrollTop=t.parentElement.scrollHeight}
-function stage(title,items,extra=''){document.getElementById('aiStage').innerHTML=`<div class="ai-stage-kicker">STEP ${String(Math.min(steps.indexOf(title)+1,11)).padStart(2,'0')} / ${esc(title.toUpperCase())}</div><h3>${esc(title)}</h3><div class="ai-checklist">${items.map(x=>`<div class="ai-check">→ ${esc(x)}</div>`).join('')}</div>${extra}`;document.querySelectorAll('.ai-check').forEach((e,i)=>setTimeout(()=>e.classList.add('show'),i*180))}
-function score(job){let cached=window.getSavedJobScore?window.getSavedJobScore(job):null;return Number.isFinite(Number(cached))?Math.round(Number(cached)):null}
-function stageData(i,p,j,sc){const title=steps[i];const salary=j.salary||'Salary not specified';const loc=j.location||'Remote / not specified';switch(i){case 0:return [title,['Reading job description...','Detecting job title: '+(j.title||'Selected job'),'Extracting available requirements','Checking location: '+loc,'Checking employment type'],`<p style="margin-top:15px;color:#10b981;font-weight:800;font-size:12px">✓ Job details loaded successfully</p>`];case 1:return [title,['Accessing available candidate profile','Checking master resume availability','Identifying skills and work history','Checking education'],`<p style="margin-top:15px;font-size:11px;color:#64748b">This screen uses data already available in the dashboard. Missing data is shown as unavailable rather than invented.</p>`];case 2:return [title,['Comparing job requirements with candidate profile','SQL / Excel / analysis keywords checked when available','Identifying strong and missing signals'],`<div style="margin-top:18px"><b style="font-size:12px">AI MATCH RESULT</b><div class="ai-score">${sc??'—'}${sc!=null?'%':''}</div><p style="font-size:12px;color:#64748b;margin-top:8px">Score is ${sc!=null?'from the existing job-match analysis when available':'not available yet — no fake score generated'}.</p></div>`];case 3:return [title,['Job qualification requirements reviewed','Candidate qualification: '+p.qualification],`<p style="margin-top:15px;font-size:12px">Result depends on structured profile/job data.</p>`];case 4:return [title,['Job experience requirement: '+(j.experience||'Not specified'),'Candidate experience: '+p.experience]];case 5:return [title,['Job salary: '+salary,'Candidate preference: '+p.salary,'Compatibility requires available structured salary data']];case 6:return [title,['Job location: '+loc,'Candidate preference: '+p.location]];case 7:return [title,['Employment type','Notice period','Required certifications','Technical requirements','Preferred qualifications']];case 8:return [title,['Calculating available compatibility signals'],`<div class="ai-score">${sc??'—'}${sc!=null?'%':''}</div><div class="ai-bars">${[['Skills Match',sc],['Experience Match',null],['Qualification Match',null],['Salary Match',null],['Location Match',null]].map(([n,v])=>`<div class="ai-bar-row">${n} ${v!=null?v+'%':'Data unavailable'}<div class="ai-bar"><span style="width:${v!=null?v:0}%"></span></div></div>`).join('')}</div>`];case 9:return [title,['Selecting relevant resume information','Highlighting matching skills','Preparing application data','Reviewing job requirements']];default:return [title,['Waiting for your explicit approval']];}}
-window.startAIAgentForJob=function(jobId){const j=window.allJobsData?.[String(jobId)]||Object.values(window.allJobsData||{}).find(x=>String(x.id)===String(jobId));if(!j){window.showCustomAlert?.('The selected job could not be loaded.','Job Unavailable','warning');return}aiJob=j;document.getElementById('aiProcessingModal').style.display='flex';document.getElementById('aiSelectedJob').innerHTML=`<b>${esc(j.title||'Selected Job')}</b><br><span>${esc(j.company||j.company_name||'Company not specified')} · ${esc(j.location||'Location not specified')}</span>`;document.getElementById('aiTerminal').innerHTML='';document.getElementById('aiApproval').className='ai-approval';run(0)};
-window.closeAIProcessing=function(){clearTimeout(aiTimer);document.getElementById('aiProcessingModal').style.display='none'};
-function run(i){if(!aiJob)return;const p=profile(),sc=score(aiJob);renderWorkflow(i);const d=stageData(i,p,aiJob,sc);stage(d[0],d[1],d[2]);log(i===0?'AI Agent started analyzing: '+(aiJob.title||'selected job'):'Completed '+steps[i-1]+'. Starting '+steps[i]+'...');if(i<9){aiTimer=setTimeout(()=>run(i+1),1500);return}if(i===9){aiTimer=setTimeout(()=>finish(sc),1800)}}
-function finish(sc){renderWorkflow(10);stage('User Approval',['AI analysis workflow complete','Application has not been submitted','Waiting for your explicit approval']);log('Waiting for user approval...');const a=document.getElementById('aiApproval');a.className='ai-approval show';a.innerHTML=`<h3>AI ANALYSIS COMPLETE</h3><p><b>Job:</b> ${esc(aiJob.title||'Selected Job')}<br><b>AI Match Score:</b> ${sc!=null?sc+'%':'Unavailable'}<br><br>Your application is ready for review. The AI has <b>not</b> submitted anything.</p><div class="ai-approve-actions"><button onclick="window.closeAIProcessing()">Cancel</button><button class="ai-submit" onclick="window.reviewAndApproveAIJob()">Review &amp; Approve Application</button></div>`}
+function profile(){return {qualification:document.getElementById('candidateEducation')?.value||'Profile data unavailable',experience:document.getElementById('candidateExperience')?.value||'Profile data unavailable',location:document.getElementById('candidateLocation')?.value||document.getElementById('candidateAddress')?.value||'Preference not specified',salary:document.getElementById('candidateSalary')?.value||'Not specified'};}
+function savedScore(j){const v=window.getSavedJobScore?window.getSavedJobScore(j):null;return Number.isFinite(Number(v))?Math.round(Number(v)):null}
+function renderFlow(active){const root=document.getElementById('aiWorkflow');root.innerHTML='';steps.forEach((s,i)=>{const n=document.createElement('div');n.className='ai-node '+(i<active?'done':i===active?'active':'');n.innerHTML=`<div class="ai-node-icon"><i class="fa-solid ${s[0]}"></i></div><div><b>${s[1]}</b><small>${i<active?'✓ COMPLETED':i===active?'● AI PROCESSING...':'○ WAITING'}</small></div><span class="ai-node-state">${i<active?'COMPLETED':i===active?'RUNNING':'QUEUED'}</span>`;root.appendChild(n);if(i<steps.length-1){const c=document.createElement('div');c.className='ai-connector '+(i<active?'done':i===active?'active':'');root.appendChild(c)}});const a=root.querySelector('.active');if(a)a.scrollIntoView({block:'center',behavior:'smooth'});}
+function log(msg){const t=document.getElementById('aiTerminal');const d=document.createElement('div');d.textContent='> '+msg;t.appendChild(d);t.scrollTop=t.scrollHeight}
+function stage(title,items,extra=''){document.getElementById('aiRobotText').textContent=items[0]||'Processing mission data...';document.getElementById('aiRobotStatus').textContent='PROCESSING';document.getElementById('aiStage').innerHTML=`<div class="ai-stage-kicker">LIVE STEP / ${title}</div><h3>${title}</h3>${items.map(x=>`<div class="ai-check">→ ${esc(x)}</div>`).join('')}<div class="ai-stage-extra">${extra}</div>`;document.querySelectorAll('#aiStage .ai-check').forEach((e,i)=>setTimeout(()=>e.classList.add('show'),i*150));}
+function data(i,p,j,sc){const loc=j.location||'Not specified', sal=j.salary||'Not specified';switch(i){case 0:return ['JOB ANALYSIS',['Connecting to selected job data...','Reading '+(j.title||'selected job')+'...','Extracting available requirements...','Checking location and employment details...'],'Selected job loaded from your existing dashboard.'];case 1:return ['RESUME / PROFILE SCAN',['Accessing available candidate profile...','Checking resume availability...','Scanning skills, education and work history...','Missing data will remain unavailable — nothing is invented.'],'Using existing dashboard/profile information only.'];case 2:return ['SKILLS MATCHING',['Comparing available job requirements...','Scanning candidate skill signals...','Checking matched and missing keywords...','Calculating available compatibility signals...'],sc!=null?`Existing match score detected: <b>${sc}%</b>.`:'No verified match score is available yet.'];case 3:return ['QUALIFICATION CHECK',['Reviewing job qualification requirements...','Candidate qualification: '+p.qualification,'Checking structured compatibility data...'],'Result requires real structured job/profile data.'];case 4:return ['EXPERIENCE ANALYSIS',['Reading job experience requirement: '+(j.experience||'Not specified'),'Candidate experience: '+p.experience,'Comparing available experience data...'],''];case 5:return ['SALARY ANALYSIS',['Job salary: '+sal,'Candidate preference: '+p.salary,'Checking available salary information...'],'No salary result is invented.'];case 6:return ['LOCATION ANALYSIS',['Job location: '+loc,'Candidate preference: '+p.location,'Checking location compatibility...'],''];case 7:return ['REQUIREMENTS CHECK',['Checking employment type...','Checking notice period...','Checking certifications...','Checking technical and preferred requirements...'],''];case 8:return ['AI JOB MATCH SCORE',['Collecting verified compatibility signals...','Checking existing saved match analysis...','Preparing score summary...'],sc!=null?`<div class="ai-score">${sc}<span>%</span></div>`:'<div class="ai-score">—</div><div>Verified score unavailable. No fake percentage generated.</div>'];case 9:return ['APPLICATION PREPARATION',['Selecting relevant application information...','Preparing available application data...','Reviewing before submission...','No application is submitted automatically.'],'Waiting for your explicit approval.'];default:return ['USER APPROVAL',['Mission complete.','Application has not been submitted.','Waiting for your explicit approval...'],''];}}
+window.startAIAgentForJob=function(jobId){const j=window.allJobsData?.[String(jobId)]||Object.values(window.allJobsData||{}).find(x=>String(x.id)===String(jobId));if(!j){window.showCustomAlert?.('The selected job could not be loaded.','Job Unavailable','warning');return}aiJob=j;cancelled=false;clearTimeout(timer);document.getElementById('aiProcessingModal').style.display='flex';document.getElementById('aiSelectedJob').innerHTML=`<i class="fa-solid fa-crosshairs"></i><div><b>${esc(j.title||'Selected Job')}</b><span>${esc(j.company||j.company_name||'Company not specified')} · ${esc(j.location||'Location not specified')}</span></div>`;document.getElementById('aiTerminal').innerHTML='';document.getElementById('aiApproval').className='ai-approval';log('Mission initialized.');log('Target job locked: '+(j.title||'Selected Job'));run(0)};
+window.closeAIProcessing=function(){cancelled=true;clearTimeout(timer);document.getElementById('aiProcessingModal').style.display='none'};
+function run(i){if(cancelled||!aiJob)return;const p=profile(),sc=savedScore(aiJob);renderFlow(i);const d=data(i,p,aiJob,sc);stage(d[0],d[1],d[2]);log(i===0?'AI Agent started scanning job data.':'Completed '+steps[i-1][1]+'. Signal transferred to '+steps[i][1]+'.');if(i<9){timer=setTimeout(()=>run(i+1),1750)}else{timer=setTimeout(()=>finish(sc),2100)}}
+function finish(sc){if(cancelled)return;renderFlow(10);stage('USER APPROVAL',['Mission complete.','Application is ready for review.','Waiting for your explicit approval...']);document.getElementById('aiRobotStatus').textContent='WAITING FOR USER';log('AI mission complete. Waiting for user approval.');const a=document.getElementById('aiApproval');a.className='ai-approval show';a.innerHTML=`<h3>AI ANALYSIS COMPLETE</h3><p><b>Job:</b> ${esc(aiJob.title||'Selected Job')}<br><b>Verified Match Score:</b> ${sc!=null?sc+'%':'Unavailable'}<br><br>The system has <b>not submitted</b> the application.</p><div class="ai-actions"><button onclick="window.closeAIProcessing()">CANCEL</button><button class="primary" onclick="window.reviewAndApproveAIJob()">REVIEW &amp; APPROVE APPLICATION</button></div>`}
 window.reviewAndApproveAIJob=function(){if(!aiJob)return;window.closeAIProcessing();window.openApplyModalForJob(aiJob.id,aiJob.title,aiJob.company||aiJob.company_name||'')};
 })();
 </script>
+
 </body>
 </html>
