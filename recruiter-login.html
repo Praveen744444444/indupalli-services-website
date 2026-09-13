@@ -155,14 +155,67 @@
     }
     .login-security i { color:var(--green); }
 
-    /* ── POPUPS ── */
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes popCenter { 0% { opacity: 0; transform: scale(0.92); } 100% { opacity: 1; transform: scale(1); } }
-
-    .popup-overlay { display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(6px); justify-content: center; align-items: center; z-index: 99999; padding: 20px; animation: fadeIn 0.25s ease forwards; }
-    .popup-box { background: #ffffff; width: 100%; max-width: 440px; padding: 36px 32px; border-radius: 24px; text-align: center; box-shadow: var(--shadow-lg); position: relative; animation: popCenter 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-    .popup-box button { background: var(--primary); color: #fff; border: none; padding: 14px 28px; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; transition: all 0.2s; }
-    .popup-box button:hover { background: var(--primary-dark); }
+    /* ── UNIFIED PROFESSIONAL POPUP SYSTEM ── */
+    @keyframes popupFadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes popupSlideIn {
+        from { opacity: 0; transform: translateY(12px) scale(0.98); }
+        to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .popup-overlay {
+        display:none; position:fixed; inset:0; z-index:99999; padding:20px;
+        justify-content:center; align-items:center;
+        background:rgba(15,23,42,.64);
+        backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+        animation:popupFadeIn .22s ease forwards;
+    }
+    .popup-box {
+        width:100%; max-width:430px; padding:32px; position:relative;
+        text-align:center; background:#fff; border:1px solid rgba(226,232,240,.95);
+        border-radius:18px; box-shadow:0 24px 70px rgba(15,23,42,.28);
+        animation:popupSlideIn .28s cubic-bezier(.16,1,.3,1) forwards;
+    }
+    .popup-icon-badge {
+        width:56px; height:56px; margin:0 auto 18px; border-radius:50%;
+        display:flex; align-items:center; justify-content:center;
+        font-size:22px; background:#eff6ff; color:var(--primary);
+    }
+    .popup-title {
+        margin:0 0 9px; color:var(--navy); font-size:21px; line-height:1.3;
+        font-weight:800; letter-spacing:-.25px;
+    }
+    .popup-message {
+        margin:0 0 26px; color:var(--text-muted); font-size:14.5px; line-height:1.65;
+    }
+    .popup-actions { display:flex; gap:10px; }
+    .popup-box button {
+        min-height:48px; padding:12px 20px; border:0; border-radius:10px;
+        background:var(--primary); color:#fff; font-size:14.5px; font-weight:700;
+        cursor:pointer; transition:transform .18s ease,box-shadow .18s ease,background .18s ease;
+    }
+    .popup-box button:hover { transform:translateY(-1px); box-shadow:0 8px 18px rgba(37,99,235,.20); }
+    .popup-box button:active { transform:translateY(0); }
+    .popup-secondary-btn {
+        background:#f8fafc !important; color:#475569 !important;
+        border:1px solid #e2e8f0 !important; box-shadow:none !important;
+    }
+    .popup-secondary-btn:hover { background:#f1f5f9 !important; }
+    .popup-form-group { margin-bottom:20px; text-align:left; }
+    .popup-form-group label {
+        display:block; margin-bottom:7px; color:#334155; font-size:13px; font-weight:700;
+    }
+    .popup-form-group input {
+        width:100%; min-height:48px; padding:0 14px; box-sizing:border-box;
+        border:1px solid #dbe3ee; border-radius:10px; outline:none;
+        color:#1e293b; background:#fff; font-size:14px;
+        transition:border-color .18s ease,box-shadow .18s ease;
+    }
+    .popup-form-group input:focus {
+        border-color:var(--primary); box-shadow:0 0 0 3px rgba(37,99,235,.10);
+    }
+    @media(max-width:480px) {
+        .popup-box { padding:28px 22px; border-radius:16px; }
+        .popup-actions { flex-direction:column; }
+    }
 
     @media(max-width: 900px) {
         body { flex-direction: column; }
@@ -633,35 +686,29 @@
     </div>
 </div>
 
-<!-- POPUP (SUCCESS/ERROR) -->
+<!-- UNIFIED NOTIFICATION POPUP -->
 <div class="popup-overlay" id="popup">
-    <div class="popup-box">
-        <div id="popupIconBadge" style="width:64px; height:64px; border-radius:50%; background:var(--primary); color:#fff; font-size:28px; font-weight:800; display:flex; align-items:center; justify-content:center; margin:0 auto 20px;">✓</div>
-        <h4 id="popupTitle" style="font-size:20px; font-weight:800; color:var(--navy); margin-bottom:8px;"></h4>
-        <p id="popupText" style="font-size:15px; color:var(--text-muted); line-height:1.6; margin:0 0 28px;"></p>
-        <button id="popupOkBtn" onclick="closePopup()" style="width: 100%;">Okay</button>
+    <div class="popup-box" role="dialog" aria-modal="true" aria-labelledby="popupTitle">
+        <div id="popupIconBadge" class="popup-icon-badge"><i class="fa-solid fa-circle-check"></i></div>
+        <h4 id="popupTitle" class="popup-title"></h4>
+        <p id="popupText" class="popup-message"></p>
+        <button id="popupOkBtn" type="button" onclick="closePopup()" style="width:100%;">Okay</button>
     </div>
 </div>
 
-<!-- FORGOT PASSWORD MODAL (FIREBASE INTEGRATED) -->
+<!-- FORGOT PASSWORD MODAL (UNIFIED DESIGN) -->
 <div class="popup-overlay" id="forgotModal">
-    <div class="popup-box">
-        <div style="width:64px; height:64px; border-radius:50%; background:#eff6ff; color:var(--primary); font-size:26px; display:flex; align-items:center; justify-content:center; margin:0 auto 16px;">
-            <i class="fa-solid fa-key"></i>
+    <div class="popup-box" role="dialog" aria-modal="true" aria-labelledby="forgotTitle">
+        <div class="popup-icon-badge"><i class="fa-solid fa-key"></i></div>
+        <h4 id="forgotTitle" class="popup-title">Reset Password</h4>
+        <p class="popup-message">Enter your registered recruiter email to receive a secure password reset link.</p>
+        <div class="popup-form-group">
+            <label for="resetEmail">Registered Email</label>
+            <input type="email" id="resetEmail" placeholder="recruiter@company.com" autocomplete="email">
         </div>
-        <h4 style="font-size:20px; font-weight:800; color:var(--navy); margin-bottom:8px;">Reset Password</h4>
-        <p style="font-size:14px; color:var(--text-muted); line-height:1.6; margin-bottom:20px;">
-            Enter your registered recruiter email to reset your password.
-        </p>
-
-        <div style="margin-bottom: 20px; text-align: left;">
-            <label for="resetEmail" style="display:block; margin-bottom:6px;">Registered Email</label>
-            <input type="email" id="resetEmail" placeholder="recruiter@company.com">
-        </div>
-
-        <div style="display:flex; gap:10px;">
-            <button type="button" onclick="closeForgotModal()" style="flex:1; background:#f1f5f9; color:var(--text-muted);">Cancel</button>
-            <button type="button" id="btnSendReset" onclick="sendPasswordReset()" style="flex:1.4;">Send Reset Link</button>
+        <div class="popup-actions">
+            <button type="button" class="popup-secondary-btn" onclick="closeForgotModal()" style="flex:1;">Cancel</button>
+            <button type="button" id="btnSendReset" onclick="sendPasswordReset()" style="flex:1.35;">Send Reset Link</button>
         </div>
     </div>
 </div>
@@ -735,11 +782,16 @@ window.sendPasswordReset = async function() {
         showPopup("✉️ Reset Link Sent", `A password reset link has been sent to ${resetEmail}. Please check your inbox or spam folder.`);
     } catch (error) {
         let msg = "Failed to send reset link. Please check the email address and try again.";
+
         if (error.code === "auth/user-not-found") {
             msg = "No account found with this email address.";
         } else if (error.code === "auth/invalid-email") {
             msg = "Please enter a valid email address.";
         }
+
+        // Close the reset modal first. Otherwise it remains above the
+        // error popup because both overlays use the same z-index.
+        closeForgotModal();
         showPopup("❌ Reset Error", msg);
     } finally {
         btn.disabled = false;
@@ -750,16 +802,32 @@ window.sendPasswordReset = async function() {
 
 <script>
 function showPopup(title, text) {
-    let color = "#2563eb", icon = "✓";
-    if (title.includes("❌")) color = "#ef4444";
-    if (title.includes("⚠️")) color = "#f59e0b";
-    if (title.includes("✉️")) color = "#10b981";
+    const rawTitle = title || "";
+    let type = "info";
 
-    document.getElementById("popupTitle").textContent = title;
+    if (rawTitle.includes("❌") || /failed|error/i.test(rawTitle)) type = "error";
+    else if (rawTitle.includes("⚠️") || /missing|required|invalid/i.test(rawTitle)) type = "warning";
+    else if (rawTitle.includes("✉️") || rawTitle.includes("✅") || /successful|sent/i.test(rawTitle)) type = "success";
+
+    const styles = {
+        success: { icon: "fa-circle-check", color: "#059669", background: "#ecfdf5" },
+        error:   { icon: "fa-circle-exclamation", color: "#dc2626", background: "#fef2f2" },
+        warning: { icon: "fa-triangle-exclamation", color: "#d97706", background: "#fffbeb" },
+        info:    { icon: "fa-circle-info", color: "#2563eb", background: "#eff6ff" }
+    };
+
+    const config = styles[type];
+    const cleanTitle = rawTitle.replace(/^[^A-Za-z0-9]+\s*/, "");
+    const badge = document.getElementById("popupIconBadge");
+    const button = document.getElementById("popupOkBtn");
+
+    document.getElementById("popupTitle").textContent = cleanTitle;
     document.getElementById("popupText").textContent = text;
-    document.getElementById("popupIconBadge").textContent = icon;
-    document.getElementById("popupIconBadge").style.background = color;
-    document.getElementById("popupOkBtn").style.background = color;
+    badge.innerHTML = `<i class="fa-solid ${config.icon}"></i>`;
+    badge.style.color = config.color;
+    badge.style.background = config.background;
+    button.style.background = config.color;
+    button.style.boxShadow = "none";
     document.getElementById("popup").style.display = "flex";
 }
 
