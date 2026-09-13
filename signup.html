@@ -138,6 +138,54 @@ body { min-height:100vh; display:flex; background:var(--bg-light); color:var(--t
   .left-bottom { display:none; }
   .right-panel { width:100%; padding:40px 24px 60px; box-shadow:none; }
 }
+
+/* ===== UNIFIED PROFESSIONAL POPUP SYSTEM ===== */
+.popup-overlay, .modal-overlay, [id*="AlertModal"], [id*="ConfirmModal"] {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+.popup-box, .modal-box {
+    box-sizing: border-box;
+    border-radius: 18px !important;
+    border: 1px solid #e5e7eb !important;
+    box-shadow: 0 24px 70px rgba(15,23,42,.28) !important;
+}
+.unified-popup {
+    position: fixed; inset: 0; z-index: 9999999;
+    display: none; align-items: center; justify-content: center;
+    padding: 20px; background: rgba(15,23,42,.68);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+}
+.unified-popup-card {
+    width: min(430px, calc(100vw - 40px)); padding: 32px; box-sizing: border-box;
+    background: #fff; border: 1px solid #e5e7eb; border-radius: 18px;
+    text-align: center; box-shadow: 0 24px 70px rgba(15,23,42,.28);
+}
+.unified-popup-icon {
+    width:58px; height:58px; margin:0 auto 18px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-size:23px;
+}
+.unified-popup-title {
+    margin:0 0 9px; color:#0f172a; font-size:20px; line-height:1.3; font-weight:800;
+}
+.unified-popup-message {
+    margin:0 0 25px; color:#64748b; font-size:14.5px; line-height:1.65;
+}
+.unified-popup-actions { display:flex; gap:10px; }
+.unified-popup button {
+    min-height:48px; border-radius:10px; padding:12px 18px; font-size:14px;
+    font-weight:700; cursor:pointer; border:0; flex:1;
+}
+.unified-popup-primary { color:#fff; }
+.unified-popup-secondary {
+    background:#f8fafc !important; color:#475569 !important;
+    border:1px solid #e2e8f0 !important;
+}
+@media(max-width:480px){
+    .unified-popup-card{padding:28px 22px;border-radius:16px;}
+    .unified-popup-actions{flex-direction:column;}
+}
+
 </style>
 </head>
 <body>
@@ -831,5 +879,62 @@ window.addEventListener("click", (e) => {
   if (e.target.id === "popup") closePopup();
 });
 </script>
+
+<!-- UNIVERSAL PROFESSIONAL POPUP -->
+<div id="unifiedPopup" class="unified-popup">
+  <div class="unified-popup-card" role="dialog" aria-modal="true">
+    <div id="unifiedPopupIcon" class="unified-popup-icon"><i class="fa-solid fa-circle-info"></i></div>
+    <h3 id="unifiedPopupTitle" class="unified-popup-title">Notice</h3>
+    <p id="unifiedPopupMessage" class="unified-popup-message"></p>
+    <div id="unifiedPopupActions" class="unified-popup-actions">
+      <button id="unifiedPopupCancel" class="unified-popup-secondary" style="display:none;">Cancel</button>
+      <button id="unifiedPopupOk" class="unified-popup-primary">Okay</button>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+ const themes={
+  success:{c:"#059669",b:"#ecfdf5",i:"fa-solid fa-circle-check"},
+  error:{c:"#dc2626",b:"#fef2f2",i:"fa-solid fa-circle-exclamation"},
+  warning:{c:"#d97706",b:"#fffbeb",i:"fa-solid fa-triangle-exclamation"},
+  info:{c:"#2563eb",b:"#eff6ff",i:"fa-solid fa-circle-info"}
+ };
+ function typeOf(v){
+  v=String(v||"").toLowerCase();
+  if(v.includes("error")||v.includes("failed"))return"error";
+  if(v.includes("success")||v.includes("saved")||v.includes("deleted")||v.includes("sent"))return"success";
+  if(v.includes("warning")||v.includes("confirm")||v.includes("delete"))return"warning";
+  return"info";
+ }
+ let callback=null;
+ function open(message,title,type,confirmMode){
+  const m=document.getElementById("unifiedPopup"),t=themes[typeOf(type)];
+  document.getElementById("unifiedPopupTitle").textContent=String(title||"Notice").replace(/^[^A-Za-z0-9]+\s*/,"");
+  document.getElementById("unifiedPopupMessage").textContent=message||"";
+  const icon=document.getElementById("unifiedPopupIcon");
+  icon.style.background=t.b;icon.style.color=t.c;icon.innerHTML='<i class="'+t.i+'"></i>';
+  const ok=document.getElementById("unifiedPopupOk"),cancel=document.getElementById("unifiedPopupCancel");
+  ok.style.background=t.c; ok.textContent=confirmMode?"Confirm":"Okay";
+  cancel.style.display=confirmMode?"block":"none";
+  m.style.display="flex";
+ }
+ function close(ok){
+  document.getElementById("unifiedPopup").style.display="none";
+  const cb=callback;callback=null;
+  if(ok&&typeof cb==="function")cb();
+ }
+ // Preserve application API while making all standard custom alerts consistent.
+ window.showCustomAlert=function(message,title="Notice",type="info"){callback=null;open(message,title,type,false);};
+ window.closeCustomAlert=function(){close(false);};
+ window.showCustomConfirm=function(message,title="Confirm Action",cb,type="warning"){callback=cb;open(message,title,type,true);};
+ window.closeCustomConfirm=function(ok){close(ok);};
+ document.getElementById("unifiedPopupOk").onclick=()=>close(true);
+ document.getElementById("unifiedPopupCancel").onclick=()=>close(false);
+ document.getElementById("unifiedPopup").onclick=e=>{if(e.target===e.currentTarget)close(false);};
+ window.addEventListener("keydown",e=>{if(e.key==="Escape")close(false);});
+})();
+</script>
+
 </body>
 </html>
