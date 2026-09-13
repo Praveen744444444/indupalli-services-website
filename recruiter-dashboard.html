@@ -2483,5 +2483,62 @@ At Indupalli Services, we are committed to helping employers and professionals n
 (function(){function field(id,v){const e=document.getElementById(id);if(e)e.value=v||'N/A'}function get(text,rx,fb='N/A'){for(const r of rx){const m=text.match(r);if(m?.[1])return m[1].replace(/\s+/g,' ').trim()}return fb}function add(){const f=document.getElementById('jobForm');if(!f||document.getElementById('aiJobDocUpload'))return;const top=document.createElement('div');top.innerHTML='<div class="ai-recruiter-grid"><div class="ai-tool"><h3><i class="fa-solid fa-brain"></i> AI Candidate Search</h3><p>Search by candidate name, skills, experience or job and highlight the most relevant applications.</p><div class="ai-row"><input id="aiCandidateQuery" placeholder="e.g. React, 3 years, marketing"><button type="button" class="ai-btn" onclick="window.runIndupalliCandidateAI()"><i class="fa-solid fa-wand-magic-sparkles"></i> Search with AI</button></div></div><div class="ai-tool"><h3><i class="fa-solid fa-chart-line"></i> AI Application Management</h3><p>Open the candidate workspace, filter applications and review resumes faster with the existing hiring workflow.</p><button type="button" class="ai-btn" onclick="document.getElementById(\'inboundResumesSection\')?.scrollIntoView({behavior:\'smooth\'})">Open Candidate Workspace</button></div></div>';f.parentNode.insertBefore(top,f);const d=document.createElement('div');d.innerHTML='<label class="ai-doc" for="aiJobDocUpload"><i class="fa-solid fa-file-arrow-up"></i><div><b>Add Job Document / PDF with AI</b><span id="aiJobDocLabel">PDF, DOCX or TXT • AI extracts title, salary, location, experience and JD. Missing values become N/A.</span></div></label><input id="aiJobDocUpload" type="file" accept=".pdf,.doc,.docx,.txt" hidden><div class="ai-doc-actions"><button type="button" class="ai-doc-btn" onclick="window.cancelIndupalliJobDoc()"><i class="fa-solid fa-xmark"></i> Cancel</button><button type="button" class="ai-doc-btn primary" onclick="document.getElementById(\'aiJobDocUpload\').click()"><i class="fa-solid fa-plus"></i> Add Job Document</button></div><div id="aiJobDocStatus" class="ai-status"></div>';f.insertBefore(d,f.firstChild);['location','salary'].forEach(x=>document.getElementById(x)?.removeAttribute('required'));document.getElementById('aiJobDocUpload').addEventListener('change',e=>window.extractIndupalliJob(e.target.files[0]))}async function pdf(file){const p=await pdfjsLib.getDocument({data:await file.arrayBuffer()}).promise;let o='';for(let i=1;i<=p.numPages;i++){const c=await(await p.getPage(i)).getTextContent();o+=c.items.map(x=>x.str).join(' ')+'\n'}return o}window.cancelIndupalliJobDoc=()=>{const u=document.getElementById('aiJobDocUpload'),l=document.getElementById('aiJobDocLabel'),st=document.getElementById('aiJobDocStatus');if(u)u.value='';if(l)l.textContent='PDF, DOCX or TXT • AI extracts title, salary, location, experience and JD. Missing values become N/A.';if(st){st.className='ai-status';st.textContent='';st.removeAttribute('style')}};window.extractIndupalliJob=async file=>{if(!file)return;const s=document.getElementById('aiJobDocStatus');s.className='ai-status show';s.textContent='AI is extracting job information...';try{let t='',n=file.name.toLowerCase();if(n.endsWith('.pdf'))t=await pdf(file);else if(n.endsWith('.docx'))t=(await mammoth.extractRawText({arrayBuffer:await file.arrayBuffer()})).value;else if(n.endsWith('.txt'))t=await file.text();else throw Error('Use PDF, DOCX or TXT for reliable browser extraction.');const lines=t.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);field('jobTitle',get(t,[/(?:job title|position|designation)\s*[:\-]\s*([^\n]{2,100})/i],lines[0]||'N/A'));field('location',get(t,[/(?:location|work location)\s*[:\-]\s*([^\n]{2,100})/i,/\b(remote|hyderabad|bengaluru|bangalore|chennai|mumbai|pune|vijayawada|visakhapatnam|delhi)\b/i]));field('salary',get(t,[/(?:salary|ctc|compensation)\s*[:\-]\s*([^\n]{2,100})/i,/((?:₹|rs\.?|inr)\s?[\d,.]+[^\n]{0,30})/i]));field('experience',get(t,[/(?:experience|required experience)\s*[:\-]\s*([^\n]{2,80})/i,/\b(\d+\s*(?:-|to)?\s*\d*\s*years?)\b/i]));field('jobDescription',t.trim());s.textContent='AI extraction complete. Missing title, salary or location values are marked N/A.';document.getElementById('aiJobDocLabel').textContent=file.name+' • extraction complete'}catch(e){s.style.background='#fef2f2';s.style.color='#b91c1c';s.textContent=e.message}};window.runIndupalliCandidateAI=()=>{const q=(document.getElementById('aiCandidateQuery').value||'').toLowerCase().trim().split(/\s+/).filter(Boolean);let c=0;document.querySelectorAll('#inboundResumesSection tbody tr').forEach(r=>{const t=r.innerText.toLowerCase(),ok=!q.length||q.some(x=>t.includes(x));r.style.display=ok?'':'none';r.classList.toggle('ai-hit',ok&&q.length);if(ok)c++});window.showCustomAlert?window.showCustomAlert(c+' candidate applications matched your search.','AI Candidate Search','success'):alert(c+' candidates matched.')};add()})();
 </script>
 
+
+<script>
+/* Professional document cancel/reset behavior */
+(function () {
+  const fields = ['jobTitle', 'location', 'salary', 'experience', 'jobDescription'];
+  let previousValues = null;
+
+  function snapshotForm() {
+    previousValues = {};
+    fields.forEach(function (id) {
+      const el = document.getElementById(id);
+      if (el) previousValues[id] = el.value;
+    });
+  }
+
+  function restoreForm() {
+    if (!previousValues) return;
+    fields.forEach(function (id) {
+      const el = document.getElementById(id);
+      if (el && Object.prototype.hasOwnProperty.call(previousValues, id)) {
+        el.value = previousValues[id];
+      }
+    });
+    previousValues = null;
+  }
+
+  const originalExtract = window.extractIndupalliJob;
+
+  window.extractIndupalliJob = async function (file) {
+    if (!file) return;
+    snapshotForm();
+    return originalExtract(file);
+  };
+
+  window.cancelIndupalliJobDoc = function () {
+    const upload = document.getElementById('aiJobDocUpload');
+    const label = document.getElementById('aiJobDocLabel');
+    const status = document.getElementById('aiJobDocStatus');
+
+    if (upload) upload.value = '';
+
+    restoreForm();
+
+    if (label) {
+      label.textContent =
+        'PDF, DOCX or TXT • AI extracts title, salary, location, experience and JD. Missing values become N/A.';
+    }
+
+    if (status) {
+      status.className = 'ai-status';
+      status.textContent = '';
+      status.removeAttribute('style');
+    }
+  };
+})();
+</script>
+
 </body>
 </html>
