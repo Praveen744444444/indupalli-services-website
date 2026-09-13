@@ -5408,7 +5408,10 @@ document.addEventListener('DOMContentLoaded',syncVideoSummary);
 
   window.approveSelectedAIAgentJobs=async function(){
     let ids=[...document.querySelectorAll('.ai-agent-job-check:checked')].map(x=>x.dataset.jobId).filter(Boolean);
-    if(!ids.length){ alert('Select at least one job to approve.'); return; }
+    if(!ids.length){
+      window.showCustomAlert('Select at least one job to approve.', 'No Jobs Selected', 'warning');
+      return;
+    }
 
     // ── FREE USAGE LIMIT ──
     // Re-check right before submitting (the run above may be stale — the
@@ -5419,11 +5422,19 @@ document.addEventListener('DOMContentLoaded',syncVideoSummary);
       if(!slots.isPremium){
         if(slots.remaining<=0){
           if(window.showPremiumModal) window.showPremiumModal();
-          alert("You've used all 3 free AI job applications. Please choose a subscription plan to continue.");
+          window.showCustomAlert(
+            "You've used all 3 free AI job applications. Please choose a subscription plan to continue.",
+            'Free Applications Used',
+            'warning'
+          );
           return;
         }
         if(ids.length>slots.remaining){
-          alert(`Only ${slots.remaining} free AI application${slots.remaining===1?'':'s'} remain. The agent will submit ${slots.remaining} of your selected jobs now — subscribe to apply to the rest.`);
+          window.showCustomAlert(
+            `Only ${slots.remaining} free AI application${slots.remaining===1?'':'s'} remain. The agent will submit ${slots.remaining} of your selected jobs now — subscribe to apply to the rest.`,
+            'Application Limit',
+            'warning'
+          );
           ids=ids.slice(0,slots.remaining);
         }
       }
@@ -5432,7 +5443,10 @@ document.addEventListener('DOMContentLoaded',syncVideoSummary);
     const confirmed=await window.showAIAgentConfirm(ids.length);
     if(!confirmed) return;
     const jobs=ids.map(id=>window.allJobsData?.[id]).filter(Boolean);
-    if(!jobs.length){ alert('Approved jobs could not be loaded.'); return; }
+    if(!jobs.length){
+      window.showCustomAlert('The selected jobs could not be loaded. Please refresh and try again.', 'Unable to Load Jobs', 'error');
+      return;
+    }
     const button=[...document.querySelectorAll('button')].find(b=>b.textContent.includes('Approve Selected'));
     if(button){ button.disabled=true; button.textContent='Submitting...'; }
     let success=0, failed=0;
@@ -5460,7 +5474,11 @@ document.addEventListener('DOMContentLoaded',syncVideoSummary);
       }
     }catch(e){
       console.error('AI Agent batch submission failed',e);
-      alert('Some applications could not be submitted. Please try again.');
+      window.showCustomAlert(
+        'Some applications could not be submitted. Please try again.',
+        'Application Submission Failed',
+        'error'
+      );
     }finally{
       if(button){ button.disabled=false; button.textContent='Approve Selected & Apply'; }
     }
@@ -5661,7 +5679,7 @@ window.reviewAndApproveAIJob=async function(){
 
         if (!modal || !iconBox) {
             if (typeof originalAlert === "function") return originalAlert(message, title, type);
-            window.alert(message);
+            console.error('Professional popup markup is unavailable:', title, message);
             return;
         }
 
