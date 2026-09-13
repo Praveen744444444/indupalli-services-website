@@ -5429,7 +5429,7 @@ document.addEventListener('DOMContentLoaded',syncVideoSummary);
       }
     }
 
-    const confirmed=await showAIAgentConfirm(ids.length);
+    const confirmed=await window.showAIAgentConfirm(ids.length);
     if(!confirmed) return;
     const jobs=ids.map(id=>window.allJobsData?.[id]).filter(Boolean);
     if(!jobs.length){ alert('Approved jobs could not be loaded.'); return; }
@@ -5712,6 +5712,110 @@ window.reviewAndApproveAIJob=async function(){
         window.closeCustomAlert();
         if (typeof window.closeSignOutModal === "function") window.closeSignOutModal();
     });
+})();
+</script>
+
+
+<!-- AI AGENT APPROVAL CONFIRMATION -->
+<style>
+#aiAgentConfirmModal{
+  display:none;position:fixed;inset:0;z-index:99999999;
+  align-items:center;justify-content:center;padding:20px;
+  background:rgba(15,23,42,.70);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+}
+#aiAgentConfirmModal.show{display:flex}
+.ai-agent-confirm-card{
+  width:min(430px,100%);box-sizing:border-box;padding:32px;
+  background:#fff;border:1px solid #e5e7eb;border-radius:18px;
+  text-align:center;box-shadow:0 24px 70px rgba(15,23,42,.30);
+}
+.ai-agent-confirm-icon{
+  width:58px;height:58px;margin:0 auto 18px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  background:#eff6ff;color:#2563eb;font-size:23px;
+}
+.ai-agent-confirm-card h3{
+  margin:0 0 9px;color:#0f172a;font-size:20px;font-weight:800;
+}
+.ai-agent-confirm-card p{
+  margin:0 0 24px;color:#64748b;font-size:14.5px;line-height:1.65;
+}
+.ai-agent-confirm-actions{display:flex;gap:10px}
+.ai-agent-confirm-actions button{
+  flex:1;min-height:48px;border-radius:10px;padding:12px 18px;
+  font-size:14px;font-weight:700;cursor:pointer;
+}
+#aiAgentConfirmCancel{
+  background:#f8fafc;color:#475569;border:1px solid #e2e8f0;
+}
+#aiAgentConfirmProceed{
+  background:#2563eb;color:#fff;border:0;
+}
+#aiAgentConfirmProceed:hover,#aiAgentConfirmCancel:hover{
+  transform:translateY(-1px);box-shadow:0 8px 18px rgba(15,23,42,.10);
+}
+@media(max-width:480px){
+  .ai-agent-confirm-card{padding:28px 22px;border-radius:16px}
+  .ai-agent-confirm-actions{flex-direction:column}
+}
+</style>
+<div id="aiAgentConfirmModal" role="dialog" aria-modal="true" aria-labelledby="aiAgentConfirmTitle">
+  <div class="ai-agent-confirm-card">
+    <div class="ai-agent-confirm-icon"><i class="fa-solid fa-paper-plane"></i></div>
+    <h3 id="aiAgentConfirmTitle">Confirm Applications</h3>
+    <p id="aiAgentConfirmMessage"></p>
+    <div class="ai-agent-confirm-actions">
+      <button type="button" id="aiAgentConfirmCancel">Cancel</button>
+      <button type="button" id="aiAgentConfirmProceed">Approve &amp; Apply</button>
+    </div>
+  </div>
+</div>
+<script>
+(function(){
+  let aiAgentConfirmResolver = null;
+
+  window.showAIAgentConfirm = function(count){
+    return new Promise(function(resolve){
+      const modal = document.getElementById('aiAgentConfirmModal');
+      const message = document.getElementById('aiAgentConfirmMessage');
+      const cancel = document.getElementById('aiAgentConfirmCancel');
+      const proceed = document.getElementById('aiAgentConfirmProceed');
+
+      if(!modal || !message || !cancel || !proceed){
+        resolve(window.confirm('Approve and apply to ' + count + ' selected job' + (count === 1 ? '' : 's') + '?'));
+        return;
+      }
+
+      aiAgentConfirmResolver = resolve;
+      message.textContent =
+        'You are about to approve and submit applications for ' +
+        count + ' selected job' + (count === 1 ? '' : 's') +
+        '. Applications will be sent using your current profile and resume.';
+
+      modal.classList.add('show');
+
+      const close = function(result){
+        modal.classList.remove('show');
+        const resolver = aiAgentConfirmResolver;
+        aiAgentConfirmResolver = null;
+        if(resolver) resolver(result);
+      };
+
+      cancel.onclick = function(){ close(false); };
+      proceed.onclick = function(){ close(true); };
+      modal.onclick = function(e){ if(e.target === modal) close(false); };
+
+      // Replace only this confirmation handler, without affecting other Escape handlers.
+      const onKey = function(e){
+        if(e.key === 'Escape'){
+          document.removeEventListener('keydown', onKey);
+          close(false);
+        }
+      };
+      document.addEventListener('keydown', onKey);
+    });
+  };
 })();
 </script>
 
