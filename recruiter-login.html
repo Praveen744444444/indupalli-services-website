@@ -59,21 +59,60 @@
     .brand-text h2 { font-size: 21px; font-weight: 800; color: #fff; letter-spacing: -0.5px; }
     .brand-text p { font-size: 10.5px; color: #60a5fa; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; margin-top: 1px; }
 
-    .left-center { flex: 1; display: flex; flex-direction: column; justify-content: center; position: relative; z-index: 2; margin: 40px 0; max-width: 480px; }
-    .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); padding: 6px 14px; border-radius: 30px; font-size: 12px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 20px; width: fit-content; backdrop-filter: blur(4px); }
-    .left-panel h1 { font-size: 38px; font-weight: 800; line-height: 1.2; margin-bottom: 14px; letter-spacing: -1px; }
-    .left-panel h1 span { color: #60a5fa; text-shadow: 0 0 40px rgba(96, 165, 250, 0.3); }
-    .left-panel p { font-size: 15.5px; line-height: 1.7; color: #cbd5e1; }
+    .left-center { flex: 1; display: flex; flex-direction: column; justify-content: center; position: relative; z-index: 2; margin: 34px 0 26px; max-width: 1120px; width: 100%; }
+    .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); padding: 8px 15px; border-radius: 30px; font-size: 12px; font-weight: 800; letter-spacing: 0.6px; text-transform: uppercase; margin-bottom: 20px; width: fit-content; backdrop-filter: blur(8px); }
+    .left-panel h1 { font-size: clamp(38px, 4vw, 58px); font-weight: 800; line-height: 1.08; margin-bottom: 18px; letter-spacing: -1.8px; max-width: 900px; }
+    .left-panel h1 span { color: #67e8f9; text-shadow: 0 0 40px rgba(103, 232, 249, 0.24); }
+    .left-panel p { font-size: 17px; line-height: 1.8; color: #cbd5e1; max-width: 900px; }
 
-    .features { margin-top: 32px; display: flex; flex-direction: column; gap: 12px; width: 100%; }
-    .feature { display: flex; align-items: center; gap: 14px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.08); padding: 12px 18px; border-radius: 14px; font-size: 13.5px; color: #f1f5f9; font-weight: 600; backdrop-filter: blur(6px); transition: transform 0.2s; }
-    .feature:hover { transform: translateX(6px); background: rgba(255, 255, 255, 0.08); }
-    .feature-icon { width: 32px; height: 32px; border-radius: 8px; background: rgba(37, 99, 235, 0.3); color: #60a5fa; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+    .hero-main-grid { display:grid; grid-template-columns: minmax(0, 1.45fr) minmax(300px, .8fr); gap: 44px; align-items:center; margin-top: 34px; }
+    .features { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; width: 100%; }
+    .feature { display: flex; align-items: flex-start; gap: 15px; min-height: 122px; background: rgba(255, 255, 255, 0.055); border: 1px solid rgba(255, 255, 255, 0.11); padding: 20px 20px; border-radius: 18px; color: #f1f5f9; backdrop-filter: blur(10px); transition: transform .25s ease, background .25s ease, border-color .25s ease; box-shadow: inset 0 1px 0 rgba(255,255,255,.04); }
+    .feature:hover { transform: translateY(-4px); background: rgba(255, 255, 255, 0.085); border-color: rgba(103,232,249,.28); }
+    .feature-icon { width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(145deg, #2dd4bf, #60a5fa); color: #071a3a; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; box-shadow: 0 10px 24px rgba(45,212,191,.14); }
+    .feature strong { display:block; font-size: 15px; line-height:1.35; margin-bottom:7px; color:#ffffff; }
+    .feature-copy { font-size:12.5px; line-height:1.6; color:#a9bad0; font-weight:500; }
 
-    .left-bottom { position: relative; z-index: 2; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; width: 100%; }
+    .ai-side-visual { min-height: 360px; display:flex; flex-direction:column; align-items:center; justify-content:center; position:relative; }
+    .ai-ring { position:absolute; width:290px; height:290px; border-radius:50%; border:1px solid rgba(103,232,249,.22); box-shadow:0 0 70px rgba(37,99,235,.11), inset 0 0 60px rgba(37,99,235,.07); }
+    .ai-ring.r2 { width:220px; height:220px; border-color:rgba(96,165,250,.22); }
+    .ai-orb { width:158px; height:158px; border-radius:38px; background:linear-gradient(145deg,#4adecc,#60a5fa 70%,#818cf8); display:flex; align-items:center; justify-content:center; color:#06204a; font-size:67px; box-shadow:0 0 0 12px rgba(103,232,249,.06),0 24px 60px rgba(0,0,0,.25),0 0 60px rgba(45,212,191,.16); position:relative; z-index:2; }
+    .ai-orb:before { content:""; position:absolute; width:26px; height:8px; border-radius:999px; background:#67e8f9; top:-16px; box-shadow:0 0 22px rgba(103,232,249,.65); }
+    .ai-status-pill { margin-top:20px; display:inline-flex; align-items:center; gap:8px; padding:9px 15px; border-radius:999px; background:rgba(4,19,43,.72); border:1px solid rgba(103,232,249,.25); color:#a7f3d0; font-size:12px; font-weight:800; letter-spacing:.2px; backdrop-filter:blur(10px); }
+    .ai-live-dot { width:9px; height:9px; border-radius:50%; background:#34d399; box-shadow:0 0 0 0 rgba(52,211,153,.65); animation: livePulse 1.7s infinite; }
+    @keyframes livePulse { 0%,100%{box-shadow:0 0 0 0 rgba(52,211,153,.58);opacity:1} 50%{box-shadow:0 0 0 8px rgba(52,211,153,0);opacity:.92} }
+    .ai-caption { text-align:center; max-width:320px; margin-top:14px; color:#8fa7c2; font-size:12px; line-height:1.6; }
+
+    .ai-capability-strip { display:flex; flex-wrap:wrap; gap:9px; margin-top:20px; }
+    .ai-chip { display:inline-flex; align-items:center; gap:6px; padding:8px 11px; border-radius:999px; border:1px solid rgba(255,255,255,.12); background:rgba(255,255,255,.045); color:#cfe0ef; font-size:11px; font-weight:700; }
+    .ai-chip i { color:#67e8f9; }
+
+    .ai-trust-line { position:relative; z-index:2; display:flex; align-items:center; gap:9px; margin-top:24px; color:#6ee7b7; font-size:12.5px; font-weight:800; }
+    .ai-trust-line i { color:#34d399; }
+
+    .left-bottom { position: relative; z-index: 2; border-top: 1px solid rgba(255, 255, 255, 0.1); padding-top: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; width: 100%; }
     .left-bottom p { font-size: 12.5px; color: #94a3b8; margin: 0; }
     .trust-badges { display: flex; gap: 10px; }
     .trust-badge { background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; color: #cbd5e1; display: inline-flex; align-items: center; gap: 6px; }
+
+
+    @media(max-width: 1100px){
+        .hero-main-grid{grid-template-columns:1fr; gap:28px}
+        .ai-side-visual{min-height:290px; order:-1}
+        .features{grid-template-columns:1fr 1fr}
+    }
+    @media(max-width: 700px){
+        .left-panel{padding:34px 22px}
+        .left-center{margin:28px 0 18px}
+        .hero-main-grid{margin-top:24px}
+        .features{grid-template-columns:1fr}
+        .ai-side-visual{min-height:260px}
+        .ai-ring{width:220px;height:220px}
+        .ai-ring.r2{width:170px;height:170px}
+        .ai-orb{width:128px;height:128px;font-size:52px}
+        .left-panel h1{font-size:38px}
+        .left-panel p{font-size:15px}
+    }
 
     /* ── RIGHT AUTH PANEL ── */
     .right-panel { width: 520px; display: flex; align-items: center; justify-content: center; padding: 50px 40px; background: #ffffff; flex-shrink: 0; box-shadow: -10px 0 30px rgba(0, 0, 0, 0.02); }
@@ -199,6 +238,88 @@
     }
 
 </style>
+
+<style id="ai-recruiter-names-enhancement">
+/* AI recruiter names + live lightning enhancement */
+.ai-side-visual{position:relative;overflow:visible}
+.ai-live-signal{
+  position:absolute;top:-6px;left:50%;transform:translateX(-50%);
+  width:210px;height:48px;z-index:5;pointer-events:none;
+  filter:drop-shadow(0 0 10px rgba(52,211,153,.35));
+}
+.ai-live-signal svg{width:100%;height:100%}
+.ai-live-signal .signal-line{
+  fill:none;stroke:#34d399;stroke-width:3;stroke-linecap:round;
+  stroke-linejoin:round;stroke-dasharray:220;stroke-dashoffset:220;
+  animation:signalRun 1.35s linear infinite;
+}
+.ai-live-signal .signal-glow{
+  fill:none;stroke:#67e8f9;stroke-width:8;stroke-linecap:round;
+  opacity:.18;filter:blur(4px);animation:signalRun 1.35s linear infinite;
+}
+@keyframes signalRun{
+  0%{stroke-dashoffset:220;opacity:.2}
+  20%{opacity:1}
+  100%{stroke-dashoffset:0;opacity:.92}
+}
+.ai-beep-wave{
+  position:absolute;top:46px;right:6px;
+  width:112px;height:24px;z-index:4;opacity:.9;
+}
+.ai-beep-wave span{
+  position:absolute;bottom:0;width:4px;border-radius:6px;
+  background:linear-gradient(180deg,#67e8f9,#34d399);
+  box-shadow:0 0 9px rgba(52,211,153,.35);
+  animation:beepBars .9s ease-in-out infinite;
+}
+.ai-beep-wave span:nth-child(1){left:0;height:8px;animation-delay:.00s}
+.ai-beep-wave span:nth-child(2){left:14px;height:14px;animation-delay:.12s}
+.ai-beep-wave span:nth-child(3){left:28px;height:10px;animation-delay:.21s}
+.ai-beep-wave span:nth-child(4){left:42px;height:20px;animation-delay:.28s}
+.ai-beep-wave span:nth-child(5){left:56px;height:12px;animation-delay:.38s}
+.ai-beep-wave span:nth-child(6){left:70px;height:17px;animation-delay:.48s}
+.ai-beep-wave span:nth-child(7){left:84px;height:9px;animation-delay:.60s}
+.ai-beep-wave span:nth-child(8){left:98px;height:15px;animation-delay:.72s}
+@keyframes beepBars{0%,100%{transform:scaleY(.45);opacity:.55}50%{transform:scaleY(1);opacity:1}}
+
+.ai-candidate-cloud{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+}
+.ai-candidate-card{
+  position:absolute;display:flex;align-items:center;gap:8px;
+  min-width:138px;padding:7px 10px;border-radius:13px;
+  background:rgba(4,19,43,.72);border:1px solid rgba(103,232,249,.18);
+  color:#e6f7ff;backdrop-filter:blur(10px);
+  box-shadow:0 12px 28px rgba(0,0,0,.18),0 0 18px rgba(37,99,235,.08);
+  animation:floatCard 4.6s ease-in-out infinite;
+}
+.ai-candidate-card .mini-dot{
+  width:8px;height:8px;border-radius:50%;background:#34d399;
+  box-shadow:0 0 10px rgba(52,211,153,.65);flex:0 0 auto;
+}
+.ai-candidate-card strong{font-size:10.5px;white-space:nowrap}
+.ai-candidate-card span{display:block;color:#8fa7c2;font-size:9.5px;margin-top:1px}
+.c1{top:26px;left:-10px;animation-delay:0s}
+.c2{top:96px;right:-2px;animation-delay:.5s}
+.c3{top:168px;left:-18px;animation-delay:1s}
+.c4{top:238px;right:-14px;animation-delay:1.5s}
+.c5{bottom:78px;left:6px;animation-delay:2s}
+.c6{bottom:28px;right:8px;animation-delay:2.5s}
+@keyframes floatCard{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-7px)}
+}
+.ai-orb{z-index:3}
+.ai-status-pill{z-index:4}
+@media(max-width:700px){
+  .ai-candidate-card{min-width:118px;padding:6px 8px}
+  .ai-candidate-card strong{font-size:9.5px}
+  .ai-candidate-card span{font-size:8.5px}
+  .c1{left:-6px}.c2{right:-4px}.c3{left:-8px}.c4{right:-8px}.c5{left:2px}.c6{right:2px}
+  .ai-live-signal{width:180px}
+}
+</style>
+
 </head>
 <body>
 
@@ -215,13 +336,81 @@
     <div class="left-center">
         <div class="hero-badge"><i class="fa-solid fa-building-user"></i> Enterprise ATS Workspace</div>
         <h1>Streamline Hiring & <span>Find Top Talent.</span></h1>
-        <p>Post mandates, review candidate pitch statements, track applications, and directly chat with job seekers across India.</p>
+        <p>Post job mandates, let AI structure job documents, discover the most relevant candidates, review resumes, manage applications, and communicate with job seekers from one professional recruiter workspace.</p>
 
-        <div class="features">
-            <div class="feature"><div class="feature-icon"><i class="fa-solid fa-bullhorn"></i></div><span>Publish and edit job mandates instantly</span></div>
-            <div class="feature"><div class="feature-icon"><i class="fa-solid fa-id-card"></i></div><span>Review AI candidate profiles and resumes</span></div>
-            <div class="feature"><div class="feature-icon"><i class="fa-solid fa-comments"></i></div><span>Live direct messaging with applicants</span></div>
-            <div class="feature"><div class="feature-icon"><i class="fa-solid fa-list-check"></i></div><span>Interactive candidate pipeline management</span></div>
+        <div class="hero-main-grid">
+            <div>
+                <div class="features">
+                    <div class="feature">
+                        <div class="feature-icon"><i class="fa-solid fa-bullhorn"></i></div>
+                        <div>
+                            <strong>Publish &amp; edit job mandates instantly</strong>
+                            <div class="feature-copy">Create jobs manually or upload PDF, DOCX or TXT files. AI extracts job information and organizes it for recruiter review.</div>
+                        </div>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon"><i class="fa-solid fa-robot"></i></div>
+                        <div>
+                            <strong>AI candidate search &amp; matching</strong>
+                            <div class="feature-copy">Search using skills, experience, qualifications and requirements, then surface the strongest matches faster.</div>
+                        </div>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon"><i class="fa-solid fa-id-card"></i></div>
+                        <div>
+                            <strong>Review AI candidate profiles &amp; resumes</strong>
+                            <div class="feature-copy">Compare candidate profiles, resumes, experience and skills before moving the right people to the next stage.</div>
+                        </div>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon"><i class="fa-solid fa-comments"></i></div>
+                        <div>
+                            <strong>Live messaging &amp; application management</strong>
+                            <div class="feature-copy">Chat with applicants, monitor every application and move candidates through your hiring pipeline.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ai-capability-strip">
+                    <span class="ai-chip"><i class="fa-solid fa-file-arrow-up"></i> AI Job Documents</span>
+                    <span class="ai-chip"><i class="fa-solid fa-magnifying-glass"></i> AI Search</span>
+                    <span class="ai-chip"><i class="fa-solid fa-chart-simple"></i> Match Scores</span>
+                    <span class="ai-chip"><i class="fa-solid fa-list-check"></i> ATS Pipeline</span>
+                    <span class="ai-chip"><i class="fa-solid fa-comments"></i> Messaging</span>
+                </div>
+            </div>
+
+            <div class="ai-side-visual" aria-label="AI recruiter status">
+<div class="ai-live-signal" aria-hidden="true">
+  <svg viewBox="0 0 210 48" preserveAspectRatio="none">
+    <path class="signal-glow" d="M0 25 H28 L36 25 L44 9 L53 39 L62 25 H82 L90 25 L98 14 L107 34 L116 25 H139 L147 25 L156 8 L165 42 L174 25 H210"/>
+    <path class="signal-line" d="M0 25 H28 L36 25 L44 9 L53 39 L62 25 H82 L90 25 L98 14 L107 34 L116 25 H139 L147 25 L156 8 L165 42 L174 25 H210"/>
+  </svg>
+</div>
+<div class="ai-beep-wave" aria-hidden="true">
+  <span></span><span></span><span></span><span></span>
+  <span></span><span></span><span></span><span></span>
+</div>
+<div class="ai-candidate-cloud" aria-label="AI matched candidates">
+  <div class="ai-candidate-card c1"><i class="mini-dot"></i><div><strong>Praveen Indupalli</strong><span>Top Match</span></div></div>
+  <div class="ai-candidate-card c2"><i class="mini-dot"></i><div><strong>Sruthi</strong><span>Strong Match</span></div></div>
+  <div class="ai-candidate-card c3"><i class="mini-dot"></i><div><strong>Jayasri</strong><span>Profile Ready</span></div></div>
+  <div class="ai-candidate-card c4"><i class="mini-dot"></i><div><strong>JohnCena</strong><span>Candidate Found</span></div></div>
+  <div class="ai-candidate-card c5"><i class="mini-dot"></i><div><strong>Nikki</strong><span>Profile Ready</span></div></div>
+  <div class="ai-candidate-card c6"><i class="mini-dot"></i><div><strong>Harika</strong><span>Strong Match</span></div></div>
+</div>
+
+                <div class="ai-ring"></div>
+                <div class="ai-ring r2"></div>
+                <div class="ai-orb"><i class="fa-solid fa-robot"></i></div>
+                <div class="ai-status-pill"><span class="ai-live-dot"></span> AI RECRUITER ONLINE</div>
+                <div class="ai-caption">AI continuously scans, matches and surfaces candidates in real time while the recruiter keeps control of every hiring decision.</div>
+            </div>
+        </div>
+
+        <div class="ai-trust-line">
+            <i class="fa-solid fa-circle-check"></i>
+            <span>AI supports the workflow — recruiters keep the final hiring decision.</span>
         </div>
     </div>
 
