@@ -156,43 +156,40 @@
     .login-security i { color:var(--green); }
 
     /* ── UNIFIED PROFESSIONAL POPUP SYSTEM ── */
-    @keyframes popupFadeIn { from { opacity: 0; } to { opacity: 1; } }
-    @keyframes popupSlideIn {
-        from { opacity: 0; transform: translateY(12px) scale(0.98); }
-        to { opacity: 1; transform: translateY(0) scale(1); }
-    }
+    @keyframes popupFadeIn { from { opacity:0; } to { opacity:1; } }
+    @keyframes popupEnter { from { opacity:0; transform:translateY(14px) scale(.98); } to { opacity:1; transform:translateY(0) scale(1); } }
+
     .popup-overlay {
         display:none; position:fixed; inset:0; z-index:99999; padding:20px;
         justify-content:center; align-items:center;
-        background:rgba(15,23,42,.64);
+        background:rgba(15,23,42,.68);
         backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
-        animation:popupFadeIn .22s ease forwards;
+        animation:popupFadeIn .2s ease;
     }
     .popup-box {
-        width:100%; max-width:430px; padding:32px; position:relative;
-        text-align:center; background:#fff; border:1px solid rgba(226,232,240,.95);
-        border-radius:18px; box-shadow:0 24px 70px rgba(15,23,42,.28);
-        animation:popupSlideIn .28s cubic-bezier(.16,1,.3,1) forwards;
+        width:100%; max-width:430px; box-sizing:border-box; padding:32px;
+        background:#fff; border:1px solid #e5e7eb; border-radius:18px;
+        text-align:center; box-shadow:0 24px 70px rgba(15,23,42,.28);
+        animation:popupEnter .28s cubic-bezier(.16,1,.3,1);
     }
     .popup-icon-badge {
-        width:56px; height:56px; margin:0 auto 18px; border-radius:50%;
-        display:flex; align-items:center; justify-content:center;
-        font-size:22px; background:#eff6ff; color:var(--primary);
+        width:58px; height:58px; margin:0 auto 18px; border-radius:50%;
+        display:flex; align-items:center; justify-content:center; font-size:23px;
     }
     .popup-title {
         margin:0 0 9px; color:var(--navy); font-size:21px; line-height:1.3;
-        font-weight:800; letter-spacing:-.25px;
+        font-weight:800; letter-spacing:-.2px;
     }
     .popup-message {
-        margin:0 0 26px; color:var(--text-muted); font-size:14.5px; line-height:1.65;
+        margin:0 0 25px; color:var(--text-muted); font-size:14.5px; line-height:1.65;
     }
-    .popup-actions { display:flex; gap:10px; }
+    .popup-actions { display:flex; gap:10px; width:100%; }
     .popup-box button {
-        min-height:48px; padding:12px 20px; border:0; border-radius:10px;
+        min-height:48px; border:0; border-radius:10px; padding:12px 18px;
         background:var(--primary); color:#fff; font-size:14.5px; font-weight:700;
         cursor:pointer; transition:transform .18s ease,box-shadow .18s ease,background .18s ease;
     }
-    .popup-box button:hover { transform:translateY(-1px); box-shadow:0 8px 18px rgba(37,99,235,.20); }
+    .popup-box button:hover { transform:translateY(-1px); box-shadow:0 8px 18px rgba(15,23,42,.12); }
     .popup-box button:active { transform:translateY(0); }
     .popup-secondary-btn {
         background:#f8fafc !important; color:#475569 !important;
@@ -204,7 +201,7 @@
         display:block; margin-bottom:7px; color:#334155; font-size:13px; font-weight:700;
     }
     .popup-form-group input {
-        width:100%; min-height:48px; padding:0 14px; box-sizing:border-box;
+        width:100%; min-height:48px; box-sizing:border-box; padding:0 14px;
         border:1px solid #dbe3ee; border-radius:10px; outline:none;
         color:#1e293b; background:#fff; font-size:14px;
         transition:border-color .18s ease,box-shadow .18s ease;
@@ -216,6 +213,7 @@
         .popup-box { padding:28px 22px; border-radius:16px; }
         .popup-actions { flex-direction:column; }
     }
+    
 
     @media(max-width: 900px) {
         body { flex-direction: column; }
@@ -689,17 +687,19 @@
 <!-- UNIFIED NOTIFICATION POPUP -->
 <div class="popup-overlay" id="popup">
     <div class="popup-box" role="dialog" aria-modal="true" aria-labelledby="popupTitle">
-        <div id="popupIconBadge" class="popup-icon-badge"><i class="fa-solid fa-circle-check"></i></div>
+        <div id="popupIconBadge" class="popup-icon-badge"><i class="fa-solid fa-circle-info"></i></div>
         <h4 id="popupTitle" class="popup-title"></h4>
         <p id="popupText" class="popup-message"></p>
         <button id="popupOkBtn" type="button" onclick="closePopup()" style="width:100%;">Okay</button>
     </div>
 </div>
 
-<!-- FORGOT PASSWORD MODAL (UNIFIED DESIGN) -->
+<!-- FORGOT PASSWORD MODAL -->
 <div class="popup-overlay" id="forgotModal">
     <div class="popup-box" role="dialog" aria-modal="true" aria-labelledby="forgotTitle">
-        <div class="popup-icon-badge"><i class="fa-solid fa-key"></i></div>
+        <div class="popup-icon-badge" style="background:#eff6ff; color:#2563eb;">
+            <i class="fa-solid fa-key"></i>
+        </div>
         <h4 id="forgotTitle" class="popup-title">Reset Password</h4>
         <p class="popup-message">Enter your registered recruiter email to receive a secure password reset link.</p>
         <div class="popup-form-group">
@@ -768,6 +768,7 @@ window.sendPasswordReset = async function() {
     const btn = document.getElementById("btnSendReset");
 
     if (!resetEmail) {
+        closeForgotModal();
         showPopup("⚠️ Missing Email", "Please enter your registered email address.");
         return;
     }
@@ -788,9 +789,6 @@ window.sendPasswordReset = async function() {
         } else if (error.code === "auth/invalid-email") {
             msg = "Please enter a valid email address.";
         }
-
-        // Close the reset modal first. Otherwise it remains above the
-        // error popup because both overlays use the same z-index.
         closeForgotModal();
         showPopup("❌ Reset Error", msg);
     } finally {
@@ -801,57 +799,67 @@ window.sendPasswordReset = async function() {
 </script>
 
 <script>
-function showPopup(title, text) {
+function showPopup(title, text, type) {
     const rawTitle = title || "";
-    let type = "info";
+    let popupType = type || "info";
 
-    if (rawTitle.includes("❌") || /failed|error/i.test(rawTitle)) type = "error";
-    else if (rawTitle.includes("⚠️") || /missing|required|invalid/i.test(rawTitle)) type = "warning";
-    else if (rawTitle.includes("✉️") || rawTitle.includes("✅") || /successful|sent/i.test(rawTitle)) type = "success";
+    if (!type) {
+        if (rawTitle.includes("❌") || /failed|error/i.test(rawTitle)) popupType = "error";
+        else if (rawTitle.includes("⚠️") || /missing|required|invalid/i.test(rawTitle)) popupType = "warning";
+        else if (rawTitle.includes("✅") || rawTitle.includes("✉️") || /successful|sent/i.test(rawTitle)) popupType = "success";
+    }
 
-    const styles = {
-        success: { icon: "fa-circle-check", color: "#059669", background: "#ecfdf5" },
-        error:   { icon: "fa-circle-exclamation", color: "#dc2626", background: "#fef2f2" },
-        warning: { icon: "fa-triangle-exclamation", color: "#d97706", background: "#fffbeb" },
-        info:    { icon: "fa-circle-info", color: "#2563eb", background: "#eff6ff" }
+    const themes = {
+        success: { icon:"fa-circle-check", color:"#059669", bg:"#ecfdf5" },
+        error:   { icon:"fa-circle-exclamation", color:"#dc2626", bg:"#fef2f2" },
+        warning: { icon:"fa-triangle-exclamation", color:"#d97706", bg:"#fffbeb" },
+        info:    { icon:"fa-circle-info", color:"#2563eb", bg:"#eff6ff" }
     };
 
-    const config = styles[type];
+    const theme = themes[popupType] || themes.info;
     const cleanTitle = rawTitle.replace(/^[^A-Za-z0-9]+\s*/, "");
+    const popup = document.getElementById("popup");
     const badge = document.getElementById("popupIconBadge");
     const button = document.getElementById("popupOkBtn");
 
     document.getElementById("popupTitle").textContent = cleanTitle;
     document.getElementById("popupText").textContent = text;
-    badge.innerHTML = `<i class="fa-solid ${config.icon}"></i>`;
-    badge.style.color = config.color;
-    badge.style.background = config.background;
-    button.style.background = config.color;
-    button.style.boxShadow = "none";
-    document.getElementById("popup").style.display = "flex";
+    badge.innerHTML = `<i class="fa-solid ${theme.icon}"></i>`;
+    badge.style.color = theme.color;
+    badge.style.background = theme.bg;
+    button.style.background = theme.color;
+    button.onclick = closePopup;
+    popup.style.display = "flex";
 }
 
-function closePopup() { 
-    document.getElementById("popup").style.display = "none"; 
+function closePopup() {
+    document.getElementById("popup").style.display = "none";
 }
 
 function openForgotModal() {
     const mainEmail = document.getElementById("email").value.trim();
-    if (mainEmail) {
-        document.getElementById("resetEmail").value = mainEmail;
-    }
+    const resetEmail = document.getElementById("resetEmail");
+    if (mainEmail) resetEmail.value = mainEmail;
+    closePopup();
     document.getElementById("forgotModal").style.display = "flex";
+    setTimeout(() => resetEmail.focus(), 50);
 }
 
 function closeForgotModal() {
     document.getElementById("forgotModal").style.display = "none";
 }
 
-// Close modals when clicking background overlay
 window.addEventListener("click", function(e) {
     const forgot = document.getElementById("forgotModal");
-    if (e.target === forgot) {
-        forgot.style.display = "none";
+    const popup = document.getElementById("popup");
+    if (e.target === forgot) closeForgotModal();
+    if (e.target === popup) closePopup();
+});
+
+window.addEventListener("keydown", function(e) {
+    if (e.key === "Escape") {
+        closePopup();
+        closeForgotModal();
     }
 });
 </script>
