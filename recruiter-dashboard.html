@@ -2540,5 +2540,233 @@ At Indupalli Services, we are committed to helping employers and professionals n
 })();
 </script>
 
+
+<script>
+/* AI Job Document Auto-Correction + Required Field Validation */
+(function () {
+  const REQUIRED_AI_FIELDS = [
+    { id: 'jobTitle', label: 'Job Title' },
+    { id: 'location', label: 'Workplace Location' },
+    { id: 'salary', label: 'Salary / CTC Range' },
+    { id: 'experience', label: 'Experience Required' },
+    { id: 'closingDate', label: 'Application Deadline' },
+    { id: 'jobDescription', label: 'Job Description' }
+  ];
+
+  function normalizeText(value) {
+    return String(value || '')
+      .replace(/\u00a0/g, ' ')
+      .replace(/[ \t]+/g, ' ')
+      .replace(/\s*\n\s*/g, '\n')
+      .replace(/\s+([,.;:])/g, '$1')
+      .trim();
+  }
+
+  function cleanValue(value) {
+    return normalizeText(value)
+      .replace(/^(job title|position|designation|salary|ctc|location|workplace location|experience|job overview|job description)\s*[:\-]\s*/i, '')
+      .trim();
+  }
+
+  function capture(text, labels) {
+    for (const label of labels) {
+      const pattern = new RegExp(
+        '(?:^|\\s)' + label +
+        '\\s*[:\\-]\\s*(.+?)(?=\\s+(?:Job\\s*Title|Position|Designation|Salary|CTC(?:\\s*Range)?|Compensation|Location|Workplace(?:\\s*Location)?|Experience(?:\\s*Required)?|Application\\s*Deadline|Closing\\s*Date|Job\\s*Overview|Job\\s*Description|Responsibilities|Required\\s*Skills|Qualifications|Key\\s*Responsibilities)\\s*[:\\-]|$)',
+        'i'
+      );
+      const match = text.match(pattern);
+      if (match && match[1]) return cleanValue(match[1]);
+    }
+    return '';
+  }
+
+  function sanitizeTitle(value) {
+    return cleanValue(value)
+      .replace(/\s+(?:Salary|CTC|Location|Job Overview|Job Description)\s*[:\-]?.*$/i, '')
+      .trim();
+  }
+
+  function sanitizeSalary(value) {
+    let v = cleanValue(value)
+      .replace(/\s+(?:Location|Job Overview|Job Description|Experience)\s*[:\-]?.*$/i, '')
+      .trim();
+
+    /* Some PDF fonts extract ₹ as "n" before the amount. Correct only when n directly precedes a number. */
+    v = v.replace(/\bn\s*(?=\d)/gi, '₹');
+    v = v.replace(/\bRs\.?\s*/gi, '₹');
+    v = v.replace(/\bINR\s*/gi, '₹');
+    return v;
+  }
+
+  function sanitizeLocation(value) {
+    return cleanValue(value)
+      .replace(/\s+(?:Job Overview|Job Description|Responsibilities|Experience|Salary|CTC)\s*[:\-]?.*$/i, '')
+      .trim();
+  }
+
+  function extractDescription(text) {
+    const marker = text.match(/(?:Job\s*Overview|Job\s*Description|Responsibilities)\s*[:\-]\s*([\s\S]+)/i);
+    let value = marker ? marker[1] : text;
+
+    value = value
+      .replace(/(?:Job\s*Title|Position|Designation)\s*[:\-]\s*[^\n]+/ig, '')
+      .replace(/(?:Salary|CTC(?:\s*Range)?|Compensation)\s*[:\-]\s*[^\n]+/ig, '')
+      .replace(/(?:Location|Workplace(?:\s*Location)?)\s*[:\-]\s*[^\n]+/ig, '')
+      .replace(/(?:Experience(?:\s*Required)?)\s*[:\-]\s*[^\n]+/ig, '')
+      .trim();
+
+    return normalizeText(value);
+  }
+
+  function setField(id, value) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.value = value || '';
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
+  function markRequiredFields() {
+    const missing = [];
+
+    REQUIRED_AI_FIELDS.forEach(function (item) {
+      const el = document.getElementById(item.id);
+      if (!el) return;
+
+      const empty = !String(el.value || '').trim();
+      el.style.outline = empty ? '2px solid #dc2626' : '';
+      el.style.outlineOffset = empty ? '1px' : '';
+      el.style.background = empty ? '#fff7f7' : '';
+
+      if (empty) {
+        missing.push(item.label);
+        if (item.id !== 'closingDate') {
+          el.placeholder = 'Required — please fill';
+        }
+      }
+    });
+
+    return missing;
+  }
+
+  function showExtractionResult(missing) {
+    const status = document.getElementById('aiJobDocStatus');
+    if (!status) return;
+
+    status.className = 'ai-status show';
+
+    if (missing.length) {
+      status.style.background = '#fff7ed';
+      status.style.color = '#9a3412';
+      status.style.border = '1px solid #fed7aa';
+      status.innerHTML =
+        '<strong>AI extraction completed.</strong> Please complete the required fields: ' +
+        missing.map(x => '<b>' + x + '</b>').join(', ') +
+        '. Extracted fields were automatically cleaned and corrected.';
+    } else {
+      status.style.background = '#ecfdf5';
+      status.style.color = '#166534';
+      status.style.border = '1px solid #bbf7d0';
+      status.innerHTML =
+        '<strong>AI extraction and auto-correction complete.</strong> All required job fields are ready for review.';
+    }
+  }
+
+  async function readDocument(file) {
+    const name = file.name.toLowerCase();
+
+    if (name.endsWith('.pdf')) {
+      const doc = await pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise;
+      let output = '';
+      for (let pageNo = 1; pageNo <= doc.numPages; pageNo++) {
+        const page = await doc.getPage(pageNo);
+        const content = await page.getTextContent();
+        output += content.items.map(item => item.str).join(' ') + '\n';
+      }
+      return output;
+    }
+
+    if (name.endsWith('.docx')) {
+      return (await mammoth.extractRawText({ arrayBuffer: await file.arrayBuffer() })).value;
+    }
+
+    if (name.endsWith('.txt')) {
+      return await file.text();
+    }
+
+    throw new Error('Please upload a PDF, DOCX or TXT job document.');
+  }
+
+  /* Final extractor overrides the earlier basic parser with boundary-aware extraction. */
+  window.extractIndupalliJob = async function (file) {
+    if (!file) return;
+
+    const status = document.getElementById('aiJobDocStatus');
+    const label = document.getElementById('aiJobDocLabel');
+
+    if (status) {
+      status.className = 'ai-status show';
+      status.style.background = '';
+      status.style.color = '';
+      status.style.border = '';
+      status.textContent = 'AI is reading, cleaning and structuring the job document...';
+    }
+
+    try {
+      const raw = await readDocument(file);
+      const text = normalizeText(raw);
+
+      let title = capture(text, ['Job\\s*Title', 'Position', 'Designation']);
+      if (!title) {
+        const fallback = text.match(/^(.{3,90}?)(?=\\s+(?:Salary|CTC|Location|Job\\s*Overview|Job\\s*Description)\\s*[:\\-])/i);
+        title = fallback ? fallback[1] : '';
+      }
+
+      const salary = capture(text, ['Salary', 'CTC(?:\\s*Range)?', 'Compensation']);
+      const location = capture(text, ['Workplace\\s*Location', 'Workplace', 'Location']);
+      const experience = capture(text, ['Experience\\s*Required', 'Required\\s*Experience', 'Experience']);
+      const description = extractDescription(raw);
+
+      setField('jobTitle', sanitizeTitle(title));
+      setField('salary', sanitizeSalary(salary));
+      setField('location', sanitizeLocation(location));
+      setField('experience', cleanValue(experience));
+      setField('jobDescription', description);
+
+      if (label) {
+        label.textContent = file.name + ' • AI extraction and auto-correction complete';
+      }
+
+      const missing = markRequiredFields();
+      showExtractionResult(missing);
+
+    } catch (error) {
+      if (status) {
+        status.className = 'ai-status show';
+        status.style.background = '#fef2f2';
+        status.style.color = '#b91c1c';
+        status.style.border = '1px solid #fecaca';
+        status.textContent = error.message || 'AI could not process this document.';
+      }
+    }
+  };
+
+  /* Validate required fields again when recruiter submits the job. */
+  document.addEventListener('submit', function (event) {
+    if (event.target && event.target.id === 'jobForm') {
+      const missing = markRequiredFields();
+      if (missing.length) {
+        event.preventDefault();
+        showExtractionResult(missing);
+        document.getElementById(REQUIRED_AI_FIELDS.find(x =>
+          !String(document.getElementById(x.id)?.value || '').trim()
+        )?.id)?.focus();
+      }
+    }
+  }, true);
+})();
+</script>
+
 </body>
 </html>
