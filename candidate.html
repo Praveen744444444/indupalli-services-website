@@ -2104,9 +2104,9 @@ body.dark-mode .sidebar{background:#090d16!important;}
         <div class="agent-mission-line"></div>
         <div class="agent-mission-step" data-step="1"><span class="agent-step-icon"><i class="fa-solid fa-magnifying-glass"></i></span><div><b>SCANNING ACTIVE JOBS</b><small>Reading descriptions</small></div><em>QUEUED</em></div>
         <div class="agent-mission-line"></div>
-        <div class="agent-mission-step" data-step="2"><span class="agent-step-icon"><i class="fa-solid fa-user-gear"></i></span><div><b>COMPARING YOUR PROFILE</b><small>Resume + profile signals</small></div><em>QUEUED</em></div>
+        <div class="agent-mission-step" data-step="2"><span class="agent-step-icon"><i class="fa-solid fa-user-gear"></i></span><div><b>LOADING MASTER RESUME</b><small>Saved resume + profile signals</small></div><em>QUEUED</em></div>
         <div class="agent-mission-line"></div>
-        <div class="agent-mission-step" data-step="3"><span class="agent-step-icon"><i class="fa-solid fa-brain"></i></span><div><b>CALCULATING RELEVANCE</b><small>Ranking opportunities</small></div><em>QUEUED</em></div>
+        <div class="agent-mission-step" data-step="3"><span class="agent-step-icon"><i class="fa-solid fa-brain"></i></span><div><b>AI MATCH ANALYSIS</b><small>Skills, experience and requirements</small></div><em>QUEUED</em></div>
         <div class="agent-mission-line"></div>
         <div class="agent-mission-step" data-step="4"><span class="agent-step-icon"><i class="fa-solid fa-file-circle-check"></i></span><div><b>PREPARING OPPORTUNITIES</b><small>Waiting for your approval</small></div><em>QUEUED</em></div>
       </div>
@@ -5219,8 +5219,15 @@ document.addEventListener('DOMContentLoaded',syncVideoSummary);
     document.getElementById('agentMissionMeta').textContent=meta||'Processing mission data...';
     document.getElementById('agentMissionProgress').style.width=Math.max(0,Math.min(100,percent||0))+'%';
     document.getElementById('agentMissionPercent').textContent=Math.round(percent||0)+'%';
-    document.querySelectorAll('#agentMissionFlow .agent-mission-step').forEach((n,i)=>{n.classList.toggle('done',i<step);n.classList.toggle('active',i===step);});
+    document.querySelectorAll('#agentMissionFlow .agent-mission-step').forEach((n,i)=>{
+      const done=i<step, active=i===step;
+      n.classList.toggle('done',done); n.classList.toggle('active',active);
+      const em=n.querySelector('em'); const small=n.querySelector('small');
+      if(em) em.textContent=done?'COMPLETED':active?'RUNNING':'QUEUED';
+      if(small && active){ const labels=['Establishing secure job connection...','Reading job descriptions and requirements...','Loading saved Master Resume and profile...','Comparing skills, experience and requirements...','Preparing matched opportunities for approval...']; small.textContent=labels[i]||'Processing...'; }
+    });
     document.querySelectorAll('#agentMissionFlow .agent-mission-line').forEach((n,i)=>{n.classList.toggle('done',i<step);n.classList.toggle('active',i===step);});
+    if(step>0) root.scrollIntoView({behavior:'smooth',block:'center'});
   }
   function finishAgentMission(total,prepared){
     const root=document.getElementById('agentMission'); if(!root)return;
@@ -5311,7 +5318,7 @@ document.addEventListener('DOMContentLoaded',syncVideoSummary);
 
   window.approveSelectedAIAgentJobs=async function(){
     let ids=[...document.querySelectorAll('.ai-agent-job-check:checked')].map(x=>x.dataset.jobId).filter(Boolean);
-    if(!ids.length){ alert('Select at least one job to approve.'); return; }
+    if(!ids.length){ window.showAIAgentNotice?.({type:'warning',title:'Select jobs to continue',message:'Choose at least one prepared job before approving your application batch.'}); return; }
 
     // ── FREE USAGE LIMIT ──
     // Re-check right before submitting (the run above may be stale — the
@@ -5322,28 +5329,30 @@ document.addEventListener('DOMContentLoaded',syncVideoSummary);
       if(!slots.isPremium){
         if(slots.remaining<=0){
           if(window.showPremiumModal) window.showPremiumModal();
-          alert("You've used all 3 free AI job applications. Please choose a subscription plan to continue.");
+          window.showAIAgentNotice?.({type:'warning',title:'Free AI limit reached',message:"You've used all 3 free AI job applications. Choose a subscription plan to continue."});
           return;
         }
         if(ids.length>slots.remaining){
-          alert(`Only ${slots.remaining} free AI application${slots.remaining===1?'':'s'} remain. The agent will submit ${slots.remaining} of your selected jobs now — subscribe to apply to the rest.`);
+          await window.showAIAgentNotice?.({type:'info',title:'Application limit',message:`Only ${slots.remaining} free AI application${slots.remaining===1?'':'s'} remain. The agent will submit ${slots.remaining} selected job${slots.remaining===1?'':'s'} in this batch.`});
           ids=ids.slice(0,slots.remaining);
         }
       }
     }
 
-    const confirmed=await showAIAgentConfirm(ids.length);
+    const confirmed = await window.showAIAgentConfirm(ids.length);
     if(!confirmed) return;
-    const jobs=ids.map(id=>window.allJobsData?.[id]).filter(Boolean);
-    if(!jobs.length){ alert('Approved jobs could not be loaded.'); return; }
+    const jobs=ids.map(id=>window.allJobsData?.[String(id)] || Object.values(window.allJobsData||{}).find(j=>String(j.id)===String(id))).filter(Boolean);
+    if(!jobs.length){ window.showAIAgentNotice?.({type:'error',title:'Jobs unavailable',message:'The approved jobs could not be loaded. Please refresh the page and try again.'}); return; }
     const button=[...document.querySelectorAll('button')].find(b=>b.textContent.includes('Approve Selected'));
     if(button){ button.disabled=true; button.textContent='Submitting...'; }
     let success=0, failed=0;
     try{
       for(const job of jobs){
         window.currentApplyingJobTitle=job.jobtitle||job.title||'Open Position';
-        window.currentApplyingJobCompany=job.companyname||job.company||'Indupalli Services';
+        window.currentApplyingJobCompany=job.companyname||job.company||job.company_name||'Indupalli Services';
         window.currentApplyingResumeUrl=resumeUrl();
+        const nameInput=document.getElementById('applyName');
+        if(nameInput && !nameInput.value) nameInput.value=window.currentCandidateName||localStorage.getItem('candidateName')||localStorage.getItem('candidateFullName')||'';
         // submitToFirebase writes the application to your existing Supabase table.
         const ok=await window.submitToFirebase(job.id);
         if(ok) success++; else failed++;
@@ -5363,7 +5372,7 @@ document.addEventListener('DOMContentLoaded',syncVideoSummary);
       }
     }catch(e){
       console.error('AI Agent batch submission failed',e);
-      alert('Some applications could not be submitted. Please try again.');
+      window.showAIAgentNotice?.({type:'error',title:'Submission interrupted',message:'Some applications could not be submitted. Please try again. Your successfully submitted applications were not removed.'});
     }finally{
       if(button){ button.disabled=false; button.textContent='Approve Selected & Apply'; }
     }
@@ -5438,6 +5447,25 @@ document.addEventListener('DOMContentLoaded',syncVideoSummary);
   .ai-mission.mission-complete .ai-terminal{height:70px}
   .ai-actions{position:sticky;bottom:0}
 }
+
+/* === LIVE AI MISSION VISUAL UPGRADE === */
+#agentMission{position:relative;overflow:hidden;border-radius:24px;padding:22px;background:linear-gradient(135deg,#071426,#0b1f38 58%,#101331);border:1px solid rgba(79,209,255,.28);box-shadow:0 22px 60px rgba(5,18,40,.22)}
+#agentMission:after{content:"";position:absolute;inset:-40%;background:radial-gradient(circle,rgba(41,190,255,.12),transparent 48%);animation:agentAura 5s ease-in-out infinite;pointer-events:none}
+@keyframes agentAura{50%{transform:translate(8%,6%) scale(1.08);opacity:.65}}
+.agent-mission-head,.agent-mission-flow{position:relative;z-index:1}
+.agent-mission-head:before{content:"🤖";display:grid;place-items:center;width:54px;height:54px;border-radius:18px;background:linear-gradient(135deg,#19c8ff,#5865ff);font-size:27px;box-shadow:0 0 0 7px rgba(47,201,255,.08),0 12px 28px rgba(25,200,255,.25);float:left;margin-right:14px;animation:robotPulse 2s ease-in-out infinite}
+@keyframes robotPulse{50%{transform:translateY(-3px) scale(1.04);box-shadow:0 0 0 12px rgba(47,201,255,.04),0 16px 34px rgba(25,200,255,.32)}}
+.agent-mission-step{min-height:72px;transition:all .45s ease;position:relative}
+.agent-mission-step.active{transform:translateX(8px);background:linear-gradient(90deg,rgba(26,202,255,.16),rgba(91,91,255,.04));box-shadow:0 8px 26px rgba(0,0,0,.12)}
+.agent-mission-step.active .agent-step-icon{animation:stepSpin 1.3s linear infinite;box-shadow:0 0 0 8px rgba(35,200,255,.08)}
+@keyframes stepSpin{50%{transform:rotate(8deg) scale(1.08)}}
+.agent-mission-step em{font-style:normal;font-size:10px;letter-spacing:1px;font-weight:800}
+.agent-mission-step.active em{color:#3de3ff}.agent-mission-step.done em{color:#62e6a7}
+.agent-mission-line{height:28px;position:relative}.agent-mission-line:after{content:"";position:absolute;left:27px;top:0;width:2px;height:100%;background:linear-gradient(#28435f,#28435f)}
+.agent-mission-line.active:after{background:linear-gradient(#27d3ff,#5865ff);animation:lineFlow 1s linear infinite}
+@keyframes lineFlow{50%{filter:drop-shadow(0 0 8px #25d3ff)}}
+#agentFeed{border-radius:18px;border:1px solid rgba(50,190,255,.16);background:#07111f;min-height:110px}
+.agent-scan-row{animation:scanReveal .35s ease both}@keyframes scanReveal{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 </style>
 <div id="aiProcessingModal">
  <div class="ai-mission">
@@ -5522,6 +5550,130 @@ window.reviewAndApproveAIJob=async function(){
   const btn=document.querySelector('#aiApproval .primary');if(btn){btn.disabled=true;btn.textContent='SUBMITTING...';}document.getElementById('aiRobotStatus').textContent='SUBMITTING APPLICATION';log('Explicit user approval received. Submitting directly with saved profile and Master Resume...');
   try{const submitted=await window.submitToFirebase(jobId);if(!submitted){document.getElementById('aiRobotStatus').textContent='SUBMISSION FAILED';log('Application submission failed. No duplicate submission was created.');return;}if(window.markJobAsApplied)window.markJobAsApplied(jobId);if(window.syncAppliedJobsFromServer)await window.syncAppliedJobsFromServer();if(window.triggerRefreshApplications)await window.triggerRefreshApplications();document.getElementById('aiRobotStatus').textContent='APPLICATION SUBMITTED';log('Application submitted successfully.');const a=document.getElementById('aiApproval');a.innerHTML='<h3>APPLICATION SUBMITTED</h3><p>Your approved application was submitted directly using your saved profile and Master Resume.</p><div class="ai-actions"><button class="primary" onclick="window.closeAIProcessing()">DONE</button></div>';}catch(e){console.error('AI Agent direct submission failed',e);document.getElementById('aiRobotStatus').textContent='SUBMISSION FAILED';log('Submission failed: '+(e?.message||'Unknown error'));window.showCustomAlert?.('The application could not be submitted. Please try again.','Submission Failed','error');}finally{if(document.querySelector('#aiApproval .primary')?.textContent==='SUBMITTING...'){const b=document.querySelector('#aiApproval .primary');if(b){b.disabled=false;b.textContent='APPROVE & SUBMIT APPLICATION';}}}
 };
+})();
+</script>
+
+
+<!-- PROFESSIONAL AI AGENT POPUP SYSTEM -->
+<style>
+#aiAgentPopupRoot{position:fixed;inset:0;z-index:2147483000;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(3,10,20,.62);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+#aiAgentPopupRoot.show{display:flex;animation:aiPopupFade .22s ease}
+@keyframes aiPopupFade{from{opacity:0}to{opacity:1}}
+.ai-popup-card{width:min(560px,100%);border-radius:22px;overflow:hidden;background:linear-gradient(145deg,#0d1a2b,#101a30 60%,#13233a);border:1px solid rgba(94,234,212,.28);box-shadow:0 28px 90px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.025);transform:translateY(8px) scale(.98);animation:aiPopupIn .26s cubic-bezier(.2,.9,.2,1) forwards}
+@keyframes aiPopupIn{to{transform:translateY(0) scale(1)}}
+.ai-popup-top{display:flex;align-items:flex-start;gap:14px;padding:24px 24px 18px;border-bottom:1px solid rgba(148,163,184,.12)}
+.ai-popup-icon{width:48px;height:48px;flex:0 0 48px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:20px;background:rgba(94,234,212,.11);color:#7de9df;border:1px solid rgba(94,234,212,.18)}
+.ai-popup-icon.warning{color:#f7c66b;background:rgba(245,158,11,.11);border-color:rgba(245,158,11,.2)}
+.ai-popup-icon.error{color:#ff8b8b;background:rgba(239,68,68,.11);border-color:rgba(239,68,68,.2)}
+.ai-popup-icon.success{color:#76e4a3;background:rgba(34,197,94,.11);border-color:rgba(34,197,94,.2)}
+.ai-popup-kicker{font-size:10px;letter-spacing:1.5px;font-weight:900;color:#7dd3fc;text-transform:uppercase;margin:2px 0 5px}
+.ai-popup-title{margin:0;color:#f1f5f9;font-size:20px;line-height:1.25;letter-spacing:-.3px}
+.ai-popup-close{margin-left:auto;width:36px;height:36px;border-radius:11px;border:1px solid rgba(148,163,184,.18);background:rgba(255,255,255,.035);color:#aab9cd;font-size:19px;cursor:pointer;transition:.2s}
+.ai-popup-close:hover{background:rgba(255,255,255,.08);color:#fff}
+.ai-popup-body{padding:20px 24px 24px;color:#aebbd0;font-size:14px;line-height:1.65}
+.ai-popup-body strong{color:#e5eef9}.ai-popup-summary{padding:14px 15px;border-radius:13px;background:rgba(2,8,18,.42);border:1px solid rgba(148,163,184,.12);margin-top:14px}
+.ai-popup-actions{display:flex;justify-content:flex-end;gap:10px;padding:16px 24px 22px;border-top:1px solid rgba(148,163,184,.1)}
+.ai-popup-btn{border-radius:11px;padding:11px 16px;border:1px solid rgba(148,163,184,.2);background:#142238;color:#dbe7f5;font-weight:800;font-size:13px;cursor:pointer;transition:.2s}
+.ai-popup-btn:hover{transform:translateY(-1px);background:#192b45}
+.ai-popup-btn.primary{border-color:#5eead4;background:linear-gradient(135deg,#55d5d0,#6f9ce7);color:#06202b;box-shadow:0 10px 28px rgba(94,234,212,.16)}
+.ai-popup-btn.primary:hover{filter:brightness(1.06)}
+.ai-popup-confirm-note{margin-top:14px;font-size:12px;color:#8494aa}
+.ai-popup-batch{display:flex;align-items:center;gap:12px;margin-top:16px;padding:13px 14px;border-radius:13px;border:1px solid rgba(94,234,212,.16);background:rgba(94,234,212,.055)}
+.ai-popup-batch i{color:#5eead4;font-size:17px}
+.ai-popup-batch b{display:block;color:#eaf6f6;font-size:13px}
+.ai-popup-batch span{display:block;color:#8fa2bf;font-size:11px;margin-top:2px}
+@media(max-width:560px){#aiAgentPopupRoot{padding:12px}.ai-popup-top{padding:18px 16px 15px}.ai-popup-body{padding:17px 16px 20px}.ai-popup-actions{padding:14px 16px 18px}.ai-popup-actions .ai-popup-btn{flex:1}.ai-popup-title{font-size:18px}.ai-popup-icon{width:43px;height:43px;flex-basis:43px}}
+</style>
+<div id="aiAgentPopupRoot" aria-hidden="true">
+  <div class="ai-popup-card" role="dialog" aria-modal="true" aria-labelledby="aiAgentPopupTitle">
+    <div class="ai-popup-top">
+      <div id="aiAgentPopupIcon" class="ai-popup-icon"><i class="fa-solid fa-robot"></i></div>
+      <div>
+        <div id="aiAgentPopupKicker" class="ai-popup-kicker">Personal AI Career Agent</div>
+        <h2 id="aiAgentPopupTitle" class="ai-popup-title">Notification</h2>
+      </div>
+      <button id="aiAgentPopupClose" class="ai-popup-close" type="button" aria-label="Close">×</button>
+    </div>
+    <div id="aiAgentPopupBody" class="ai-popup-body"></div>
+    <div id="aiAgentPopupActions" class="ai-popup-actions"></div>
+  </div>
+</div>
+<script>
+(function(){
+  const root=document.getElementById('aiAgentPopupRoot');
+  const icon=document.getElementById('aiAgentPopupIcon');
+  const kicker=document.getElementById('aiAgentPopupKicker');
+  const title=document.getElementById('aiAgentPopupTitle');
+  const body=document.getElementById('aiAgentPopupBody');
+  const actions=document.getElementById('aiAgentPopupActions');
+  const close=document.getElementById('aiAgentPopupClose');
+  if(!root) return;
+
+  const config={
+    info:{icon:'fa-robot',label:'PERSONAL AI CAREER AGENT'},
+    warning:{icon:'fa-triangle-exclamation',label:'ACTION REQUIRED'},
+    error:{icon:'fa-shield-heart',label:'SUBMISSION STATUS'},
+    success:{icon:'fa-circle-check',label:'MISSION COMPLETE'}
+  };
+  let resolver=null;
+  function esc(v){return String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+  function open(opts){
+    const type=opts.type||'info', c=config[type]||config.info;
+    icon.className='ai-popup-icon '+type;
+    icon.innerHTML='<i class="fa-solid '+c.icon+'"></i>';
+    kicker.textContent=opts.kicker||c.label;
+    title.textContent=opts.title||'Notification';
+    body.innerHTML=opts.html || esc(opts.message||'');
+    actions.innerHTML='';
+    (opts.buttons||[{label:'OK',primary:true,value:true}]).forEach(btn=>{
+      const b=document.createElement('button');
+      b.type='button'; b.className='ai-popup-btn'+(btn.primary?' primary':'');
+      b.innerHTML=(btn.icon?'<i class="fa-solid '+btn.icon+'"></i> ':'')+esc(btn.label||'OK');
+      b.onclick=()=>finish(btn.value);
+      actions.appendChild(b);
+    });
+    close.style.display=opts.closable===false?'none':'block';
+    root.classList.add('show');root.setAttribute('aria-hidden','false');
+    setTimeout(()=>actions.querySelector('.primary')?.focus(),50);
+  }
+  function finish(value){
+    root.classList.remove('show');root.setAttribute('aria-hidden','true');
+    const r=resolver;resolver=null;if(r) r(value);
+  }
+  close.onclick=()=>finish(false);
+  root.addEventListener('click',e=>{if(e.target===root)finish(false)});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&root.classList.contains('show'))finish(false)});
+
+  window.showAIAgentNotice=function(opts){
+    return new Promise(resolve=>{resolver=resolve;open({...opts,buttons:opts.buttons||[{label:'OK',primary:true,value:true}]})});
+  };
+
+  window.showAIAgentConfirm=function(count){
+    return new Promise(resolve=>{
+      resolver=resolve;
+      open({
+        type:'info',
+        title:'Approve & submit applications?',
+        html:`<div>You're about to submit <strong>${Number(count)||0} selected application${Number(count)===1?'':'s'}</strong> using your saved Master Resume and profile information.</div>
+              <div class="ai-popup-batch"><i class="fa-solid fa-paper-plane"></i><div><b>Ready for submission</b><span>The applications will be sent through your existing application system.</span></div></div>
+              <div class="ai-popup-confirm-note">Only the jobs you selected will be submitted. This action cannot be undone from this screen.</div>`,
+        buttons:[
+          {label:'Cancel',value:false},
+          {label:'Approve & Submit',icon:'fa-check',primary:true,value:true}
+        ]
+      });
+    });
+  };
+
+  window.showAIAgentSubmissionSuccess=function(success,failed){
+    success=Number(success)||0;failed=Number(failed)||0;
+    const type=failed?'warning':'success';
+    const titleText=failed?'Submission completed with issues':'Applications submitted successfully';
+    const message=failed
+      ? `<div><strong>${success}</strong> application${success===1?' was':'s were'} submitted successfully. <strong>${failed}</strong> could not be submitted.</div><div class="ai-popup-summary">Your successful applications are saved. You can retry the failed applications.</div>`
+      : `<div>Your Personal AI Career Agent successfully submitted <strong>${success} application${success===1?'':'s'}</strong>.</div><div class="ai-popup-summary"><strong>✓ Submission complete</strong><br>Your application status will be available in your dashboard.</div>`;
+    return window.showAIAgentNotice({type,title:titleText,html:message,buttons:[{label:'Done',primary:true,value:true}]});
+  };
 })();
 </script>
 
