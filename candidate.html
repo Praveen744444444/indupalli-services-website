@@ -450,6 +450,103 @@ body.dark-mode .premium-support-copy span{color:#94a3b8;}
 @media(max-width:600px){
   .agent-job-run-btn{width:100%;min-width:0;height:46px;font-size:14px;}
 }
+
+/* ===== UNIFIED PROFESSIONAL POPUP OVERRIDE ===== */
+#customAlertModal.modal,
+#signOutModal.modal {
+    background: rgba(15,23,42,.68) !important;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 9999999 !important;
+}
+
+#customAlertModal .modal-content,
+#signOutModal .modal-content {
+    width: min(430px, calc(100vw - 40px)) !important;
+    box-sizing: border-box !important;
+    padding: 32px !important;
+    overflow: hidden !important;
+    text-align: center !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 18px !important;
+    box-shadow: 0 24px 70px rgba(15,23,42,.28) !important;
+}
+
+#customAlertModal .popup-accent-bar,
+#signOutModal .popup-accent-bar,
+#signOutModal .modal-content > div:first-child {
+    height: 4px !important;
+}
+
+#customAlertModal .popup-icon-badge,
+#signOutModal .popup-icon-badge {
+    width: 58px !important;
+    height: 58px !important;
+    margin: 0 auto 18px !important;
+    font-size: 23px !important;
+}
+
+#customAlertModal h3,
+#signOutModal h3 {
+    margin: 0 0 9px !important;
+    color: var(--navy) !important;
+    font-size: 20px !important;
+    line-height: 1.3 !important;
+    font-weight: 800 !important;
+}
+
+#customAlertModal p,
+#signOutModal p {
+    margin: 0 0 25px !important;
+    color: var(--text-muted) !important;
+    font-size: 14.5px !important;
+    line-height: 1.65 !important;
+}
+
+#customAlertModal .popup-primary-btn {
+    min-height: 48px !important;
+    border: 0 !important;
+    border-radius: 10px !important;
+    padding: 12px 18px !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+}
+
+#signOutModal .modal-content > div:last-child {
+    gap: 10px !important;
+}
+
+#signOutModal button {
+    min-height: 48px !important;
+    border-radius: 10px !important;
+    padding: 12px 18px !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+}
+
+#signOutModal .view-btn {
+    background: #f8fafc !important;
+    color: #475569 !important;
+    border: 1px solid #e2e8f0 !important;
+}
+
+#customAlertModal button:hover,
+#signOutModal button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(15,23,42,.10);
+}
+
+@media (max-width:480px) {
+    #customAlertModal .modal-content,
+    #signOutModal .modal-content {
+        padding: 28px 22px !important;
+        border-radius: 16px !important;
+    }
+    #signOutModal .modal-content > div:last-child {
+        flex-direction: column !important;
+    }
+}
+
 </style>
 
 <style>
@@ -5533,6 +5630,89 @@ window.reviewAndApproveAIJob=async function(){
 <div id="indupalliResumeGate"><div class="irg-card"><div class="irg-icon"><i class="fa-solid fa-file-arrow-up"></i></div><h2>Before the AI mission starts, I need your resume</h2><p>Your Master Resume is saved and reused for future AI runs. You only upload again when replacing it.</p><label class="irg-drop" for="indupalliResumeFile"><i class="fa-solid fa-cloud-arrow-up"></i><div><b>Upload your Master Resume</b><span id="indupalliResumeLabel">PDF, DOC or DOCX • used for matching and applications</span></div></label><input id="indupalliResumeFile" type="file" accept=".pdf,.doc,.docx" hidden><div class="irg-actions"><button class="irg-cancel" onclick="document.getElementById('indupalliResumeGate').classList.remove('show')">Cancel</button><button class="irg-save" onclick="window.saveIndupalliResume()"><i class="fa-solid fa-shield-halved"></i> Save & Start AI Agent</button></div></div></div>
 <script>
 (function(){const KEY='indupalli_master_resume_url_v1';function sync(){if(!window.candidateMasterResumeUrl){const u=localStorage.getItem(KEY);if(u)window.candidateMasterResumeUrl=u}}sync();function beautify(){document.querySelectorAll('button').forEach(b=>{if((b.textContent||'').trim().toLowerCase().includes('run ai agent')&&!b.dataset.aiPremium){b.dataset.aiPremium='1';b.classList.add('agent-run-premium');b.innerHTML='<i class="fa-solid fa-robot"></i> Run AI Agent <span class="agent-live-dot"></span>'}})}setInterval(beautify,900);beautify();document.getElementById('indupalliResumeFile').addEventListener('change',e=>{const f=e.target.files[0];if(f)document.getElementById('indupalliResumeLabel').textContent=f.name+' • ready to save as Master Resume'});window.saveIndupalliResume=async()=>{const f=document.getElementById('indupalliResumeFile').files[0];if(!f)return;const b=document.querySelector('.irg-save');b.disabled=true;b.textContent='Saving Master Resume...';try{if(!window.supabase?.storage)throw Error('Secure resume storage is unavailable.');const email=(window.currentUser?.email||localStorage.getItem('userEmail')||'candidate').replace(/[^a-zA-Z0-9]/g,'_');const path='master-resumes/'+email+'_'+Date.now()+'_'+f.name.replace(/[^a-zA-Z0-9._-]/g,'_');const r=await window.supabase.storage.from('resumes').upload(path,f,{upsert:false,contentType:f.type||undefined});if(r.error)throw r.error;const u=window.supabase.storage.from('resumes').getPublicUrl(path)?.data?.publicUrl;if(!u)throw Error('Resume URL could not be created.');window.candidateMasterResumeUrl=u;localStorage.setItem(KEY,u);localStorage.setItem('indupalli_master_resume_name',f.name);document.getElementById('indupalliResumeGate').classList.remove('show');if(window.__origRunAI)window.__origRunAI(false)}catch(e){alert(e.message||'Could not save resume. Please try again.')}finally{b.disabled=false;b.innerHTML='<i class="fa-solid fa-shield-halved"></i> Save & Start AI Agent'}};const t=setInterval(()=>{if(typeof window.runAIAgent==='function'&&!window.__origRunAI){window.__origRunAI=window.runAIAgent;window.runAIAgent=(auto=false)=>{sync();if(!window.candidateMasterResumeUrl){document.getElementById('indupalliResumeGate').classList.add('show');return false}return window.__origRunAI(auto)};clearInterval(t)}},120)})();
+</script>
+
+
+<script>
+/* ===== FINAL PROFESSIONAL POPUP CONTROLLER ===== */
+(function () {
+    const themes = {
+        success: { color:"#059669", bg:"#ecfdf5", icon:"fa-solid fa-circle-check" },
+        error:   { color:"#dc2626", bg:"#fef2f2", icon:"fa-solid fa-circle-exclamation" },
+        warning: { color:"#d97706", bg:"#fffbeb", icon:"fa-solid fa-triangle-exclamation" },
+        info:    { color:"#2563eb", bg:"#eff6ff", icon:"fa-solid fa-circle-info" }
+    };
+
+    function getType(type, title) {
+        const v = (String(type || "") + " " + String(title || "")).toLowerCase();
+        if (v.includes("error") || v.includes("failed")) return "error";
+        if (v.includes("success") || v.includes("saved") || v.includes("sent") || v.includes("deleted")) return "success";
+        if (v.includes("warning") || v.includes("required")) return "warning";
+        return "info";
+    }
+
+    // Wrap the existing alert function so all existing calls keep working.
+    const originalAlert = window.showCustomAlert;
+    window.showCustomAlert = function (message, title = "Notice", type = "Info") {
+        const modal = document.getElementById("customAlertModal");
+        const iconBox = document.getElementById("alertIconContainer");
+        const icon = document.getElementById("alertModalIcon") || iconBox?.querySelector("i");
+        const theme = themes[getType(type, title)];
+
+        if (!modal || !iconBox) {
+            if (typeof originalAlert === "function") return originalAlert(message, title, type);
+            window.alert(message);
+            return;
+        }
+
+        const titleEl = document.getElementById("alertTitle");
+        const messageEl = document.getElementById("alertMessage");
+        if (titleEl) titleEl.textContent = String(title).replace(/^[^A-Za-z0-9]+\s*/, "");
+        if (messageEl) messageEl.textContent = message || "";
+
+        iconBox.style.background = theme.bg;
+        iconBox.style.color = theme.color;
+        if (icon) icon.className = theme.icon;
+
+        const box = modal.querySelector(".modal-content");
+        if (box) {
+            box.style.setProperty("--accent-color", theme.color);
+            box.style.setProperty("--accent-bg", theme.bg);
+        }
+        const bar = modal.querySelector(".popup-accent-bar");
+        if (bar) bar.style.background = theme.color;
+
+        const btn = modal.querySelector(".popup-primary-btn");
+        if (btn) btn.style.background = theme.color;
+
+        // Prevent alert + sign-out modal stacking.
+        const signOut = document.getElementById("signOutModal");
+        if (signOut) signOut.style.display = "none";
+        modal.style.display = "flex";
+    };
+
+    window.closeCustomAlert = function () {
+        const modal = document.getElementById("customAlertModal");
+        if (modal) modal.style.display = "none";
+    };
+
+    // Click outside and Escape close simple notification popups.
+    ["customAlertModal", "signOutModal"].forEach(function(id) {
+        const modal = document.getElementById(id);
+        if (!modal) return;
+        modal.addEventListener("click", function(e) {
+            if (e.target !== modal) return;
+            if (id === "customAlertModal") window.closeCustomAlert();
+            else if (typeof window.closeSignOutModal === "function") window.closeSignOutModal();
+        });
+    });
+
+    window.addEventListener("keydown", function(e) {
+        if (e.key !== "Escape") return;
+        window.closeCustomAlert();
+        if (typeof window.closeSignOutModal === "function") window.closeSignOutModal();
+    });
+})();
 </script>
 
 </body>
