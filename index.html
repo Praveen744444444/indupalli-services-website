@@ -1087,6 +1087,26 @@
     .personal-ai-intro h2{font-size:clamp(34px,4vw,54px);line-height:1.08;letter-spacing:-1.7px;margin:0 0 16px;color:#17243a}
     .personal-ai-intro h2 span{color:#2563c8}
     .personal-ai-intro p{font-size:17px;line-height:1.75;color:var(--text-muted);margin:0 auto;max-width:760px}
+.personal-ai-video-wrap{
+    width:min(100%, 1050px);
+    margin:0 auto 44px;
+    border-radius:24px;
+    overflow:hidden;
+    background:#07101f;
+    border:1px solid rgba(15,23,42,.12);
+    box-shadow:0 20px 55px rgba(15,23,42,.16);
+}
+.personal-ai-video{
+    display:block;
+    width:100%;
+    height:auto;
+    aspect-ratio:16/9;
+    object-fit:cover;
+    background:#07101f;
+}
+@media(max-width:520px){
+    .personal-ai-video-wrap{margin-bottom:30px;border-radius:18px}
+}
     .personal-ai-dashboard{position:relative;border-radius:28px;padding:38px;background:linear-gradient(110deg,#11263b 0%,#182943 55%,#2b2459 100%);box-shadow:0 25px 60px rgba(16,36,65,.22);overflow:hidden;color:#fff}
     .personal-ai-dashboard:before{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:32px 32px;pointer-events:none}
     .personal-ai-dashboard>*{position:relative;z-index:1}
@@ -1479,6 +1499,19 @@
                 <div class="personal-ai-kicker"><span class="personal-ai-live"></span> PERSONAL AI CAREER AGENT <span class="unnanu-new-badge">NEW</span></div>
                 <h2>Your AI can work <span>alongside your career.</span></h2>
                 <p>Inside the Candidate Dashboard, your Personal AI Career Agent is designed to understand your profile, analyze active opportunities and organize suitable jobs before you decide what to do next.</p>
+            </div>
+
+            <!-- Personal AI Career Agent workflow video -->
+            <div class="personal-ai-video-wrap">
+                <video
+                    class="personal-ai-video"
+                    controls
+                    playsinline
+                    preload="metadata"
+                    aria-label="Personal AI Career Agent workflow video">
+                    <source src="Personal_AI_Career_Agent_Complete_Workflow_logo_left.mp4" type="video/mp4">
+                    Your browser does not support HTML5 video.
+                </video>
             </div>
 
             <div class="personal-ai-feature-grid">
