@@ -2725,59 +2725,109 @@ At Indupalli Services, we are committed to helping employers and professionals n
 
   function cleanValue(value) {
     return normalizeText(value)
-      .replace(/^(job title|position|designation|salary|ctc|location|workplace location|experience|job overview|job description)\s*[:\-]\s*/i, '')
+      .replace(/^(job title|position|designation|company|entity name|salary|ctc|compensation|location|workplace location|experience|required experience)\s*[:\-]\s*/i, '')
       .trim();
   }
 
+  const FIELD_BOUNDARIES =
+    '(?:Job\\s*Title|Position|Designation|Company(?:\\s*\\/\\s*Entity(?:\\s*Name)?)?|Entity\\s*Name|Salary|CTC(?:\\s*Range)?|Compensation|Location|Workplace(?:\\s*Location)?|Experience(?:\\s*Required)?|Required\\s*Experience|Application\\s*Deadline|Closing\\s*Date|Employment\\s*Type)';
+
+  const SECTION_BOUNDARIES =
+    '(?:Job\\s*Summary|Job\\s*Overview|Job\\s*Description|Role\\s*Summary|Key\\s*Responsibilities|Responsibilities|Required\\s*Skills|Skills|Eligibility|Qualifications|Job\\s*Details|How\\s*to\\s*Apply|Application\\s*Process)';
+
   function capture(text, labels) {
     for (const label of labels) {
-      const pattern = new RegExp(
-        '(?:^|\\s)' + label +
-        '\\s*[:\\-]\\s*(.+?)(?=\\s+(?:Job\\s*Title|Position|Designation|Salary|CTC(?:\\s*Range)?|Compensation|Location|Workplace(?:\\s*Location)?|Experience(?:\\s*Required)?|Application\\s*Deadline|Closing\\s*Date|Job\\s*Overview|Job\\s*Description|Responsibilities|Required\\s*Skills|Qualifications|Key\\s*Responsibilities)\\s*[:\\-]|$)',
+      const startRegex = new RegExp('(?:^|\\s)(?:' + label + ')\\s*[:\\-]\\s*', 'i');
+      const match = startRegex.exec(text);
+      if (!match) continue;
+
+      const valueStart = match.index + match[0].length;
+      const tail = text.slice(valueStart);
+      const boundaryRegex = new RegExp(
+        '\\s+(?:(?:' + FIELD_BOUNDARIES + ')\\s*[:\\-]|(?:' + SECTION_BOUNDARIES + ')(?=\\s|$))',
         'i'
       );
-      const match = text.match(pattern);
-      if (match && match[1]) return cleanValue(match[1]);
+      const boundary = boundaryRegex.exec(tail);
+      const value = boundary ? tail.slice(0, boundary.index) : tail;
+      if (cleanValue(value)) return cleanValue(value);
     }
     return '';
   }
 
   function sanitizeTitle(value) {
     return cleanValue(value)
-      .replace(/\s+(?:Salary|CTC|Location|Job Overview|Job Description)\s*[:\-]?.*$/i, '')
+      .replace(/\s+(?:Company|Entity|Salary|CTC|Location|Employment\s*Type|Job\s*Summary|Job\s*Overview|Job\s*Description).*$/i, '')
+      .trim();
+  }
+
+  function sanitizeCompany(value) {
+    return cleanValue(value)
+      .replace(/\s+(?:Salary|CTC|Location|Employment\s*Type|Job\s*Summary|Job\s*Overview|Job\s*Description).*$/i, '')
       .trim();
   }
 
   function sanitizeSalary(value) {
     let v = cleanValue(value)
-      .replace(/\s+(?:Location|Job Overview|Job Description|Experience)\s*[:\-]?.*$/i, '')
+      .replace(/\s+(?:Location|Workplace|Employment\s*Type|Experience|Job\s*Summary|Job\s*Overview|Job\s*Description).*$/i, '')
       .trim();
 
-    /* Some PDF fonts extract ₹ as "n" before the amount. Correct only when n directly precedes a number. */
+    /* PDF font encoding may return ₹ as ■, □ or n. */
+    v = v.replace(/[■□]/g, '₹');
     v = v.replace(/\bn\s*(?=\d)/gi, '₹');
     v = v.replace(/\bRs\.?\s*/gi, '₹');
     v = v.replace(/\bINR\s*/gi, '₹');
-    return v;
+    return v.replace(/\s+/g, ' ').trim();
   }
 
   function sanitizeLocation(value) {
     return cleanValue(value)
-      .replace(/\s+(?:Job Overview|Job Description|Responsibilities|Experience|Salary|CTC)\s*[:\-]?.*$/i, '')
+      .replace(/\s+(?:Employment\s*Type|Experience|Job\s*Summary|Job\s*Overview|Job\s*Description|Key\s*Responsibilities|Responsibilities).*$/i, '')
       .trim();
   }
 
-  function extractDescription(text) {
-    const marker = text.match(/(?:Job\s*Overview|Job\s*Description|Responsibilities)\s*[:\-]\s*([\s\S]+)/i);
-    let value = marker ? marker[1] : text;
+  function inferExperience(text) {
+    const explicit = capture(text, [
+      'Experience\\s*Required',
+      'Required\\s*Experience',
+      'Experience'
+    ]);
+    if (explicit) return explicit;
 
+    if (/freshers?\s+(?:and|&|\/)\s+experienced\s+candidates?/i.test(text) ||
+        /freshers?\s+and\s+experienced/i.test(text)) {
+      return 'Freshers / Experienced';
+    }
+
+    if (/\bfreshers?\b/i.test(text)) return 'Fresher';
+    return '';
+  }
+
+  function extractDescription(rawText) {
+    const text = normalizeText(rawText);
+
+    const startMatch = new RegExp(
+      '(?:^|\\s)(Job\\s*Summary|Job\\s*Overview|Job\\s*Description|Role\\s*Summary|Key\\s*Responsibilities|Responsibilities|Required\\s*Skills|Eligibility|Qualifications)(?=\\s|$)',
+      'i'
+    ).exec(text);
+
+    if (!startMatch) return '';
+
+    let value = text.slice(startMatch.index + startMatch[0].length).trim();
+
+    const endMatch = /\s+(?:Job\s*Details|Employment\s*Type|How\s*to\s*Apply|Application\s*Process|Application\s*Deadline|Closing\s*Date)(?:\s*[:\-]|\s|$)/i.exec(value);
+    if (endMatch) value = value.slice(0, endMatch.index).trim();
+
+    /* Rebuild readable sections from flattened PDF text. */
     value = value
-      .replace(/(?:Job\s*Title|Position|Designation)\s*[:\-]\s*[^\n]+/ig, '')
-      .replace(/(?:Salary|CTC(?:\s*Range)?|Compensation)\s*[:\-]\s*[^\n]+/ig, '')
-      .replace(/(?:Location|Workplace(?:\s*Location)?)\s*[:\-]\s*[^\n]+/ig, '')
-      .replace(/(?:Experience(?:\s*Required)?)\s*[:\-]\s*[^\n]+/ig, '')
+      .replace(/\s+(Key\s*Responsibilities)(?=\s|$)/ig, '\n\n$1\n')
+      .replace(/\s+(Required\s*Skills)(?=\s|$)/ig, '\n\n$1\n')
+      .replace(/\s+(Eligibility|Qualifications)(?=\s|$)/ig, '\n\n$1\n')
+      .replace(/\s+([•●▪◦])\s*/g, '\n$1 ')
+      .replace(/\n{3,}/g, '\n\n')
       .trim();
 
-    return normalizeText(value);
+    const heading = startMatch[1].replace(/\s+/g, ' ');
+    return (heading + '\n' + value).trim();
   }
 
   function setField(id, value) {
@@ -2802,9 +2852,7 @@ At Indupalli Services, we are committed to helping employers and professionals n
 
       if (empty) {
         missing.push(item.label);
-        if (item.id !== 'closingDate') {
-          el.placeholder = 'Required — please fill';
-        }
+        if (item.id !== 'closingDate') el.placeholder = 'Required — please fill';
       }
     });
 
@@ -2824,13 +2872,13 @@ At Indupalli Services, we are committed to helping employers and professionals n
       status.innerHTML =
         '<strong>AI extraction completed.</strong> Please complete the required fields: ' +
         missing.map(x => '<b>' + x + '</b>').join(', ') +
-        '. Extracted fields were automatically cleaned and corrected.';
+        '. Only values supported by the uploaded document were extracted.';
     } else {
       status.style.background = '#ecfdf5';
       status.style.color = '#166534';
       status.style.border = '1px solid #bbf7d0';
       status.innerHTML =
-        '<strong>AI extraction and auto-correction complete.</strong> All required job fields are ready for review.';
+        '<strong>AI extraction complete.</strong> All required job fields are ready for review.';
     }
   }
 
@@ -2840,6 +2888,7 @@ At Indupalli Services, we are committed to helping employers and professionals n
     if (name.endsWith('.pdf')) {
       const doc = await pdfjsLib.getDocument({ data: await file.arrayBuffer() }).promise;
       let output = '';
+
       for (let pageNo = 1; pageNo <= doc.numPages; pageNo++) {
         const page = await doc.getPage(pageNo);
         const content = await page.getTextContent();
@@ -2852,14 +2901,12 @@ At Indupalli Services, we are committed to helping employers and professionals n
       return (await mammoth.extractRawText({ arrayBuffer: await file.arrayBuffer() })).value;
     }
 
-    if (name.endsWith('.txt')) {
-      return await file.text();
-    }
+    if (name.endsWith('.txt')) return await file.text();
 
     throw new Error('Please upload a PDF, DOCX or TXT job document.');
   }
 
-  /* Final extractor overrides the earlier basic parser with boundary-aware extraction. */
+  /* Final extractor: safe for PDFs where PDF.js returns the page as one long line. */
   window.extractIndupalliJob = async function (file) {
     if (!file) return;
 
@@ -2871,32 +2918,29 @@ At Indupalli Services, we are committed to helping employers and professionals n
       status.style.background = '';
       status.style.color = '';
       status.style.border = '';
-      status.textContent = 'AI is reading, cleaning and structuring the job document...';
+      status.textContent = 'AI is reading and structuring the job document...';
     }
 
     try {
       const raw = await readDocument(file);
       const text = normalizeText(raw);
 
-      let title = capture(text, ['Job\\s*Title', 'Position', 'Designation']);
-      if (!title) {
-        const fallback = text.match(/^(.{3,90}?)(?=\\s+(?:Salary|CTC|Location|Job\\s*Overview|Job\\s*Description)\\s*[:\\-])/i);
-        title = fallback ? fallback[1] : '';
-      }
-
+      const title = capture(text, ['Job\\s*Title', 'Position', 'Designation']);
+      const company = capture(text, ['Company(?:\\s*\\/\\s*Entity(?:\\s*Name)?)?', 'Entity\\s*Name']);
       const salary = capture(text, ['Salary', 'CTC(?:\\s*Range)?', 'Compensation']);
       const location = capture(text, ['Workplace\\s*Location', 'Workplace', 'Location']);
-      const experience = capture(text, ['Experience\\s*Required', 'Required\\s*Experience', 'Experience']);
+      const experience = inferExperience(text);
       const description = extractDescription(raw);
 
       setField('jobTitle', sanitizeTitle(title));
+      setField('companyName', sanitizeCompany(company));
       setField('salary', sanitizeSalary(salary));
       setField('location', sanitizeLocation(location));
       setField('experience', cleanValue(experience));
       setField('jobDescription', description);
 
       if (label) {
-        label.textContent = file.name + ' • AI extraction and auto-correction complete';
+        label.textContent = file.name + ' • AI extraction complete';
       }
 
       const missing = markRequiredFields();
@@ -2913,7 +2957,6 @@ At Indupalli Services, we are committed to helping employers and professionals n
     }
   };
 
-  /* Validate required fields again when recruiter submits the job. */
   document.addEventListener('submit', function (event) {
     if (event.target && event.target.id === 'jobForm') {
       const missing = markRequiredFields();
@@ -2926,8 +2969,7 @@ At Indupalli Services, we are committed to helping employers and professionals n
       }
     }
   }, true);
-})();
-</script>
+})();</script>
 
 </body>
 </html>
