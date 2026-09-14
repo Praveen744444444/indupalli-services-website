@@ -2638,7 +2638,7 @@ At Indupalli Services, we are committed to helping employers and professionals n
     </script>
 
 <!-- Indupalli Recruiter AI Upgrade -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.8.0/mammoth.browser.min.js"></script><script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <style>.ai-recruiter-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:20px;margin-bottom:24px}.ai-tool{background:linear-gradient(135deg,#0f172a,#172554);border-radius:18px;padding:21px;color:#eef6ff;border:1px solid rgba(59,130,246,.25)}.ai-tool h3{margin:0 0 6px;font-size:17px}.ai-tool p{font-size:12px;line-height:1.6;color:#b6c5da;margin-bottom:14px}.ai-row{display:flex;gap:8px;flex-wrap:wrap}.ai-row input,.ai-row select{flex:1;min-width:145px;background:#0b1220;color:#fff;border:1px solid #334155;border-radius:10px;padding:11px}.ai-btn{border:0;border-radius:10px;padding:11px 15px;background:linear-gradient(135deg,#22d3ee,#818cf8);font-weight:800;cursor:pointer;color:#08111f}.ai-doc{display:flex;align-items:center;gap:13px;padding:17px;margin-bottom:10px;border:1.5px dashed #93c5fd;border-radius:14px;background:#eff6ff;cursor:pointer}.ai-doc-actions{display:flex;justify-content:flex-end;gap:10px;margin:10px 0 18px}.ai-doc-btn{border:1px solid #cbd5e1;border-radius:10px;padding:10px 18px;font-weight:800;cursor:pointer;background:#fff;color:#334155}.ai-doc-btn.primary{border:0;background:linear-gradient(135deg,#2563eb,#6366f1);color:#fff;box-shadow:0 8px 20px rgba(37,99,235,.22)}.ai-doc-btn:hover{transform:translateY(-1px)}.ai-doc i{font-size:24px;color:#2563eb}.ai-doc b{display:block;color:#0f172a}.ai-doc span{font-size:12px;color:#64748b}.ai-status{display:none;padding:10px 12px;border-radius:10px;background:#ecfdf5;color:#047857;font-size:12px;font-weight:700;margin-bottom:12px}.ai-status.show{display:block}.ai-hit{background:#f0fdf4!important;box-shadow:inset 3px 0 #10b981}@media(max-width:850px){.ai-recruiter-grid{grid-template-columns:1fr}}</style>
 <script>
 (function(){function field(id,v){const e=document.getElementById(id);if(e)e.value=v||'N/A'}function get(text,rx,fb='N/A'){for(const r of rx){const m=text.match(r);if(m?.[1])return m[1].replace(/\s+/g,' ').trim()}return fb}function add(){const f=document.getElementById('jobForm');if(!f||document.getElementById('aiJobDocUpload'))return;const top=document.createElement('div');top.innerHTML='<div class="ai-recruiter-grid"><div class="ai-tool"><h3><i class="fa-solid fa-brain"></i> AI Candidate Search</h3><p>Search by candidate name, skills, experience or job and highlight the most relevant applications.</p><div class="ai-row"><input id="aiCandidateQuery" placeholder="e.g. React, 3 years, marketing"><button type="button" class="ai-btn" onclick="window.runIndupalliCandidateAI()"><i class="fa-solid fa-wand-magic-sparkles"></i> Search with AI</button></div></div><div class="ai-tool"><h3><i class="fa-solid fa-chart-line"></i> AI Application Management</h3><p>Open the candidate workspace, filter applications and review resumes faster with the existing hiring workflow.</p><button type="button" class="ai-btn" onclick="document.getElementById(\'inboundResumesSection\')?.scrollIntoView({behavior:\'smooth\'})">Open Candidate Workspace</button></div></div>';f.parentNode.insertBefore(top,f);const d=document.createElement('div');d.innerHTML='<label class="ai-doc" for="aiJobDocUpload"><i class="fa-solid fa-file-arrow-up"></i><div><b>Add Job Document / PDF with AI</b><span id="aiJobDocLabel">PDF, DOCX or TXT • AI extracts title, salary, location, experience and JD. Missing values become N/A.</span></div></label><input id="aiJobDocUpload" type="file" accept=".pdf,.doc,.docx,.txt" hidden><div class="ai-doc-actions"><button type="button" class="ai-doc-btn" onclick="window.cancelIndupalliJobDoc()"><i class="fa-solid fa-xmark"></i> Cancel</button><button type="button" class="ai-doc-btn primary" onclick="document.getElementById(\'aiJobDocUpload\').click()"><i class="fa-solid fa-plus"></i> Add Job Document</button></div><div id="aiJobDocStatus" class="ai-status"></div>';f.insertBefore(d,f.firstChild);['location','salary'].forEach(x=>document.getElementById(x)?.removeAttribute('required'));document.getElementById('aiJobDocUpload').addEventListener('change',e=>window.extractIndupalliJob(e.target.files[0]))}async function pdf(file){const p=await pdfjsLib.getDocument({data:await file.arrayBuffer()}).promise;let o='';for(let i=1;i<=p.numPages;i++){const c=await(await p.getPage(i)).getTextContent();o+=c.items.map(x=>x.str).join(' ')+'\n'}return o}window.cancelIndupalliJobDoc=()=>{const u=document.getElementById('aiJobDocUpload'),l=document.getElementById('aiJobDocLabel'),st=document.getElementById('aiJobDocStatus');if(u)u.value='';if(l)l.textContent='PDF, DOCX or TXT • AI extracts title, salary, location, experience and JD. Missing values become N/A.';if(st){st.className='ai-status';st.textContent='';st.removeAttribute('style')}};window.extractIndupalliJob=async file=>{if(!file)return;const s=document.getElementById('aiJobDocStatus');s.className='ai-status show';s.textContent='AI is extracting job information...';try{let t='',n=file.name.toLowerCase();if(n.endsWith('.pdf'))t=await pdf(file);else if(n.endsWith('.docx'))t=(await mammoth.extractRawText({arrayBuffer:await file.arrayBuffer()})).value;else if(n.endsWith('.txt'))t=await file.text();else throw Error('Use PDF, DOCX or TXT for reliable browser extraction.');const lines=t.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);field('jobTitle',get(t,[/(?:job title|position|designation)\s*[:\-]\s*([^\n]{2,100})/i],lines[0]||'N/A'));field('location',get(t,[/(?:location|work location)\s*[:\-]\s*([^\n]{2,100})/i,/\b(remote|hyderabad|bengaluru|bangalore|chennai|mumbai|pune|vijayawada|visakhapatnam|delhi)\b/i]));field('salary',get(t,[/(?:salary|ctc|compensation)\s*[:\-]\s*([^\n]{2,100})/i,/((?:₹|rs\.?|inr)\s?[\d,.]+[^\n]{0,30})/i]));field('experience',get(t,[/(?:experience|required experience)\s*[:\-]\s*([^\n]{2,80})/i,/\b(\d+\s*(?:-|to)?\s*\d*\s*years?)\b/i]));field('jobDescription',t.trim());s.textContent='AI extraction complete. Missing title, salary or location values are marked N/A.';document.getElementById('aiJobDocLabel').textContent=file.name+' • extraction complete'}catch(e){s.style.background='#fef2f2';s.style.color='#b91c1c';s.textContent=e.message}};window.runIndupalliCandidateAI=()=>{const q=(document.getElementById('aiCandidateQuery').value||'').toLowerCase().trim().split(/\s+/).filter(Boolean);let c=0;document.querySelectorAll('#inboundResumesSection tbody tr').forEach(r=>{const t=r.innerText.toLowerCase(),ok=!q.length||q.some(x=>t.includes(x));r.style.display=ok?'':'none';r.classList.toggle('ai-hit',ok&&q.length);if(ok)c++});window.showCustomAlert?window.showCustomAlert(c+' candidate applications matched your search.','AI Candidate Search','success'):alert(c+' candidates matched.')};add()})();
@@ -2970,6 +2970,447 @@ At Indupalli Services, we are committed to helping employers and professionals n
     }
   }, true);
 })();</script>
+
+
+<script>
+/* =========================================================
+   UNIVERSAL JOB DOCUMENT EXTRACTOR v3
+   Handles:
+   1. Normal text PDFs
+   2. Multi-column / table PDFs
+   3. Flattened PDF text
+   4. Scanned/image PDFs with OCR fallback
+   5. DOCX and TXT files
+   ========================================================= */
+(function () {
+  const FIELDS = {
+    title: 'jobTitle',
+    company: 'companyName',
+    location: 'location',
+    salary: 'salary',
+    experience: 'experience',
+    deadline: 'closingDate',
+    description: 'jobDescription'
+  };
+
+  function clean(s) {
+    return String(s || '')
+      .replace(/\u00a0/g, ' ')
+      .replace(/[■□]/g, '₹')
+      .replace(/[ \t]+/g, ' ')
+      .replace(/\n[ \t]+/g, '\n')
+      .replace(/[ \t]+\n/g, '\n')
+      .replace(/\n{3,}/g, '\n\n')
+      .trim();
+  }
+
+  function set(id, value) {
+    const el = document.getElementById(id);
+    if (!el || value === undefined || value === null) return;
+    el.value = String(value).trim();
+    el.dispatchEvent(new Event('input', { bubbles: true }));
+    el.dispatchEvent(new Event('change', { bubbles: true }));
+  }
+
+  function escapeRx(s) {
+    return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
+  function findLabeled(text, labels, maxLen) {
+    const lines = clean(text).split('\n').map(x => x.trim()).filter(Boolean);
+
+    for (const line of lines) {
+      for (const label of labels) {
+        const rx = new RegExp('^\\s*(?:' + label + ')\\s*[:\\-–—]\\s*(.+)$', 'i');
+        const m = line.match(rx);
+        if (m && m[1].trim()) return m[1].trim().slice(0, maxLen || 180);
+      }
+    }
+
+    /* Flattened PDF fallback: stop at next known field/section. */
+    const flat = clean(text).replace(/\n/g, ' ');
+    const boundaries = [
+      'Job\\s*Title', 'Position', 'Designation', 'Company(?:\\s*/\\s*Entity(?:\\s*Name)?)?',
+      'Entity\\s*Name', 'Salary', 'CTC(?:\\s*Range)?', 'Compensation',
+      'Location', 'Workplace(?:\\s*Location)?', 'Experience(?:\\s*Required)?',
+      'Application\\s*Deadline', 'Closing\\s*Date', 'Employment\\s*Type',
+      'Job\\s*Summary', 'Job\\s*Overview', 'Job\\s*Description',
+      'Key\\s*Responsibilities', 'Responsibilities', 'Required\\s*Skills',
+      'Skills', 'Eligibility', 'Qualifications', 'Job\\s*Details'
+    ].join('|');
+
+    for (const label of labels) {
+      const rx = new RegExp(
+        '(?:^|\\s)(?:' + label + ')\\s*[:\\-–—]\\s*([\\s\\S]{1,' + (maxLen || 180) + '?})(?=\\s+(?:' + boundaries + ')\\s*(?:[:\\-–—]|$)|$)',
+        'i'
+      );
+      const m = flat.match(rx);
+      if (m && m[1].trim()) return m[1].trim();
+    }
+    return '';
+  }
+
+  async function extractPdfLayout(file) {
+    const loadingTask = pdfjsLib.getDocument({ data: await file.arrayBuffer() });
+    const pdf = await loadingTask.promise;
+    let allText = '';
+    let pagesForOcr = [];
+
+    for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
+      const page = await pdf.getPage(pageNumber);
+      const content = await page.getTextContent();
+
+      const items = content.items
+        .filter(i => String(i.str || '').trim())
+        .map(i => ({
+          text: String(i.str).trim(),
+          x: Number(i.transform?.[4] || 0),
+          y: Number(i.transform?.[5] || 0)
+        }));
+
+      if (items.length < 5) pagesForOcr.push(pageNumber);
+
+      /* Reconstruct rows using Y coordinates. */
+      items.sort((a, b) => Math.abs(b.y - a.y) > 2 ? b.y - a.y : a.x - b.x);
+      const rows = [];
+
+      for (const item of items) {
+        let row = rows.find(r => Math.abs(r.y - item.y) <= 3);
+        if (!row) {
+          row = { y: item.y, items: [] };
+          rows.push(row);
+        }
+        row.items.push(item);
+      }
+
+      rows.sort((a, b) => b.y - a.y);
+      const pageText = rows.map(row => {
+        row.items.sort((a, b) => a.x - b.x);
+        return row.items.map(i => i.text).join(' ');
+      }).join('\n');
+
+      allText += '\n' + pageText;
+    }
+
+    return { text: clean(allText), pdf, pagesForOcr };
+  }
+
+  async function ocrPdfPages(pdf, pageNumbers, status) {
+    if (!window.Tesseract) {
+      throw new Error('This PDF is image-based and OCR could not be loaded. Please check your internet connection.');
+    }
+
+    let output = '';
+    const targets = pageNumbers.length
+      ? pageNumbers
+      : Array.from({ length: Math.min(pdf.numPages, 3) }, (_, i) => i + 1);
+
+    for (let index = 0; index < targets.length; index++) {
+      const pageNo = targets[index];
+      if (status) status.textContent =
+        'Scanned PDF detected. Running OCR on page ' + pageNo + ' of ' + pdf.numPages + '...';
+
+      const page = await pdf.getPage(pageNo);
+      const viewport = page.getViewport({ scale: 1.6 });
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
+      canvas.width = Math.ceil(viewport.width);
+      canvas.height = Math.ceil(viewport.height);
+
+      await page.render({ canvasContext: ctx, viewport }).promise;
+
+      const result = await Tesseract.recognize(canvas, 'eng', {
+        logger: function () {}
+      });
+
+      output += '\n' + (result?.data?.text || '');
+    }
+
+    return clean(output);
+  }
+
+  async function readDocument(file, status) {
+    const name = file.name.toLowerCase();
+
+    if (name.endsWith('.pdf')) {
+      const result = await extractPdfLayout(file);
+
+      /* OCR fallback for scanned PDFs or nearly empty extraction. */
+      if (result.text.replace(/\s/g, '').length < 80) {
+        const ocr = await ocrPdfPages(result.pdf, [], status);
+        return clean(ocr);
+      }
+
+      /* Mixed PDFs: OCR pages that contain almost no embedded text. */
+      if (result.pagesForOcr.length) {
+        try {
+          const ocr = await ocrPdfPages(result.pdf, result.pagesForOcr, status);
+          return clean(result.text + '\n' + ocr);
+        } catch (e) {
+          return result.text;
+        }
+      }
+
+      return result.text;
+    }
+
+    if (name.endsWith('.docx')) {
+      if (!window.mammoth) throw new Error('DOCX reader is not available.');
+      const result = await mammoth.extractRawText({ arrayBuffer: await file.arrayBuffer() });
+      return clean(result.value);
+    }
+
+    if (name.endsWith('.txt')) return clean(await file.text());
+
+    throw new Error('Supported formats: PDF, DOCX and TXT.');
+  }
+
+  function extractTitle(text) {
+    let v = findLabeled(text, [
+      'Job\\s*Title', 'Job\\s*Position', 'Position', 'Designation',
+      'Role', 'Vacancy', 'Opening'
+    ], 120);
+
+    if (v) return v.replace(/\s+(?:Company|Salary|Location|Experience|Employment\s*Type).*$/i, '').trim();
+
+    const lines = clean(text).split('\n').map(x => x.trim()).filter(Boolean);
+    const bad = /^(job description|job details|about the role|job summary|company|salary|location)$/i;
+    return (lines.find(line =>
+      line.length >= 3 && line.length <= 90 &&
+      !bad.test(line) &&
+      !/[:₹]|\b\d{5,}\b/.test(line)
+    ) || '');
+  }
+
+  function extractCompany(text) {
+    return findLabeled(text, [
+      'Company(?:\\s*Name)?', 'Company\\s*/\\s*Entity(?:\\s*Name)?',
+      'Organisation', 'Organization', 'Employer', 'Entity\\s*Name'
+    ], 150);
+  }
+
+  function extractSalary(text) {
+    let v = findLabeled(text, [
+      'Salary(?:\\s*/\\s*CTC(?:\\s*Range)?)?', 'CTC(?:\\s*Range)?',
+      'Compensation', 'Pay', 'Package', 'Remuneration'
+    ], 160);
+
+    if (!v) {
+      const m = clean(text).match(
+        /(?:₹|rs\.?|inr)\s*[\d,.]+(?:\s*(?:-|–|to)\s*(?:₹|rs\.?|inr)?\s*[\d,.]+)?(?:\s*(?:per\s*month|\/\s*month|monthly|pm|per\s*annum|p\.?a\.?|pa|lpa|lakhs?))?/i
+      );
+      v = m ? m[0] : '';
+    }
+
+    return clean(v)
+      .replace(/\bn\s*(?=\d)/gi, '₹')
+      .replace(/\bRs\.?\s*/gi, '₹')
+      .replace(/\bINR\s*/gi, '₹');
+  }
+
+  function extractLocation(text) {
+    let v = findLabeled(text, [
+      'Workplace\\s*Location', 'Job\\s*Location', 'Work\\s*Location',
+      'Location', 'Place\\s*of\\s*Work'
+    ], 160);
+
+    if (v) {
+      return v.replace(/\s+(?:Employment\s*Type|Experience|Salary|Job\s*Summary).*$/i, '').trim();
+    }
+
+    const cities = [
+      'Hyderabad', 'Bengaluru', 'Bangalore', 'Chennai', 'Mumbai', 'Pune',
+      'Vijayawada', 'Nuzvid', 'Visakhapatnam', 'Delhi', 'New Delhi',
+      'Kolkata', 'Ahmedabad', 'Noida', 'Gurgaon', 'Gurugram', 'Remote'
+    ];
+
+    const flat = clean(text).replace(/\n/g, ' ');
+    for (const city of cities) {
+      const rx = new RegExp('\\b' + escapeRx(city) + '\\b(?:\\s*,\\s*[A-Za-z ]{3,40})?', 'i');
+      const m = flat.match(rx);
+      if (m) return m[0].trim();
+    }
+    return '';
+  }
+
+  function extractExperience(text) {
+    let v = findLabeled(text, [
+      'Experience\\s*Required', 'Required\\s*Experience',
+      'Experience', 'Years\\s*of\\s*Experience'
+    ], 100);
+
+    if (v) return v;
+
+    const flat = clean(text).replace(/\n/g, ' ');
+
+    if (/freshers?\s+(?:and|&|\/)\s+experienced/i.test(flat) ||
+        /freshers?\s+and\s+experienced\s+candidates?/i.test(flat)) {
+      return 'Freshers / Experienced';
+    }
+
+    const m = flat.match(/\b(?:0\s*(?:-|–|to)\s*\d+|\d+\s*(?:-|–|to)\s*\d+|\d+\+?)\s*(?:years?|yrs?)\b/i);
+    if (m) return m[0];
+
+    if (/\bfreshers?\b/i.test(flat)) return 'Fresher';
+    return '';
+  }
+
+  function extractDeadline(text) {
+    let v = findLabeled(text, [
+      'Application\\s*Deadline', 'Closing\\s*Date',
+      'Last\\s*Date(?:\\s*to\\s*Apply)?', 'Apply\\s*Before'
+    ], 80);
+
+    if (!v) return '';
+
+    v = clean(v);
+    const d = new Date(v);
+    if (!Number.isNaN(d.getTime())) {
+      return d.toISOString().slice(0, 10);
+    }
+
+    /* dd-mm-yyyy / dd/mm/yyyy */
+    const m = v.match(/\b(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})\b/);
+    if (m) {
+      return m[3] + '-' + String(m[2]).padStart(2, '0') + '-' + String(m[1]).padStart(2, '0');
+    }
+    return '';
+  }
+
+  function extractDescription(text) {
+    const lines = clean(text).split('\n').map(x => x.trim()).filter(Boolean);
+
+    const startIndex = lines.findIndex(line =>
+      /^(job\s*(summary|overview|description)|role\s*summary|about\s*(the\s*)?role|key\s*responsibilities|responsibilities)$/i.test(line)
+    );
+
+    const endIndex = lines.findIndex((line, i) =>
+      i > Math.max(startIndex, 0) &&
+      /^(job\s*details|employment\s*type|application\s*deadline|closing\s*date|how\s*to\s*apply|application\s*process)$/i.test(line)
+    );
+
+    if (startIndex >= 0) {
+      return lines.slice(startIndex, endIndex >= 0 ? endIndex : undefined).join('\n\n');
+    }
+
+    /* If no heading exists, remove obvious metadata lines and keep meaningful body. */
+    const metadata = /^(job\s*title|position|designation|company|entity|salary|ctc|compensation|location|workplace|experience|application\s*deadline|closing\s*date|employment\s*type)\s*[:\-–—]/i;
+    const body = lines.filter(line => !metadata.test(line));
+
+    return body.length ? body.join('\n\n') : clean(text);
+  }
+
+  function score(data) {
+    return [
+      data.title, data.company, data.location, data.salary,
+      data.experience, data.description
+    ].filter(Boolean).length;
+  }
+
+  function markFields(data) {
+    const required = [
+      ['jobTitle', data.title],
+      ['companyName', data.company],
+      ['location', data.location],
+      ['salary', data.salary],
+      ['experience', data.experience],
+      ['jobDescription', data.description]
+    ];
+
+    required.forEach(([id, value]) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const missing = !String(value || '').trim();
+      el.style.outline = missing ? '2px solid #dc2626' : '';
+      el.style.outlineOffset = missing ? '1px' : '';
+      el.style.background = missing ? '#fff7f7' : '';
+    });
+  }
+
+  function parse(text) {
+    return {
+      title: extractTitle(text),
+      company: extractCompany(text),
+      location: extractLocation(text),
+      salary: extractSalary(text),
+      experience: extractExperience(text),
+      deadline: extractDeadline(text),
+      description: extractDescription(text)
+    };
+  }
+
+  window.extractIndupalliJob = async function (file) {
+    if (!file) return;
+
+    const status = document.getElementById('aiJobDocStatus');
+    const label = document.getElementById('aiJobDocLabel');
+
+    if (status) {
+      status.className = 'ai-status show';
+      status.style.background = '#eff6ff';
+      status.style.color = '#1d4ed8';
+      status.style.border = '1px solid #bfdbfe';
+      status.textContent = 'Reading document and detecting its PDF structure...';
+    }
+
+    try {
+      const text = await readDocument(file, status);
+
+      if (!text || text.replace(/\s/g, '').length < 20) {
+        throw new Error('No readable text was found in this document.');
+      }
+
+      const data = parse(text);
+
+      set(FIELDS.title, data.title);
+      set(FIELDS.company, data.company);
+      set(FIELDS.location, data.location);
+      set(FIELDS.salary, data.salary);
+      set(FIELDS.experience, data.experience);
+      set(FIELDS.deadline, data.deadline);
+      set(FIELDS.description, data.description);
+
+      markFields(data);
+
+      const missing = [];
+      if (!data.title) missing.push('Job Title');
+      if (!data.company) missing.push('Company');
+      if (!data.location) missing.push('Location');
+      if (!data.salary) missing.push('Salary');
+      if (!data.experience) missing.push('Experience');
+      if (!data.description) missing.push('Job Description');
+
+      if (status) {
+        if (missing.length) {
+          status.style.background = '#fff7ed';
+          status.style.color = '#9a3412';
+          status.style.border = '1px solid #fed7aa';
+          status.innerHTML =
+            '<strong>Document processed.</strong> Extracted ' + score(data) +
+            ' fields. Please review: <b>' + missing.join(', ') + '</b>.';
+        } else {
+          status.style.background = '#ecfdf5';
+          status.style.color = '#166534';
+          status.style.border = '1px solid #bbf7d0';
+          status.innerHTML =
+            '<strong>Extraction completed.</strong> All available job fields were detected. Please review before publishing.';
+        }
+      }
+
+      if (label) label.textContent = file.name + ' • universal extraction complete';
+
+    } catch (error) {
+      if (status) {
+        status.className = 'ai-status show';
+        status.style.background = '#fef2f2';
+        status.style.color = '#b91c1c';
+        status.style.border = '1px solid #fecaca';
+        status.textContent = error.message || 'Document extraction failed.';
+      }
+    }
+  };
+})();
+</script>
 
 </body>
 </html>
