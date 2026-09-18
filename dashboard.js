@@ -203,322 +203,1179 @@ async function loadDashboardCounts() {
     // KPIs now always come from the single, recruiter-scoped implementation
     // in recruiter-dashboard.html.
     try {
-        if (typeof window.loadPostedJobsInventory === "function") await window.loadPostedJobsInventory();
-        if (typeof window.loadInboundApplications === "function") await window.loadInboundApplications();
+        if (typeof window.loadPostedJobsInventory === "function") {
+            await window.loadPostedJobsInventory();
+        }
+
+        if (typeof window.loadInboundApplications === "function") {
+            await window.loadInboundApplications();
+        }
     } catch (e) {
         console.error("Dashboard counter error:", e);
     }
 }
 
 // ==========================================================
-// Notification Listener
+// PART 2: NOTIFICATIONS / ALERTS & MESSAGES
 // ==========================================================
-function initializeNotificationListener() {
-    const fetchUnread = async () => {
-        const { data: notifs } = await supabase
+
+async function loadNotifications() {
+    const list = document.getElementById("notificationsList");
+
+    if (!list) {
+        console.warn("⚠️ #notificationsList not found");
+        return;
+    }
+
+    list.innerHTML = `
+        <p style="
+            text-align:center;
+            color:var(--text-muted);
+            font-size:13.5px;
+            padding:20px 0;
+        ">
+            <i class="fa-solid fa-spinner fa-spin"></i> Loading alerts...
+        </p>
+    `;
+
+    try {
+        const { data: notifications, error } = await supabase
+            .from("notifications")
+            .select("*")
+            .order("created_at", { ascending: false });
+
+        if (error) throw error;
+
+        const items = notifications || [];
+
+        if (!items.length) {
+            list.innerHTML = `
+                <div style="
+                    text-align:center;
+                    padding:35px 20px;
+                    color:var(--text-muted);
+                ">
+                    <i class="fa-regular fa-bell-slash"
+                       style="
+                           font-size:30px;
+                           margin-bottom:12px;
+                           opacity:.6;
+                       ">
+                    </i>
+
+                    <div style="
+                        font-size:14px;
+                        font-weight:700;
+                        color:var(--navy);
+                        margin-bottom:5px;
+                    ">
+                        No alerts
+                    </div>
+
+                    <div style="font-size:12.5px;">
+                        You're all caught up.
+                    </div>
+                </div>
+            `;
+
+            return;
+        }
+
+        list.innerHTML = items.map(notification => {
+            const id = notification.id ?? "";
+
+            const candidateName =
+                notification.candidate_name ||
+                notification.candidateName ||
+                "Candidate";
+
+            const message =
+                notification.message ||
+                notification.text ||
+                "You have a new notification.";
+
+            const createdAt =
+                notification.created_at ||
+                notification.createdAt ||
+                notification.timestamp;
+
+            const isRead =
+                notification.is_read === true;
+
+            const dateText = createdAt
+                ? new Date(createdAt).toLocaleString("en-IN", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: true
+                })
+                : "";
+
+            return `
+                <div
+                    data-notification-id="${escapeHtml(id)}"
+                    style="
+                        display:flex;
+                        gap:12px;
+                        padding:14px;
+                        border:1px solid ${isRead ? "#e5e7eb" : "#bfdbfe"};
+                        border-radius:12px;
+                        background:${isRead ? "#ffffff" : "#eff6ff"};
+                        cursor:pointer;
+                        transition:.2s;
+                    "
+                    onmouseover="this.style.transform='translateY(-1px)'"
+                    onmouseout="this.style.transform='translateY(0)'"
+                    onclick="window.markNotificationRead('${escapeHtml(id)}')"
+                >
+
+                    <div style="
+                        width:38px;
+                        height:38px;
+                        min-width:38px;
+                        border-radius:50%;
+                        display:flex;
+                        align-items:center;
+                        justify-content:center;
+                        background:${isRead ? "#f1f5f9" : "#dbeafe"};
+                        color:#2563eb;
+                    ">
+                        <i class="fa-solid fa-bell"></i>
+                    </div>
+
+                    <div style="
+                        flex:1;
+                        min-width:0;
+                    ">
+
+                        <div style="
+                            display:flex;
+                            justify-content:space-between;
+                            gap:10px;
+                            align-items:flex-start;
+                        ">
+
+                            <strong style="
+                                color:var(--navy);
+                                font-size:13px;
+                            ">
+                                ${escapeHtml(candidateName)}
+                            </strong>
+
+                            ${!isRead ? `
+                                <span style="
+                                    width:8px;
+                                    height:8px;
+                                    min-width:8px;
+                                    border-radius:50%;
+                                    background:#2563eb;
+                                    margin-top:5px;
+                                "></span>
+                            ` : ""}
+                        </div>
+
+                        <div style="
+                            margin-top:5px;
+                            color:#475569;
+                            font-size:12.5px;
+                            line-height:1.5;
+                            word-break:break-word;
+                        ">
+                            ${escapeHtml(message)}
+                        </div>
+
+                        <div style="
+                            margin-top:7px;
+                            color:#94a3b8;
+                            font-size:10.5px;
+                        ">
+                            ${escapeHtml(dateText)}
+                        </div>
+
+                    </div>
+                </div>
+            `;
+        }).join("");
+
+    } catch (error) {
+        console.error(
+            "❌ Failed to load notifications:",
+            error
+        );
+
+        list.innerHTML = `
+            <div style="
+                text-align:center;
+                padding:30px 20px;
+                color:#dc2626;
+            ">
+                <i class="fa-solid fa-triangle-exclamation"
+                   style="
+                       font-size:28px;
+                       margin-bottom:10px;
+                   ">
+                </i>
+
+                <div style="
+                    font-size:14px;
+                    font-weight:700;
+                    margin-bottom:6px;
+                ">
+                    Unable to load alerts
+                </div>
+
+                <div style="
+                    font-size:12.5px;
+                    color:#64748b;
+                    line-height:1.5;
+                ">
+                    Please check your connection and try again.
+                </div>
+
+                <button
+                    type="button"
+                    onclick="window.loadNotifications()"
+                    style="
+                        margin-top:12px;
+                        border:none;
+                        background:#2563eb;
+                        color:white;
+                        padding:8px 14px;
+                        border-radius:7px;
+                        cursor:pointer;
+                        font-size:12px;
+                        font-weight:700;
+                    "
+                >
+                    Try Again
+                </button>
+            </div>
+        `;
+    }
+}
+
+// ==========================================================
+// MARK NOTIFICATION AS READ
+// ==========================================================
+window.markNotificationRead = async function (notificationId) {
+    if (!notificationId) return;
+
+    try {
+        const { error } = await supabase
+            .from("notifications")
+            .update({
+                is_read: true
+            })
+            .eq("id", notificationId);
+
+        if (error) throw error;
+
+        await updateNotificationBadge();
+        await loadNotifications();
+
+    } catch (error) {
+        console.error(
+            "❌ markNotificationRead error:",
+            error
+        );
+    }
+};
+
+// ==========================================================
+// NOTIFICATION BADGE
+// ==========================================================
+async function updateNotificationBadge() {
+    try {
+        const { data: notifs, error } = await supabase
             .from("notifications")
             .select("id, is_read");
 
-        let unread = 0;
-        (notifs || []).forEach(n => {
-            if (!n.is_read) unread++;
-        });
+        if (error) throw error;
 
-        const badge = document.getElementById("notificationCount");
+        const unread =
+            (notifs || []).filter(
+                n => n.is_read !== true
+            ).length;
+
+        const badge =
+            document.getElementById("notificationCount");
+
         if (!badge) return;
 
-        badge.innerHTML = unread;
-        badge.style.display = unread > 0 ? "inline-block" : "none";
-        document.title = unread > 0 ? `(${unread}) Recruiter Dashboard` : "Recruiter Dashboard";
-    };
+        badge.textContent = unread;
 
-    fetchUnread();
+        badge.style.display =
+            unread > 0
+                ? "inline-block"
+                : "none";
 
-    supabase
-        .channel("public:notifications")
-        .on("postgres_changes", {
-            event: "*",
-            schema: "public",
-            table: "notifications"
-        }, () => {
-            fetchUnread();
-        })
-        .subscribe();
+        document.title =
+            unread > 0
+                ? `(${unread}) Recruiter Dashboard`
+                : "Recruiter Dashboard";
+
+    } catch (error) {
+        console.error(
+            "❌ updateNotificationBadge error:",
+            error
+        );
+    }
 }
 
-console.log("✅ Dashboard Parts 1 & 2 Loaded");
+// ==========================================================
+// INITIALIZE NOTIFICATIONS
+// ==========================================================
+function initializeNotificationListener() {
+
+    updateNotificationBadge();
+
+    if (!window.__notificationsChannelSubscribed) {
+
+        window.__notificationsChannelSubscribed = true;
+
+        supabase
+            .channel("public:notifications")
+            .on(
+                "postgres_changes",
+                {
+                    event: "*",
+                    schema: "public",
+                    table: "notifications"
+                },
+                () => {
+
+                    console.log(
+                        "🔔 Notification change detected"
+                    );
+
+                    updateNotificationBadge();
+
+                    const modal =
+                        document.getElementById(
+                            "notificationsModal"
+                        );
+
+                    if (
+                        modal &&
+                        modal.style.display === "flex"
+                    ) {
+                        loadNotifications();
+                    }
+                }
+            )
+            .subscribe();
+    }
+}
+
+// ==========================================================
+// OPEN / CLOSE NOTIFICATIONS
+// ==========================================================
+window.openNotificationsModal = async function () {
+
+    const modal =
+        document.getElementById(
+            "notificationsModal"
+        );
+
+    if (!modal) {
+        console.error(
+            "❌ #notificationsModal not found"
+        );
+        return;
+    }
+
+    modal.style.display = "flex";
+
+    await loadNotifications();
+};
+
+window.closeNotificationsModal = function () {
+
+    const modal =
+        document.getElementById(
+            "notificationsModal"
+        );
+
+    if (modal) {
+        modal.style.display = "none";
+    }
+};
+
+window.loadNotifications =
+    loadNotifications;
+
+// The HTML currently opens the modal through
+// inline onclick="openNotificationsModal()".
+// This listener also guarantees that opening
+// the bell loads fresh data even if another
+// script later replaces window.openNotificationsModal.
+document.addEventListener(
+    "click",
+    function (event) {
+
+        const trigger =
+            event.target.closest?.(
+                '[onclick*="openNotificationsModal"]'
+            );
+
+        if (!trigger) return;
+
+        setTimeout(() => {
+
+            const modal =
+                document.getElementById(
+                    "notificationsModal"
+                );
+
+            if (
+                modal &&
+                modal.style.display === "flex"
+            ) {
+                loadNotifications();
+            }
+
+        }, 0);
+    }
+);
+
+console.log(
+    "✅ Dashboard Parts 1 & 2 Loaded"
+);
 
 // ==========================================================
 // PART 3: POST JOB TO SUPABASE
 // ==========================================================
 window.postJobFromForm = async function () {
+
     try {
-        const jobtitle = document.getElementById("jobTitle")?.value?.trim();
-        const companyname = document.getElementById("companyName")?.value?.trim();
-        const location = document.getElementById("location")?.value?.trim();
-        const salary = document.getElementById("salary")?.value?.trim();
-        const experience = document.getElementById("experience")?.value?.trim();
-        const notice = document.getElementById("maxNotice")?.value;
-        const description = document.getElementById("jobDescription")?.value?.trim();
-        const closingdate = document.getElementById("closingDate")?.value;
 
-        if (!jobtitle || !companyname || !location || !salary || !experience || !description) {
-            if (typeof window.showCustomAlert === "function") window.showCustomAlert("Please fill all required fields.", "Error", "Error");
+        const jobtitle =
+            document.getElementById(
+                "jobTitle"
+            )?.value?.trim();
+
+        const companyname =
+            document.getElementById(
+                "companyName"
+            )?.value?.trim();
+
+        const location =
+            document.getElementById(
+                "location"
+            )?.value?.trim();
+
+        const salary =
+            document.getElementById(
+                "salary"
+            )?.value?.trim();
+
+        const experience =
+            document.getElementById(
+                "experience"
+            )?.value?.trim();
+
+        const notice =
+            document.getElementById(
+                "maxNotice"
+            )?.value;
+
+        const description =
+            document.getElementById(
+                "jobDescription"
+            )?.value?.trim();
+
+        const closingdate =
+            document.getElementById(
+                "closingDate"
+            )?.value;
+
+        if (
+            !jobtitle ||
+            !companyname ||
+            !location ||
+            !salary ||
+            !experience ||
+            !description
+        ) {
+
+            if (
+                typeof window.showCustomAlert ===
+                "function"
+            ) {
+                window.showCustomAlert(
+                    "Please fill all required fields.",
+                    "Error",
+                    "Error"
+                );
+            }
+
             return;
         }
 
-        const recruiteremail = getMyEmail();
+        const recruiteremail =
+            getMyEmail();
+
         if (!recruiteremail) {
-            if (typeof window.showCustomAlert === "function") window.showCustomAlert("Recruiter session not found.", "Error", "Error");
+
+            if (
+                typeof window.showCustomAlert ===
+                "function"
+            ) {
+                window.showCustomAlert(
+                    "Recruiter session not found.",
+                    "Error",
+                    "Error"
+                );
+            }
+
             return;
         }
 
-        const recruiterName = localStorage.getItem("recruiterName") ||
-            recruiteremail.split("@")[0].replace(/[._-]/g, " ").replace(/\b\w/g, l => l.toUpperCase());
+        const recruiterName =
+            localStorage.getItem(
+                "recruiterName"
+            ) ||
+            recruiteremail
+                .split("@")[0]
+                .replace(
+                    /[._-]/g,
+                    " "
+                )
+                .replace(
+                    /\b\w/g,
+                    l => l.toUpperCase()
+                );
 
-        const { error } = await supabase
-            .from("jobs")
-            .insert([{
-                jobtitle,
-                companyname,
-                location,
-                salary,
-                experience,
-                notice,
-                description,
-                recruiteremail,
-                recruiterName,
-                status: "Open",
-                applicants: 0,
-                isarchived: false,
-                closingdate
-            }]);
+        const { error } =
+            await supabase
+                .from("jobs")
+                .insert([
+                    {
+                        jobtitle,
+                        companyname,
+                        location,
+                        salary,
+                        experience,
+                        notice,
+                        description,
+                        recruiteremail,
+                        recruiterName,
+                        status: "Open",
+                        applicants: 0,
+                        isarchived: false,
+                        closingdate
+                    }
+                ]);
 
         if (error) throw error;
 
-        if (typeof window.showCustomAlert === "function") window.showCustomAlert("Job Posted Successfully", "Success", "Success");
-        document.getElementById("jobForm")?.reset();
+        if (
+            typeof window.showCustomAlert ===
+            "function"
+        ) {
+            window.showCustomAlert(
+                "Job Posted Successfully",
+                "Success",
+                "Success"
+            );
+        }
+
+        document
+            .getElementById(
+                "jobForm"
+            )
+            ?.reset();
+
         loadJobs();
         loadDashboardCounts();
 
     } catch (error) {
-        console.error("Post job error:", error);
-        if (typeof window.showCustomAlert === "function") window.showCustomAlert(error.message || "Could not post job.", "Error", "Error");
+
+        console.error(
+            "Post job error:",
+            error
+        );
+
+        if (
+            typeof window.showCustomAlert ===
+            "function"
+        ) {
+            window.showCustomAlert(
+                error.message ||
+                "Could not post job.",
+                "Error",
+                "Error"
+            );
+        }
     }
 };
 
-const jobFormElement = document.getElementById("jobForm");
+const jobFormElement =
+    document.getElementById(
+        "jobForm"
+    );
+
 if (jobFormElement) {
-    jobFormElement.addEventListener("submit", function (e) {
-        e.preventDefault();
-        window.postJobFromForm();
-    });
+
+    jobFormElement.addEventListener(
+        "submit",
+        function (e) {
+
+            e.preventDefault();
+
+            window.postJobFromForm();
+        }
+    );
 }
 
-console.log("✅ Dashboard Part 3 Loaded");
+console.log(
+    "✅ Dashboard Part 3 Loaded"
+);
 
 // ==========================================================
 // PART 4: LIVE JOBS TABLE
 // ==========================================================
 async function loadJobs() {
-    const jobsContainer = document.getElementById("jobsContainer");
+
+    const jobsContainer =
+        document.getElementById(
+            "jobsContainer"
+        );
+
     if (!jobsContainer) return;
 
-    const myEmail = getMyEmail();
-    const admin = isAdminUser();
+    const myEmail =
+        getMyEmail();
 
-    const fetchAndRenderJobs = async () => {
-        const { data: jobs, error } = await supabase
-            .from("jobs")
-            .select("*")
-            .order("createdat", { ascending: false });
+    const admin =
+        isAdminUser();
 
-        if (error) {
-            console.error("Error loading jobs:", error);
-            return;
-        }
+    const fetchAndRenderJobs =
+        async () => {
 
-        jobsContainer.innerHTML = "";
+            const {
+                data: jobs,
+                error
+            } = await supabase
+                .from("jobs")
+                .select("*")
+                .order(
+                    "createdat",
+                    {
+                        ascending: false
+                    }
+                );
 
-        const docs = admin
-            ? (jobs || [])
-            : (jobs || []).filter(j =>
-                String(j.recruiteremail || "").trim().toLowerCase() === myEmail
-            );
+            if (error) {
 
-        if (!docs.length) {
-            jobsContainer.innerHTML = `
-                <tr>
-                    <td colspan="5" style="text-align:center; padding:20px; color:#64748b;">
-                        No jobs found.
-                    </td>
-                </tr>
-            `;
-            return;
-        }
+                console.error(
+                    "Error loading jobs:",
+                    error
+                );
 
-        docs.forEach(job => {
-            jobsContainer.innerHTML += `
-                <tr>
-                    <td><strong>${escapeHtml(job.jobtitle || job.title || "")}</strong></td>
-                    <td>${escapeHtml(job.location || "")}</td>
-                    <td>${escapeHtml(job.experience || "")}</td>
-                    <td>${escapeHtml(job.salary || "")}</td>
-                    <td>
-                        <button onclick="window.openEditJobModal('${escapeHtml(job.id)}')" style="
-                            background:#2563eb; color:#fff; border:none; padding:6px 10px; border-radius:6px; cursor:pointer; margin-right:5px;
-                        ">Edit</button>
-                        <button onclick="deleteJob('${escapeHtml(job.id)}')" style="
-                            background:#ef4444; color:#fff; border:none; padding:6px 10px; border-radius:6px; cursor:pointer;
-                        ">Delete</button>
-                    </td>
-                </tr>
-            `;
-        });
-    };
+                return;
+            }
+
+            jobsContainer.innerHTML = "";
+
+            const docs =
+                admin
+                    ? (jobs || [])
+                    : (jobs || []).filter(
+                        j =>
+                            String(
+                                j.recruiteremail ||
+                                ""
+                            )
+                                .trim()
+                                .toLowerCase() ===
+                            myEmail
+                    );
+
+            if (!docs.length) {
+
+                jobsContainer.innerHTML = `
+                    <tr>
+                        <td colspan="5"
+                            style="
+                                text-align:center;
+                                padding:20px;
+                                color:#64748b;
+                            ">
+                            No jobs found.
+                        </td>
+                    </tr>
+                `;
+
+                return;
+            }
+
+            docs.forEach(job => {
+
+                jobsContainer.innerHTML += `
+                    <tr>
+
+                        <td>
+                            <strong>
+                                ${escapeHtml(
+                                    job.jobtitle ||
+                                    job.title ||
+                                    ""
+                                )}
+                            </strong>
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                job.location ||
+                                ""
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                job.experience ||
+                                ""
+                            )}
+                        </td>
+
+                        <td>
+                            ${escapeHtml(
+                                job.salary ||
+                                ""
+                            )}
+                        </td>
+
+                        <td>
+
+                            <button
+                                onclick="window.openEditJobModal('${escapeHtml(
+                                    job.id
+                                )}')"
+                                style="
+                                    background:#2563eb;
+                                    color:#fff;
+                                    border:none;
+                                    padding:6px 10px;
+                                    border-radius:6px;
+                                    cursor:pointer;
+                                    margin-right:5px;
+                                ">
+                                Edit
+                            </button>
+
+                            <button
+                                onclick="deleteJob('${escapeHtml(
+                                    job.id
+                                )}')"
+                                style="
+                                    background:#ef4444;
+                                    color:#fff;
+                                    border:none;
+                                    padding:6px 10px;
+                                    border-radius:6px;
+                                    cursor:pointer;
+                                ">
+                                Delete
+                            </button>
+
+                        </td>
+
+                    </tr>
+                `;
+            });
+        };
 
     await fetchAndRenderJobs();
 
     if (!window.__jobsChannelSubscribed) {
+
         window.__jobsChannelSubscribed = true;
+
         supabase
-            .channel("public:jobs")
-            .on("postgres_changes", {
-                event: "*",
-                schema: "public",
-                table: "jobs"
-            }, () => {
-                fetchAndRenderJobs();
-            })
+            .channel(
+                "public:jobs"
+            )
+            .on(
+                "postgres_changes",
+                {
+                    event: "*",
+                    schema: "public",
+                    table: "jobs"
+                },
+                () => {
+                    fetchAndRenderJobs();
+                }
+            )
             .subscribe();
     }
 }
 
-console.log("✅ Dashboard Part 4 Loaded");
+console.log(
+    "✅ Dashboard Part 4 Loaded"
+);
 
 // ==========================================================
 // PART 5: EDIT & DELETE JOB
 // ==========================================================
-window.openEditJobModal = async function (jobid) {
-    const modal = document.getElementById("editJobModal");
-    if (!modal) {
-        console.error("Modal #editJobModal not found in DOM");
-        return;
-    }
+window.openEditJobModal =
+    async function (jobid) {
 
-    try {
-        const { data: job, error } = await supabase
-            .from("jobs")
-            .select("*")
-            .eq("id", jobid)
-            .single();
+        const modal =
+            document.getElementById(
+                "editJobModal"
+            );
 
-        if (error || !job) {
-            if (typeof window.showCustomAlert === "function") window.showCustomAlert("Job details not found.", "Error", "Error");
+        if (!modal) {
+
+            console.error(
+                "Modal #editJobModal not found in DOM"
+            );
+
             return;
         }
 
-        const idField = document.getElementById("editJobId");
-        const titleField = document.getElementById("editJobTitle");
-        const locField = document.getElementById("editLocation");
-        const salaryField = document.getElementById("editSalary");
-        const dateField = document.getElementById("editClosingDate");
-        const descField = document.getElementById("editJobDescription");
+        try {
 
-        if (idField) idField.value = job.id;
-        if (titleField) titleField.value = job.jobtitle || job.title || "";
-        if (locField) locField.value = job.location || "";
-        if (salaryField) salaryField.value = job.salary || "";
-        if (dateField) dateField.value = job.closingdate || job.closing_date || job.closingDate || "";
-        if (descField) descField.value = job.description || "";
+            const {
+                data: job,
+                error
+            } = await supabase
+                .from("jobs")
+                .select("*")
+                .eq("id", jobid)
+                .single();
 
-        modal.style.display = "flex";
+            if (
+                error ||
+                !job
+            ) {
 
-    } catch (error) {
-        console.error("Error opening edit modal:", error);
-        if (typeof window.showCustomAlert === "function") window.showCustomAlert("Could not load job data.", "Error", "Error");
-    }
-};
-
-window.editJob = window.openEditJobModal;
-
-window.closeEditJobModal = function () {
-    const modal = document.getElementById("editJobModal");
-    if (modal) modal.style.display = "none";
-};
-
-window.saveEditedJob = async function (e) {
-    if (e && e.preventDefault) e.preventDefault();
-
-    const jobId = document.getElementById("editJobId")?.value;
-    const jobtitle = document.getElementById("editJobTitle")?.value?.trim();
-    const location = document.getElementById("editLocation")?.value?.trim();
-    const salary = document.getElementById("editSalary")?.value?.trim();
-    const closingdate = document.getElementById("editClosingDate")?.value;
-    const description = document.getElementById("editJobDescription")?.value?.trim();
-
-    if (!jobId || !jobtitle || !location || !salary || !description) {
-        if (typeof window.showCustomAlert === "function") window.showCustomAlert("Please fill all required fields.", "Error", "Error");
-        return;
-    }
-
-    try {
-        const { error } = await supabase
-            .from("jobs")
-            .update({
-                jobtitle,
-                location,
-                salary,
-                closingdate,
-                description
-            })
-            .eq("id", jobId);
-
-        if (error) throw error;
-
-        if (typeof window.showCustomAlert === "function") window.showCustomAlert("Job Updated Successfully", "Success", "Success");
-        window.closeEditJobModal();
-
-        if (typeof window.loadPostedJobsInventory === "function") window.loadPostedJobsInventory();
-        loadJobs();
-        loadDashboardCounts();
-
-    } catch (err) {
-        console.error("Save edit error:", err);
-        if (typeof window.showCustomAlert === "function") window.showCustomAlert(err.message || "Failed to update job.", "Error", "Error");
-    }
-};
-
-window.deleteJob = async function (jobid) {
-    if (typeof window.showCustomConfirm === "function") {
-        window.showCustomConfirm(
-            "Are you sure you want to delete this job?",
-            "Delete Job",
-            async () => {
-                try {
-                    const { error } = await supabase
-                        .from("jobs")
-                        .delete()
-                        .eq("id", jobid);
-
-                    if (error) throw error;
-
-                    if (typeof window.showCustomAlert === "function") window.showCustomAlert("Job deleted successfully", "Success", "Success");
-                    
-                    if (typeof window.loadPostedJobsInventory === "function") window.loadPostedJobsInventory();
-                    loadJobs();
-                    loadDashboardCounts();
-
-                } catch (error) {
-                    console.error(error);
-                    if (typeof window.showCustomAlert === "function") window.showCustomAlert(error.message, "Error", "Error");
+                if (
+                    typeof window.showCustomAlert ===
+                    "function"
+                ) {
+                    window.showCustomAlert(
+                        "Job details not found.",
+                        "Error",
+                        "Error"
+                    );
                 }
-            }
-        );
-    }
-};
 
-console.log("✅ Dashboard Part 5 Loaded");
+                return;
+            }
+
+            const idField =
+                document.getElementById(
+                    "editJobId"
+                );
+
+            const titleField =
+                document.getElementById(
+                    "editJobTitle"
+                );
+
+            const locField =
+                document.getElementById(
+                    "editLocation"
+                );
+
+            const salaryField =
+                document.getElementById(
+                    "editSalary"
+                );
+
+            const dateField =
+                document.getElementById(
+                    "editClosingDate"
+                );
+
+            const descField =
+                document.getElementById(
+                    "editJobDescription"
+                );
+
+            if (idField) {
+                idField.value = job.id;
+            }
+
+            if (titleField) {
+                titleField.value =
+                    job.jobtitle ||
+                    job.title ||
+                    "";
+            }
+
+            if (locField) {
+                locField.value =
+                    job.location ||
+                    "";
+            }
+
+            if (salaryField) {
+                salaryField.value =
+                    job.salary ||
+                    "";
+            }
+
+            if (dateField) {
+                dateField.value =
+                    job.closingdate ||
+                    job.closing_date ||
+                    job.closingDate ||
+                    "";
+            }
+
+            if (descField) {
+                descField.value =
+                    job.description ||
+                    "";
+            }
+
+            modal.style.display =
+                "flex";
+
+        } catch (error) {
+
+            console.error(
+                "Error opening edit modal:",
+                error
+            );
+
+            if (
+                typeof window.showCustomAlert ===
+                "function"
+            ) {
+                window.showCustomAlert(
+                    "Could not load job data.",
+                    "Error",
+                    "Error"
+                );
+            }
+        }
+    };
+
+window.editJob =
+    window.openEditJobModal;
+
+window.closeEditJobModal =
+    function () {
+
+        const modal =
+            document.getElementById(
+                "editJobModal"
+            );
+
+        if (modal) {
+            modal.style.display =
+                "none";
+        }
+    };
+
+window.saveEditedJob =
+    async function (e) {
+
+        if (
+            e &&
+            e.preventDefault
+        ) {
+            e.preventDefault();
+        }
+
+        const jobId =
+            document.getElementById(
+                "editJobId"
+            )?.value;
+
+        const jobtitle =
+            document.getElementById(
+                "editJobTitle"
+            )?.value?.trim();
+
+        const location =
+            document.getElementById(
+                "editLocation"
+            )?.value?.trim();
+
+        const salary =
+            document.getElementById(
+                "editSalary"
+            )?.value?.trim();
+
+        const closingdate =
+            document.getElementById(
+                "editClosingDate"
+            )?.value;
+
+        const description =
+            document.getElementById(
+                "editJobDescription"
+            )?.value?.trim();
+
+        if (
+            !jobId ||
+            !jobtitle ||
+            !location ||
+            !salary ||
+            !description
+        ) {
+
+            if (
+                typeof window.showCustomAlert ===
+                "function"
+            ) {
+                window.showCustomAlert(
+                    "Please fill all required fields.",
+                    "Error",
+                    "Error"
+                );
+            }
+
+            return;
+        }
+
+        try {
+
+            const { error } =
+                await supabase
+                    .from("jobs")
+                    .update({
+                        jobtitle,
+                        location,
+                        salary,
+                        closingdate,
+                        description
+                    })
+                    .eq(
+                        "id",
+                        jobId
+                    );
+
+            if (error) {
+                throw error;
+            }
+
+            if (
+                typeof window.showCustomAlert ===
+                "function"
+            ) {
+                window.showCustomAlert(
+                    "Job Updated Successfully",
+                    "Success",
+                    "Success"
+                );
+            }
+
+            window.closeEditJobModal();
+
+            if (
+                typeof window.loadPostedJobsInventory ===
+                "function"
+            ) {
+                window.loadPostedJobsInventory();
+            }
+
+            loadJobs();
+            loadDashboardCounts();
+
+        } catch (err) {
+
+            console.error(
+                "Save edit error:",
+                err
+            );
+
+            if (
+                typeof window.showCustomAlert ===
+                "function"
+            ) {
+                window.showCustomAlert(
+                    err.message ||
+                    "Failed to update job.",
+                    "Error",
+                    "Error"
+                );
+            }
+        }
+    };
+
+window.deleteJob =
+    async function (jobid) {
+
+        if (
+            typeof window.showCustomConfirm ===
+            "function"
+        ) {
+
+            window.showCustomConfirm(
+                "Are you sure you want to delete this job?",
+                "Delete Job",
+                async () => {
+
+                    try {
+
+                        const {
+                            error
+                        } = await supabase
+                            .from("jobs")
+                            .delete()
+                            .eq(
+                                "id",
+                                jobid
+                            );
+
+                        if (error) {
+                            throw error;
+                        }
+
+                        if (
+                            typeof window.showCustomAlert ===
+                            "function"
+                        ) {
+                            window.showCustomAlert(
+                                "Job deleted successfully",
+                                "Success",
+                                "Success"
+                            );
+                        }
+
+                        if (
+                            typeof window.loadPostedJobsInventory ===
+                            "function"
+                        ) {
+                            window.loadPostedJobsInventory();
+                        }
+
+                        loadJobs();
+                        loadDashboardCounts();
+
+                    } catch (error) {
+
+                        console.error(
+                            error
+                        );
+
+                        if (
+                            typeof window.showCustomAlert ===
+                            "function"
+                        ) {
+                            window.showCustomAlert(
+                                error.message,
+                                "Error",
+                                "Error"
+                            );
+                        }
+                    }
+                }
+            );
+        }
+    };
+
+console.log(
+    "✅ Dashboard Part 5 Loaded"
+);
 
 // ==========================================================
 // REFRESH DASHBOARD KPIs
@@ -527,87 +1384,208 @@ async function refreshDashboardKPIs() {
     await loadDashboardCounts();
 }
 
-setInterval(() => {
-    refreshDashboardKPIs();
-}, 60000);
+setInterval(
+    () => {
+        refreshDashboardKPIs();
+    },
+    60000
+);
 
 // ==========================================================
 // PART 7: PAYMENT REQUESTS
 // ==========================================================
 async function loadPayments() {
-    const table = document.getElementById("paymentRequestsContainer");
-    const panel = document.getElementById("paymentRequestsPanel");
-    if (!table) return;
 
-    const isAdmin = isAdminUser();
+    const table =
+        document.getElementById(
+            "paymentRequestsContainer"
+        );
 
-    if (!isAdmin) {
-        if (panel) panel.style.display = "none";
+    const panel =
+        document.getElementById(
+            "paymentRequestsPanel"
+        );
+
+    if (!table) {
         return;
     }
 
-    if (panel) panel.style.display = "block";
+    const isAdmin =
+        isAdminUser();
 
-    const fetchAndRenderPayments = async () => {
-        const { data: pays, error } = await supabase
-            .from("paymentrequests")
-            .select("*")
-            .order("requestedat", { ascending: false });
+    if (!isAdmin) {
 
-        if (error) {
-            console.error("Error loading payment requests:", error);
-            return;
+        if (panel) {
+            panel.style.display =
+                "none";
         }
 
-        table.innerHTML = "";
-        const paysList = pays || [];
-        const countEl = document.getElementById("pendingRequestCount");
-        if (countEl) countEl.innerHTML = paysList.length + " Pending";
+        return;
+    }
 
-        if (!paysList.length) {
-            table.innerHTML = `
-                <tr>
-                    <td colspan="5" style="padding:20px; text-align:center;">
-                        No Payment Requests
-                    </td>
-                </tr>
-            `;
-            return;
-        }
+    if (panel) {
+        panel.style.display =
+            "block";
+    }
 
-        paysList.forEach(pay => {
-            table.innerHTML += `
-                <tr>
-                    <td>${escapeHtml(pay.email || "-")}</td>
-                    <td>${escapeHtml(pay.role || "-")}</td>
-                    <td>₹${escapeHtml(pay.amount || 0)}</td>
-                    <td>${escapeHtml(pay.requestedat || "-")}</td>
-                    <td>
-                        <button onclick="approvePayment('${escapeHtml(pay.id)}')" style="
-                            background:#10b981; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; margin-right:6px;
-                        ">Approve</button>
-                        <button onclick="rejectPayment('${escapeHtml(pay.id)}')" style="
-                            background:#ef4444; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer;
-                        ">Reject</button>
-                    </td>
-                </tr>
-            `;
-        });
-    };
+    const fetchAndRenderPayments =
+        async () => {
+
+            const {
+                data: pays,
+                error
+            } = await supabase
+                .from("paymentrequests")
+                .select("*")
+                .order(
+                    "requestedat",
+                    {
+                        ascending: false
+                    }
+                );
+
+            if (error) {
+
+                console.error(
+                    "Error loading payment requests:",
+                    error
+                );
+
+                return;
+            }
+
+            table.innerHTML = "";
+
+            const paysList =
+                pays || [];
+
+            const countEl =
+                document.getElementById(
+                    "pendingRequestCount"
+                );
+
+            if (countEl) {
+                countEl.innerHTML =
+                    paysList.length +
+                    " Pending";
+            }
+
+            if (!paysList.length) {
+
+                table.innerHTML = `
+                    <tr>
+                        <td colspan="5"
+                            style="
+                                padding:20px;
+                                text-align:center;
+                            ">
+                            No Payment Requests
+                        </td>
+                    </tr>
+                `;
+
+                return;
+            }
+
+            paysList.forEach(
+                pay => {
+
+                    table.innerHTML += `
+                        <tr>
+
+                            <td>
+                                ${escapeHtml(
+                                    pay.email ||
+                                    "-"
+                                )}
+                            </td>
+
+                            <td>
+                                ${escapeHtml(
+                                    pay.role ||
+                                    "-"
+                                )}
+                            </td>
+
+                            <td>
+                                ₹${escapeHtml(
+                                    pay.amount ||
+                                    0
+                                )}
+                            </td>
+
+                            <td>
+                                ${escapeHtml(
+                                    pay.requestedat ||
+                                    "-"
+                                )}
+                            </td>
+
+                            <td>
+
+                                <button
+                                    onclick="approvePayment('${escapeHtml(
+                                        pay.id
+                                    )}')"
+                                    style="
+                                        background:#10b981;
+                                        color:white;
+                                        border:none;
+                                        padding:6px 12px;
+                                        border-radius:6px;
+                                        cursor:pointer;
+                                        margin-right:6px;
+                                    ">
+                                    Approve
+                                </button>
+
+                                <button
+                                    onclick="rejectPayment('${escapeHtml(
+                                        pay.id
+                                    )}')"
+                                    style="
+                                        background:#ef4444;
+                                        color:white;
+                                        border:none;
+                                        padding:6px 12px;
+                                        border-radius:6px;
+                                        cursor:pointer;
+                                    ">
+                                    Reject
+                                </button>
+
+                            </td>
+
+                        </tr>
+                    `;
+                }
+            );
+        };
 
     await fetchAndRenderPayments();
 
-    if (!window.__paymentsChannelSubscribed) {
-        window.__paymentsChannelSubscribed = true;
+    if (
+        !window.__paymentsChannelSubscribed
+    ) {
+
+        window.__paymentsChannelSubscribed =
+            true;
+
         supabase
-            .channel("public:paymentrequests")
-            .on("postgres_changes", {
-                event: "*",
-                schema: "public",
-                table: "paymentrequests"
-            }, () => {
-                fetchAndRenderPayments();
-            })
+            .channel(
+                "public:paymentrequests"
+            )
+            .on(
+                "postgres_changes",
+                {
+                    event: "*",
+                    schema: "public",
+                    table: "paymentrequests"
+                },
+                () => {
+                    fetchAndRenderPayments();
+                }
+            )
             .subscribe();
     }
 }
@@ -615,222 +1593,615 @@ async function loadPayments() {
 // ==========================================================
 // APPROVE & REJECT PAYMENT
 // ==========================================================
-window.approvePayment = async function (id) {
-    if (!isAdminUser()) {
-        if (typeof window.showCustomAlert === "function") window.showCustomAlert("Administrator access required.", "Error", "Error");
-        return;
-    }
+window.approvePayment =
+    async function (id) {
 
-    if (typeof window.showCustomConfirm === "function") {
-        window.showCustomConfirm(
-            "Are you sure you want to approve this payment request?",
-            "Approve Payment",
-            async () => {
-                try {
-                    const { error } = await supabase
-                        .from("paymentrequests")
-                        .update({ status: "Approved" })
-                        .eq("id", id);
+        if (!isAdminUser()) {
 
-                    if (error) throw error;
-
-                    if (typeof window.showCustomAlert === "function") window.showCustomAlert("Payment Approved", "Success", "Success");
-                    loadPayments();
-
-                } catch (e) {
-                    console.error(e);
-                    if (typeof window.showCustomAlert === "function") window.showCustomAlert(e.message, "Error", "Error");
-                }
+            if (
+                typeof window.showCustomAlert ===
+                "function"
+            ) {
+                window.showCustomAlert(
+                    "Administrator access required.",
+                    "Error",
+                    "Error"
+                );
             }
-        );
-    }
-};
 
-window.rejectPayment = async function (id) {
-    if (!isAdminUser()) {
-        if (typeof window.showCustomAlert === "function") window.showCustomAlert("Administrator access required.", "Error", "Error");
-        return;
-    }
+            return;
+        }
 
-    if (typeof window.showCustomConfirm === "function") {
-        window.showCustomConfirm(
-            "Are you sure you want to reject this payment request?",
-            "Reject Payment",
-            async () => {
-                try {
-                    const { error } = await supabase
-                        .from("paymentrequests")
-                        .update({ status: "Rejected" })
-                        .eq("id", id);
+        if (
+            typeof window.showCustomConfirm ===
+            "function"
+        ) {
 
-                    if (error) throw error;
+            window.showCustomConfirm(
+                "Are you sure you want to approve this payment request?",
+                "Approve Payment",
+                async () => {
 
-                    if (typeof window.showCustomAlert === "function") window.showCustomAlert("Payment Rejected", "Success", "Success");
-                    loadPayments();
+                    try {
 
-                } catch (e) {
-                    console.error(e);
-                    if (typeof window.showCustomAlert === "function") window.showCustomAlert(e.message, "Error", "Error");
+                        const {
+                            error
+                        } = await supabase
+                            .from("paymentrequests")
+                            .update({
+                                status:
+                                    "Approved"
+                            })
+                            .eq(
+                                "id",
+                                id
+                            );
+
+                        if (error) {
+                            throw error;
+                        }
+
+                        if (
+                            typeof window.showCustomAlert ===
+                            "function"
+                        ) {
+                            window.showCustomAlert(
+                                "Payment Approved",
+                                "Success",
+                                "Success"
+                            );
+                        }
+
+                        loadPayments();
+
+                    } catch (e) {
+
+                        console.error(e);
+
+                        if (
+                            typeof window.showCustomAlert ===
+                            "function"
+                        ) {
+                            window.showCustomAlert(
+                                e.message,
+                                "Error",
+                                "Error"
+                            );
+                        }
+                    }
                 }
-            }
-        );
-    }
-};
+            );
+        }
+    };
 
-console.log("✅ Dashboard Part 7 Loaded");
+window.rejectPayment =
+    async function (id) {
+
+        if (!isAdminUser()) {
+
+            if (
+                typeof window.showCustomAlert ===
+                "function"
+            ) {
+                window.showCustomAlert(
+                    "Administrator access required.",
+                    "Error",
+                    "Error"
+                );
+            }
+
+            return;
+        }
+
+        if (
+            typeof window.showCustomConfirm ===
+            "function"
+        ) {
+
+            window.showCustomConfirm(
+                "Are you sure you want to reject this payment request?",
+                "Reject Payment",
+                async () => {
+
+                    try {
+
+                        const {
+                            error
+                        } = await supabase
+                            .from("paymentrequests")
+                            .update({
+                                status:
+                                    "Rejected"
+                            })
+                            .eq(
+                                "id",
+                                id
+                            );
+
+                        if (error) {
+                            throw error;
+                        }
+
+                        if (
+                            typeof window.showCustomAlert ===
+                            "function"
+                        ) {
+                            window.showCustomAlert(
+                                "Payment Rejected",
+                                "Success",
+                                "Success"
+                            );
+                        }
+
+                        loadPayments();
+
+                    } catch (e) {
+
+                        console.error(e);
+
+                        if (
+                            typeof window.showCustomAlert ===
+                            "function"
+                        ) {
+                            window.showCustomAlert(
+                                e.message,
+                                "Error",
+                                "Error"
+                            );
+                        }
+                    }
+                }
+            );
+        }
+    };
+
+console.log(
+    "✅ Dashboard Part 7 Loaded"
+);
 
 // ==========================================================
 // PART 8: AI GENERATOR & MODAL CONTROLS (PLAIN TEXT)
 // ==========================================================
 
-window.runGeminiAIDraft = async function () {
-    const promptInput = document.getElementById("aiPrompt");
-    const aiResultEl = document.getElementById("aiResult");
-    const genBtn = document.getElementById("btnGenerateAIModal");
+window.runGeminiAIDraft =
+    async function () {
 
-    const titleInput = document.getElementById("jobTitle");
-    const expInput = document.getElementById("experience");
-    const compInput = document.getElementById("companyName");
-    const locInput = document.getElementById("location");
-    const salaryInput = document.getElementById("salary");
-    const noticeInput = document.getElementById("maxNotice");
+        const promptInput =
+            document.getElementById(
+                "aiPrompt"
+            );
 
-    const userPrompt = promptInput?.value?.trim() || "";
-    const title = titleInput?.value?.trim() || "";
-    const exp = expInput?.value?.trim() || "0";
-    const company = compInput?.value?.trim() || "Indupalli Services Pvt Ltd";
-    const location = locInput?.value?.trim() || "Hyderabad, Telangana";
-    const salary = salaryInput?.value?.trim() || "";
-    const notice = noticeInput?.value || "";
+        const aiResultEl =
+            document.getElementById(
+                "aiResult"
+            );
 
-    if (!title) {
-        if (typeof window.showCustomAlert === "function") {
-            window.showCustomAlert("Please enter a Job Title before generating a description.", "Warning", "Info");
+        const genBtn =
+            document.getElementById(
+                "btnGenerateAIModal"
+            );
+
+        const titleInput =
+            document.getElementById(
+                "jobTitle"
+            );
+
+        const expInput =
+            document.getElementById(
+                "experience"
+            );
+
+        const compInput =
+            document.getElementById(
+                "companyName"
+            );
+
+        const locInput =
+            document.getElementById(
+                "location"
+            );
+
+        const salaryInput =
+            document.getElementById(
+                "salary"
+            );
+
+        const noticeInput =
+            document.getElementById(
+                "maxNotice"
+            );
+
+        const userPrompt =
+            promptInput
+                ?.value
+                ?.trim() || "";
+
+        const title =
+            titleInput
+                ?.value
+                ?.trim() || "";
+
+        const exp =
+            expInput
+                ?.value
+                ?.trim() ||
+            "0";
+
+        const company =
+            compInput
+                ?.value
+                ?.trim() ||
+            "Indupalli Services Pvt Ltd";
+
+        const location =
+            locInput
+                ?.value
+                ?.trim() ||
+            "Hyderabad, Telangana";
+
+        const salary =
+            salaryInput
+                ?.value
+                ?.trim() ||
+            "";
+
+        const notice =
+            noticeInput
+                ?.value ||
+            "";
+
+        if (!title) {
+
+            if (
+                typeof window.showCustomAlert ===
+                "function"
+            ) {
+                window.showCustomAlert(
+                    "Please enter a Job Title before generating a description.",
+                    "Warning",
+                    "Info"
+                );
+            }
+
+            titleInput?.focus();
+
+            return;
         }
-        titleInput?.focus();
-        return;
-    }
-
-    if (aiResultEl) {
-        aiResultEl.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Generating tailored Job Description with Gemini...`;
-    }
-    if (genBtn) genBtn.disabled = true;
-
-    // Pull any free-text guidance the recruiter typed beyond the auto-filled
-    // "Create a professional job description for..." starter sentence.
-    let extraGuidance = "";
-    if (userPrompt && !userPrompt.toLowerCase().startsWith("create a professional job description")) {
-        extraGuidance = userPrompt;
-    }
-
-    try {
-        const { data, error } = await supabase.functions.invoke("generate-job-description", {
-            body: {
-                jobTitle: title,
-                companyName: company,
-                location,
-                experience: exp,
-                salary,
-                notice,
-                extraGuidance,
-            },
-        });
-
-        if (error) throw error;
-        if (!data?.description) throw new Error("Gemini did not return a description.");
 
         if (aiResultEl) {
-            aiResultEl.innerText = data.description;
+
+            aiResultEl.innerHTML = `
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                Generating tailored Job Description with Gemini...
+            `;
         }
-    } catch (e) {
-        console.error("runGeminiAIDraft error:", e);
-        if (aiResultEl) {
-            aiResultEl.innerText = "Could not generate a description right now. Please try again, or write it manually.";
+
+        if (genBtn) {
+            genBtn.disabled = true;
         }
-        if (typeof window.showCustomAlert === "function") {
-            window.showCustomAlert(e?.message || "AI generation failed. Please try again.", "Error", "Error");
+
+        // Pull any free-text guidance the recruiter typed beyond
+        // the auto-filled starter sentence.
+        let extraGuidance = "";
+
+        if (
+            userPrompt &&
+            !userPrompt
+                .toLowerCase()
+                .startsWith(
+                    "create a professional job description"
+                )
+        ) {
+            extraGuidance =
+                userPrompt;
         }
-    } finally {
-        if (genBtn) genBtn.disabled = false;
-    }
-};
 
-window.insertAIResult = function () {
-    const aiResultEl = document.getElementById("aiResult");
-    const targetTextArea = document.getElementById("jobDescription");
+        try {
 
-    if (!aiResultEl || !targetTextArea) return;
+            const {
+                data,
+                error
+            } =
+                await supabase
+                    .functions
+                    .invoke(
+                        "generate-job-description",
+                        {
+                            body: {
+                                jobTitle:
+                                    title,
+                                companyName:
+                                    company,
+                                location,
+                                experience:
+                                    exp,
+                                salary,
+                                notice,
+                                extraGuidance
+                            }
+                        }
+                    );
 
-    const content = aiResultEl.innerText.trim();
+            if (error) {
+                throw error;
+            }
 
-    if (!content || content.includes("Waiting for AI") || content.includes("Preparing AI") || content.includes("Generating")) {
-        if (typeof window.showCustomAlert === "function") {
-            window.showCustomAlert("Please wait for the draft to generate before applying.", "Warning", "Info");
+            if (
+                !data?.description
+            ) {
+                throw new Error(
+                    "Gemini did not return a description."
+                );
+            }
+
+            if (aiResultEl) {
+                aiResultEl.innerText =
+                    data.description;
+            }
+
+        } catch (e) {
+
+            console.error(
+                "runGeminiAIDraft error:",
+                e
+            );
+
+            if (aiResultEl) {
+
+                aiResultEl.innerText =
+                    "Could not generate a description right now. Please try again, or write it manually.";
+            }
+
+            if (
+                typeof window.showCustomAlert ===
+                "function"
+            ) {
+
+                window.showCustomAlert(
+                    e?.message ||
+                    "AI generation failed. Please try again.",
+                    "Error",
+                    "Error"
+                );
+            }
+
+        } finally {
+
+            if (genBtn) {
+                genBtn.disabled =
+                    false;
+            }
         }
-        return;
-    }
+    };
 
-    targetTextArea.value = content;
-    window.closeAI();
+window.insertAIResult =
+    function () {
 
-    if (typeof window.showCustomAlert === "function") {
-        window.showCustomAlert("Applied description to form!", "Success", "Success");
-    }
-};
+        const aiResultEl =
+            document.getElementById(
+                "aiResult"
+            );
 
-window.closeAI = function () {
-    const aiModal = document.getElementById("aiModal");
-    if (aiModal) {
-        aiModal.style.display = "none";
-    }
-};
+        const targetTextArea =
+            document.getElementById(
+                "jobDescription"
+            );
+
+        if (
+            !aiResultEl ||
+            !targetTextArea
+        ) {
+            return;
+        }
+
+        const content =
+            aiResultEl
+                .innerText
+                .trim();
+
+        if (
+            !content ||
+            content.includes(
+                "Waiting for AI"
+            ) ||
+            content.includes(
+                "Preparing AI"
+            ) ||
+            content.includes(
+                "Generating"
+            )
+        ) {
+
+            if (
+                typeof window.showCustomAlert ===
+                "function"
+            ) {
+
+                window.showCustomAlert(
+                    "Please wait for the draft to generate before applying.",
+                    "Warning",
+                    "Info"
+                );
+            }
+
+            return;
+        }
+
+        targetTextArea.value =
+            content;
+
+        window.closeAI();
+
+        if (
+            typeof window.showCustomAlert ===
+            "function"
+        ) {
+
+            window.showCustomAlert(
+                "Applied description to form!",
+                "Success",
+                "Success"
+            );
+        }
+    };
+
+window.closeAI =
+    function () {
+
+        const aiModal =
+            document.getElementById(
+                "aiModal"
+            );
+
+        if (aiModal) {
+
+            aiModal.style.display =
+                "none";
+        }
+    };
 
 // ==========================================================
 // PART 9: DEMO CANDIDATE / GLOBAL ALIASES
 // ==========================================================
-window.simulateCandidateApply = async function () {
-    try {
-        const { data: jobs, error: jobErr } = await supabase.from("jobs").select("*");
+window.simulateCandidateApply =
+    async function () {
 
-        if (jobErr || !jobs || jobs.length === 0) {
-            if (typeof window.showCustomAlert === "function") window.showCustomAlert("Please create a job first.", "Warning", "Info");
-            return;
+        try {
+
+            const {
+                data: jobs,
+                error: jobErr
+            } =
+                await supabase
+                    .from("jobs")
+                    .select("*");
+
+            if (
+                jobErr ||
+                !jobs ||
+                jobs.length === 0
+            ) {
+
+                if (
+                    typeof window.showCustomAlert ===
+                    "function"
+                ) {
+
+                    window.showCustomAlert(
+                        "Please create a job first.",
+                        "Warning",
+                        "Info"
+                    );
+                }
+
+                return;
+            }
+
+            const firstJob =
+                jobs[0];
+
+            const {
+                error: appErr
+            } =
+                await supabase
+                    .from(
+                        "jobApplications"
+                    )
+                    .insert([
+                        {
+                            fullname:
+                                "Demo Candidate",
+                            email:
+                                "candidate@test.com",
+                            jobTitle:
+                                firstJob.jobtitle ||
+                                firstJob.title,
+                            jobId:
+                                firstJob.id,
+                            companyName:
+                                firstJob.companyname ||
+                                firstJob.company ||
+                                "Indupalli Services",
+                            recruiteremail:
+                                firstJob.recruiteremail ||
+                                "",
+                            status:
+                                "New Application"
+                        }
+                    ]);
+
+            if (appErr) {
+                throw appErr;
+            }
+
+            if (
+                typeof window.showCustomAlert ===
+                "function"
+            ) {
+
+                window.showCustomAlert(
+                    "Demo candidate added successfully.",
+                    "Success",
+                    "Success"
+                );
+            }
+
+        } catch (e) {
+
+            console.error(e);
+
+            if (
+                typeof window.showCustomAlert ===
+                "function"
+            ) {
+
+                window.showCustomAlert(
+                    e.message,
+                    "Error",
+                    "Error"
+                );
+            }
+        }
+    };
+
+window.refreshDashboard =
+    function () {
+
+        refreshDashboardKPIs();
+
+        loadJobs();
+
+        if (
+            typeof window.loadInboundApplications ===
+            "function"
+        ) {
+
+            window.loadInboundApplications();
         }
 
-        const firstJob = jobs[0];
+        loadPayments();
 
-        const { error: appErr } = await supabase
-            .from("jobApplications")
-            .insert([{
-                fullname: "Demo Candidate",
-                email: "candidate@test.com",
-                jobTitle: firstJob.jobtitle || firstJob.title,
-                jobId: firstJob.id,
-                companyName: firstJob.companyname || firstJob.company || "Indupalli Services",
-                recruiteremail: firstJob.recruiteremail || "",
-                status: "New Application"
-            }]);
+        // Also refresh notifications when dashboard refreshes
+        updateNotificationBadge();
 
-        if (appErr) throw appErr;
+        const modal =
+            document.getElementById(
+                "notificationsModal"
+            );
 
-        if (typeof window.showCustomAlert === "function") window.showCustomAlert("Demo candidate added successfully.", "Success", "Success");
+        if (
+            modal &&
+            modal.style.display ===
+                "flex"
+        ) {
+            loadNotifications();
+        }
+    };
 
-    } catch (e) {
-        console.error(e);
-        if (typeof window.showCustomAlert === "function") window.showCustomAlert(e.message, "Error", "Error");
-    }
-};
+console.log(
+    "✅ Indupalli ATS Dashboard Ready (Supabase)"
+);
 
-window.refreshDashboard = function () {
-    refreshDashboardKPIs();
-    loadJobs();
-    if (typeof window.loadInboundApplications === "function") {
-        window.loadInboundApplications();
-    }
-    loadPayments();
-};
-
-console.log("✅ Indupalli ATS Dashboard Ready (Supabase)");
 // ==========================================================
 // PART 10: AUTOMATIC ATS MATCH SCORE
 // ==========================================================
@@ -843,302 +2214,586 @@ const ATS_SCORE_COLUMNS = [
 ];
 
 function atsNormalize(value) {
-    return String(value ?? "")
+
+    return String(
+        value ?? ""
+    )
         .toLowerCase()
-        .replace(/[^\w+#.\-/ ]+/g, " ")
-        .replace(/\s+/g, " ")
+        .replace(
+            /[^\w+#.\-/ ]+/g,
+            " "
+        )
+        .replace(
+            /\s+/g,
+            " "
+        )
         .trim();
 }
 
 function atsToText(value) {
-    if (Array.isArray(value)) {
-        return value.map(v => String(v ?? "")).join(" ");
+
+    if (
+        Array.isArray(value)
+    ) {
+
+        return value
+            .map(
+                v => String(
+                    v ?? ""
+                )
+            )
+            .join(" ");
     }
 
-    if (value && typeof value === "object") {
-        return Object.values(value).join(" ");
+    if (
+        value &&
+        typeof value ===
+            "object"
+    ) {
+
+        return Object.values(
+            value
+        ).join(" ");
     }
 
-    return String(value ?? "");
+    return String(
+        value ?? ""
+    );
 }
 
 function atsUnique(items) {
-    return [...new Set(
-        items
-            .map(atsNormalize)
-            .filter(Boolean)
-    )];
+
+    return [
+        ...new Set(
+            items
+                .map(
+                    atsNormalize
+                )
+                .filter(Boolean)
+        )
+    ];
 }
 
-function atsExtractSkills(candidate) {
+function atsExtractSkills(
+    candidate
+) {
 
     const fields = [
+
         candidate.skills,
+
         candidate.skillSet,
+
         candidate.skill_set,
+
         candidate.extractedSkills,
+
         candidate.extracted_skills,
+
         candidate.resumeSkills,
+
         candidate.resume_skills,
+
         candidate.technicalSkills,
+
         candidate.technical_skills,
+
         candidate.keySkills,
+
         candidate.key_skills
+
     ];
 
     const skills = [];
 
-    fields.forEach(value => {
+    fields.forEach(
+        value => {
 
-        const text = atsToText(value);
+            const text =
+                atsToText(
+                    value
+                );
 
-        text.split(/[,;|\n]+/).forEach(part => {
+            text.split(
+                /[,;|\n]+/
+            ).forEach(
+                part => {
 
-            const cleaned = atsNormalize(part);
+                    const cleaned =
+                        atsNormalize(
+                            part
+                        );
 
-            if (
-                cleaned &&
-                cleaned.length >= 2 &&
-                cleaned.length <= 80
-            ) {
-                skills.push(cleaned);
-            }
+                    if (
+                        cleaned &&
+                        cleaned.length >= 2 &&
+                        cleaned.length <= 80
+                    ) {
 
-        });
+                        skills.push(
+                            cleaned
+                        );
+                    }
 
-    });
-
-    const commonSkills = [
-        "javascript",
-        "typescript",
-        "react",
-        "react.js",
-        "angular",
-        "vue",
-        "node.js",
-        "nodejs",
-        "python",
-        "java",
-        "c",
-        "c++",
-        "c#",
-        ".net",
-        "dotnet",
-        "php",
-        "ruby",
-        "go",
-        "rust",
-        "sql",
-        "mysql",
-        "postgresql",
-        "postgres",
-        "oracle",
-        "mongodb",
-        "redis",
-        "html",
-        "css",
-        "tailwind",
-        "bootstrap",
-        "spring",
-        "spring boot",
-        "django",
-        "flask",
-        "aws",
-        "azure",
-        "gcp",
-        "docker",
-        "kubernetes",
-        "terraform",
-        "jenkins",
-        "devops",
-        "git",
-        "github",
-        "gitlab",
-        "bitbucket",
-        "linux",
-        "windows",
-        "power bi",
-        "tableau",
-        "excel",
-        "pandas",
-        "numpy",
-        "machine learning",
-        "deep learning",
-        "tensorflow",
-        "pytorch",
-        "selenium",
-        "testng",
-        "jmeter",
-        "servicenow",
-        "salesforce",
-        "sap",
-        "recruitment",
-        "talent acquisition",
-        "hr",
-        "human resources",
-        "communication",
-        "project management",
-        "business analysis",
-        "data analysis",
-        "cybersecurity",
-        "networking",
-        "active directory"
-    ];
-
-    const freeText = atsNormalize([
-        candidate.resumeText,
-        candidate.resume_text,
-        candidate.resumeContent,
-        candidate.resume_content,
-        candidate.about,
-        candidate.bio,
-        candidate.summary,
-        candidate.coverLetter,
-        candidate.cover_letter,
-        candidate.pitch
-    ]
-        .map(v => atsToText(v))
-        .join(" "));
-
-    commonSkills.forEach(skill => {
-
-        const normalizedSkill = atsNormalize(skill);
-
-        if (freeText.includes(normalizedSkill)) {
-            skills.push(normalizedSkill);
+                }
+            );
         }
-
-    });
-
-    return atsUnique(skills);
-}
-
-function atsJobSkills(job) {
-
-    const explicitSkills = [
-        job.skills,
-        job.skillSet,
-        job.skill_set,
-        job.requiredSkills,
-        job.required_skills,
-        job.technicalSkills,
-        job.technical_skills
-    ]
-        .map(atsToText)
-        .join(" ");
-
-    const jobText = atsNormalize([
-        job.jobtitle,
-        job.job_title,
-        job.title,
-        job.description,
-        job.requirements,
-        explicitSkills
-    ]
-        .map(v => atsToText(v))
-        .join(" "));
-
-    const commonSkills = [
-        "javascript",
-        "typescript",
-        "react",
-        "react.js",
-        "angular",
-        "vue",
-        "node.js",
-        "nodejs",
-        "python",
-        "java",
-        "c",
-        "c++",
-        "c#",
-        ".net",
-        "dotnet",
-        "php",
-        "ruby",
-        "go",
-        "rust",
-        "sql",
-        "mysql",
-        "postgresql",
-        "postgres",
-        "oracle",
-        "mongodb",
-        "redis",
-        "html",
-        "css",
-        "tailwind",
-        "bootstrap",
-        "spring",
-        "spring boot",
-        "django",
-        "flask",
-        "aws",
-        "azure",
-        "gcp",
-        "docker",
-        "kubernetes",
-        "terraform",
-        "jenkins",
-        "devops",
-        "git",
-        "github",
-        "gitlab",
-        "bitbucket",
-        "linux",
-        "windows",
-        "power bi",
-        "tableau",
-        "excel",
-        "pandas",
-        "numpy",
-        "machine learning",
-        "deep learning",
-        "tensorflow",
-        "pytorch",
-        "selenium",
-        "testng",
-        "jmeter",
-        "servicenow",
-        "salesforce",
-        "sap",
-        "recruitment",
-        "talent acquisition",
-        "hr",
-        "human resources",
-        "communication",
-        "project management",
-        "business analysis",
-        "data analysis",
-        "cybersecurity",
-        "networking",
-        "active directory"
-    ];
-
-    const foundSkills = commonSkills.filter(skill =>
-        jobText.includes(atsNormalize(skill))
     );
 
-    explicitSkills
-        .split(/[,;|\n]+/)
-        .forEach(part => {
+    const commonSkills = [
 
-            const normalized = atsNormalize(part);
+        "javascript",
+
+        "typescript",
+
+        "react",
+
+        "react.js",
+
+        "angular",
+
+        "vue",
+
+        "node.js",
+
+        "nodejs",
+
+        "python",
+
+        "java",
+
+        "c",
+
+        "c++",
+
+        "c#",
+
+        ".net",
+
+        "dotnet",
+
+        "php",
+
+        "ruby",
+
+        "go",
+
+        "rust",
+
+        "sql",
+
+        "mysql",
+
+        "postgresql",
+
+        "postgres",
+
+        "oracle",
+
+        "mongodb",
+
+        "redis",
+
+        "html",
+
+        "css",
+
+        "tailwind",
+
+        "bootstrap",
+
+        "spring",
+
+        "spring boot",
+
+        "django",
+
+        "flask",
+
+        "aws",
+
+        "azure",
+
+        "gcp",
+
+        "docker",
+
+        "kubernetes",
+
+        "terraform",
+
+        "jenkins",
+
+        "devops",
+
+        "git",
+
+        "github",
+
+        "gitlab",
+
+        "bitbucket",
+
+        "linux",
+
+        "windows",
+
+        "power bi",
+
+        "tableau",
+
+        "excel",
+
+        "pandas",
+
+        "numpy",
+
+        "machine learning",
+
+        "deep learning",
+
+        "tensorflow",
+
+        "pytorch",
+
+        "selenium",
+
+        "testng",
+
+        "jmeter",
+
+        "servicenow",
+
+        "salesforce",
+
+        "sap",
+
+        "recruitment",
+
+        "talent acquisition",
+
+        "hr",
+
+        "human resources",
+
+        "communication",
+
+        "project management",
+
+        "business analysis",
+
+        "data analysis",
+
+        "cybersecurity",
+
+        "networking",
+
+        "active directory"
+
+    ];
+
+    const freeText =
+        atsNormalize(
+            [
+                candidate.resumeText,
+
+                candidate.resume_text,
+
+                candidate.resumeContent,
+
+                candidate.resume_content,
+
+                candidate.about,
+
+                candidate.bio,
+
+                candidate.summary,
+
+                candidate.coverLetter,
+
+                candidate.cover_letter,
+
+                candidate.pitch
+
+            ]
+                .map(
+                    v =>
+                        atsToText(v)
+                )
+                .join(" ")
+        );
+
+    commonSkills.forEach(
+        skill => {
+
+            const normalizedSkill =
+                atsNormalize(
+                    skill
+                );
 
             if (
-                normalized &&
-                normalized.length >= 2 &&
-                normalized.length <= 80
+                freeText.includes(
+                    normalizedSkill
+                )
             ) {
-                foundSkills.push(normalized);
+
+                skills.push(
+                    normalizedSkill
+                );
             }
+        }
+    );
 
-        });
-
-    return atsUnique(foundSkills);
+    return atsUnique(
+        skills
+    );
 }
 
-function atsJobTitle(job) {
+function atsJobSkills(
+    job
+) {
+
+    const explicitSkills =
+        [
+            job.skills,
+
+            job.skillSet,
+
+            job.skill_set,
+
+            job.requiredSkills,
+
+            job.required_skills,
+
+            job.technicalSkills,
+
+            job.technical_skills
+
+        ]
+            .map(
+                atsToText
+            )
+            .join(" ");
+
+    const jobText =
+        atsNormalize(
+            [
+                job.jobtitle,
+
+                job.job_title,
+
+                job.title,
+
+                job.description,
+
+                job.requirements,
+
+                explicitSkills
+
+            ]
+                .map(
+                    v =>
+                        atsToText(v)
+                )
+                .join(" ")
+        );
+
+    const commonSkills = [
+
+        "javascript",
+
+        "typescript",
+
+        "react",
+
+        "react.js",
+
+        "angular",
+
+        "vue",
+
+        "node.js",
+
+        "nodejs",
+
+        "python",
+
+        "java",
+
+        "c",
+
+        "c++",
+
+        "c#",
+
+        ".net",
+
+        "dotnet",
+
+        "php",
+
+        "ruby",
+
+        "go",
+
+        "rust",
+
+        "sql",
+
+        "mysql",
+
+        "postgresql",
+
+        "postgres",
+
+        "oracle",
+
+        "mongodb",
+
+        "redis",
+
+        "html",
+
+        "css",
+
+        "tailwind",
+
+        "bootstrap",
+
+        "spring",
+
+        "spring boot",
+
+        "django",
+
+        "flask",
+
+        "aws",
+
+        "azure",
+
+        "gcp",
+
+        "docker",
+
+        "kubernetes",
+
+        "terraform",
+
+        "jenkins",
+
+        "devops",
+
+        "git",
+
+        "github",
+
+        "gitlab",
+
+        "bitbucket",
+
+        "linux",
+
+        "windows",
+
+        "power bi",
+
+        "tableau",
+
+        "excel",
+
+        "pandas",
+
+        "numpy",
+
+        "machine learning",
+
+        "deep learning",
+
+        "tensorflow",
+
+        "pytorch",
+
+        "selenium",
+
+        "testng",
+
+        "jmeter",
+
+        "servicenow",
+
+        "salesforce",
+
+        "sap",
+
+        "recruitment",
+
+        "talent acquisition",
+
+        "hr",
+
+        "human resources",
+
+        "communication",
+
+        "project management",
+
+        "business analysis",
+
+        "data analysis",
+
+        "cybersecurity",
+
+        "networking",
+
+        "active directory"
+
+    ];
+
+    const foundSkills =
+        commonSkills.filter(
+            skill =>
+                jobText.includes(
+                    atsNormalize(
+                        skill
+                    )
+                )
+        );
+
+    explicitSkills
+        .split(
+            /[,;|\n]+/
+        )
+        .forEach(
+            part => {
+
+                const normalized =
+                    atsNormalize(
+                        part
+                    );
+
+                if (
+                    normalized &&
+                    normalized.length >= 2 &&
+                    normalized.length <= 80
+                ) {
+
+                    foundSkills.push(
+                        normalized
+                    );
+                }
+
+            }
+        );
+
+    return atsUnique(
+        foundSkills
+    );
+}
+
+function atsJobTitle(
+    job
+) {
 
     return atsNormalize(
         job.jobtitle ||
@@ -1146,10 +2801,11 @@ function atsJobTitle(job) {
         job.title ||
         ""
     );
-
 }
 
-function atsCandidateTitle(candidate) {
+function atsCandidateTitle(
+    candidate
+) {
 
     return atsNormalize(
         candidate.currentRole ||
@@ -1161,12 +2817,16 @@ function atsCandidateTitle(candidate) {
         candidate.headline ||
         ""
     );
-
 }
 
-function atsExtractYears(value) {
+function atsExtractYears(
+    value
+) {
 
-    const text = atsToText(value).toLowerCase();
+    const text =
+        atsToText(
+            value
+        ).toLowerCase();
 
     const matches = [];
 
@@ -1175,40 +2835,56 @@ function atsExtractYears(value) {
 
     let match;
 
-    while ((match = regex.exec(text))) {
+    while (
+        (match = regex.exec(text))
+    ) {
 
         matches.push(
-            Number(match[1])
+            Number(
+                match[1]
+            )
         );
-
     }
 
     return matches.length
-        ? Math.max(...matches)
+        ? Math.max(
+            ...matches
+        )
         : null;
-
 }
 
-function atsCandidateYears(candidate) {
+function atsCandidateYears(
+    candidate
+) {
 
     const directFields = [
+
         candidate.experienceYears,
+
         candidate.experience_years,
+
         candidate.yearsExperience,
+
         candidate.years_experience
+
     ];
 
-    for (const value of directFields) {
+    for (
+        const value of directFields
+    ) {
 
-        const number = Number(value);
+        const number =
+            Number(value);
 
         if (
-            Number.isFinite(number) &&
+            Number.isFinite(
+                number
+            ) &&
             number >= 0
         ) {
+
             return number;
         }
-
     }
 
     return atsExtractYears(
@@ -1220,29 +2896,40 @@ function atsCandidateYears(candidate) {
         candidate.summary ||
         ""
     );
-
 }
 
-function atsRequiredYears(job) {
+function atsRequiredYears(
+    job
+) {
 
     const directFields = [
+
         job.experienceYears,
+
         job.experience_years,
+
         job.minExperience,
+
         job.min_experience
+
     ];
 
-    for (const value of directFields) {
+    for (
+        const value of directFields
+    ) {
 
-        const number = Number(value);
+        const number =
+            Number(value);
 
         if (
-            Number.isFinite(number) &&
+            Number.isFinite(
+                number
+            ) &&
             number >= 0
         ) {
+
             return number;
         }
-
     }
 
     return atsExtractYears(
@@ -1251,72 +2938,126 @@ function atsRequiredYears(job) {
         job.requirements ||
         ""
     );
-
 }
 
-function atsTokenSet(text) {
+function atsTokenSet(
+    text
+) {
 
     return new Set(
         atsNormalize(text)
             .split(/\s+/)
-            .map(token => token.trim())
-            .filter(token => token.length >= 3)
+            .map(
+                token =>
+                    token.trim()
+            )
+            .filter(
+                token =>
+                    token.length >= 3
+            )
     );
-
 }
 
-function atsCalculateMatchScore(candidate, job) {
+function atsCalculateMatchScore(
+    candidate,
+    job
+) {
 
-    if (!candidate || !job) {
+    if (
+        !candidate ||
+        !job
+    ) {
+
         return null;
     }
 
     const candidateSkills =
-        atsExtractSkills(candidate);
+        atsExtractSkills(
+            candidate
+        );
 
     const jobSkills =
-        atsJobSkills(job);
+        atsJobSkills(
+            job
+        );
 
     const candidateText =
-        atsNormalize([
-            candidate.fullname,
-            candidate.name,
-            candidate.headline,
-            candidate.currentRole,
-            candidate.current_role,
-            candidate.jobTitle,
-            candidate.job_title,
-            candidate.designation,
-            candidate.role,
-            candidate.about,
-            candidate.bio,
-            candidate.summary,
-            candidate.experience,
-            candidate.skills,
-            candidate.resumeText,
-            candidate.resume_text,
-            candidate.coverLetter,
-            candidate.cover_letter
-        ]
-            .map(atsToText)
-            .join(" "));
+        atsNormalize(
+            [
+                candidate.fullname,
+
+                candidate.name,
+
+                candidate.headline,
+
+                candidate.currentRole,
+
+                candidate.current_role,
+
+                candidate.jobTitle,
+
+                candidate.job_title,
+
+                candidate.designation,
+
+                candidate.role,
+
+                candidate.about,
+
+                candidate.bio,
+
+                candidate.summary,
+
+                candidate.experience,
+
+                candidate.skills,
+
+                candidate.resumeText,
+
+                candidate.resume_text,
+
+                candidate.coverLetter,
+
+                candidate.cover_letter
+
+            ]
+                .map(
+                    atsToText
+                )
+                .join(" ")
+        );
 
     const jobText =
-        atsNormalize([
-            job.jobtitle,
-            job.job_title,
-            job.title,
-            job.description,
-            job.requirements,
-            job.requiredSkills,
-            job.required_skills,
-            job.skills,
-            job.skillSet,
-            job.skill_set,
-            job.experience
-        ]
-            .map(atsToText)
-            .join(" "));
+        atsNormalize(
+            [
+                job.jobtitle,
+
+                job.job_title,
+
+                job.title,
+
+                job.description,
+
+                job.requirements,
+
+                job.requiredSkills,
+
+                job.required_skills,
+
+                job.skills,
+
+                job.skillSet,
+
+                job.skill_set,
+
+                job.experience
+
+            ]
+                .map(
+                    atsToText
+                )
+                .join(" ")
+        );
 
     // ======================================================
     // SKILLS = 50 POINTS
@@ -1324,31 +3065,240 @@ function atsCalculateMatchScore(candidate, job) {
 
     let skillScore = 0;
 
-    if (jobSkills.length) {
+    if (
+        jobSkills.length
+    ) {
 
         const matchedSkills =
-            jobSkills.filter(skill => {
+            jobSkills.filter(
+                skill => {
 
-                return (
-                    candidateSkills.includes(skill) ||
-                    candidateText.includes(skill)
-                );
-
-            });
+                    return (
+                        candidateSkills.includes(
+                            skill
+                        ) ||
+                        candidateText.includes(
+                            skill
+                        )
+                    );
+                }
+            );
 
         skillScore =
-            (matchedSkills.length /
-                jobSkills.length) * 50;
+            (
+                matchedSkills.length /
+                jobSkills.length
+            ) * 50;
 
     } else {
 
         const jobTokens =
-            atsTokenSet(jobText);
+            atsTokenSet(
+                jobText
+            );
 
         const candidateTokens =
-            atsTokenSet(candidateText);
+            atsTokenSet(
+                candidateText
+            );
 
-        const stopWords = new Set([
+        const stopWords =
+            new Set([
+                "the",
+                "and",
+                "with",
+                "for",
+                "from",
+                "that",
+                "this",
+                "your",
+                "will",
+                "have",
+                "years",
+                "year",
+                "experience",
+                "work",
+                "working",
+                "team",
+                "role",
+                "job",
+                "required",
+                "requirements",
+                "candidate",
+                "skills",
+                "strong",
+                "good"
+            ]);
+
+        const meaningfulJobTokens =
+            [
+                ...jobTokens
+            ]
+                .filter(
+                    token =>
+                        !stopWords.has(
+                            token
+                        )
+                );
+
+        const matchedTokens =
+            meaningfulJobTokens.filter(
+                token =>
+                    candidateTokens.has(
+                        token
+                    )
+            );
+
+        skillScore =
+            meaningfulJobTokens.length
+                ? Math.min(
+                    50,
+                    (
+                        matchedTokens.length /
+                        meaningfulJobTokens.length
+                    ) * 50
+                )
+                : 0;
+    }
+
+    // ======================================================
+    // JOB TITLE = 20 POINTS
+    // ======================================================
+
+    const jobTitle =
+        atsJobTitle(
+            job
+        );
+
+    const candidateTitle =
+        atsCandidateTitle(
+            candidate
+        );
+
+    let titleScore = 0;
+
+    if (
+        jobTitle
+    ) {
+
+        const jobTitleTokens =
+            [
+                ...atsTokenSet(
+                    jobTitle
+                )
+            ];
+
+        const candidateTitleTokens =
+            atsTokenSet(
+                candidateTitle ||
+                candidateText
+            );
+
+        const matchedTitleTokens =
+            jobTitleTokens.filter(
+                token =>
+                    candidateTitleTokens.has(
+                        token
+                    )
+            );
+
+        if (
+            matchedTitleTokens.length
+        ) {
+
+            titleScore =
+                Math.min(
+                    20,
+                    (
+                        matchedTitleTokens.length /
+                        Math.max(
+                            1,
+                            jobTitleTokens.length
+                        )
+                    ) * 20
+                );
+        }
+
+        if (
+            candidateText.includes(
+                jobTitle
+            )
+        ) {
+
+            titleScore = 20;
+        }
+    }
+
+    // ======================================================
+    // EXPERIENCE = 20 POINTS
+    // ======================================================
+
+    const requiredYears =
+        atsRequiredYears(
+            job
+        );
+
+    const candidateYears =
+        atsCandidateYears(
+            candidate
+        );
+
+    let experienceScore = 10;
+
+    if (
+        requiredYears !== null &&
+        candidateYears !== null
+    ) {
+
+        if (
+            requiredYears <= 0
+        ) {
+
+            experienceScore = 20;
+
+        } else if (
+            candidateYears >= requiredYears
+        ) {
+
+            experienceScore = 20;
+
+        } else {
+
+            experienceScore =
+                Math.max(
+                    0,
+                    (
+                        candidateYears /
+                        requiredYears
+                    ) * 20
+                );
+        }
+
+    } else if (
+        candidateYears !== null
+    ) {
+
+        experienceScore = 15;
+    }
+
+    // ======================================================
+    // DESCRIPTION = 10 POINTS
+    // ======================================================
+
+    const jobTokens =
+        [
+            ...atsTokenSet(
+                jobText
+            )
+        ];
+
+    const candidateTokens =
+        atsTokenSet(
+            candidateText
+        );
+
+    const stopWords =
+        new Set([
             "the",
             "and",
             "with",
@@ -1372,182 +3322,41 @@ function atsCalculateMatchScore(candidate, job) {
             "candidate",
             "skills",
             "strong",
-            "good"
+            "good",
+            "responsibilities",
+            "position",
+            "company",
+            "location",
+            "salary"
         ]);
 
-        const meaningfulJobTokens =
-            [...jobTokens]
-                .filter(token =>
-                    !stopWords.has(token)
-                );
-
-        const matchedTokens =
-            meaningfulJobTokens.filter(token =>
-                candidateTokens.has(token)
-            );
-
-        skillScore =
-            meaningfulJobTokens.length
-                ? Math.min(
-                    50,
-                    (matchedTokens.length /
-                        meaningfulJobTokens.length) * 50
-                )
-                : 0;
-
-    }
-
-    // ======================================================
-    // JOB TITLE = 20 POINTS
-    // ======================================================
-
-    const jobTitle =
-        atsJobTitle(job);
-
-    const candidateTitle =
-        atsCandidateTitle(candidate);
-
-    let titleScore = 0;
-
-    if (jobTitle) {
-
-        const jobTitleTokens =
-            [...atsTokenSet(jobTitle)];
-
-        const candidateTitleTokens =
-            atsTokenSet(
-                candidateTitle ||
-                candidateText
-            );
-
-        const matchedTitleTokens =
-            jobTitleTokens.filter(token =>
-                candidateTitleTokens.has(token)
-            );
-
-        if (matchedTitleTokens.length) {
-
-            titleScore =
-                Math.min(
-                    20,
-                    (matchedTitleTokens.length /
-                        Math.max(
-                            1,
-                            jobTitleTokens.length
-                        )) * 20
-                );
-
-        }
-
-        if (candidateText.includes(jobTitle)) {
-            titleScore = 20;
-        }
-
-    }
-
-    // ======================================================
-    // EXPERIENCE = 20 POINTS
-    // ======================================================
-
-    const requiredYears =
-        atsRequiredYears(job);
-
-    const candidateYears =
-        atsCandidateYears(candidate);
-
-    let experienceScore = 10;
-
-    if (
-        requiredYears !== null &&
-        candidateYears !== null
-    ) {
-
-        if (requiredYears <= 0) {
-
-            experienceScore = 20;
-
-        } else if (candidateYears >= requiredYears) {
-
-            experienceScore = 20;
-
-        } else {
-
-            experienceScore =
-                Math.max(
-                    0,
-                    (candidateYears /
-                        requiredYears) * 20
-                );
-
-        }
-
-    } else if (candidateYears !== null) {
-
-        experienceScore = 15;
-
-    }
-
-    // ======================================================
-    // DESCRIPTION = 10 POINTS
-    // ======================================================
-
-    const jobTokens =
-        [...atsTokenSet(jobText)];
-
-    const candidateTokens =
-        atsTokenSet(candidateText);
-
-    const stopWords = new Set([
-        "the",
-        "and",
-        "with",
-        "for",
-        "from",
-        "that",
-        "this",
-        "your",
-        "will",
-        "have",
-        "years",
-        "year",
-        "experience",
-        "work",
-        "working",
-        "team",
-        "role",
-        "job",
-        "required",
-        "requirements",
-        "candidate",
-        "skills",
-        "strong",
-        "good",
-        "responsibilities",
-        "position",
-        "company",
-        "location",
-        "salary"
-    ]);
-
     const meaningfulJobTokens =
-        jobTokens.filter(token =>
-            !stopWords.has(token)
+        jobTokens.filter(
+            token =>
+                !stopWords.has(
+                    token
+                )
         );
 
     const relevantMatches =
-        meaningfulJobTokens.filter(token =>
-            candidateTokens.has(token)
+        meaningfulJobTokens.filter(
+            token =>
+                candidateTokens.has(
+                    token
+                )
         );
 
     const descriptionScore =
         meaningfulJobTokens.length
             ? Math.min(
                 10,
-                (relevantMatches.length /
+                (
+                    relevantMatches.length /
                     Math.min(
                         meaningfulJobTokens.length,
                         30
-                    )) * 10
+                    )
+                ) * 10
             )
             : 0;
 
@@ -1555,18 +3364,19 @@ function atsCalculateMatchScore(candidate, job) {
     // FINAL SCORE
     // ======================================================
 
-    const score = Math.max(
-        0,
-        Math.min(
-            100,
-            Math.round(
-                skillScore +
-                titleScore +
-                experienceScore +
-                descriptionScore
+    const score =
+        Math.max(
+            0,
+            Math.min(
+                100,
+                Math.round(
+                    skillScore +
+                    titleScore +
+                    experienceScore +
+                    descriptionScore
+                )
             )
-        )
-    );
+        );
 
     const hasCandidateData =
         candidateSkills.length ||
@@ -1578,20 +3388,29 @@ function atsCalculateMatchScore(candidate, job) {
         jobText.length > 20 ||
         jobSkills.length;
 
-    if (!hasCandidateData || !hasJobData) {
+    if (
+        !hasCandidateData ||
+        !hasJobData
+    ) {
+
         return null;
     }
 
     return score;
-
 }
 
-function atsExistingScore(application) {
+function atsExistingScore(
+    application
+) {
 
-    for (const column of ATS_SCORE_COLUMNS) {
+    for (
+        const column of ATS_SCORE_COLUMNS
+    ) {
 
         const raw =
-            application?.[column];
+            application?.[
+                column
+            ];
 
         const number =
             Number(raw);
@@ -1600,21 +3419,22 @@ function atsExistingScore(application) {
             raw !== null &&
             raw !== undefined &&
             raw !== "" &&
-            Number.isFinite(number) &&
+            Number.isFinite(
+                number
+            ) &&
             number >= 0
         ) {
 
             return Math.min(
                 100,
-                Math.round(number)
+                Math.round(
+                    number
+                )
             );
-
         }
-
     }
 
     return null;
-
 }
 
 async function analyzeMissingApplicationScores() {
@@ -1625,81 +3445,106 @@ async function analyzeMissingApplicationScores() {
             appsResult,
             jobsResult,
             candidatesResult
-        ] = await Promise.all([
+        ] =
+            await Promise.all([
+                supabase
+                    .from(
+                        "jobApplications"
+                    )
+                    .select("*"),
 
-            supabase
-                .from("jobApplications")
-                .select("*"),
+                supabase
+                    .from(
+                        "jobs"
+                    )
+                    .select("*"),
 
-            supabase
-                .from("jobs")
-                .select("*"),
+                supabase
+                    .from(
+                        "candidates"
+                    )
+                    .select("*")
+            ]);
 
-            supabase
-                .from("candidates")
-                .select("*")
+        if (
+            appsResult.error
+        ) {
 
-        ]);
-
-        if (appsResult.error) {
             throw appsResult.error;
         }
 
-        if (jobsResult.error) {
+        if (
+            jobsResult.error
+        ) {
+
             throw jobsResult.error;
         }
 
         const apps =
-            appsResult.data || [];
+            appsResult.data ||
+            [];
 
         const jobs =
-            jobsResult.data || [];
+            jobsResult.data ||
+            [];
 
         const profiles =
-            candidatesResult?.data || [];
+            candidatesResult?.data ||
+            [];
 
         const jobMap =
             new Map();
 
-        jobs.forEach(job => {
+        jobs.forEach(
+            job => {
 
-            jobMap.set(
-                String(job.id),
-                job
-            );
-
-        });
+                jobMap.set(
+                    String(
+                        job.id
+                    ),
+                    job
+                );
+            }
+        );
 
         const profileMap =
             new Map();
 
-        profiles.forEach(profile => {
+        profiles.forEach(
+            profile => {
 
-            const email =
-                String(
-                    profile.email || ""
-                )
-                    .trim()
-                    .toLowerCase();
+                const email =
+                    String(
+                        profile.email ||
+                        ""
+                    )
+                        .trim()
+                        .toLowerCase();
 
-            if (email) {
+                if (
+                    email
+                ) {
 
-                profileMap.set(
-                    email,
-                    profile
-                );
-
+                    profileMap.set(
+                        email,
+                        profile
+                    );
+                }
             }
-
-        });
+        );
 
         let analyzed = 0;
 
-        for (const application of apps) {
+        for (
+            const application of apps
+        ) {
 
             if (
-                atsExistingScore(application) !== null
+                atsExistingScore(
+                    application
+                ) !== null
             ) {
+
                 continue;
             }
 
@@ -1709,10 +3554,13 @@ async function analyzeMissingApplicationScores() {
                     application.job_id ??
                     application.jobID ??
                     ""
-                ).trim();
+                )
+                    .trim();
 
             let job =
-                jobMap.get(jobId);
+                jobMap.get(
+                    jobId
+                );
 
             if (!job) {
 
@@ -1724,19 +3572,22 @@ async function analyzeMissingApplicationScores() {
                         ""
                     );
 
-                if (applicationTitle) {
+                if (
+                    applicationTitle
+                ) {
 
-                    job = jobs.find(j =>
-                        atsNormalize(
-                            j.jobtitle ||
-                            j.job_title ||
-                            j.title ||
-                            ""
-                        ) === applicationTitle
-                    );
-
+                    job =
+                        jobs.find(
+                            j =>
+                                atsNormalize(
+                                    j.jobtitle ||
+                                    j.job_title ||
+                                    j.title ||
+                                    ""
+                                ) ===
+                                applicationTitle
+                        );
                 }
-
             }
 
             if (!job) {
@@ -1745,17 +3596,21 @@ async function analyzeMissingApplicationScores() {
 
             const email =
                 String(
-                    application.email || ""
+                    application.email ||
+                    ""
                 )
                     .trim()
                     .toLowerCase();
 
             const profile =
-                profileMap.get(email) || {};
+                profileMap.get(
+                    email
+                ) || {};
 
             const candidate = {
 
                 ...profile,
+
                 ...application,
 
                 skills:
@@ -1783,7 +3638,6 @@ async function analyzeMissingApplicationScores() {
                     application.current_role ||
                     application.jobTitle ||
                     ""
-
             };
 
             const score =
@@ -1792,17 +3646,28 @@ async function analyzeMissingApplicationScores() {
                     job
                 );
 
-            if (score === null) {
+            if (
+                score === null
+            ) {
+
                 continue;
             }
 
-            const { error } =
+            const {
+                error
+            } =
                 await supabase
-                    .from("jobApplications")
+                    .from(
+                        "jobApplications"
+                    )
                     .update({
-                        match_score: score
+                        match_score:
+                            score
                     })
-                    .eq("id", application.id);
+                    .eq(
+                        "id",
+                        application.id
+                    );
 
             if (error) {
 
@@ -1813,7 +3678,6 @@ async function analyzeMissingApplicationScores() {
                 );
 
                 continue;
-
             }
 
             analyzed++;
@@ -1824,10 +3688,11 @@ async function analyzeMissingApplicationScores() {
                 application.name ||
                 application.email
             );
-
         }
 
-        if (analyzed > 0) {
+        if (
+            analyzed > 0
+        ) {
 
             console.log(
                 `✅ ATS analyzed ${analyzed} application(s).`
@@ -1839,9 +3704,7 @@ async function analyzeMissingApplicationScores() {
             ) {
 
                 await window.loadInboundApplications();
-
             }
-
         }
 
     } catch (error) {
@@ -1850,9 +3713,7 @@ async function analyzeMissingApplicationScores() {
             "ATS match-score analysis error:",
             error
         );
-
     }
-
 }
 
 window.analyzeApplicationMatchScores =
@@ -1867,14 +3728,18 @@ document.addEventListener(
 
         setTimeout(
             () => {
+
                 analyzeMissingApplicationScores();
+
             },
             1200
         );
 
         setInterval(
             () => {
+
                 analyzeMissingApplicationScores();
+
             },
             5 * 60 * 1000
         );
