@@ -3944,17 +3944,16 @@ body.dark-mode .sidebar{background:#090d16!important;}
       const modal=perJobAgentModal();
       if(!modal) return;
 
-      // Resolve the latest Master Resume first. If it is missing, keep the
-      // workflow open and provide an Upload Resume action. Once the upload
-      // succeeds, the same job analysis starts automatically.
-      const resumeUrl=await ensureMasterResumeUrl();
-
       perJobAgentState.jobId=id;
       perJobAgentState.waitingForResume=false;
       perJobAgentResetSteps();
 
       const heading=document.getElementById("perJobAIAgentTitle");
       const meta=document.getElementById("perJobAIAgentMeta");
+      const card=document.querySelector(`.job-card[data-job-id="${CSS.escape(id)}"]`);
+      const agentButton=card?.querySelector(".job-agent-btn");
+      const scoreEl=card?.querySelector(".job-match-score");
+      const originalButton=agentButton?.innerHTML;
 
       if(heading) heading.textContent=`AI Agent — ${title}`;
       if(meta) meta.textContent=`${company}${job.location?` • ${job.location}`:""}`;
@@ -3963,222 +3962,276 @@ body.dark-mode .sidebar{background:#090d16!important;}
       modal.setAttribute("aria-hidden","false");
       document.body.style.overflow="hidden";
 
-      if(!resumeUrl){
-          perJobAgentState.running=false;
-          perJobAgentState.waitingForResume=true;
-
-          perJobAgentSetStep("resume","active","Upload required");
-          perJobAgentSetProgress(5);
-          perJobAgentSetLive(
-              `<b>AI Agent:</b> Your Master Resume is not available. Upload it below and I will automatically start analyzing <b>${esc(title)}</b>.`
-          );
-
-          const resultEl=document.getElementById("perJobAIAgentResult");
-          if(resultEl){
-              resultEl.innerHTML=`
-                <div class="per-job-agent-resume-required">
-                  <div class="per-job-agent-resume-icon">
-                    <i class="fa-solid fa-file-arrow-up"></i>
-                  </div>
-                  <div class="per-job-agent-resume-copy">
-                    <strong>Resume Required to Start AI</strong>
-                    <span>No Master Resume was found on your profile. Upload your resume once and the AI Agent will automatically continue this job analysis.</span>
-                  </div>
-                </div>
-                <div class="per-job-agent-resume-action">
-                  <button
-                    type="button"
-                    class="per-job-agent-primary per-job-agent-upload-btn"
-                    onclick="document.getElementById('resumeInput')?.click()">
-                    <i class="fa-solid fa-cloud-arrow-up"></i> Upload Resume &amp; Start AI
-                  </button>
-                </div>
-              `;
-              resultEl.classList.add("show");
-          }
-          return;
-      }
-
       if(!String(job.description||"").trim()){
-          perJobAgentState.running=false;
-          if(window.showCustomAlert){
-              window.showCustomAlert(
-                  "This job does not contain a usable Job Description, so the AI Agent cannot analyze it.",
-                  "Job Description Required",
-                  "Info"
-              );
-          }
-          return;
+          perJobAgentSetStep("jd","error","Skipped");
+          perJobAgentSetLive(
+              `<b>AI Agent:</b> This job does not have a usable Job Description. I will skip the JD-dependent steps and continue with the available profile information.`
+          );
       }
 
       perJobAgentState.running=true;
-      perJobAgentState.waitingForResume=false;
-
-      const card=document.querySelector(
-          `.job-card[data-job-id="${CSS.escape(id)}"]`
-      );
-      const agentButton=card?.querySelector(".job-agent-btn");
-      const scoreEl=card?.querySelector(".job-match-score");
-      const originalButton=agentButton?.innerHTML;
 
       if(agentButton){
           agentButton.disabled=true;
           agentButton.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Running…';
       }
 
-      // Let the browser paint every workflow state before moving to the next one.
-      // This prevents the modal from appearing frozen on the first step.
       async function paint(){
-          // Allow the browser to repaint the active workflow step.
-          // requestAnimationFrame is preferred, with a timer fallback so the
-          // workflow cannot fail merely because the rendering API is unavailable.
           await new Promise(resolve=>{
               if(typeof requestAnimationFrame==="function") requestAnimationFrame(()=>resolve());
               else setTimeout(resolve,0);
           });
-          await new Promise(resolve=>{
-              if(typeof requestAnimationFrame==="function") requestAnimationFrame(()=>resolve());
-              else setTimeout(resolve,0);
-          });
+          await new Promise(resolve=>setTimeout(resolve,0));
       }
 
-      function failResult(message){
+      function markSkipped(step, message){
+          perJobAgentSetStep(step,"error","Skipped");
+          perJobAgentSetLive(`<b>AI Agent:</b> ${esc(message)}`);
+      }
+
+      function markDone(step, status="Done"){
+          perJobAgentSetStep(step,"done",status);
+      }
+
+      function showWorkflowResult(html){
           const resultEl=document.getElementById("perJobAIAgentResult");
           if(resultEl){
-              resultEl.innerHTML=`
-                <div style="color:#b91c1c;font-size:12px;font-weight:800;">
-                  <i class="fa-solid fa-triangle-exclamation"></i>
-                  AI analysis could not be completed.
-                </div>
-                <div style="color:#64748b;font-size:11px;line-height:1.5;margin-top:6px;">
-                  ${esc(message)}
-                </div>
-                <div class="per-job-agent-actions">
-                  <button type="button" class="per-job-agent-primary"
-                    onclick="window.closePerJobAIAgent(); window.runAIAgentForJob('${esc(id)}')">
-                    Try Again
-                  </button>
-                </div>
-              `;
+              resultEl.innerHTML=html;
               resultEl.classList.add("show");
           }
       }
 
-      let currentWorkflowStep="resume";
+      function fallbackScore(){
+          const profile=getCandidateProfileForMatch ? getCandidateProfileForMatch() : {};
+          const profileText=[
+              profile?.name,
+              profile?.experience,
+              profile?.skills,
+              profile?.about
+          ].map(x=>String(x||"")).join(" ").toLowerCase();
+
+          const jdText=[
+              job?.jobtitle||job?.title,
+              job?.description,
+              job?.experience,
+              job?.location
+          ].map(x=>String(x||"")).join(" ").toLowerCase();
+
+          const words=(jdText.match(/[a-z][a-z0-9+#.]{2,}/g)||[])
+              .filter(w=>!["the","and","for","with","from","this","that","your","you","are","will","our","job","role","work","years","year","required","requirements"].includes(w));
+
+          const unique=[...new Set(words)];
+          if(!unique.length || !profileText.trim()) return 0;
+
+          const hits=unique.filter(word=>profileText.includes(word));
+          return Math.max(0,Math.min(100,Math.round((hits.length/Math.min(unique.length,20))*100)));
+      }
+
+      let resumeUrl="";
+      let analysis=null;
+      let score=null;
+      let scoreSource="fallback";
+      const issues=[];
 
       try{
-          // --------------------------------------------------------
-          // STEP 1 — RESUME
-          // --------------------------------------------------------
+          // ========================================================
+          // STEP 1 — MASTER RESUME
+          // A failure here NEVER stops the workflow.
+          // ========================================================
           perJobAgentSetStep("resume","active","Reading…");
           perJobAgentSetProgress(8);
           perJobAgentSetLive(
-              `<b>AI Agent:</b> Reading your latest Master Resume and preparing the resume data for analysis of <b>${esc(title)}</b>.`
+              `<b>AI Agent:</b> Checking your latest Master Resume for <b>${esc(title)}</b>.`
           );
           await paint();
 
-          // The resume is passed to the secure AI scoring endpoint below.
-          // Keep this step visible long enough for the user to see it clearly.
-          await new Promise(resolve=>setTimeout(resolve,350));
-          perJobAgentSetStep("resume","done","Done");
-          perJobAgentSetProgress(18);
+          try{
+              resumeUrl=await ensureMasterResumeUrl();
+
+              if(resumeUrl){
+                  window.currentApplyingResumeUrl=resumeUrl;
+                  markDone("resume","Done");
+                  perJobAgentSetProgress(18);
+                  perJobAgentSetLive(
+                      `<b>AI Agent:</b> Master Resume found. Continuing with this job's Job Description.`
+                  );
+              }else{
+                  issues.push("Master Resume unavailable");
+                  markSkipped(
+                      "resume",
+                      "Master Resume could not be loaded. Skipping the resume-read step and continuing with your available profile information."
+                  );
+                  perJobAgentSetProgress(18);
+              }
+          }catch(resumeError){
+              console.warn("Per-job resume step skipped:",resumeError);
+              issues.push("Master Resume read failed");
+              markSkipped(
+                  "resume",
+                  "The Master Resume could not be read. This step is skipped so the workflow can continue."
+              );
+              perJobAgentSetProgress(18);
+          }
           await paint();
 
-          currentWorkflowStep="jd";
-          // --------------------------------------------------------
+          // ========================================================
           // STEP 2 — JOB DESCRIPTION
-          // --------------------------------------------------------
+          // ========================================================
           perJobAgentSetStep("jd","active","Reading…");
           perJobAgentSetProgress(28);
           perJobAgentSetLive(
-              `<b>AI Agent:</b> Reading the complete Job Description for <b>${esc(title)}</b> — responsibilities, qualifications, experience and role details.`
+              `<b>AI Agent:</b> Reading the selected Job Description for <b>${esc(title)}</b>.`
           );
           await paint();
-          await new Promise(resolve=>setTimeout(resolve,350));
-          perJobAgentSetStep("jd","done","Done");
-          perJobAgentSetProgress(38);
+
+          try{
+              const jd=String(job.description||"").trim();
+              if(!jd){
+                  throw new Error("No usable Job Description was found.");
+              }
+
+              await perJobAgentDelay(250);
+              markDone("jd","Done");
+              perJobAgentSetProgress(38);
+          }catch(jdError){
+              console.warn("Per-job JD step skipped:",jdError);
+              issues.push("Job Description read failed");
+              markSkipped(
+                  "jd",
+                  "The Job Description could not be read. Skipping this step and continuing with the next available step."
+              );
+              perJobAgentSetProgress(38);
+          }
           await paint();
 
-          currentWorkflowStep="requirements";
-          // --------------------------------------------------------
+          // ========================================================
           // STEP 3 — REQUIREMENTS
-          // --------------------------------------------------------
+          // ========================================================
           perJobAgentSetStep("requirements","active","Extracting…");
           perJobAgentSetProgress(48);
           perJobAgentSetLive(
-              `<b>AI Agent:</b> Extracting the important requirements from this exact JD — skills, experience, responsibilities and keywords.`
+              `<b>AI Agent:</b> Extracting skills, experience, responsibilities and keywords from this job.`
           );
           await paint();
-          await new Promise(resolve=>setTimeout(resolve,350));
-          perJobAgentSetStep("requirements","done","Done");
-          perJobAgentSetProgress(56);
+
+          try{
+              const jd=String(job.description||"").trim();
+              if(!jd){
+                  throw new Error("Job Description unavailable.");
+              }
+
+              await perJobAgentDelay(250);
+              markDone("requirements","Done");
+              perJobAgentSetProgress(56);
+          }catch(requirementError){
+              console.warn("Per-job requirements step skipped:",requirementError);
+              issues.push("Requirement extraction skipped");
+              markSkipped(
+                  "requirements",
+                  "Requirements could not be extracted from the JD. Skipping this step and continuing."
+              );
+              perJobAgentSetProgress(56);
+          }
           await paint();
 
-          currentWorkflowStep="compare";
-          // --------------------------------------------------------
-          // STEP 4 — REAL AI COMPARISON
-          // --------------------------------------------------------
+          // ========================================================
+          // STEP 4 — AI COMPARISON
+          // ========================================================
           perJobAgentSetStep("compare","active","Analyzing…");
           perJobAgentSetProgress(62);
           perJobAgentSetLive(
-              `<b>AI Agent:</b> Sending your Master Resume and this exact Job Description to the AI matching service. No other job is included.`
+              `<b>AI Agent:</b> Comparing your available profile/resume evidence against this exact job.`
           );
           await paint();
 
-          // IMPORTANT:
-          // Run a fresh AI request for the job the user clicked.
-          // Do not use the background/cache scoring path here.
-          const payload={
-              resumeUrl: resumeUrl,
-              job: {
-                  title: title,
-                  company: company,
-                  description: String(job.description||""),
-                  experience: String(job.experience||""),
-                  location: String(job.location||""),
-                  salary: String(job.salary||"")
-              },
-              candidateProfile: getCandidateProfileForMatch()
-          };
+          try{
+              const payload={
+                  resumeUrl: resumeUrl || "",
+                  job: {
+                      title: title,
+                      company: company,
+                      description: String(job.description||""),
+                      experience: String(job.experience||""),
+                      location: String(job.location||""),
+                      salary: String(job.salary||"")
+                  },
+                  candidateProfile: getCandidateProfileForMatch ? getCandidateProfileForMatch() : {}
+              };
 
-          const analysis=await invokeScoreResume(payload);
-
-          currentWorkflowStep="score";
-          // --------------------------------------------------------
-          // STEP 5 — SCORE
-          // --------------------------------------------------------
-          perJobAgentSetStep("compare","done","Done");
-          perJobAgentSetProgress(72);
+              // The AI service may require a resume URL. If the resume is
+              // unavailable, still attempt the call so the profile-only path
+              // can work when supported by the backend.
+              analysis=await invokeScoreResume(payload);
+              markDone("compare","Done");
+              perJobAgentSetProgress(72);
+          }catch(compareError){
+              console.warn("AI comparison skipped; continuing:",compareError);
+              issues.push("AI comparison unavailable");
+              analysis=null;
+              markSkipped(
+                  "compare",
+                  "AI comparison could not be completed. Skipping the AI comparison step and continuing with an available fallback score."
+              );
+              perJobAgentSetProgress(72);
+          }
           await paint();
 
+          // ========================================================
+          // STEP 5 — SCORE
+          // Always continue. Use verified AI score when present;
+          // otherwise generate a transparent fallback relevance score.
+          // ========================================================
           perJobAgentSetStep("score","active","Calculating…");
           perJobAgentSetProgress(82);
           perJobAgentSetLive(
-              `<b>AI Agent:</b> Calculating the final match score from the AI analysis and preparing the job-specific result.`
+              `<b>AI Agent:</b> Calculating a job-specific score from the available analysis.`
           );
           await paint();
 
-          const score=normalizeScoreValue(analysis?.overallScore);
+          try{
+              if(analysis){
+                  const aiScore=normalizeScoreValue(analysis?.overallScore);
+                  if(Number.isFinite(aiScore)){
+                      score=aiScore;
+                      scoreSource="ai";
+                  }
+              }
 
-          if(!Number.isFinite(score)){
-              throw new Error("The AI service returned an invalid match score.");
+              if(!Number.isFinite(score)){
+                  score=fallbackScore();
+                  scoreSource="fallback";
+                  issues.push("Fallback score used");
+              }
+
+              if(scoreEl && Number.isFinite(score)){
+                  setJobScoreUI(scoreEl,score,scoreSource==="ai"?"ai":"fallback");
+              }
+
+              markDone("score",scoreSource==="ai"?"Done":"Fallback");
+              perJobAgentSetProgress(90);
+          }catch(scoreError){
+              console.warn("Score step failed; using 0 and continuing:",scoreError);
+              score=0;
+              scoreSource="fallback";
+              issues.push("Score calculation failed");
+              markSkipped(
+                  "score",
+                  "The score could not be calculated normally. Using a zero fallback and continuing to the result step."
+              );
+              if(scoreEl){
+                  setJobScoreUI(scoreEl,0,"fallback");
+              }
+              perJobAgentSetProgress(90);
           }
-
-          if(scoreEl){
-              setJobScoreUI(scoreEl,score,"ai");
-          }
-
-          perJobAgentSetStep("score","done","Done");
-          perJobAgentSetProgress(90);
           await paint();
 
-          currentWorkflowStep="result";
-          // --------------------------------------------------------
+          // ========================================================
           // STEP 6 — RESULT / REVIEW
-          // --------------------------------------------------------
+          // ========================================================
           perJobAgentSetStep("result","active","Preparing…");
+          perJobAgentSetProgress(96);
           perJobAgentSetLive(
-              `<b>AI Agent:</b> Preparing your match summary, matched skills and areas to review before applying.`
+              `<b>AI Agent:</b> Preparing the final job-specific result. Any unavailable step was skipped without stopping the workflow.`
           );
           await paint();
 
@@ -4192,98 +4245,120 @@ body.dark-mode .sidebar{background:#090d16!important;}
 
           const summary=String(
               analysis?.summary ||
-              "The AI completed a job-specific comparison using this Job Description and your Master Resume."
+              (scoreSource==="ai"
+                  ? "The AI completed a job-specific comparison."
+                  : "The AI comparison was unavailable, so the workflow completed using the available candidate profile and job information.")
           ).trim();
 
           const label=analysis?.label
               ? String(analysis.label)
-              : (score>=75 ? "Strong profile alignment" : score>=50 ? "Partial profile alignment" : "Review carefully");
+              : (score>=75 ? "Strong profile alignment" : score>=50 ? "Partial profile alignment" : "Review job details");
 
-          const resultEl=document.getElementById("perJobAIAgentResult");
+          const issueNote=issues.length
+              ? `<div style="margin-top:10px;padding:9px 10px;border-radius:9px;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;font-size:10px;line-height:1.5;"><i class="fa-solid fa-circle-info"></i> ${esc(issues.join(" • "))}. The workflow continued automatically.</div>`
+              : "";
 
-          if(resultEl){
-              resultEl.innerHTML=`
-                <div class="per-job-agent-result-head">
-                  <span class="per-job-agent-score">
-                    <i class="fa-solid fa-bullseye"></i>
-                    ${Math.round(score)}% Match
-                  </span>
-                  <span style="font-size:10.5px;font-weight:800;color:#047857;">
-                    ${esc(label)}
-                  </span>
+          showWorkflowResult(`
+              <div class="per-job-agent-result-head">
+                <span class="per-job-agent-score">
+                  <i class="fa-solid fa-bullseye"></i>
+                  ${Math.round(Number(score)||0)}% Match
+                </span>
+                <span style="font-size:10.5px;font-weight:800;color:#047857;">
+                  ${esc(label)}
+                </span>
+              </div>
+
+              <div class="per-job-agent-summary">
+                  ${esc(summary)}
+              </div>
+
+              ${matched.length || missing.length ? `
+                <div style="margin-top:12px;font-size:10px;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:.5px;">
+                  Available AI Analysis
                 </div>
-
-                <div class="per-job-agent-summary">
-                    ${esc(summary)}
+                <div class="per-job-agent-chips">
+                  ${matched.map(x=>`
+                    <span class="per-job-agent-chip good">
+                      <i class="fa-solid fa-check"></i>${esc(x)}
+                    </span>
+                  `).join("")}
+                  ${missing.map(x=>`
+                    <span class="per-job-agent-chip gap">
+                      <i class="fa-solid fa-minus"></i>${esc(x)}
+                    </span>
+                  `).join("")}
                 </div>
+              ` : ""}
 
-                ${matched.length || missing.length ? `
-                  <div style="margin-top:12px;font-size:10px;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:.5px;">
-                    AI Analysis
-                  </div>
-                  <div class="per-job-agent-chips">
-                    ${matched.map(x=>`
-                      <span class="per-job-agent-chip good">
-                        <i class="fa-solid fa-check"></i>${esc(x)}
-                      </span>
-                    `).join("")}
-                    ${missing.map(x=>`
-                      <span class="per-job-agent-chip gap">
-                        <i class="fa-solid fa-minus"></i>${esc(x)}
-                      </span>
-                    `).join("")}
-                  </div>
-                ` : ""}
+              ${issueNote}
 
-                <div class="per-job-agent-actions">
-                  <button
-                    type="button"
-                    class="per-job-agent-secondary"
-                    onclick="window.closePerJobAIAgent()">
-                    Close
-                  </button>
+              <div class="per-job-agent-actions">
+                <button
+                  type="button"
+                  class="per-job-agent-secondary"
+                  onclick="window.closePerJobAIAgent()">
+                  Close
+                </button>
 
-                  <button
-                    type="button"
-                    class="per-job-agent-primary"
-                    onclick="window.closePerJobAIAgent(); window.openJobDetailsModalById('${esc(id)}')">
-                    <i class="fa-solid fa-arrow-right"></i>
-                    Review Job & Apply
-                  </button>
-                </div>
-              `;
-              resultEl.classList.add("show");
-          }
+                <button
+                  type="button"
+                  class="per-job-agent-primary"
+                  onclick="window.closePerJobAIAgent(); window.openJobDetailsModalById('${esc(id)}')">
+                  <i class="fa-solid fa-arrow-right"></i>
+                  Review Job &amp; Apply
+                </button>
+              </div>
+          `);
 
-          perJobAgentSetStep("result","done","Ready");
+          markDone("result","Ready");
           perJobAgentSetProgress(100);
           perJobAgentSetLive(
-              `<b>AI Agent:</b> Analysis complete for <b>${esc(title)}</b>. This result is based on this job's JD and your current Master Resume.`
+              `<b>AI Agent:</b> Workflow complete for <b>${esc(title)}</b>. Any failed step was skipped and the workflow moved forward.`
           );
           await paint();
 
-      }catch(error){
-          console.error("Per-job AI Agent error:",error);
+      }catch(fatalError){
+          // The workflow should be resilient even if an unexpected error
+          // occurs outside the individual step handlers.
+          console.error("Per-job AI Agent unexpected error:",fatalError);
+          issues.push("Unexpected workflow error");
 
-          // Mark only the step that actually failed.
-          // This prevents a resume row from being shown as failed when the
-          // real error occurred later in the AI request.
-          perJobAgentSetStep(
-              currentWorkflowStep,
-              "error",
-              "Failed"
-          );
+          if(score===null){
+              score=fallbackScore();
+              if(scoreEl) setJobScoreUI(scoreEl,score,"fallback");
+          }
+
+          ["resume","jd","requirements","compare","score"].forEach(step=>{
+              const row=perJobAgentModal()?.querySelector(`[data-step="${step}"]`);
+              if(row && !row.classList.contains("done") && !row.classList.contains("error")){
+                  row.classList.remove("active");
+                  row.classList.add("error");
+                  const status=row.querySelector(".per-job-agent-step-status");
+                  if(status) status.textContent="Skipped";
+              }
+          });
+
+          showWorkflowResult(`
+              <div style="color:#0f172a;font-size:13px;font-weight:800;">
+                <i class="fa-solid fa-circle-check" style="color:#16a34a;"></i>
+                Workflow continued successfully
+              </div>
+              <div class="per-job-agent-summary">
+                A workflow step encountered an unexpected problem, but the agent continued with the information that was available.
+              </div>
+              <div class="per-job-agent-actions">
+                <button type="button" class="per-job-agent-secondary" onclick="window.closePerJobAIAgent()">Close</button>
+                <button type="button" class="per-job-agent-primary" onclick="window.closePerJobAIAgent(); window.openJobDetailsModalById('${esc(id)}')">
+                  <i class="fa-solid fa-arrow-right"></i> Review Job &amp; Apply
+                </button>
+              </div>
+          `);
 
           perJobAgentSetProgress(100);
           perJobAgentSetLive(
-              `<b>AI Agent:</b> ${esc(error?.message||"The AI analysis failed. Please try again.")}`
+              `<b>AI Agent:</b> Some information was unavailable, so the affected step(s) were skipped and the workflow continued.`
           );
-
-          failResult(
-              error?.message ||
-              "The AI analysis failed. Please try again."
-          );
-
       }finally{
           perJobAgentState.running=false;
 
