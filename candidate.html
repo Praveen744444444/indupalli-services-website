@@ -3830,27 +3830,42 @@ body.dark-mode .sidebar{background:#090d16!important;}
       if(modal){ modal.classList.remove("show"); modal.setAttribute("aria-hidden","true"); }
   };
 
+  // ============================================================
+  // PER-JOB AI AGENT — REAL CLICK-TO-ANALYZE WORKFLOW
+  // ============================================================
   window.runAIAgentForJob=async function(jobId){
       if(perJobAgentState.running) return;
 
-      const id=String(jobId||"");
+      const id=String(jobId||"").trim();
       const job=window.allJobsData?.[id];
+
       if(!job){
           console.error("Per-job AI Agent: job not found",id);
           return;
       }
 
       const resumeUrl=getResumeMatchUrl();
+      const title=job.jobtitle||job.title||"Open Position";
+      const company=job.companyname||job.company||"Indupalli Services";
+
       if(!resumeUrl){
           if(window.showCustomAlert){
-              window.showCustomAlert("Upload your Master Resume first. The AI Agent uses that resume to analyze this specific job.","Resume Required","Info");
+              window.showCustomAlert(
+                  "Upload your Master Resume first. The AI Agent will use that resume to analyze this specific job.",
+                  "Resume Required",
+                  "Info"
+              );
           }
           return;
       }
 
       if(!String(job.description||"").trim()){
           if(window.showCustomAlert){
-              window.showCustomAlert("This job does not contain a usable Job Description, so the AI Agent cannot analyze it.","Job Description Required","Info");
+              window.showCustomAlert(
+                  "This job does not contain a usable Job Description, so the AI Agent cannot analyze it.",
+                  "Job Description Required",
+                  "Info"
+              );
           }
           return;
       }
@@ -3861,115 +3876,277 @@ body.dark-mode .sidebar{background:#090d16!important;}
       perJobAgentState.running=true;
       perJobAgentState.jobId=id;
       perJobAgentResetSteps();
-      const title=job.jobtitle||job.title||"Open Position";
-      const company=job.companyname||job.company||"Indupalli Services";
-      const meta=document.getElementById("perJobAIAgentMeta");
+
       const heading=document.getElementById("perJobAIAgentTitle");
+      const meta=document.getElementById("perJobAIAgentMeta");
+
       if(heading) heading.textContent=`AI Agent — ${title}`;
       if(meta) meta.textContent=`${company}${job.location?` • ${job.location}`:""}`;
+
       modal.classList.add("show");
       modal.setAttribute("aria-hidden","false");
+      document.body.style.overflow="hidden";
 
-      const card=document.querySelector(`.job-card[data-job-id="${CSS.escape(id)}"]`);
+      const card=document.querySelector(
+          `.job-card[data-job-id="${CSS.escape(id)}"]`
+      );
       const agentButton=card?.querySelector(".job-agent-btn");
       const scoreEl=card?.querySelector(".job-match-score");
       const originalButton=agentButton?.innerHTML;
+
       if(agentButton){
           agentButton.disabled=true;
-          agentButton.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Analyzing…';
+          agentButton.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Running…';
+      }
+
+      // Let the browser paint every workflow state before moving to the next one.
+      // This prevents the modal from appearing frozen on the first step.
+      async function paint(){
+          await new Promise(resolve=>requestAnimationFrame(resolve));
+          await new Promise(resolve=>requestAnimationFrame(resolve));
+      }
+
+      function failResult(message){
+          const resultEl=document.getElementById("perJobAIAgentResult");
+          if(resultEl){
+              resultEl.innerHTML=`
+                <div style="color:#b91c1c;font-size:12px;font-weight:800;">
+                  <i class="fa-solid fa-triangle-exclamation"></i>
+                  AI analysis could not be completed.
+                </div>
+                <div style="color:#64748b;font-size:11px;line-height:1.5;margin-top:6px;">
+                  ${esc(message)}
+                </div>
+                <div class="per-job-agent-actions">
+                  <button type="button" class="per-job-agent-primary"
+                    onclick="window.closePerJobAIAgent(); window.runAIAgentForJob('${esc(id)}')">
+                    Try Again
+                  </button>
+                </div>
+              `;
+              resultEl.classList.add("show");
+          }
       }
 
       try{
-          // Step 1 — resume
+          // --------------------------------------------------------
+          // STEP 1 — RESUME
+          // --------------------------------------------------------
           perJobAgentSetStep("resume","active","Reading…");
           perJobAgentSetProgress(8);
-          perJobAgentSetLive(`<b>AI Agent:</b> Opening your Master Resume and preparing it for comparison with <b>${esc(title)}</b>.`);
-          await perJobAgentDelay(700);
+          perJobAgentSetLive(
+              `<b>AI Agent:</b> Reading your latest Master Resume and preparing the resume data for analysis of <b>${esc(title)}</b>.`
+          );
+          await paint();
+
+          // The resume is passed to the secure AI scoring endpoint below.
+          // Keep this step visible long enough for the user to see it clearly.
+          await new Promise(resolve=>setTimeout(resolve,350));
           perJobAgentSetStep("resume","done","Done");
-          perJobAgentSetProgress(20);
+          perJobAgentSetProgress(18);
+          await paint();
 
-          // Step 2 — JD
+          // --------------------------------------------------------
+          // STEP 2 — JOB DESCRIPTION
+          // --------------------------------------------------------
           perJobAgentSetStep("jd","active","Reading…");
-          perJobAgentSetLive(`<b>AI Agent:</b> Reading the selected job's Job Description — responsibilities, experience, location and requirements.`);
-          await perJobAgentDelay(700);
+          perJobAgentSetProgress(28);
+          perJobAgentSetLive(
+              `<b>AI Agent:</b> Reading the complete Job Description for <b>${esc(title)}</b> — responsibilities, qualifications, experience and role details.`
+          );
+          await paint();
+          await new Promise(resolve=>setTimeout(resolve,350));
           perJobAgentSetStep("jd","done","Done");
-          perJobAgentSetProgress(35);
+          perJobAgentSetProgress(38);
+          await paint();
 
-          // Step 3 — requirements
+          // --------------------------------------------------------
+          // STEP 3 — REQUIREMENTS
+          // --------------------------------------------------------
           perJobAgentSetStep("requirements","active","Extracting…");
-          perJobAgentSetLive(`<b>AI Agent:</b> Extracting the important job requirements and keywords from this JD.`);
-          await perJobAgentDelay(800);
-          perJobAgentSetStep("requirements","done","Done");
           perJobAgentSetProgress(48);
+          perJobAgentSetLive(
+              `<b>AI Agent:</b> Extracting the important requirements from this exact JD — skills, experience, responsibilities and keywords.`
+          );
+          await paint();
+          await new Promise(resolve=>setTimeout(resolve,350));
+          perJobAgentSetStep("requirements","done","Done");
+          perJobAgentSetProgress(56);
+          await paint();
 
-          // Step 4 — actual AI comparison. scoreJobForDiscovery sends this exact JD
-          // plus the current Master Resume URL/profile to the existing AI scoring service.
-          perJobAgentSetStep("compare","active","Comparing…");
-          perJobAgentSetLive(`<b>AI Agent:</b> Comparing your resume against <b>${esc(title)}</b>. No other job is being analyzed in this workflow.`);
-          const result=await scoreJobForDiscovery(job);
+          // --------------------------------------------------------
+          // STEP 4 — REAL AI COMPARISON
+          // --------------------------------------------------------
+          perJobAgentSetStep("compare","active","Analyzing…");
+          perJobAgentSetProgress(62);
+          perJobAgentSetLive(
+              `<b>AI Agent:</b> Sending your Master Resume and this exact Job Description to the AI matching service. No other job is included.`
+          );
+          await paint();
+
+          // IMPORTANT:
+          // Run a fresh AI request for the job the user clicked.
+          // Do not use the background/cache scoring path here.
+          const payload={
+              resumeUrl: resumeUrl,
+              job: {
+                  title: title,
+                  company: company,
+                  description: String(job.description||""),
+                  experience: String(job.experience||""),
+                  location: String(job.location||""),
+                  salary: String(job.salary||"")
+              },
+              candidateProfile: getCandidateProfileForMatch()
+          };
+
+          const analysis=await invokeScoreResume(payload);
+
+          // --------------------------------------------------------
+          // STEP 5 — SCORE
+          // --------------------------------------------------------
           perJobAgentSetStep("compare","done","Done");
           perJobAgentSetProgress(72);
+          await paint();
 
-          // Step 5 — score
           perJobAgentSetStep("score","active","Calculating…");
-          perJobAgentSetLive(`<b>AI Agent:</b> Calculating the final job-specific match score and supporting match details.`);
-          await perJobAgentDelay(650);
-          if(result.status!=="ready" || !Number.isFinite(result.score)){
-              throw new Error(result.error || (result.status==="quota" ? "AI usage limit reached." : "AI analysis could not be completed."));
-          }
-          const score=Math.round(result.score);
-          perJobAgentSetStep("score","done","Done");
-          perJobAgentSetProgress(88);
+          perJobAgentSetProgress(82);
+          perJobAgentSetLive(
+              `<b>AI Agent:</b> Calculating the final match score from the AI analysis and preparing the job-specific result.`
+          );
+          await paint();
 
-          // Step 6 — result
+          const score=normalizeScoreValue(analysis?.overallScore);
+
+          if(!Number.isFinite(score)){
+              throw new Error("The AI service returned an invalid match score.");
+          }
+
+          if(scoreEl){
+              setJobScoreUI(scoreEl,score,"ai");
+          }
+
+          perJobAgentSetStep("score","done","Done");
+          perJobAgentSetProgress(90);
+          await paint();
+
+          // --------------------------------------------------------
+          // STEP 6 — RESULT / REVIEW
+          // --------------------------------------------------------
           perJobAgentSetStep("result","active","Preparing…");
-          const analysis=result.analysis||{};
-          const matched=Array.isArray(analysis.matchedSkills)?analysis.matchedSkills.filter(Boolean).slice(0,8):[];
-          const missing=Array.isArray(analysis.missingOrWeakSkills)?analysis.missingOrWeakSkills.filter(Boolean).slice(0,6):[];
-          const summary=String(analysis.summary||"The AI completed a job-specific comparison using the selected JD and your Master Resume.").trim();
-          if(scoreEl) setJobScoreUI(scoreEl,score,"ai");
+          perJobAgentSetLive(
+              `<b>AI Agent:</b> Preparing your match summary, matched skills and areas to review before applying.`
+          );
+          await paint();
+
+          const matched=Array.isArray(analysis?.matchedSkills)
+              ? analysis.matchedSkills.filter(Boolean).slice(0,8)
+              : [];
+
+          const missing=Array.isArray(analysis?.missingOrWeakSkills)
+              ? analysis.missingOrWeakSkills.filter(Boolean).slice(0,6)
+              : [];
+
+          const summary=String(
+              analysis?.summary ||
+              "The AI completed a job-specific comparison using this Job Description and your Master Resume."
+          ).trim();
+
+          const label=analysis?.label
+              ? String(analysis.label)
+              : (score>=75 ? "Strong profile alignment" : score>=50 ? "Partial profile alignment" : "Review carefully");
+
           const resultEl=document.getElementById("perJobAIAgentResult");
+
           if(resultEl){
               resultEl.innerHTML=`
                 <div class="per-job-agent-result-head">
-                  <span class="per-job-agent-score"><i class="fa-solid fa-bullseye"></i> ${score}% Match</span>
-                  <span style="font-size:10.5px;font-weight:800;color:#047857;">Analysis Complete</span>
+                  <span class="per-job-agent-score">
+                    <i class="fa-solid fa-bullseye"></i>
+                    ${Math.round(score)}% Match
+                  </span>
+                  <span style="font-size:10.5px;font-weight:800;color:#047857;">
+                    ${esc(label)}
+                  </span>
                 </div>
-                <div class="per-job-agent-summary">${esc(summary)}</div>
-                ${matched.length || missing.length ? `<div class="per-job-agent-chips">${matched.map(x=>`<span class="per-job-agent-chip good"><i class="fa-solid fa-check"></i>${esc(x)}</span>`).join("")}${missing.map(x=>`<span class="per-job-agent-chip gap"><i class="fa-solid fa-minus"></i>${esc(x)}</span>`).join("")}</div>` : ""}
+
+                <div class="per-job-agent-summary">
+                    ${esc(summary)}
+                </div>
+
+                ${matched.length || missing.length ? `
+                  <div style="margin-top:12px;font-size:10px;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:.5px;">
+                    AI Analysis
+                  </div>
+                  <div class="per-job-agent-chips">
+                    ${matched.map(x=>`
+                      <span class="per-job-agent-chip good">
+                        <i class="fa-solid fa-check"></i>${esc(x)}
+                      </span>
+                    `).join("")}
+                    ${missing.map(x=>`
+                      <span class="per-job-agent-chip gap">
+                        <i class="fa-solid fa-minus"></i>${esc(x)}
+                      </span>
+                    `).join("")}
+                  </div>
+                ` : ""}
+
                 <div class="per-job-agent-actions">
-                  <button type="button" class="per-job-agent-secondary" onclick="window.closePerJobAIAgent()">Close</button>
-                  <button type="button" class="per-job-agent-primary" onclick="window.closePerJobAIAgent(); window.openJobDetailsModalById('${esc(id)}')"><i class="fa-solid fa-arrow-right"></i> Review Job & Apply</button>
+                  <button
+                    type="button"
+                    class="per-job-agent-secondary"
+                    onclick="window.closePerJobAIAgent()">
+                    Close
+                  </button>
+
+                  <button
+                    type="button"
+                    class="per-job-agent-primary"
+                    onclick="window.closePerJobAIAgent(); window.openJobDetailsModalById('${esc(id)}')">
+                    <i class="fa-solid fa-arrow-right"></i>
+                    Review Job & Apply
+                  </button>
                 </div>
               `;
               resultEl.classList.add("show");
           }
+
           perJobAgentSetStep("result","done","Ready");
           perJobAgentSetProgress(100);
-          perJobAgentSetLive(`<b>AI Agent:</b> Analysis complete for <b>${esc(title)}</b>. The score above is based on this job JD and your current Master Resume.`);
+          perJobAgentSetLive(
+              `<b>AI Agent:</b> Analysis complete for <b>${esc(title)}</b>. This result is based on this job's JD and your current Master Resume.`
+          );
+          await paint();
 
       }catch(error){
           console.error("Per-job AI Agent error:",error);
-          ["compare","score","result"].forEach(step=>{
+
+          ["resume","jd","requirements","compare","score","result"].forEach(step=>{
               const row=perJobAgentModal()?.querySelector(`[data-step="${step}"]`);
-              if(row?.classList.contains("active")) perJobAgentSetStep(step,"error","Failed");
+              if(row?.classList.contains("active")){
+                  perJobAgentSetStep(step,"error","Failed");
+              }
           });
+
           perJobAgentSetProgress(100);
-          perJobAgentSetLive(`<b>AI Agent:</b> ${esc(error?.message||"The AI analysis failed. Please try again.")}`);
-          const resultEl=document.getElementById("perJobAIAgentResult");
-          if(resultEl){
-              resultEl.innerHTML=`
-                <div style="color:#b91c1c;font-size:12px;font-weight:800;"><i class="fa-solid fa-triangle-exclamation"></i> AI analysis could not be completed.</div>
-                <div style="color:#64748b;font-size:11px;line-height:1.5;margin-top:6px;">${esc(error?.message||"Please try again.")}</div>
-                <div class="per-job-agent-actions"><button type="button" class="per-job-agent-primary" onclick="window.closePerJobAIAgent(); window.runAIAgentForJob('${esc(id)}')">Try Again</button></div>
-              `;
-              resultEl.classList.add("show");
-          }
+          perJobAgentSetLive(
+              `<b>AI Agent:</b> ${esc(error?.message||"The AI analysis failed. Please try again.")}`
+          );
+
+          failResult(
+              error?.message ||
+              "The AI analysis failed. Please try again."
+          );
+
       }finally{
           perJobAgentState.running=false;
+
           if(agentButton){
               agentButton.disabled=false;
-              agentButton.innerHTML=originalButton || '<i class="fa-solid fa-robot"></i> Run AI Agent';
+              agentButton.innerHTML=
+                  originalButton ||
+                  '<i class="fa-solid fa-robot"></i> Run AI Agent';
           }
       }
   };
