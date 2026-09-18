@@ -895,11 +895,11 @@ body.dark-mode .sidebar{background:#090d16!important;}
 .job-discovery-header h2{font-size:20px;}
 .job-discovery-subtitle{margin:6px 0 0;color:var(--text-muted);font-size:13.5px;font-weight:500;}
 .discovery-search{margin-bottom:20px;}
-.job-list-head{display:grid;grid-template-columns:minmax(0,1fr) 190px 150px;align-items:center;gap:20px;padding:12px 18px;background:#f8fafc;border:1px solid var(--border);border-bottom:none;border-radius:12px 12px 0 0;color:var(--text-muted);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;}
+.job-list-head{display:grid;grid-template-columns:minmax(0,1fr) 190px 130px;align-items:center;gap:20px;padding:12px 18px;background:#f8fafc;border:1px solid var(--border);border-bottom:none;border-radius:12px 12px 0 0;color:var(--text-muted);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;}
 .job-list-head .match-head{text-align:center;}
 .job-list-head .action-head{text-align:center;}
 #jobsContainer.job-list-container{display:flex;flex-direction:column;gap:10px;}
-.job-list-row{display:grid!important;grid-template-columns:minmax(0,1fr) 190px 150px;grid-template-areas:"summary score action";align-items:center;gap:20px;background:#fff;border:1px solid var(--border);padding:18px 18px;border-radius:12px;box-shadow:0 2px 6px rgba(15,23,42,.03);min-height:112px;transition:.2s ease;}
+.job-list-row{display:grid!important;grid-template-columns:minmax(0,1fr) 190px 130px;grid-template-areas:"summary score action";align-items:center;gap:20px;background:#fff;border:1px solid var(--border);padding:18px 18px;border-radius:12px;box-shadow:0 2px 6px rgba(15,23,42,.03);min-height:112px;transition:.2s ease;}
 .job-list-row:hover{border-color:#bfdbfe;box-shadow:0 8px 18px rgba(15,23,42,.07);transform:translateY(-1px);}
 .job-summary-cell{grid-area:summary;min-width:0;}
 .job-list-row .job-title{font-size:17px;font-weight:800;margin-bottom:5px;color:var(--navy);}
@@ -918,7 +918,7 @@ body.dark-mode .sidebar{background:#090d16!important;}
 .job-list-loading{padding:42px;text-align:center;color:var(--text-muted);font-weight:600;}
 .job-list-loading i{font-size:22px;margin-right:8px;color:var(--primary);}
 @media(max-width:900px){
-  .job-list-head,.job-list-row{grid-template-columns:minmax(0,1fr) 150px 150px;gap:12px;}
+  .job-list-head,.job-list-row{grid-template-columns:minmax(0,1fr) 150px 110px;gap:12px;}
   .job-match-score{font-size:19px;}
 }
 @media(max-width:680px){
@@ -926,102 +926,10 @@ body.dark-mode .sidebar{background:#090d16!important;}
   .job-list-row{grid-template-columns:1fr auto;grid-template-areas:"summary score" "summary action";padding:16px;}
   .job-match-score{text-align:right;align-self:start;font-size:18px;}
   .job-action-cell{justify-content:flex-end;}
-  .job-ai-agent-btn{width:96px;padding:10px 8px;font-size:11px;}
   .job-list-row .apply-btn{width:96px;padding:10px 14px;font-size:13px;}
 }
 </style>
 
-<style id="per-job-ai-agent-style">
-/* ===== PER-JOB AI AGENT + ON-SCREEN WORKFLOW ===== */
-.job-ai-workflow{
-  display:flex;
-  align-items:center;
-  gap:7px;
-  flex-wrap:wrap;
-  margin-top:11px;
-  padding:9px 11px;
-  border:1px solid #e6edf7;
-  border-radius:10px;
-  background:#fbfdff;
-}
-.job-ai-step{
-  display:inline-flex;
-  align-items:center;
-  gap:5px;
-  font-size:10.5px;
-  font-weight:800;
-  color:#64748b;
-  white-space:nowrap;
-}
-.job-ai-step i{font-size:9px;color:#2563eb}
-.job-ai-step.current{color:#1d4ed8}
-.job-ai-arrow{font-size:9px;color:#94a3b8}
-.job-ai-agent-btn{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  gap:7px;
-  width:116px;
-  padding:11px 12px;
-  border:1px solid #c7d9fb;
-  border-radius:9px;
-  background:#eff6ff;
-  color:#1d4ed8;
-  font-size:12.5px;
-  font-weight:800;
-  cursor:pointer;
-  transition:all .18s ease;
-}
-.job-ai-agent-btn:hover{background:#dbeafe;border-color:#93c5fd;transform:translateY(-1px)}
-.job-ai-agent-btn:disabled{opacity:.65;cursor:wait;transform:none}
-.job-ai-agent-btn.running{background:#eef2ff;color:#4338ca;border-color:#c7d2fe}
-.job-ai-global-workflow{
-  margin:0 0 18px;
-  padding:13px 15px;
-  border:1px solid #dbe6f5;
-  border-radius:12px;
-  background:linear-gradient(135deg,#f8fbff 0%,#ffffff 100%);
-}
-.job-ai-global-workflow-head{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:10px;
-  flex-wrap:wrap;
-  margin-bottom:10px;
-}
-.job-ai-global-workflow-head strong{font-size:12.5px;color:#172033;font-weight:800}
-.job-ai-global-workflow-head span{font-size:10.5px;color:#64748b;font-weight:600}
-.job-ai-global-flow{
-  display:flex;
-  align-items:center;
-  gap:7px;
-  flex-wrap:wrap;
-}
-.job-ai-global-node{
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  padding:6px 9px;
-  border-radius:8px;
-  background:#fff;
-  border:1px solid #e2e8f0;
-  color:#475569;
-  font-size:10.5px;
-  font-weight:800;
-}
-.job-ai-global-node i{color:#2563eb;font-size:10px}
-.job-ai-global-arrow{color:#94a3b8;font-size:9px}
-@media(max-width:680px){
-  .job-ai-global-flow{gap:6px}
-  .job-ai-global-arrow{display:none}
-  .job-ai-global-node{font-size:10px}
-  .job-ai-workflow{gap:6px}
-  .job-ai-step{font-size:10px}
-  .job-ai-arrow{display:none}
-  .job-ai-agent-btn{width:96px;font-size:11.5px;padding:10px 8px}
-}
-</style>
 
 <style id="professional-subscription-grid">
 /* Professional subscription modal redesign */
@@ -1508,6 +1416,96 @@ body.dark-mode .sidebar{background:#090d16!important;}
   .job-jd-ai-state{white-space:normal;}
 }
 </style>
+
+<style id="per-job-ai-agent-workflow-style">
+/* ===== PER-JOB AI AGENT WORKFLOW ===== */
+#perJobAIAgentModal{
+  display:none;position:fixed;inset:0;z-index:999998;
+  background:rgba(15,23,42,.78);backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);padding:20px;
+  align-items:center;justify-content:center;
+}
+#perJobAIAgentModal.show{display:flex;}
+.per-job-agent-modal{
+  width:min(760px,100%);max-height:min(90vh,760px);overflow:auto;
+  background:#fff;border:1px solid #dbe3ef;border-radius:22px;
+  box-shadow:0 30px 80px rgba(15,23,42,.28);
+  position:relative;padding:26px;
+}
+.per-job-agent-close{
+  position:absolute;right:16px;top:16px;width:36px;height:36px;
+  border:1px solid #e2e8f0;background:#f8fafc;color:#64748b;
+  border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;
+}
+.per-job-agent-close:hover{background:#eef2f7;color:#dc2626;}
+.per-job-agent-kicker{
+  display:inline-flex;align-items:center;gap:7px;padding:5px 9px;border-radius:999px;
+  background:#eff6ff;color:#1d4ed8;font-size:10px;font-weight:900;letter-spacing:.6px;
+  text-transform:uppercase;margin-bottom:9px;
+}
+.per-job-agent-kicker .live{width:7px;height:7px;border-radius:50%;background:#10b981;box-shadow:0 0 0 4px rgba(16,185,129,.12);}
+.per-job-agent-title{font-size:22px;line-height:1.25;color:#0f172a;font-weight:800;padding-right:44px;}
+.per-job-agent-meta{margin-top:6px;color:#64748b;font-size:12.5px;}
+.per-job-agent-workflow{margin-top:22px;display:grid;gap:10px;}
+.per-job-agent-step{
+  display:grid;grid-template-columns:42px 1fr auto;align-items:center;gap:12px;
+  padding:13px 14px;border:1px solid #e5e7eb;border-radius:13px;background:#fff;
+  transition:.2s ease;
+}
+.per-job-agent-step.active{border-color:#93c5fd;background:#f8fbff;box-shadow:0 4px 14px rgba(37,99,235,.06);}
+.per-job-agent-step.done{border-color:#bbf7d0;background:#f7fff9;}
+.per-job-agent-step.error{border-color:#fecaca;background:#fff8f8;}
+.per-job-agent-step-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:#f1f5f9;color:#64748b;font-size:13px;}
+.per-job-agent-step.active .per-job-agent-step-icon{background:#dbeafe;color:#2563eb;}
+.per-job-agent-step.done .per-job-agent-step-icon{background:#dcfce7;color:#16a34a;}
+.per-job-agent-step.error .per-job-agent-step-icon{background:#fee2e2;color:#dc2626;}
+.per-job-agent-step-copy strong{display:block;color:#0f172a;font-size:12.5px;font-weight:800;}
+.per-job-agent-step-copy span{display:block;color:#64748b;font-size:10.5px;line-height:1.45;margin-top:2px;}
+.per-job-agent-step-status{font-size:10.5px;font-weight:800;color:#94a3b8;white-space:nowrap;}
+.per-job-agent-step.active .per-job-agent-step-status{color:#2563eb;}
+.per-job-agent-step.done .per-job-agent-step-status{color:#16a34a;}
+.per-job-agent-step.error .per-job-agent-step-status{color:#dc2626;}
+.per-job-agent-progress{height:7px;background:#e5edfb;border-radius:999px;overflow:hidden;margin-top:16px;}
+.per-job-agent-progress span{display:block;width:0;height:100%;background:linear-gradient(90deg,#2563eb,#60a5fa,#8b5cf6);border-radius:999px;transition:width .45s ease;}
+.per-job-agent-live{margin-top:14px;padding:12px 14px;border-radius:12px;background:#0f172a;color:#dbeafe;font-size:11.5px;line-height:1.55;}
+.per-job-agent-result{display:none;margin-top:16px;border:1px solid #dbeafe;border-radius:15px;background:#f8fbff;padding:15px;}
+.per-job-agent-result.show{display:block;}
+.per-job-agent-result-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
+.per-job-agent-score{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border-radius:999px;background:#ecfdf5;color:#047857;border:1px solid #bbf7d0;font-size:12px;font-weight:900;}
+.per-job-agent-summary{margin-top:10px;color:#475569;font-size:11.5px;line-height:1.6;}
+.per-job-agent-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;}
+.per-job-agent-chip{display:inline-flex;align-items:center;gap:4px;padding:5px 8px;border-radius:999px;background:#fff;border:1px solid #dbe4ef;color:#40536b;font-size:9.5px;font-weight:700;}
+.per-job-agent-chip.good{background:#f0fdf4;border-color:#bbf7d0;color:#166534;}
+.per-job-agent-chip.gap{background:#fff7ed;border-color:#fed7aa;color:#c2410c;}
+.per-job-agent-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:14px;flex-wrap:wrap;}
+.per-job-agent-actions button{border:0;border-radius:9px;padding:9px 13px;font-size:11px;font-weight:800;cursor:pointer;}
+.per-job-agent-primary{background:#2563eb;color:#fff;}
+.per-job-agent-secondary{background:#eef2f7;color:#334155;}
+.per-job-agent-primary:hover{background:#1d4ed8;}
+@media(max-width:680px){
+  #perJobAIAgentModal{padding:10px;}
+  .per-job-agent-modal{padding:20px;border-radius:18px;}
+  .per-job-agent-title{font-size:19px;}
+  .per-job-agent-step{grid-template-columns:36px 1fr;align-items:start;}
+  .per-job-agent-step-status{grid-column:2;}
+  .per-job-agent-actions button{width:100%;}
+}
+</style>
+
+
+<style id="per-job-ai-agent-button-style">
+.job-action-cell{flex-direction:column;align-items:stretch;gap:8px;}
+.job-agent-btn{
+  width:116px;padding:10px 10px;border-radius:9px;font-size:11.5px;font-weight:800;
+  border:1px solid #bfdbfe;background:#eff6ff;color:#1d4ed8;cursor:pointer;
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  transition:.2s ease;
+}
+.job-agent-btn:hover{background:#dbeafe;border-color:#93c5fd;transform:translateY(-1px);}
+.job-agent-btn:disabled{opacity:.65;cursor:wait;transform:none;}
+@media(max-width:680px){.job-action-cell{align-items:stretch;}.job-agent-btn,.job-list-row .apply-btn{width:100%;}}
+</style>
+
 </head>
 <body>
 
@@ -2153,27 +2151,6 @@ body.dark-mode .sidebar{background:#090d16!important;}
             <option value="Remote">Remote</option>
         </select>
     </div>
-
-    <div class="job-ai-global-workflow">
-        <div class="job-ai-global-workflow-head">
-            <strong><i class="fa-solid fa-robot" style="color:#2563eb;margin-right:6px;"></i> AI Agent Workflow</strong>
-            <span>Run it on any individual job, or use the main AI Agent above for a full job scan.</span>
-        </div>
-        <div class="job-ai-global-flow">
-            <span class="job-ai-global-node"><i class="fa-solid fa-file-lines"></i> Read Resume</span>
-            <i class="fa-solid fa-chevron-right job-ai-global-arrow"></i>
-            <span class="job-ai-global-node"><i class="fa-solid fa-briefcase"></i> Read Job</span>
-            <i class="fa-solid fa-chevron-right job-ai-global-arrow"></i>
-            <span class="job-ai-global-node"><i class="fa-solid fa-magnifying-glass-chart"></i> Compare</span>
-            <i class="fa-solid fa-chevron-right job-ai-global-arrow"></i>
-            <span class="job-ai-global-node"><i class="fa-solid fa-bullseye"></i> Match Score</span>
-            <i class="fa-solid fa-chevron-right job-ai-global-arrow"></i>
-            <span class="job-ai-global-node"><i class="fa-solid fa-comment-dots"></i> Explain Match</span>
-            <i class="fa-solid fa-chevron-right job-ai-global-arrow"></i>
-            <span class="job-ai-global-node"><i class="fa-solid fa-paper-plane"></i> Review &amp; Apply</span>
-        </div>
-    </div>
-
     <div class="job-list-head">
         <div>Position</div>
         <div class="match-head">Resume AI Matching Score</div>
@@ -3616,108 +3593,6 @@ body.dark-mode .sidebar{background:#090d16!important;}
       if(resultEl){ resultEl.classList.add("show"); resultEl.innerHTML='<div class="job-jd-ai-error">AI analysis failed. Use Try Again on the match score.</div>'; }
   }
 
-  // ==========================================================
-  // RUN AI AGENT FOR ONE SPECIFIC JOB
-  // ==========================================================
-  window.runSingleJobAIAgent = async function(jobId, button) {
-      const id = String(jobId || "").trim();
-      const job = window.allJobsData?.[id];
-
-      if (!job) {
-          console.error("AI Agent: job not found", id);
-          return;
-      }
-
-      if (typeof getResumeMatchUrl !== "function" || !getResumeMatchUrl()) {
-          if (typeof setAiJdScanState === "function") {
-              setAiJdScanState(
-                  job,
-                  "Resume needed",
-                  "Upload your Master Resume first so the AI Agent can compare this job."
-              );
-          }
-          const resultEl = getAiJdScanCard(job)?.querySelector("[data-ai-result]");
-          if (resultEl) {
-              resultEl.classList.add("show");
-              resultEl.innerHTML = '<div class="job-jd-ai-error">Upload your Master Resume, then run the AI Agent again.</div>';
-          }
-          return;
-      }
-
-      if (!String(job.description || "").trim()) {
-          if (typeof setAiJdScanState === "function") {
-              setAiJdScanState(
-                  job,
-                  "JD unavailable",
-                  "This job does not contain enough description text for the AI Agent."
-              );
-          }
-          return;
-      }
-
-      const originalHtml = button?.innerHTML || "";
-      if (button) {
-          button.disabled = true;
-          button.classList.add("running");
-          button.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Scanning...';
-      }
-
-      try {
-          const card = document.querySelector(
-              `.job-card[data-job-id="${CSS.escape(id)}"]`
-          );
-          const scoreEl = card?.querySelector(".job-match-score");
-
-          if (scoreEl) {
-              setJobScoreState(
-                  scoreEl,
-                  "AI Scanning...",
-                  "The AI Agent is reading this job and comparing it with your Master Resume."
-              );
-          }
-
-          setAiJdScanState(
-              job,
-              "AI Agent is working…",
-              "Reading the JD → comparing your resume → calculating the match → preparing next steps."
-          );
-
-          const result = await updateSingleJobDiscoveryScore(job);
-
-          const feed = document.getElementById("agentFeed");
-          if (feed) {
-              const score = Number.isFinite(result?.score) ? `${Math.round(result.score)}%` : "updated";
-              feed.innerHTML = `
-                  <div class="agent-feed-title"><i class="fa-solid fa-robot"></i> Agent Activity</div>
-                  <div class="agent-message">
-                      <b>AI Agent:</b> Finished analyzing <b>${esc(job.jobtitle || job.title || "this job")}</b>. Match result: <b>${score}</b>. Review the analysis shown on this job before applying.
-                  </div>
-              `;
-          }
-
-          const scan = getAiJdScanCard(job);
-          if (scan) {
-              scan.scrollIntoView({ behavior: "smooth", block: "nearest" });
-          }
-
-          return result;
-      } catch (error) {
-          console.error("Single-job AI Agent failed:", error);
-          const scan = getAiJdScanCard(job);
-          const resultEl = scan?.querySelector("[data-ai-result]");
-          if (resultEl) {
-              resultEl.classList.add("show");
-              resultEl.innerHTML = `<div class="job-jd-ai-error">${esc(error?.message || "AI Agent could not complete this job analysis. Please try again.")}</div>`;
-          }
-      } finally {
-          if (button) {
-              button.disabled = false;
-              button.classList.remove("running");
-              button.innerHTML = originalHtml || '<i class="fa-solid fa-robot"></i> Run AI Agent';
-          }
-      }
-  };
-
   async function updateSingleJobDiscoveryScore(job) {
       const card = document.querySelector(
           `.job-card[data-job-id="${CSS.escape(String(job.id))}"]`
@@ -3906,6 +3781,199 @@ body.dark-mode .sidebar{background:#090d16!important;}
       });
   }
 
+  // ============================================================
+  // PER-JOB AI AGENT — RUN ONLY FOR THE JOB THE USER SELECTS
+  // ============================================================
+  const perJobAgentState = {
+      running: false,
+      jobId: null
+  };
+
+  function perJobAgentModal(){
+      return document.getElementById("perJobAIAgentModal");
+  }
+
+  function perJobAgentSetStep(step, state, status){
+      const row = perJobAgentModal()?.querySelector(`[data-step="${step}"]`);
+      if(!row) return;
+      row.classList.remove("active","done","error");
+      if(state) row.classList.add(state);
+      const statusEl = row.querySelector(".per-job-agent-step-status");
+      if(statusEl) statusEl.textContent = status;
+  }
+
+  function perJobAgentSetProgress(percent){
+      const bar = document.querySelector("#perJobAIAgentProgress span");
+      if(bar) bar.style.width = `${Math.max(0,Math.min(100,percent))}%`;
+  }
+
+  function perJobAgentSetLive(text){
+      const el=document.getElementById("perJobAIAgentLive");
+      if(el) el.innerHTML=text;
+  }
+
+  function perJobAgentResetSteps(){
+      ["resume","jd","requirements","compare","score","result"].forEach(step=>perJobAgentSetStep(step,"","Waiting"));
+      perJobAgentSetProgress(0);
+      perJobAgentSetLive("Starting secure AI workflow…");
+      const result=document.getElementById("perJobAIAgentResult");
+      if(result){ result.classList.remove("show"); result.innerHTML=""; }
+  }
+
+  function perJobAgentDelay(ms){
+      return new Promise(resolve=>setTimeout(resolve,ms));
+  }
+
+  window.closePerJobAIAgent=function(){
+      if(perJobAgentState.running) return;
+      const modal=perJobAgentModal();
+      if(modal){ modal.classList.remove("show"); modal.setAttribute("aria-hidden","true"); }
+  };
+
+  window.runAIAgentForJob=async function(jobId){
+      if(perJobAgentState.running) return;
+
+      const id=String(jobId||"");
+      const job=window.allJobsData?.[id];
+      if(!job){
+          console.error("Per-job AI Agent: job not found",id);
+          return;
+      }
+
+      const resumeUrl=getResumeMatchUrl();
+      if(!resumeUrl){
+          if(window.showCustomAlert){
+              window.showCustomAlert("Upload your Master Resume first. The AI Agent uses that resume to analyze this specific job.","Resume Required","Info");
+          }
+          return;
+      }
+
+      if(!String(job.description||"").trim()){
+          if(window.showCustomAlert){
+              window.showCustomAlert("This job does not contain a usable Job Description, so the AI Agent cannot analyze it.","Job Description Required","Info");
+          }
+          return;
+      }
+
+      const modal=perJobAgentModal();
+      if(!modal) return;
+
+      perJobAgentState.running=true;
+      perJobAgentState.jobId=id;
+      perJobAgentResetSteps();
+      const title=job.jobtitle||job.title||"Open Position";
+      const company=job.companyname||job.company||"Indupalli Services";
+      const meta=document.getElementById("perJobAIAgentMeta");
+      const heading=document.getElementById("perJobAIAgentTitle");
+      if(heading) heading.textContent=`AI Agent — ${title}`;
+      if(meta) meta.textContent=`${company}${job.location?` • ${job.location}`:""}`;
+      modal.classList.add("show");
+      modal.setAttribute("aria-hidden","false");
+
+      const card=document.querySelector(`.job-card[data-job-id="${CSS.escape(id)}"]`);
+      const agentButton=card?.querySelector(".job-agent-btn");
+      const scoreEl=card?.querySelector(".job-match-score");
+      const originalButton=agentButton?.innerHTML;
+      if(agentButton){
+          agentButton.disabled=true;
+          agentButton.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i> Analyzing…';
+      }
+
+      try{
+          // Step 1 — resume
+          perJobAgentSetStep("resume","active","Reading…");
+          perJobAgentSetProgress(8);
+          perJobAgentSetLive(`<b>AI Agent:</b> Opening your Master Resume and preparing it for comparison with <b>${esc(title)}</b>.`);
+          await perJobAgentDelay(700);
+          perJobAgentSetStep("resume","done","Done");
+          perJobAgentSetProgress(20);
+
+          // Step 2 — JD
+          perJobAgentSetStep("jd","active","Reading…");
+          perJobAgentSetLive(`<b>AI Agent:</b> Reading the selected job's Job Description — responsibilities, experience, location and requirements.`);
+          await perJobAgentDelay(700);
+          perJobAgentSetStep("jd","done","Done");
+          perJobAgentSetProgress(35);
+
+          // Step 3 — requirements
+          perJobAgentSetStep("requirements","active","Extracting…");
+          perJobAgentSetLive(`<b>AI Agent:</b> Extracting the important job requirements and keywords from this JD.`);
+          await perJobAgentDelay(800);
+          perJobAgentSetStep("requirements","done","Done");
+          perJobAgentSetProgress(48);
+
+          // Step 4 — actual AI comparison. scoreJobForDiscovery sends this exact JD
+          // plus the current Master Resume URL/profile to the existing AI scoring service.
+          perJobAgentSetStep("compare","active","Comparing…");
+          perJobAgentSetLive(`<b>AI Agent:</b> Comparing your resume against <b>${esc(title)}</b>. No other job is being analyzed in this workflow.`);
+          const result=await scoreJobForDiscovery(job);
+          perJobAgentSetStep("compare","done","Done");
+          perJobAgentSetProgress(72);
+
+          // Step 5 — score
+          perJobAgentSetStep("score","active","Calculating…");
+          perJobAgentSetLive(`<b>AI Agent:</b> Calculating the final job-specific match score and supporting match details.`);
+          await perJobAgentDelay(650);
+          if(result.status!=="ready" || !Number.isFinite(result.score)){
+              throw new Error(result.error || (result.status==="quota" ? "AI usage limit reached." : "AI analysis could not be completed."));
+          }
+          const score=Math.round(result.score);
+          perJobAgentSetStep("score","done","Done");
+          perJobAgentSetProgress(88);
+
+          // Step 6 — result
+          perJobAgentSetStep("result","active","Preparing…");
+          const analysis=result.analysis||{};
+          const matched=Array.isArray(analysis.matchedSkills)?analysis.matchedSkills.filter(Boolean).slice(0,8):[];
+          const missing=Array.isArray(analysis.missingOrWeakSkills)?analysis.missingOrWeakSkills.filter(Boolean).slice(0,6):[];
+          const summary=String(analysis.summary||"The AI completed a job-specific comparison using the selected JD and your Master Resume.").trim();
+          if(scoreEl) setJobScoreUI(scoreEl,score,"ai");
+          const resultEl=document.getElementById("perJobAIAgentResult");
+          if(resultEl){
+              resultEl.innerHTML=`
+                <div class="per-job-agent-result-head">
+                  <span class="per-job-agent-score"><i class="fa-solid fa-bullseye"></i> ${score}% Match</span>
+                  <span style="font-size:10.5px;font-weight:800;color:#047857;">Analysis Complete</span>
+                </div>
+                <div class="per-job-agent-summary">${esc(summary)}</div>
+                ${matched.length || missing.length ? `<div class="per-job-agent-chips">${matched.map(x=>`<span class="per-job-agent-chip good"><i class="fa-solid fa-check"></i>${esc(x)}</span>`).join("")}${missing.map(x=>`<span class="per-job-agent-chip gap"><i class="fa-solid fa-minus"></i>${esc(x)}</span>`).join("")}</div>` : ""}
+                <div class="per-job-agent-actions">
+                  <button type="button" class="per-job-agent-secondary" onclick="window.closePerJobAIAgent()">Close</button>
+                  <button type="button" class="per-job-agent-primary" onclick="window.closePerJobAIAgent(); window.openJobDetailsModalById('${esc(id)}')"><i class="fa-solid fa-arrow-right"></i> Review Job & Apply</button>
+                </div>
+              `;
+              resultEl.classList.add("show");
+          }
+          perJobAgentSetStep("result","done","Ready");
+          perJobAgentSetProgress(100);
+          perJobAgentSetLive(`<b>AI Agent:</b> Analysis complete for <b>${esc(title)}</b>. The score above is based on this job JD and your current Master Resume.`);
+
+      }catch(error){
+          console.error("Per-job AI Agent error:",error);
+          ["compare","score","result"].forEach(step=>{
+              const row=perJobAgentModal()?.querySelector(`[data-step="${step}"]`);
+              if(row?.classList.contains("active")) perJobAgentSetStep(step,"error","Failed");
+          });
+          perJobAgentSetProgress(100);
+          perJobAgentSetLive(`<b>AI Agent:</b> ${esc(error?.message||"The AI analysis failed. Please try again.")}`);
+          const resultEl=document.getElementById("perJobAIAgentResult");
+          if(resultEl){
+              resultEl.innerHTML=`
+                <div style="color:#b91c1c;font-size:12px;font-weight:800;"><i class="fa-solid fa-triangle-exclamation"></i> AI analysis could not be completed.</div>
+                <div style="color:#64748b;font-size:11px;line-height:1.5;margin-top:6px;">${esc(error?.message||"Please try again.")}</div>
+                <div class="per-job-agent-actions"><button type="button" class="per-job-agent-primary" onclick="window.closePerJobAIAgent(); window.runAIAgentForJob('${esc(id)}')">Try Again</button></div>
+              `;
+              resultEl.classList.add("show");
+          }
+      }finally{
+          perJobAgentState.running=false;
+          if(agentButton){
+              agentButton.disabled=false;
+              agentButton.innerHTML=originalButton || '<i class="fa-solid fa-robot"></i> Run AI Agent';
+          }
+      }
+  };
+
   window.loadJobsList = async function() {
       const container = document.getElementById("jobsContainer");
       if (!container) return;
@@ -3943,7 +4011,7 @@ body.dark-mode .sidebar{background:#090d16!important;}
               const experience = job.experience || "Entry Level";
               const cachedScore = getSavedJobScore(job);
 
-              let initialScoreHtml = "Analyzing...";
+              let initialScoreHtml = "Run Agent";
 
               if (Number.isFinite(cachedScore)) {
                   initialScoreHtml = `${cachedScore}% Match`;
@@ -3981,12 +4049,10 @@ body.dark-mode .sidebar{background:#090d16!important;}
                       </div>
                       <div class="job-match-score ${Number.isFinite(cachedScore) ? (cachedScore >= 75 ? "strong" : "") : "pending"}">${initialScoreHtml}</div>
                       <div class="job-action-cell">
-                          <div style="display:flex;flex-direction:column;align-items:center;gap:8px;width:116px;">
-                              <button type="button" class="job-ai-agent-btn" data-job-agent-btn="${jobId}" onclick="window.runSingleJobAIAgent('${jobId}', this)">
-                                  <i class="fa-solid fa-robot"></i> Run AI Agent
-                              </button>
-                              <button class="apply-btn" onclick="window.openJobDetailsModalById('${jobId}')">Apply</button>
-                          </div>
+                          <button type="button" class="job-agent-btn" onclick="window.runAIAgentForJob && window.runAIAgentForJob('${jobId}')">
+                              <i class="fa-solid fa-robot"></i> Run AI Agent
+                          </button>
+                          <button class="apply-btn" onclick="window.openJobDetailsModalById('${jobId}')">Apply</button>
                       </div>
                   </div>
               `;
@@ -4000,11 +4066,9 @@ body.dark-mode .sidebar{background:#090d16!important;}
               window.updateAppliedJobButtons();
           }
 
-          // Start AI scoring in the background.
-          // IMPORTANT: no await here, so Job Discovery does not wait for Gemini.
-          updateJobDiscoveryScores(activeJobs).catch(error => {
-              console.error("Background job scoring failed:", error);
-          });
+          // AI Agent is intentionally user-triggered per job.
+          // No automatic Gemini scan runs across all jobs on page load. Each job waits for the user to click Run AI Agent.
+          console.log("✅ Job Discovery ready — click Run AI Agent on any job to start its workflow.");
       } catch (err) {
           console.error("Error loading jobs list:", err);
           container.innerHTML = `<div style="grid-column:1/-1; text-align:center; color:var(--text-muted); font-weight:600; padding:40px;">No active job openings available at the moment.</div>`;
@@ -5596,6 +5660,95 @@ document.addEventListener('DOMContentLoaded',syncVideoSummary);
     document.body.style.overflow='';
   }
   document.addEventListener('keydown',function(e){if(e.key==='Escape') closeAIAgentSubmissionSuccess();});
+</script>
+
+
+<!-- PER-JOB AI AGENT WORKFLOW MODAL -->
+<div id="perJobAIAgentModal" aria-hidden="true">
+  <div class="per-job-agent-modal" role="dialog" aria-modal="true" aria-labelledby="perJobAIAgentTitle">
+    <button type="button" class="per-job-agent-close" onclick="window.closePerJobAIAgent()" aria-label="Close">
+      <i class="fa-solid fa-xmark"></i>
+    </button>
+
+    <div class="per-job-agent-kicker"><span class="live"></span> AI AGENT • JOB ANALYSIS</div>
+    <h2 id="perJobAIAgentTitle" class="per-job-agent-title">Analyzing this job</h2>
+    <div id="perJobAIAgentMeta" class="per-job-agent-meta"></div>
+
+    <div id="perJobAIAgentProgress" class="per-job-agent-progress"><span></span></div>
+    <div id="perJobAIAgentLive" class="per-job-agent-live">Starting secure AI workflow…</div>
+
+    <div id="perJobAIAgentWorkflow" class="per-job-agent-workflow">
+      <div class="per-job-agent-step" data-step="resume">
+        <div class="per-job-agent-step-icon"><i class="fa-solid fa-file-lines"></i></div>
+        <div class="per-job-agent-step-copy">
+          <strong>Read your Master Resume</strong>
+          <span>Use the latest uploaded resume attached to your candidate profile.</span>
+        </div>
+        <div class="per-job-agent-step-status">Waiting</div>
+      </div>
+
+      <div class="per-job-agent-step" data-step="jd">
+        <div class="per-job-agent-step-icon"><i class="fa-solid fa-file-signature"></i></div>
+        <div class="per-job-agent-step-copy">
+          <strong>Read this Job Description</strong>
+          <span>Read the selected job's responsibilities, requirements and experience criteria.</span>
+        </div>
+        <div class="per-job-agent-step-status">Waiting</div>
+      </div>
+
+      <div class="per-job-agent-step" data-step="requirements">
+        <div class="per-job-agent-step-icon"><i class="fa-solid fa-list-check"></i></div>
+        <div class="per-job-agent-step-copy">
+          <strong>Extract job requirements</strong>
+          <span>Identify the important skills, experience and role-specific keywords.</span>
+        </div>
+        <div class="per-job-agent-step-status">Waiting</div>
+      </div>
+
+      <div class="per-job-agent-step" data-step="compare">
+        <div class="per-job-agent-step-icon"><i class="fa-solid fa-code-compare"></i></div>
+        <div class="per-job-agent-step-copy">
+          <strong>Compare resume with the JD</strong>
+          <span>Match your profile and resume evidence against the selected job.</span>
+        </div>
+        <div class="per-job-agent-step-status">Waiting</div>
+      </div>
+
+      <div class="per-job-agent-step" data-step="score">
+        <div class="per-job-agent-step-icon"><i class="fa-solid fa-chart-simple"></i></div>
+        <div class="per-job-agent-step-copy">
+          <strong>Calculate AI match score</strong>
+          <span>Generate a job-specific match score and supporting analysis.</span>
+        </div>
+        <div class="per-job-agent-step-status">Waiting</div>
+      </div>
+
+      <div class="per-job-agent-step" data-step="result">
+        <div class="per-job-agent-step-icon"><i class="fa-solid fa-circle-check"></i></div>
+        <div class="per-job-agent-step-copy">
+          <strong>Prepare application decision</strong>
+          <span>Show the analysis so you can review the job before applying.</span>
+        </div>
+        <div class="per-job-agent-step-status">Waiting</div>
+      </div>
+    </div>
+
+    <div id="perJobAIAgentResult" class="per-job-agent-result"></div>
+  </div>
+</div>
+
+
+<script>
+document.addEventListener('click', function(e){
+  const modal=document.getElementById('perJobAIAgentModal');
+  if(!modal || !modal.classList.contains('show')) return;
+  if(e.target===modal && !window.__perJobAgentRunningGuard){
+    if(window.closePerJobAIAgent) window.closePerJobAIAgent();
+  }
+});
+window.addEventListener('keydown', function(e){
+  if(e.key==='Escape' && window.closePerJobAIAgent && !window.__perJobAgentRunningGuard) window.closePerJobAIAgent();
+});
 </script>
 
 </body>
