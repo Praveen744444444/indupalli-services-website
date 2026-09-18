@@ -1196,8 +1196,12 @@
     </div>
 
     <!-- SCRIPTS -->
-    <script type="module" src="chat.js"></script>
-    <script type="module" src="dashboard.js"></script>
+    <script type="module" src="chat.js?v=20260918-01"></script>
+    <script type="module" src="dashboard.js?v=20260918-01"></script>
+    <script>
+        // ATS module diagnostics: confirms the browser is using the current module files.
+        console.log("✅ ATS chat/dashboard modules requested: chat.js?v=20260918-01, dashboard.js?v=20260918-01");
+    </script>
     <script>
         window.formatSalaryField = function(input) {
             let val = input.value.trim().replace(/,/g, '');
