@@ -1470,6 +1470,16 @@ body.dark-mode .sidebar{background:#090d16!important;}
 .per-job-agent-live{margin-top:14px;padding:12px 14px;border-radius:12px;background:#0f172a;color:#dbeafe;font-size:11.5px;line-height:1.55;}
 .per-job-agent-result{display:none;margin-top:16px;border:1px solid #dbeafe;border-radius:15px;background:#f8fbff;padding:15px;}
 .per-job-agent-result.show{display:block;}
+/* Resume-required state inside the per-job AI workflow */
+.per-job-agent-resume-required{display:flex;align-items:flex-start;gap:12px;padding:14px;border:1px solid #bfdbfe;background:#eff6ff;border-radius:13px;}
+.per-job-agent-resume-icon{width:40px;height:40px;flex:0 0 40px;border-radius:11px;background:#dbeafe;color:#2563eb;display:flex;align-items:center;justify-content:center;font-size:17px;}
+.per-job-agent-resume-copy{min-width:0;}
+.per-job-agent-resume-copy strong{display:block;color:#0f172a;font-size:12.5px;font-weight:800;}
+.per-job-agent-resume-copy span{display:block;margin-top:4px;color:#64748b;font-size:11px;line-height:1.55;}
+.per-job-agent-resume-action{margin-top:12px;display:flex;justify-content:flex-end;}
+.per-job-agent-upload-btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;}
+@media(max-width:600px){.per-job-agent-resume-action{display:block}.per-job-agent-upload-btn{width:100%;}}
+
 .per-job-agent-result-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
 .per-job-agent-score{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border-radius:999px;background:#ecfdf5;color:#047857;border:1px solid #bbf7d0;font-size:12px;font-weight:900;}
 .per-job-agent-summary{margin-top:10px;color:#475569;font-size:11.5px;line-height:1.6;}
@@ -3012,6 +3022,29 @@ body.dark-mode .sidebar{background:#090d16!important;}
       }
   };
 
+  // Automatically resume a paused per-job AI workflow after a successful
+  // Master Resume upload. The currently selected job ID is preserved.
+  const __originalHandleResumeUpload = window.handleResumeUpload;
+  window.handleResumeUpload = async function(event) {
+      const wasWaiting = !!perJobAgentState.waitingForResume;
+      const jobId = perJobAgentState.jobId;
+
+      const result = await __originalHandleResumeUpload(event);
+
+      if (
+          wasWaiting &&
+          jobId &&
+          String(window.candidateMasterResumeUrl || '').trim()
+      ) {
+          perJobAgentState.waitingForResume=false;
+          setTimeout(() => {
+              window.runAIAgentForJob(jobId);
+          }, 200);
+      }
+
+      return result;
+  };
+
   window.saveSubscriptionTransaction = async function(paymentId, planName, amount) {
       const email = localStorage.getItem("candidateLoggedInEmail") || "";
       try {
@@ -3786,6 +3819,7 @@ body.dark-mode .sidebar{background:#090d16!important;}
   // ============================================================
   const perJobAgentState = {
       running: false,
+      waitingForResume: false,
       jobId: null
   };
 
@@ -3827,7 +3861,12 @@ body.dark-mode .sidebar{background:#090d16!important;}
   window.closePerJobAIAgent=function(){
       if(perJobAgentState.running) return;
       const modal=perJobAgentModal();
+      if(perJobAgentState.waitingForResume){
+          perJobAgentState.waitingForResume=false;
+          perJobAgentState.jobId=null;
+      }
       if(modal){ modal.classList.remove("show"); modal.setAttribute("aria-hidden","true"); }
+      document.body.style.overflow="";
   };
 
   // ============================================================
@@ -3889,38 +3928,16 @@ body.dark-mode .sidebar{background:#090d16!important;}
 
       const title=job.jobtitle||job.title||"Open Position";
       const company=job.companyname||job.company||"Indupalli Services";
-
-      // Resolve the Master Resume immediately from memory or Supabase.
-      // Do this before opening the workflow so Step 1 is real, not just UI text.
-      const resumeUrl=await ensureMasterResumeUrl();
-
-      if(!resumeUrl){
-          if(window.showCustomAlert){
-              window.showCustomAlert(
-                  "No Master Resume was found on your candidate profile. Upload your Master Resume and try again.",
-                  "Resume Required",
-                  "Warning"
-              );
-          }
-          return;
-      }
-
-      if(!String(job.description||"").trim()){
-          if(window.showCustomAlert){
-              window.showCustomAlert(
-                  "This job does not contain a usable Job Description, so the AI Agent cannot analyze it.",
-                  "Job Description Required",
-                  "Info"
-              );
-          }
-          return;
-      }
-
       const modal=perJobAgentModal();
       if(!modal) return;
 
-      perJobAgentState.running=true;
+      // Resolve the latest Master Resume first. If it is missing, keep the
+      // workflow open and provide an Upload Resume action. Once the upload
+      // succeeds, the same job analysis starts automatically.
+      const resumeUrl=await ensureMasterResumeUrl();
+
       perJobAgentState.jobId=id;
+      perJobAgentState.waitingForResume=false;
       perJobAgentResetSteps();
 
       const heading=document.getElementById("perJobAIAgentTitle");
@@ -3932,6 +3949,57 @@ body.dark-mode .sidebar{background:#090d16!important;}
       modal.classList.add("show");
       modal.setAttribute("aria-hidden","false");
       document.body.style.overflow="hidden";
+
+      if(!resumeUrl){
+          perJobAgentState.running=false;
+          perJobAgentState.waitingForResume=true;
+
+          perJobAgentSetStep("resume","active","Upload required");
+          perJobAgentSetProgress(5);
+          perJobAgentSetLive(
+              `<b>AI Agent:</b> Your Master Resume is not available. Upload it below and I will automatically start analyzing <b>${esc(title)}</b>.`
+          );
+
+          const resultEl=document.getElementById("perJobAIAgentResult");
+          if(resultEl){
+              resultEl.innerHTML=`
+                <div class="per-job-agent-resume-required">
+                  <div class="per-job-agent-resume-icon">
+                    <i class="fa-solid fa-file-arrow-up"></i>
+                  </div>
+                  <div class="per-job-agent-resume-copy">
+                    <strong>Resume Required to Start AI</strong>
+                    <span>No Master Resume was found on your profile. Upload your resume once and the AI Agent will automatically continue this job analysis.</span>
+                  </div>
+                </div>
+                <div class="per-job-agent-resume-action">
+                  <button
+                    type="button"
+                    class="per-job-agent-primary per-job-agent-upload-btn"
+                    onclick="document.getElementById('resumeInput')?.click()">
+                    <i class="fa-solid fa-cloud-arrow-up"></i> Upload Resume &amp; Start AI
+                  </button>
+                </div>
+              `;
+              resultEl.classList.add("show");
+          }
+          return;
+      }
+
+      if(!String(job.description||"").trim()){
+          perJobAgentState.running=false;
+          if(window.showCustomAlert){
+              window.showCustomAlert(
+                  "This job does not contain a usable Job Description, so the AI Agent cannot analyze it.",
+                  "Job Description Required",
+                  "Info"
+              );
+          }
+          return;
+      }
+
+      perJobAgentState.running=true;
+      perJobAgentState.waitingForResume=false;
 
       const card=document.querySelector(
           `.job-card[data-job-id="${CSS.escape(id)}"]`
