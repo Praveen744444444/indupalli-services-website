@@ -1501,6 +1501,75 @@ body.dark-mode .sidebar{background:#090d16!important;}
   .per-job-agent-actions button{width:100%;}
 }
 </style>
+<style id="ai-mission-review-submit-style">
+
+/* ===== AI MISSION — REVIEW & SUBMIT FINISH STATE ===== */
+.mission-finish-card{
+  margin-top:14px;
+  border:1px solid #cfe0ff;
+  border-radius:20px;
+  background:linear-gradient(135deg,#eef5ff 0%,#ffffff 58%,#f7f4ff 100%);
+  overflow:hidden;
+  box-shadow:0 14px 34px rgba(37,99,235,.08);
+  position:relative;
+}
+.mission-finish-card:before{
+  content:"";position:absolute;left:0;right:0;top:0;height:4px;
+  background:linear-gradient(90deg,#2563eb,#60a5fa,#8b5cf6);
+}
+.mission-finish-top{
+  display:flex;align-items:flex-start;gap:13px;padding:18px 18px 14px;
+}
+.mission-finish-icon{
+  width:44px;height:44px;flex:0 0 44px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#dbeafe,#ede9fe);
+  color:#2563eb;font-size:18px;
+  box-shadow:0 8px 18px rgba(37,99,235,.12);
+}
+.mission-finish-copy{min-width:0;}
+.mission-finish-copy h3{margin:0;color:#0f172a;font-size:15px;font-weight:900;letter-spacing:-.15px;}
+.mission-finish-copy p{margin:5px 0 0;color:#5d6b80;font-size:11px;line-height:1.6;}
+.mission-review-note{
+  margin:0 18px 14px;padding:11px 12px;border-radius:12px;
+  background:rgba(255,255,255,.78);border:1px solid #dce7f6;
+  color:#45566f;font-size:10.5px;line-height:1.55;
+}
+.mission-review-note strong{color:#0f172a;}
+.mission-check-grid{
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;
+  padding:0 18px 15px;
+}
+.mission-check-item{
+  display:flex;align-items:center;gap:7px;padding:9px 10px;border-radius:11px;
+  background:#fff;border:1px solid #e1e8f3;color:#5d6b80;font-size:9.5px;font-weight:800;
+}
+.mission-check-item i{color:#16a34a;font-size:10px;}
+.mission-action-bar{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:13px 18px 16px;border-top:1px solid #dfe9f5;background:rgba(255,255,255,.72);
+}
+.mission-action-hint{display:flex;align-items:center;gap:7px;color:#7b8aa0;font-size:9.5px;font-weight:700;}
+.mission-action-hint i{color:#2563eb;}
+.mission-review-submit-btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  border:0;border-radius:11px;padding:11px 16px;cursor:pointer;
+  background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;
+  font-size:11px;font-weight:900;box-shadow:0 8px 18px rgba(37,99,235,.22);
+  transition:.2s ease;white-space:nowrap;
+}
+.mission-review-submit-btn:hover{transform:translateY(-1px);box-shadow:0 11px 22px rgba(37,99,235,.28);}
+.mission-review-submit-btn i{font-size:10px;}
+.mission-submit-subtext{display:block;font-size:9px;font-weight:700;opacity:.82;margin-top:2px;}
+@media(max-width:680px){
+  .mission-finish-top{padding:16px 15px 12px;}
+  .mission-review-note{margin:0 15px 12px;}
+  .mission-check-grid{grid-template-columns:1fr;padding:0 15px 13px;}
+  .mission-action-bar{padding:12px 15px 14px;flex-direction:column;align-items:stretch;}
+  .mission-action-hint{justify-content:center;}
+  .mission-review-submit-btn{width:100%;}
+}
+</style>
 
 <style id="ai-mission-workflow-beautiful-style">
 /* ===== AI MISSION CONTROL — BEAUTIFUL WORKFLOW ===== */
@@ -4351,7 +4420,7 @@ body.dark-mode .sidebar{background:#090d16!important;}
                   <i class="fa-solid fa-bullseye"></i>
                   ${Math.round(Number(score)||0)}% Match
                 </span>
-                <span style="font-size:10.5px;font-weight:800;color:#047857;">
+                <span style="font-size:10.5px;font-weight:900;color:#047857;">
                   ${esc(label)}
                 </span>
               </div>
@@ -4361,7 +4430,7 @@ body.dark-mode .sidebar{background:#090d16!important;}
               </div>
 
               ${matched.length || missing.length ? `
-                <div style="margin-top:12px;font-size:10px;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:.5px;">
+                <div style="margin-top:12px;font-size:10px;font-weight:900;color:#64748b;text-transform:uppercase;letter-spacing:.55px;">
                   Available AI Analysis
                 </div>
                 <div class="per-job-agent-chips">
@@ -4380,20 +4449,46 @@ body.dark-mode .sidebar{background:#090d16!important;}
 
               ${issueNote}
 
+              <div class="mission-finish-card">
+                <div class="mission-finish-top">
+                  <div class="mission-finish-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+                  <div class="mission-finish-copy">
+                    <h3>Your AI mission is complete</h3>
+                    <p>The analysis is ready. Please review the job details, confirm your application information, and submit only when everything looks correct.</p>
+                  </div>
+                </div>
+
+                <div class="mission-review-note">
+                  <i class="fa-solid fa-shield-halved" style="color:#2563eb;margin-right:5px;"></i>
+                  <strong>You are in control.</strong> AI prepares the analysis; you review the opportunity and make the final submission.
+                </div>
+
+                <div class="mission-check-grid">
+                  <div class="mission-check-item"><i class="fa-solid fa-circle-check"></i><span>JD reviewed</span></div>
+                  <div class="mission-check-item"><i class="fa-solid fa-circle-check"></i><span>Match analysed</span></div>
+                  <div class="mission-check-item"><i class="fa-solid fa-circle-check"></i><span>Resume ready</span></div>
+                </div>
+
+                <div class="mission-action-bar">
+                  <div class="mission-action-hint">
+                    <i class="fa-solid fa-arrow-pointer"></i> Review first, then submit your application
+                  </div>
+                  <button
+                    type="button"
+                    class="mission-review-submit-btn"
+                    onclick="window.closePerJobAIAgent(); window.openJobDetailsModalById('${esc(id)}')">
+                    <i class="fa-solid fa-file-circle-check"></i>
+                    Review &amp; Submit Application
+                  </button>
+                </div>
+              </div>
+
               <div class="per-job-agent-actions">
                 <button
                   type="button"
                   class="per-job-agent-secondary"
                   onclick="window.closePerJobAIAgent()">
-                  Close
-                </button>
-
-                <button
-                  type="button"
-                  class="per-job-agent-primary"
-                  onclick="window.closePerJobAIAgent(); window.openJobDetailsModalById('${esc(id)}')">
-                  <i class="fa-solid fa-arrow-right"></i>
-                  Review Job &amp; Apply
+                  Close Mission
                 </button>
               </div>
           `);
@@ -4427,18 +4522,28 @@ body.dark-mode .sidebar{background:#090d16!important;}
           });
 
           showWorkflowResult(`
-              <div style="color:#0f172a;font-size:13px;font-weight:800;">
-                <i class="fa-solid fa-circle-check" style="color:#16a34a;"></i>
-                Workflow continued successfully
+              <div style="color:#0f172a;font-size:13px;font-weight:900;">
+                <i class="fa-solid fa-circle-check" style="color:#16a34a;margin-right:5px;"></i>
+                Workflow completed with available information
               </div>
               <div class="per-job-agent-summary">
-                A workflow step encountered an unexpected problem, but the agent continued with the information that was available.
+                One or more optional AI steps were unavailable, but the mission continued so you can still review this opportunity.
               </div>
-              <div class="per-job-agent-actions">
-                <button type="button" class="per-job-agent-secondary" onclick="window.closePerJobAIAgent()">Close</button>
-                <button type="button" class="per-job-agent-primary" onclick="window.closePerJobAIAgent(); window.openJobDetailsModalById('${esc(id)}')">
-                  <i class="fa-solid fa-arrow-right"></i> Review Job &amp; Apply
-                </button>
+
+              <div class="mission-finish-card">
+                <div class="mission-finish-top">
+                  <div class="mission-finish-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+                  <div class="mission-finish-copy">
+                    <h3>Next: review before submitting</h3>
+                    <p>Please open the job, verify the role and application details, and submit the application when you are satisfied.</p>
+                  </div>
+                </div>
+                <div class="mission-action-bar">
+                  <div class="mission-action-hint"><i class="fa-solid fa-shield-halved"></i> Final submission stays with you</div>
+                  <button type="button" class="mission-review-submit-btn" onclick="window.closePerJobAIAgent(); window.openJobDetailsModalById('${esc(id)}')">
+                    <i class="fa-solid fa-file-circle-check"></i> Review &amp; Submit Application
+                  </button>
+                </div>
               </div>
           `);
 
