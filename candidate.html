@@ -3823,6 +3823,19 @@ body.dark-mode .sidebar{background:#090d16!important;}
       jobId: null
   };
 
+  // Local HTML escape helper for the per-job agent workflow.
+  // This function must live in the same scope as runAIAgentForJob();
+  // otherwise a ReferenceError (esc is not defined) can make the
+  // first workflow step appear as "Failed" even though the resume exists.
+  function esc(value){
+      return String(value ?? "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/\"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+  }
+
   function perJobAgentModal(){
       return document.getElementById("perJobAIAgentModal");
   }
