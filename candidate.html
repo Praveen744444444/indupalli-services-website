@@ -3833,6 +3833,49 @@ body.dark-mode .sidebar{background:#090d16!important;}
   // ============================================================
   // PER-JOB AI AGENT — REAL CLICK-TO-ANALYZE WORKFLOW
   // ============================================================
+
+  // Always resolve the latest Master Resume URL from the authenticated
+  // candidate profile before starting the workflow. This avoids a race
+  // where the user clicks Run AI Agent before loadCandidateProfile() has
+  // finished populating window.candidateMasterResumeUrl.
+  async function ensureMasterResumeUrl(){
+      const existing=String(window.candidateMasterResumeUrl||"").trim();
+      if(existing) return existing;
+
+      const email=String(
+          localStorage.getItem("candidateLoggedInEmail")||""
+      ).trim().toLowerCase();
+
+      if(!email) return "";
+
+      try{
+          const {data,error}=await supabase
+              .from("candidates")
+              .select("resume_url")
+              .eq("email",email)
+              .maybeSingle();
+
+          if(error){
+              console.error("Master Resume lookup failed:",error);
+              return "";
+          }
+
+          const url=String(data?.resume_url||"").trim();
+          if(url){
+              window.candidateMasterResumeUrl=url;
+              const viewBtn=document.getElementById("viewResumeLink");
+              if(viewBtn){
+                  viewBtn.dataset.resumeUrl=url;
+                  viewBtn.style.display="inline-block";
+              }
+          }
+          return url;
+      }catch(error){
+          console.error("Master Resume lookup exception:",error);
+          return "";
+      }
+  }
+
   window.runAIAgentForJob=async function(jobId){
       if(perJobAgentState.running) return;
 
@@ -3844,16 +3887,19 @@ body.dark-mode .sidebar{background:#090d16!important;}
           return;
       }
 
-      const resumeUrl=getResumeMatchUrl();
       const title=job.jobtitle||job.title||"Open Position";
       const company=job.companyname||job.company||"Indupalli Services";
+
+      // Resolve the Master Resume immediately from memory or Supabase.
+      // Do this before opening the workflow so Step 1 is real, not just UI text.
+      const resumeUrl=await ensureMasterResumeUrl();
 
       if(!resumeUrl){
           if(window.showCustomAlert){
               window.showCustomAlert(
-                  "Upload your Master Resume first. The AI Agent will use that resume to analyze this specific job.",
+                  "No Master Resume was found on your candidate profile. Upload your Master Resume and try again.",
                   "Resume Required",
-                  "Info"
+                  "Warning"
               );
           }
           return;
@@ -3902,8 +3948,17 @@ body.dark-mode .sidebar{background:#090d16!important;}
       // Let the browser paint every workflow state before moving to the next one.
       // This prevents the modal from appearing frozen on the first step.
       async function paint(){
-          await new Promise(resolve=>requestAnimationFrame(resolve));
-          await new Promise(resolve=>requestAnimationFrame(resolve));
+          // Allow the browser to repaint the active workflow step.
+          // requestAnimationFrame is preferred, with a timer fallback so the
+          // workflow cannot fail merely because the rendering API is unavailable.
+          await new Promise(resolve=>{
+              if(typeof requestAnimationFrame==="function") requestAnimationFrame(()=>resolve());
+              else setTimeout(resolve,0);
+          });
+          await new Promise(resolve=>{
+              if(typeof requestAnimationFrame==="function") requestAnimationFrame(()=>resolve());
+              else setTimeout(resolve,0);
+          });
       }
 
       function failResult(message){
@@ -3928,6 +3983,8 @@ body.dark-mode .sidebar{background:#090d16!important;}
           }
       }
 
+      let currentWorkflowStep="resume";
+
       try{
           // --------------------------------------------------------
           // STEP 1 — RESUME
@@ -3946,6 +4003,7 @@ body.dark-mode .sidebar{background:#090d16!important;}
           perJobAgentSetProgress(18);
           await paint();
 
+          currentWorkflowStep="jd";
           // --------------------------------------------------------
           // STEP 2 — JOB DESCRIPTION
           // --------------------------------------------------------
@@ -3960,6 +4018,7 @@ body.dark-mode .sidebar{background:#090d16!important;}
           perJobAgentSetProgress(38);
           await paint();
 
+          currentWorkflowStep="requirements";
           // --------------------------------------------------------
           // STEP 3 — REQUIREMENTS
           // --------------------------------------------------------
@@ -3974,6 +4033,7 @@ body.dark-mode .sidebar{background:#090d16!important;}
           perJobAgentSetProgress(56);
           await paint();
 
+          currentWorkflowStep="compare";
           // --------------------------------------------------------
           // STEP 4 — REAL AI COMPARISON
           // --------------------------------------------------------
@@ -4002,6 +4062,7 @@ body.dark-mode .sidebar{background:#090d16!important;}
 
           const analysis=await invokeScoreResume(payload);
 
+          currentWorkflowStep="score";
           // --------------------------------------------------------
           // STEP 5 — SCORE
           // --------------------------------------------------------
@@ -4030,6 +4091,7 @@ body.dark-mode .sidebar{background:#090d16!important;}
           perJobAgentSetProgress(90);
           await paint();
 
+          currentWorkflowStep="result";
           // --------------------------------------------------------
           // STEP 6 — RESULT / REVIEW
           // --------------------------------------------------------
@@ -4122,12 +4184,14 @@ body.dark-mode .sidebar{background:#090d16!important;}
       }catch(error){
           console.error("Per-job AI Agent error:",error);
 
-          ["resume","jd","requirements","compare","score","result"].forEach(step=>{
-              const row=perJobAgentModal()?.querySelector(`[data-step="${step}"]`);
-              if(row?.classList.contains("active")){
-                  perJobAgentSetStep(step,"error","Failed");
-              }
-          });
+          // Mark only the step that actually failed.
+          // This prevents a resume row from being shown as failed when the
+          // real error occurred later in the AI request.
+          perJobAgentSetStep(
+              currentWorkflowStep,
+              "error",
+              "Failed"
+          );
 
           perJobAgentSetProgress(100);
           perJobAgentSetLive(
