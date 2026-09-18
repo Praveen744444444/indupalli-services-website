@@ -290,6 +290,45 @@
             background-color: #f8fafc;
         }
 
+        /* ── CLEAN CANDIDATE TABLE ── */
+        .candidate-table {
+            min-width: 980px;
+            table-layout: auto;
+        }
+
+        .candidate-table th {
+            white-space: nowrap;
+        }
+
+        .candidate-table td {
+            vertical-align: middle;
+        }
+
+        .candidate-table th:nth-child(1) { width: 17%; }
+        .candidate-table th:nth-child(2) { width: 25%; }
+        .candidate-table th:nth-child(3) { width: 12%; text-align: center; }
+        .candidate-table th:nth-child(4) { width: 10%; }
+        .candidate-table th:nth-child(5) { width: 13%; }
+        .candidate-table th:nth-child(6) { width: 10%; }
+        .candidate-table th:nth-child(7) { width: 13%; }
+        .candidate-table th:nth-child(8) { width: 10%; }
+
+        .candidate-table td:nth-child(3) { text-align: center; }
+
+        .candidate-table .candidate-name {
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--navy);
+            line-height: 1.35;
+        }
+
+        .candidate-table .candidate-email {
+            margin-top: 3px;
+            font-size: 11.5px;
+            color: var(--text-muted);
+            word-break: break-word;
+        }
+
         .chat-btn {
             display: inline-flex;
             align-items: center;
@@ -861,13 +900,12 @@
                 </div>
                 
                 <div style="overflow-x: auto; width:100%;">
-                    <table class="dashboard-table">
+                    <table class="dashboard-table candidate-table">
                         <thead>
                             <tr>
                                 <th>Applied Role</th>
                                 <th>Candidate</th>
                                 <th>Match Score</th>
-                                <th>Skill Set</th>
                                 <th>Experience</th>
                                 <th>Cover Letter / Pitch</th>
                                 <th>Resume</th>
@@ -876,7 +914,7 @@
                             </tr>
                         </thead>
                         <tbody id="appsContainer">
-                            <tr><td colspan="9" style="text-align:center; padding:30px; color:var(--text-muted);"><i class="fa-solid fa-spinner fa-spin"></i> Loading candidates...</td></tr>
+                            <tr><td colspan="8" style="text-align:center; padding:30px; color:var(--text-muted);"><i class="fa-solid fa-spinner fa-spin"></i> Loading candidates...</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -931,7 +969,7 @@
 
                 <div class="guideline-card" style="border-left-color: var(--orange);">
                     <strong style="color: var(--text-title); font-size: 14px;">4. Evaluate Candidate Match & Skills</strong>
-                    <p style="margin: 6px 0 0 0; font-size: 13.5px; color: var(--text-muted);">Review the Match Score, Skill Set, Experience, and candidate profile information together. Do not rely on the score alone; verify that the resume and profile support the requirements of the job.</p>
+                    <p style="margin: 6px 0 0 0; font-size: 13.5px; color: var(--text-muted);">Review the Match Score, Experience, and candidate profile information together. Do not rely on the score alone; verify that the resume and profile support the requirements of the job.</p>
                 </div>
 
                 <div class="guideline-card" style="border-left-color: var(--primary-dark);">
@@ -1377,33 +1415,11 @@ As the workforce continues to evolve, staying proactive about ${topic.toLowerCas
             const raw=candidate.matchScore ?? candidate.match_score ?? candidate.jobMatchScore ?? candidate.job_match_score ?? candidate.atsScore ?? candidate.ats_score ?? candidate.score ?? candidate.resumeScore ?? candidate.resume_score;
             const n=Number(raw); return Number.isFinite(n)&&n>=0?Math.min(100,Math.round(n)):null;
         }
-        function getCandidateSkills(candidate){
-            const raw=candidate.skills ?? candidate.skillSet ?? candidate.skill_set ?? candidate.extractedSkills ?? candidate.extracted_skills ?? candidate.resumeSkills ?? candidate.resume_skills ?? "";
-            if(Array.isArray(raw)) return raw.map(String).map(s=>s.trim()).filter(Boolean);
-            if(typeof raw==="string") return raw.split(/[,|;\n]+/).map(s=>s.trim()).filter(Boolean);
-            return [];
-        }
         function scoreBadgeHtml(score){
             if(score===null) return '<span class="candidate-score-badge">Not analyzed</span>';
             const cls=score>=80?'high':score>=60?'mid':'low'; return `<span class="candidate-score-badge ${cls}">${score}% Match</span>`;
         }
         
-        // TABLE SKILLS HTML (Shows up to 2 skills + "View" button, or professional empty state)
-        function skillsHtml(skills, candidateId){
-            if(!skills || !skills.length) {
-                return `<span style="display:inline-flex; align-items:center; padding:4px 10px; border-radius:6px; background:#f8fafc; border:1px dashed #cbd5e1; color:#64748b; font-size:11px; font-weight:600;">Not Provided</span>`;
-            }
-            const safe=s=>String(s).replace(/[<>&"]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[c]));
-            const visible=skills.slice(0,2);
-            
-            // Add a clickable "View" text if there are more than 2 skills
-            const more = skills.length > 2 
-                ? `<button onclick="window.viewCandidateCoverLetter('${candidateId}')" style="background:none; border:none; color:var(--primary); font-size:11.5px; font-weight:800; cursor:pointer; padding-left:4px; transition:.2s;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">+${skills.length-2} View</button>` 
-                : '';
-                
-            return `<div class="candidate-skills">${visible.map(s=>`<span class="candidate-skill">${safe(s)}</span>`).join('')}${more}</div>`;
-        }
-
         // MODAL SKILLS HTML (Shows ALL skills beautifully formatted in the popup)
         function modalSkillsHtml(skills){
             if(!skills.length) return '<span style="font-size:13px;color:var(--text-muted);font-weight:600;">No skills extracted from candidate profile.</span>';
@@ -1418,7 +1434,7 @@ As the workforce continues to evolve, staying proactive about ${topic.toLowerCas
             const tbody = document.getElementById("appsContainer");
             if (!tbody) return;
 
-            tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:30px; color:var(--text-muted);"><i class="fa-solid fa-spinner fa-spin"></i> Loading candidates...</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:30px; color:var(--text-muted);"><i class="fa-solid fa-spinner fa-spin"></i> Loading candidates...</td></tr>`;
 
             try {
                 const currentEmail = (localStorage.getItem("recruiterEmail") || ADMIN_EMAIL).trim().toLowerCase();
@@ -1513,7 +1529,7 @@ As the workforce continues to evolve, staying proactive about ${topic.toLowerCas
                 if (kpiApps) kpiApps.innerText = apps.length;
 
                 if (!apps.length) {
-                    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:30px; color:var(--text-muted); font-weight:600;">No candidate applications are available for this account yet.</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:30px; color:var(--text-muted); font-weight:600;">No candidate applications are available for this account yet.</td></tr>`;
                     return;
                 }
 
@@ -1546,7 +1562,6 @@ As the workforce continues to evolve, staying proactive about ${topic.toLowerCas
                     const jobTitle = candidate.jobTitle || candidate.job_title || "General Application";
                     const status = candidate.status || "New Application";
                     const candidateScore = getCandidateScore(candidate);
-                    const candidateSkills = getCandidateSkills(candidate);
                     const safeCandidateName = candidate.fullname.replace(/'/g, "\\'");
                     
                     jobTitlesSeen.add(jobTitle);
@@ -1585,13 +1600,12 @@ As the workforce continues to evolve, staying proactive about ${topic.toLowerCas
                                          onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(candidate.fullname)}&background=random'"
                                          style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 1.5px solid var(--border-color); background: #f8fafc; flex-shrink: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.06);">
                                     <div>
-                                        <strong style="color: var(--navy);">${escapeHtml(candidate.fullname)}</strong>
-                                        <div style="font-size:12px; color:var(--text-muted);">${escapeHtml(candidateEmail)}</div>
+                                        <strong class="candidate-name">${escapeHtml(candidate.fullname)}</strong>
+                                        <div class="candidate-email">${escapeHtml(candidateEmail)}</div>
                                     </div>
                                 </div>
                             </td>
                             <td>${scoreBadgeHtml(candidateScore)}</td>
-                            <td>${skillsHtml(candidateSkills, id)}</td>
                             <td>${escapeHtml(candidate.experience)}</td>
                             <td>
                                 <button class="about-btn" onclick="window.viewCandidateCoverLetter('${id}')">
@@ -1624,7 +1638,7 @@ As the workforce continues to evolve, staying proactive about ${topic.toLowerCas
                 }
             } catch (err) {
                 console.error("Error loading candidate applications:", err);
-                tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:20px; color:var(--red);">Failed to load candidate applications.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding:20px; color:var(--red);">Failed to load candidate applications.</td></tr>`;
             }
         };
 
@@ -1673,7 +1687,7 @@ As the workforce continues to evolve, staying proactive about ${topic.toLowerCas
                         <span>Job Match Score</span>
                     </div>
                     <div style="min-width: 0; display: flex; flex-direction: column; height: 100%;">
-                        <div style="font-size:11px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Extracted Skill Set (${modalSkills.length})</div>
+                        <div style="font-size:11px;font-weight:800;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Skills (${modalSkills.length})</div>
                         ${modalSkillsHtml(modalSkills)}
                         ${modalScore === null ? '<p style="font-size:11.5px;color:var(--text-muted);margin:12px 0 0;">No resume/job match score has been saved yet.</p>' : ''}
                     </div>`;
