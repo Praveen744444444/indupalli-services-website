@@ -78,7 +78,6 @@ body{ background:var(--bg); color:var(--text); overflow-x:hidden; -webkit-font-s
   
   .dashboard-overview{grid-template-columns:1fr!important;}
   .profile-grid{grid-template-columns:1fr!important;}
-  .guidelines-grid-modern{grid-template-columns: 1fr !important;}
   #jobsContainer{grid-template-columns: 1fr !important;}
   
   .ai-header { flex-direction: column; align-items: flex-start; gap: 15px; }
@@ -254,19 +253,7 @@ body.dark-mode .popup-icon-badge { filter: brightness(1.15); }
 .plan-features li::before { content: "\f00c"; font-family: "Font Awesome 6 Free"; font-weight: 900; color: var(--green); position: absolute; left: 0; top: 2px; font-size: 11px; }
 body.dark-mode .plan-features li { color: #cbd5e1; }
 
-/* ── GUIDELINES ── */
-.guidelines-wrapper { margin-bottom: 35px; background: #ffffff; border-radius: 24px; border: 1px solid #e2e8f0; box-shadow: var(--shadow-sm); overflow: hidden; }
-.guidelines-banner { background: linear-gradient(135deg, var(--navy) 0%, var(--primary) 100%); padding: 35px; color: #ffffff; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
-.guidelines-banner-text h2 { font-size: 22px; font-weight: 800; display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
-.guidelines-tag { background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(8px); padding: 8px 18px; border-radius: 30px; font-size: 12px; font-weight: 800; letter-spacing: 0.5px; border: 1px solid rgba(255, 255, 255, 0.3); text-transform: uppercase; }
-.guidelines-body { padding: 35px; }
-.guidelines-grid-modern { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; }
-.guideline-card-modern { background: #f8fafc; border-radius: 20px; padding: 24px; border: 1px solid #e2e8f0; transition: all 0.3s; }
-.guideline-card-modern:hover { transform: translateY(-5px); border-color: var(--primary); box-shadow: var(--shadow-md); background: #ffffff; }
 .g-icon-box { width: 48px; height: 48px; border-radius: 14px; background: #eff6ff; color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 18px; }
-.guideline-card-modern h3 { font-size: 17px; font-weight: 800; color: var(--navy); margin-bottom: 12px; }
-.guideline-card-modern li { font-size: 13.5px; color: #475569; line-height: 1.6; margin-bottom: 10px; position: relative; padding-left: 20px; list-style: none; }
-.guideline-card-modern li::before { content: "\f00c"; font-family: "Font Awesome 6 Free"; font-weight: 900; color: var(--green); position: absolute; left: 0; font-size: 12px; top: 4px; }
 
 /* ── DARK MODE ── */
 body.dark-mode { background:#0b0f19; color:#f1f5f9; --card: #151f32; --navy: #fff; --text-muted: #94a3b8; --border: #1e293b; --text: #f1f5f9; }
@@ -277,7 +264,6 @@ body.dark-mode .table th { background: #0f172a; color: #94a3b8; }
 body.dark-mode .table tbody tr:hover { background: #0f172a; }
 body.dark-mode .job-info span { background: #0f172a; }
 body.dark-mode .ai-box { background: #0f172a; border-color: #1e293b; }
-body.dark-mode .guideline-card-modern { background: #0f172a; border-color: #1e293b; }
 body.dark-mode .modal-content { background: #151f32; border: 1px solid #1e293b; }
 body.dark-mode .plan-card { background: #0f172a; border-color: #1e293b; }
 body.dark-mode .view-btn { background: #0f172a; border-color: #1e293b; color: #fff; }
@@ -308,16 +294,6 @@ body.dark-mode .modal-close-btn:hover { background: #334155; color: #ef4444; }
   .credit-btn{padding:11px 20px;font-size:14px;border-radius:10px;}
   .view-btn{padding:11px 20px;font-size:14px;}
   .apply-btn{font-size:15px;padding:13px 22px;}
-  .guidelines-banner{padding:36px 40px;}
-  .guidelines-banner-text h2{font-size:24px;}
-  .guidelines-banner p{font-size:15px;}
-  .guidelines-tag{font-size:13px;padding:9px 18px;}
-  .guidelines-body{padding:40px;}
-  .guidelines-grid-modern{gap:26px;}
-  .guideline-card-modern{padding:28px;border-radius:20px;}
-  .guideline-card-modern h3{font-size:18px;margin-bottom:14px;}
-  .guideline-card-modern li{font-size:14px;line-height:1.65;margin-bottom:12px;padding-left:22px;}
-  .guideline-card-modern li::before{font-size:12px;top:5px;}
 }
 
 
@@ -491,7 +467,6 @@ body{background:var(--video-bg);}
 .job-card{border-radius:12px;padding:14px 15px;box-shadow:none;display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"title action" "company action" "meta action" "desc action";column-gap:18px;align-items:center;}
 .job-title{grid-area:title;font-size:13px;margin-bottom:3px;}.job-company{grid-area:company;font-size:10px;margin-bottom:7px;}.job-info{grid-area:meta;margin-bottom:7px;font-size:9px;}.job-info span{padding:3px 7px;border-radius:5px;}.job-description{grid-area:desc;font-size:10px;line-height:1.5;margin-bottom:0;color:#697386;}.job-card .apply-btn{grid-area:action;width:92px;padding:9px 10px;border-radius:8px;font-size:10px;}
 .table th,.table td{padding:11px 10px;font-size:11px;}.table th{font-size:9px;}
-.guidelines-wrapper{border-radius:14px;margin-bottom:0;}.guidelines-banner{padding:18px 20px;}.guidelines-banner-text h2{font-size:14px;}.guidelines-banner p{font-size:10px;}.guidelines-tag{font-size:9px;padding:6px 10px;}.guidelines-body{padding:18px;}.guidelines-grid-modern{gap:12px;}.guideline-card-modern{padding:14px;border-radius:12px;}.guideline-card-modern h3{font-size:13px;margin-bottom:8px;}.guideline-card-modern li{font-size:10px;line-height:1.5;margin-bottom:7px;}
 /* Make the profile/job areas feel like a product workspace rather than a long form. */
 #profileSection .card,#browseSection .card,#applicationsSection .card,#subscriptionsSection .card{background:#fff;}
 body.dark-mode{background:#0b1020;}
@@ -585,17 +560,7 @@ body.dark-mode .card,body.dark-mode #profileSection .card,body.dark-mode #browse
   .job-description{font-size:13px!important;line-height:1.65!important;}
   .job-card .apply-btn{width:100%!important;font-size:14px!important;padding:12px 16px!important;}
 
-  .guidelines-wrapper{border-radius:24px!important;}
-  .guidelines-banner{padding:32px 38px!important;}
-  .guidelines-banner-text h2{font-size:24px!important;}
-  .guidelines-banner p{font-size:15px!important;line-height:1.5!important;}
-  .guidelines-tag{font-size:12px!important;padding:8px 16px!important;}
-  .guidelines-body{padding:38px!important;}
-  .guidelines-grid-modern{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:24px!important;}
-  .guideline-card-modern{padding:26px!important;border-radius:18px!important;}
   .g-icon-box{width:54px!important;height:54px!important;font-size:22px!important;margin-bottom:18px!important;}
-  .guideline-card-modern h3{font-size:18px!important;margin-bottom:14px!important;}
-  .guideline-card-modern li{font-size:14px!important;line-height:1.65!important;margin-bottom:11px!important;padding-left:22px!important;}
 }
 </style>
 
@@ -748,21 +713,10 @@ body.dark-mode .card,body.dark-mode #profileSection .card,body.dark-mode #browse
 .table th{font-size:12px!important;}
 .chat-btn{font-size:13px!important;padding:8px 16px!important;border-radius:8px!important;}
 
-/* Guidelines — use recruiter-dashboard visual scale, while keeping candidate content */
-.guidelines-wrapper{border-radius:20px!important;margin-bottom:28px!important;}
-.guidelines-banner{padding:28px 32px!important;}
-.guidelines-banner-text h2{font-size:22px!important;}
-.guidelines-banner-text p{font-size:14px!important;}
-.guidelines-tag{font-size:12px!important;padding:8px 16px!important;}
-.guidelines-body{padding:28px 32px!important;}
-.guidelines-grid-modern{gap:20px!important;}
-.guideline-card-modern{
   border-radius:12px!important;
   padding:20px!important;
   min-height:0!important;
 }
-.guideline-card-modern h3{font-size:17px!important;margin-bottom:12px!important;}
-.guideline-card-modern li{font-size:13.5px!important;line-height:1.6!important;margin-bottom:10px!important;padding-left:20px!important;}
 
 /* Resume area */
 .resume-card{padding:18px 20px!important;border-radius:16px!important;}
@@ -1669,6 +1623,58 @@ body.dark-mode .sidebar{background:#090d16!important;}
 @media(max-width:680px){.job-action-cell{align-items:stretch;}.job-agent-btn,.job-list-row .apply-btn{width:100%;}}
 </style>
 
+
+<style id="career-copilot-style">
+/* ============================================================
+   AI CAREER COPILOT — candidate-first career readiness layer
+   Uses existing profile + jobs data; no new backend required.
+   ============================================================ */
+.career-copilot{margin-bottom:28px;border:1px solid #dbe5f5;border-radius:22px;background:linear-gradient(135deg,#f8fbff 0%,#fff 55%,#f5f8ff 100%);box-shadow:0 10px 30px rgba(37,99,235,.07);overflow:hidden;}
+.copilot-head{padding:26px 30px 20px;display:flex;justify-content:space-between;gap:20px;align-items:flex-start;border-bottom:1px solid #e7edf6;}
+.copilot-kicker{font-size:11px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:#2563eb;margin-bottom:7px;display:flex;align-items:center;gap:7px;}
+.copilot-kicker .pulse{width:7px;height:7px;border-radius:50%;background:#10b981;box-shadow:0 0 0 5px rgba(16,185,129,.12);}
+.copilot-head h2{font-size:23px;color:#0f172a;margin:0 0 7px;font-weight:800;letter-spacing:-.4px;}
+.copilot-head p{font-size:13px;line-height:1.6;color:#64748b;max-width:760px;margin:0;}
+.copilot-refresh{border:1px solid #cbd8eb;background:#fff;color:#334155;border-radius:10px;padding:10px 14px;font-weight:800;font-size:12px;cursor:pointer;white-space:nowrap;}
+.copilot-refresh:hover{border-color:#2563eb;color:#2563eb;background:#f8fbff;}
+.copilot-grid{display:grid;grid-template-columns:1.05fr 1.35fr 1fr;gap:16px;padding:20px 22px 22px;}
+.copilot-card{background:#fff;border:1px solid #e5ebf4;border-radius:16px;padding:18px;min-width:0;}
+.copilot-card-title{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:.55px;color:#64748b;margin-bottom:14px;display:flex;align-items:center;gap:7px;}
+.copilot-card-title i{color:#2563eb;}
+.readiness-row{display:flex;align-items:center;gap:16px;}
+.readiness-ring{width:82px;height:82px;border-radius:50%;display:grid;place-items:center;flex:0 0 82px;background:conic-gradient(#2563eb 0deg,#2563eb var(--score-angle,0deg),#eaf0f8 var(--score-angle,0deg),#eaf0f8 360deg);position:relative;}
+.readiness-ring::after{content:"";position:absolute;inset:8px;border-radius:50%;background:#fff;}
+.readiness-ring strong{position:relative;z-index:1;font-size:20px;color:#0f172a;}
+.readiness-copy b{display:block;font-size:14px;color:#0f172a;margin-bottom:5px;}
+.readiness-copy span{font-size:11px;color:#64748b;line-height:1.5;display:block;}
+.copilot-progress-list{margin-top:16px;display:grid;gap:9px;}
+.copilot-progress-item{display:grid;grid-template-columns:72px 1fr 34px;align-items:center;gap:8px;font-size:10px;color:#64748b;font-weight:700;}
+.copilot-track{height:6px;background:#edf2f8;border-radius:999px;overflow:hidden;}
+.copilot-track span{display:block;height:100%;border-radius:999px;background:#2563eb;}
+.next-action{display:flex;gap:12px;align-items:flex-start;padding:12px;border-radius:12px;background:#f8fbff;border:1px solid #dbe8fb;margin-bottom:12px;}
+.next-action-icon{width:36px;height:36px;border-radius:10px;background:#eaf2ff;color:#2563eb;display:grid;place-items:center;flex:0 0 36px;}
+.next-action b{display:block;font-size:12px;color:#172033;margin-bottom:4px;}
+.next-action span{display:block;font-size:10.5px;color:#64748b;line-height:1.5;}
+.copilot-action-btn{border:0;background:#0f172a;color:#fff;padding:9px 12px;border-radius:9px;font-size:11px;font-weight:800;cursor:pointer;}
+.copilot-action-btn:hover{background:#2563eb;}
+.copilot-skills{display:flex;flex-wrap:wrap;gap:7px;min-height:36px;}
+.copilot-skill{font-size:10px;font-weight:800;padding:6px 9px;border-radius:999px;background:#eff6ff;color:#2457b8;border:1px solid #d7e5ff;}
+.copilot-skill small{font-weight:700;opacity:.7;margin-left:3px;}
+.copilot-empty{font-size:11px;color:#94a3b8;line-height:1.5;}
+.copilot-foot{padding:0 22px 20px;color:#64748b;font-size:10.5px;display:flex;justify-content:space-between;gap:12px;align-items:center;}
+.copilot-foot strong{color:#334155;}
+@media(max-width:1100px){.copilot-grid{grid-template-columns:1fr 1fr;}.copilot-card:last-child{grid-column:1/-1;}}
+@media(max-width:768px){.copilot-head{padding:20px;flex-direction:column;}.copilot-grid{grid-template-columns:1fr;padding:14px;}.copilot-card:last-child{grid-column:auto;}.copilot-foot{padding:0 14px 15px;flex-direction:column;align-items:flex-start;}.readiness-ring{width:72px;height:72px;flex-basis:72px;}.readiness-ring strong{font-size:18px;}}
+body.dark-mode .career-copilot{background:linear-gradient(135deg,#101a30,#111827);border-color:#1e293b;}
+body.dark-mode .copilot-head{border-color:#1e293b;}
+body.dark-mode .copilot-head h2,body.dark-mode .readiness-copy b,body.dark-mode .next-action b,body.dark-mode .readiness-ring strong{color:#fff;}
+body.dark-mode .copilot-card{background:#0f172a;border-color:#1e293b;}
+body.dark-mode .copilot-refresh{background:#111827;border-color:#334155;color:#e2e8f0;}
+body.dark-mode .next-action{background:#111c33;border-color:#1e3b70;}
+body.dark-mode .readiness-ring::after{background:#0f172a;}
+body.dark-mode .copilot-track{background:#1e293b;}
+</style>
+
 </head>
 <body>
 
@@ -1960,9 +1966,9 @@ body.dark-mode .sidebar{background:#090d16!important;}
 <a href="#" onclick="smoothTo('profileSection');return false;"><i class="fa-regular fa-id-badge"></i> My Profile</a>
 <a href="#" onclick="smoothTo('browseSection');return false;"><i class="fa-solid fa-magnifying-glass"></i> Job Discovery</a>
 <a href="#" onclick="smoothTo('aiAgentSection');return false;"><i class="fa-solid fa-robot"></i> My AI Agent <span class="ai-nav-dot"></span></a>
+<a href="#" onclick="smoothTo('careerCopilotSection');return false;"><i class="fa-solid fa-compass-drafting"></i> Career Copilot</a>
 <a href="#" onclick="smoothTo('applicationsSection');return false;"><i class="fa-regular fa-folder-open"></i> Applications</a>
 <a href="#" onclick="smoothTo('subscriptionsSection');return false;"><i class="fa-solid fa-file-invoice-dollar"></i> Billing</a>
-<a href="#" onclick="smoothTo('candidateGuidelinesBlock');return false;"><i class="fa-solid fa-shield-halved"></i> Guidelines</a>
 <a href="#" onclick="openNotifications();return false;"><i class="fa-regular fa-bell"></i> Notifications</a>
 <a href="#" onclick="openSettings();return false;"><i class="fa-solid fa-gear"></i> Settings</a>
 <a href="#" onclick="openSignOutModal();return false;" style="color: #fda4af; margin-top: 10px;"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out</a>
@@ -2271,6 +2277,48 @@ body.dark-mode .sidebar{background:#090d16!important;}
 </div>
 
 
+<!-- AI CAREER COPILOT -->
+<div id="careerCopilotSection" style="scroll-margin-top:100px;">
+  <div class="career-copilot">
+    <div class="copilot-head">
+      <div>
+        <div class="copilot-kicker"><span class="pulse"></span> AI CAREER COPILOT</div>
+        <h2>Your next best career move</h2>
+        <p>Instead of only showing jobs, Indupalli analyzes your profile, resume and current opportunities to tell you what to improve and what to do next.</p>
+      </div>
+      <button class="copilot-refresh" type="button" onclick="window.refreshCareerCopilot && window.refreshCareerCopilot()"><i class="fa-solid fa-wand-magic-sparkles"></i> Analyze My Profile</button>
+    </div>
+
+    <div class="copilot-grid">
+      <div class="copilot-card">
+        <div class="copilot-card-title"><i class="fa-solid fa-gauge-high"></i> Career readiness</div>
+        <div class="readiness-row">
+          <div class="readiness-ring" id="copilotReadinessRing"><strong id="copilotReadinessScore">0%</strong></div>
+          <div class="readiness-copy"><b id="copilotReadinessLabel">Let's build your profile</b><span id="copilotReadinessText">Complete your profile and resume to unlock better job recommendations.</span></div>
+        </div>
+        <div class="copilot-progress-list">
+          <div class="copilot-progress-item"><span>Profile</span><div class="copilot-track"><span id="copilotProfileBar" style="width:0"></span></div><b id="copilotProfilePct">0%</b></div>
+          <div class="copilot-progress-item"><span>Resume</span><div class="copilot-track"><span id="copilotResumeBar" style="width:0"></span></div><b id="copilotResumePct">0%</b></div>
+          <div class="copilot-progress-item"><span>Skills</span><div class="copilot-track"><span id="copilotSkillsBar" style="width:0"></span></div><b id="copilotSkillsPct">0%</b></div>
+          <div class="copilot-progress-item"><span>Summary</span><div class="copilot-track"><span id="copilotSummaryBar" style="width:0"></span></div><b id="copilotSummaryPct">0%</b></div>
+        </div>
+      </div>
+
+      <div class="copilot-card">
+        <div class="copilot-card-title"><i class="fa-solid fa-list-check"></i> Recommended actions</div>
+        <div id="copilotActions"><div class="copilot-empty">Analyzing your profile…</div></div>
+      </div>
+
+      <div class="copilot-card">
+        <div class="copilot-card-title"><i class="fa-solid fa-code"></i> Skills employers are asking for</div>
+        <div id="copilotSkillGaps" class="copilot-skills"><span class="copilot-empty">Open Job Discovery to generate skill-gap insights.</span></div>
+        <div style="margin-top:14px;font-size:10.5px;color:#64748b;line-height:1.55;">These are recurring skills found in your available job descriptions that are not clearly present in your current profile.</div>
+      </div>
+    </div>
+    <div class="copilot-foot"><span><strong>How this works:</strong> profile + resume + available jobs → readiness → next actions.</span><span id="copilotUpdatedAt">Not analyzed yet</span></div>
+  </div>
+</div>
+
 <!-- PERSONAL AI CAREER AGENT -->
 <div id="aiAgentSection" style="scroll-margin-top:100px;">
   <div class="ai-agent-panel">
@@ -2279,6 +2327,44 @@ body.dark-mode .sidebar{background:#090d16!important;}
       <h2><i class="fa-solid fa-robot"></i> Your AI is working for your career</h2>
       <p>It analyzes your profile and active jobs, prioritizes the best opportunities, and prepares you before you apply.</p></div>
       <button class="agent-primary" onclick="runAIAgent()"><i class="fa-solid fa-wand-magic-sparkles"></i> Run AI Agent</button>
+    </div>
+
+    <!-- VOICE AI CAREER AGENT -->
+    <div class="voice-agent-card" id="voiceAgentCard">
+      <div class="voice-agent-main">
+        <div class="voice-agent-icon" id="voiceAgentIcon"><i class="fa-solid fa-microphone"></i></div>
+        <div class="voice-agent-copy">
+          <div class="voice-agent-title-row">
+            <h3>Talk to your AI Career Agent</h3>
+            <span class="voice-agent-status" id="voiceAgentStatus">Ready</span>
+          </div>
+          <p id="voiceAgentTranscript">Say: “Apply for the Python Developer job” or “Show my applications”. Explicit apply commands can submit automatically; unclear requests are never submitted.</p>
+          <div class="voice-agent-result" id="voiceAgentResult" aria-live="polite"></div>
+        </div>
+      </div>
+      <div class="voice-agent-actions">
+        <button type="button" class="voice-agent-mic" id="voiceAgentMicBtn" onclick="window.toggleVoiceCareerAgent && window.toggleVoiceCareerAgent()">
+          <i class="fa-solid fa-microphone"></i><span>Talk to AI</span>
+        </button>
+        <button type="button" class="voice-agent-stop" id="voiceAgentStopBtn" onclick="window.stopVoiceCareerAgent && window.stopVoiceCareerAgent()" style="display:none;">
+          <i class="fa-solid fa-stop"></i> Stop
+        </button>
+      </div>
+    </div>
+
+    <!-- CONTEXTUAL CAREER HELP -->
+    <div class="career-help-card" id="careerHelpCard">
+      <div class="career-help-icon"><i class="fa-solid fa-headset"></i></div>
+      <div class="career-help-copy">
+        <div class="career-help-title">Need help with this dashboard?</div>
+        <p id="careerHelpText">Ask me what any section does, how to update your profile, how to add skills, how to upload your resume, how matching works, or how to apply for a job.</p>
+        <div class="career-help-chips">
+          <button type="button" onclick="window.handleVoiceCareerCommand&&window.handleVoiceCareerCommand('How do I update my skills?')">Update skills</button>
+          <button type="button" onclick="window.handleVoiceCareerCommand&&window.handleVoiceCareerCommand('How do I upload my resume?')">Upload resume</button>
+          <button type="button" onclick="window.handleVoiceCareerCommand&&window.handleVoiceCareerCommand('What is Career Copilot?')">Career Copilot</button>
+          <button type="button" onclick="window.handleVoiceCareerCommand&&window.handleVoiceCareerCommand('How do I apply for a job?')">How to apply</button>
+        </div>
+      </div>
     </div>
     <div class="agent-grid">
       <div class="agent-card"><i class="fa-solid fa-bullseye"></i><div><b id="agentHighMatch">0</b><span>High-match jobs</span></div></div>
@@ -2371,82 +2457,7 @@ body.dark-mode .sidebar{background:#090d16!important;}
 </div>
 </div>
 
-<!-- ── CANDIDATE DASHBOARD GUIDE ── -->
-<div id="candidateGuidelinesBlock" class="guidelines-wrapper" style="scroll-margin-top:100px;">
-    <div class="guidelines-banner">
-        <div class="guidelines-banner-text">
-            <h2><i class="fa-solid fa-circle-question"></i> Candidate Dashboard Guide</h2>
-            <p>Use this quick guide to build your profile, upload your resume, use AI tools, and apply for jobs.</p>
-        </div>
-        <div class="guidelines-tag"><i class="fa-solid fa-book-open"></i> Quick Start</div>
-    </div>
 
-    <div class="guidelines-body">
-        <div class="guidelines-grid-modern">
-
-            <div class="guideline-card-modern">
-                <div class="g-icon-box"><i class="fa-regular fa-id-card"></i></div>
-                <h3>1. Complete Your Profile</h3>
-                <ul>
-                    <li><strong>Basic Details:</strong> Enter your full name, phone number, current location, and total experience.</li>
-                    <li><strong>Location:</strong> Select your state and city so recruiters can understand where you are based.</li>
-                    <li><strong>Save Profile:</strong> Click <strong>Save Changes</strong> at the top of My Profile after updating your details.</li>
-                </ul>
-            </div>
-
-            <div class="guideline-card-modern">
-                <div class="g-icon-box"><i class="fa-solid fa-file-arrow-up"></i></div>
-                <h3>2. Add Your Resume</h3>
-                <ul>
-                    <li><strong>Upload:</strong> Go to <strong>Master Profile Resume</strong> and click <strong>Upload File</strong>.</li>
-                    <li><strong>File Type:</strong> Use a PDF, DOC, or DOCX resume within the dashboard's upload limit.</li>
-                    <li><strong>Use Everywhere:</strong> Your Master Resume can be used for job applications and AI job matching.</li>
-                </ul>
-            </div>
-
-            <div class="guideline-card-modern">
-                <div class="g-icon-box"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
-                <h3>3. Build Your AI Profile</h3>
-                <ul>
-                    <li><strong>Add Skills:</strong> Enter your core skills such as Java, SQL, Python, Cloud, or Power BI.</li>
-                    <li><strong>Generate:</strong> Click <strong>Generate Profile</strong> or <strong>Start</strong> to create an ATS-ready summary and expanded skills.</li>
-                    <li><strong>Review & Save:</strong> Check the generated summary, keep the details you want, and click <strong>Save Changes</strong>.</li>
-                </ul>
-            </div>
-
-            <div class="guideline-card-modern">
-                <div class="g-icon-box"><i class="fa-solid fa-magnifying-glass"></i></div>
-                <h3>4. Find & Apply for Jobs</h3>
-                <ul>
-                    <li><strong>Job Discovery:</strong> Search by role, company, skill, and job type to find suitable openings.</li>
-                    <li><strong>Match Score:</strong> Review the Resume AI Matching Score when available before applying.</li>
-                    <li><strong>Apply Once:</strong> Open the job, review the details, complete the application, and submit it. The button will show <strong>Submitted</strong> after a successful application.</li>
-                </ul>
-            </div>
-
-            <div class="guideline-card-modern">
-                <div class="g-icon-box"><i class="fa-regular fa-folder-open"></i></div>
-                <h3>5. Track Your Applications</h3>
-                <ul>
-                    <li><strong>My Applications:</strong> Check every submitted application from the Applications section.</li>
-                    <li><strong>Status:</strong> Use <strong>Refresh Status</strong> to see the latest application status.</li>
-                    <li><strong>Messages:</strong> Use the Chat button to communicate with the recruiter when a conversation is available.</li>
-                </ul>
-            </div>
-
-            <div class="guideline-card-modern">
-                <div class="g-icon-box"><i class="fa-regular fa-lightbulb"></i></div>
-                <h3>6. Keep Your Profile Strong</h3>
-                <ul>
-                    <li><strong>Update Regularly:</strong> Keep your skills, experience, summary, and resume current.</li>
-                    <li><strong>Use AI Carefully:</strong> Review AI-generated content before saving it to your profile.</li>
-                    <li><strong>Apply Smart:</strong> Focus on jobs that match your skills and experience instead of applying to everything.</li>
-                </ul>
-            </div>
-
-        </div>
-    </div>
-</div>
 
 </div>
 </div>
@@ -5197,6 +5208,7 @@ body.dark-mode .sidebar{background:#090d16!important;}
   }
 
   window.openJobDetailsModalById = function(jobId) {
+      window.currentVoiceTargetJobId = String(jobId || '');
       const job = window.allJobsData ? window.allJobsData[String(jobId)] : null;
       if (!job) {
           if (window.showCustomAlert) window.showCustomAlert("Job details not found.", "Not Found", "warning");
@@ -5535,6 +5547,7 @@ if (confidence) confidence.textContent='Starting AI analysis...';
     }
     window.updateAppliedJobButtons();
   }
+  window.markJobAsApplied = markJobAsApplied;
 
   window.updateAppliedJobButtons = function() {
     const applied = new Set(getAppliedJobs().map(String));
@@ -6139,6 +6152,378 @@ document.addEventListener('DOMContentLoaded',syncVideoSummary);
 </script>
 
 
+<style id="voice-career-agent-style">
+.voice-agent-card{margin-top:18px;padding:18px 20px;border:1px solid #dbe7fb;border-radius:18px;background:linear-gradient(135deg,#f8fbff,#eef5ff);display:flex;align-items:center;justify-content:space-between;gap:18px;box-shadow:0 10px 28px rgba(37,99,235,.08)}
+.voice-agent-main{display:flex;align-items:flex-start;gap:14px;min-width:0;flex:1}.voice-agent-icon{width:48px;height:48px;flex:0 0 48px;border-radius:15px;background:linear-gradient(135deg,#2563eb,#4f46e5);color:#fff;display:flex;align-items:center;justify-content:center;font-size:19px;box-shadow:0 9px 20px rgba(37,99,235,.22)}
+.voice-agent-icon.listening{animation:voicePulse 1.2s infinite;background:#16a34a}.voice-agent-copy{min-width:0}.voice-agent-title-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.voice-agent-title-row h3{margin:0;color:#0f172a;font-size:15px;font-weight:850}.voice-agent-status{font-size:10px;font-weight:800;padding:4px 9px;border-radius:999px;background:#e2e8f0;color:#475569}.voice-agent-status.listening{background:#dcfce7;color:#15803d}.voice-agent-status.thinking{background:#dbeafe;color:#1d4ed8}.voice-agent-status.error{background:#fee2e2;color:#b91c1c}.voice-agent-copy p{margin:6px 0 0;color:#64748b;font-size:12px;line-height:1.55}.voice-agent-result{margin-top:8px;color:#1e40af;font-size:12px;font-weight:650;line-height:1.5}.voice-agent-actions{display:flex;align-items:center;gap:8px;flex:0 0 auto}.voice-agent-mic,.voice-agent-stop{border:0;border-radius:12px;padding:12px 16px;font-size:12px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:.18s}.voice-agent-mic{background:#2563eb;color:#fff;box-shadow:0 7px 16px rgba(37,99,235,.20)}.voice-agent-mic:hover{background:#1d4ed8;transform:translateY(-1px)}.voice-agent-stop{background:#fff;color:#475569;border:1px solid #cbd5e1}.voice-agent-stop:hover{background:#f8fafc}
+.career-help-card{margin-top:14px;padding:16px 18px;border:1px solid #e4eaf4;border-radius:16px;background:#fff;display:flex;gap:13px;align-items:flex-start;box-shadow:0 7px 20px rgba(15,23,42,.05)}.career-help-icon{width:40px;height:40px;flex:0 0 40px;border-radius:12px;background:#eef4ff;color:#2563eb;display:flex;align-items:center;justify-content:center}.career-help-copy{min-width:0}.career-help-title{font-size:13px;font-weight:850;color:#0f172a}.career-help-copy p{margin:5px 0 10px;font-size:12px;line-height:1.5;color:#64748b}.career-help-chips{display:flex;gap:7px;flex-wrap:wrap}.career-help-chips button{border:1px solid #dbe5f5;background:#f8fbff;color:#1d4ed8;border-radius:999px;padding:7px 10px;font-size:11px;font-weight:750;cursor:pointer}.career-help-chips button:hover{background:#eef4ff}
+@keyframes voicePulse{0%,100%{box-shadow:0 0 0 0 rgba(22,163,74,.28)}50%{box-shadow:0 0 0 11px rgba(22,163,74,0)}}
+@media(max-width:680px){.voice-agent-card{align-items:stretch;flex-direction:column}.voice-agent-actions{width:100%}.voice-agent-mic,.voice-agent-stop{flex:1}.career-help-card{align-items:flex-start}}
+body.dark-mode .voice-agent-card{background:linear-gradient(135deg,#0f1d35,#111f3d);border-color:#23375e}.dark-mode .voice-agent-title-row h3{color:#e5edff}.dark-mode .voice-agent-copy p{color:#9fb0cc}.dark-mode .voice-agent-result{color:#93c5fd}.dark-mode .voice-agent-stop{background:#17233a;color:#cbd5e1;border-color:#334155}.dark-mode .career-help-card{background:#111a2b;border-color:#263650}.dark-mode .career-help-title{color:#e5edff}.dark-mode .career-help-copy p{color:#9fb0cc}.dark-mode .career-help-chips button{background:#17233a;border-color:#334155;color:#bfdbfe}
+</style>
+
+<script id="voice-career-agent-script">
+(function(){
+  let recognition=null, listening=false, speaking=false, voiceRequestToken=0;
+  const SpeechRecognition=window.SpeechRecognition||window.webkitSpeechRecognition;
+  const el=id=>document.getElementById(id);
+  const setStatus=(text,mode='')=>{const s=el('voiceAgentStatus');if(s){s.textContent=text;s.className='voice-agent-status'+(mode?' '+mode:'');}updateGlobalVoicePanelStatus(text);};
+  const setResult=text=>{const r=el('voiceAgentResult');if(r)r.textContent=text||'';if(text)updateGlobalVoicePanelMessage(text);};
+  const setTranscript=text=>{const t=el('voiceAgentTranscript');if(t)t.textContent=text||'';};
+  const clean=v=>String(v||'').toLowerCase().replace(/[^a-z0-9+#.\s-]/g,' ').replace(/\s+/g,' ').trim();
+
+  // Prefer premium/natural female voices when the operating system exposes them.
+  function getFemaleVoice(){
+    if(!('speechSynthesis' in window)) return null;
+    const voices=window.speechSynthesis.getVoices();
+    if(!voices.length) return null;
+    const en=voices.filter(v=>/^en(-|_)/i.test(v.lang||''));
+    const india=en.filter(v=>/^en[-_]IN/i.test(v.lang||''));
+    const natural=/(online \(natural\)|natural|neural|premium|enhanced)/i;
+    const female=/(jenny|aria|sara|sonia|susan|samantha|hazel|libby|heera|neerja|ava|female|zira)/i;
+    const microsoft=/(microsoft)/i;
+    return india.find(v=>natural.test(v.name)&&female.test(v.name)) ||
+           en.find(v=>natural.test(v.name)&&female.test(v.name)) ||
+           en.find(v=>female.test(v.name)&&microsoft.test(v.name)) ||
+           india.find(v=>female.test(v.name)) ||
+           en.find(v=>female.test(v.name)) ||
+           india[0] || en[0] || voices[0];
+  }
+
+  function speak(text){
+    if(!text||!('speechSynthesis' in window)) return;
+    try{
+      window.speechSynthesis.cancel();
+      const u=new SpeechSynthesisUtterance(text);
+      const v=getFemaleVoice();
+      u.voice=v||null; u.lang=(v&&v.lang)||'en-IN'; u.volume=1; u.rate=.88; u.pitch=1.12;
+      speaking=true;
+      window.__voiceCareerAgentSpeaking=true;
+      u.onstart=()=>{speaking=true;window.__voiceCareerAgentSpeaking=true;el('globalVoiceCareerButton')?.classList.add('speaking');showVoiceCareerPanel();updateGlobalVoicePanelStatus('Speaking…');};
+      u.onend=()=>{speaking=false;window.__voiceCareerAgentSpeaking=false;el('globalVoiceCareerButton')?.classList.remove('speaking');updateGlobalVoicePanelStatus('Ready to listen');};
+      u.onerror=()=>{speaking=false;window.__voiceCareerAgentSpeaking=false;el('globalVoiceCareerButton')?.classList.remove('speaking');updateGlobalVoicePanelStatus('Voice error');};
+      window.speechSynthesis.speak(u);
+    }catch(e){console.warn('Voice playback failed:',e);}
+  }
+  if('speechSynthesis' in window && 'onvoiceschanged' in window) window.speechSynthesis.onvoiceschanged=()=>getFemaleVoice();
+
+  const help={
+    profile:{section:'profileSection',title:'My Profile',text:'This is where you maintain your candidate information. Keep your name, phone, location and experience accurate. Your profile information is used when preparing applications and job matches.'},
+    skills:{section:'profileSection',title:'Skills',text:'To update your skills, open My Profile, find the Skills field, add each core skill one at a time, and save your profile. Use skills you genuinely have because they affect job matching.'},
+    resume:{section:'profileSection',title:'Master Profile Resume',text:'Your Master Profile Resume is the main resume used for applications and matching. Open My Profile, choose Upload File, select your latest PDF or Word resume, and make sure the uploaded file is current.'},
+    summary:{section:'profileSection',title:'Professional Summary',text:'Your professional summary should quickly explain your experience, strengths and target role. You can edit the summary in My Profile and review AI-generated text before saving it.'},
+    copilot:{section:'careerCopilotSection',title:'Career Copilot',text:'Career Copilot checks your profile, resume, skills and summary readiness. It then shows what needs attention and highlights skills employers are requesting in the available jobs.'},
+    jobs:{section:'browseSection',title:'Job Discovery',text:'Job Discovery is where you search active openings. Search by job title, company or other available filters, open a role to review the details and use the matching information before applying.'},
+    applications:{section:'applicationsSection',title:'My Applications',text:'My Applications shows the jobs you have submitted. Review the role, company, status and application date here. Refresh the section when you want the latest status.'},
+    billing:{section:'subscriptionsSection',title:'Billing and Payments',text:'Billing and Payments shows your subscription and payment history. If an application requires an upgrade, the dashboard will guide you to the available plan options.'},
+    agent:{section:'aiAgentSection',title:'My AI Agent',text:'My AI Agent analyses your profile and active jobs to help prioritise opportunities. You can also use the voice assistant to find a job, understand a role, update your workflow or submit an application.'}
+  };
+
+  function answerHelp(key){
+    const h=help[key]; if(!h)return false;
+    smoothTo(h.section);
+    const msg=`${h.title}. ${h.text}`;
+    setStatus('Helping you');setResult(msg);
+    const box=el('careerHelpText');if(box)box.textContent=msg;
+    speak(msg);return true;
+  }
+  function professionalScopeReply(){
+    const msg='I am your Indupalli Career Assistant. I answer using the features and words available in your candidate dashboard. Say a dashboard item such as Skills, Resume, AI Summary, Career Copilot, Job Discovery, AI Job Match, My AI Agent, Applications, Billing, Premium, Profile Completeness or ATS Readiness, and I will open the relevant area and explain what to do. You can also say a job title when you want me to search Job Discovery.';
+    setStatus('Career assistant');setResult(msg);speak(msg);
+  }
+
+  function getJobs(){return Object.values(window.allJobsData||{}).filter(j=>j&&(!window.isJobActive||window.isJobActive(j)));}
+  const jobTitle=j=>j.jobtitle||j.title||'Open Position';
+  const company=j=>j.companyname||j.company||'';
+  const jobLocation=j=>j.location||j.joblocation||j.city||j.worklocation||j.place||'Location not specified';
+  const jobType=j=>j.jobtype||j.type||j.employmenttype||j.employment_type||'Employment type not specified';
+  const jobExperience=j=>j.experience||j.experience_required||j.experienceRequired||'Experience requirement not specified';
+  const jobSalary=j=>j.salary||j.salaryrange||j.salary_range||j.compensation||'Salary not specified';
+  const jobDescription=j=>String(j.description||j.jobdescription||j.jd||'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
+
+  function showJobInDiscovery(job){
+    try{
+      smoothTo('browseSection');
+      const search=el('jobSearch');
+      if(search){search.value=jobTitle(job);if(window.filterJobs)window.filterJobs();}
+      window.currentVoiceTargetJobId=job.id;
+      setTimeout(()=>{
+        const cards=[...document.querySelectorAll('.job-card')];
+        const card=cards.find(c=>String(c.dataset?.jobId||c.getAttribute('data-job-id')||'')===String(job.id));
+        if(card)card.scrollIntoView({behavior:'smooth',block:'center'});
+      },350);
+    }catch(e){console.warn('Could not focus job:',e);}
+  }
+  function buildJobBrief(job){
+    const d=jobDescription(job),skills=job.skills||job.requiredSkills||job.requirements||'';
+    const skillText=Array.isArray(skills)?skills.join(', '):String(skills||'').replace(/<[^>]*>/g,' ').replace(/\s+/g,' ').trim();
+    return {title:jobTitle(job),comp:company(job)||'the employer',location:jobLocation(job),type:jobType(job),experience:jobExperience(job),salary:jobSalary(job),description:d?(d.length>280?d.slice(0,277).replace(/\s+\S*$/,'')+'...':d):'No detailed job description is available.',skills:skillText};
+  }
+  function findJobFromCommand(command){
+    const q=clean(command),jobs=getJobs();
+    if(!jobs.length)return{job:null,matches:[],reason:'no-jobs'};
+    if(/\b(this|current|selected)\s+(job|position|role|opening)\b/.test(q)&&window.currentVoiceTargetJobId){
+      const c=jobs.find(j=>String(j.id)===String(window.currentVoiceTargetJobId));if(c)return{job:c,matches:[c],reason:'matched'};
+    }
+    let target=q.replace(/\b(i want you to|i need you to|please|can you|could you|would you|help me|send my resume|submit my application|apply for|apply to|apply me|apply|submit|send|hey|okay|ok)\b/g,' ').replace(/\b(the|a|an|job|position|role|opening|application|application for)\b/g,' ').replace(/\s+/g,' ').trim();
+    const scored=jobs.map(j=>{
+      const title=clean(jobTitle(j)),comp=clean(company(j));let score=0;
+      if(target&&title===target)score+=100;if(target&&title.includes(target))score+=70;if(target&&target.includes(title)&&title.length>4)score+=65;if(comp&&target.includes(comp))score+=45;
+      const words=target.split(/\s+/).filter(w=>w.length>=3);score+=Math.min(words.filter(w=>title.includes(w)||comp.includes(w)).length*12,48);
+      return{job:j,score};
+    }).sort((a,b)=>b.score-a.score);
+    const top=scored.filter(x=>x.score>0);if(!top.length)return{job:null,matches:[],reason:'not-found'};
+    const best=top[0],tied=top.filter(x=>x.score>=Math.max(25,best.score-10));
+    return tied.length>1?{job:null,matches:tied.slice(0,4).map(x=>x.job),reason:'ambiguous'}:{job:best.job,matches:[best.job],reason:'matched'};
+  }
+  function getAppliedJobsSafe(){try{return JSON.parse(localStorage.getItem('appliedJobIds')||'[]').map(String);}catch(e){return[];}}
+
+  async function submitVoiceApplication(job){
+    if(!job)return;
+    const requestToken=voiceRequestToken;
+    showJobInDiscovery(job);
+    const b=buildJobBrief(job);
+    const announcement=`I found ${b.title} at ${b.comp}. Location: ${b.location}. Employment type: ${b.type}. Experience: ${b.experience}. Salary: ${b.salary}. ${b.skills?'Key skills: '+b.skills+'. ':''}I am checking your profile and master resume before submitting the application.`;
+    setStatus('Job found','thinking');setResult(announcement);speak(announcement);
+    await new Promise(r=>setTimeout(r,Math.min(5000,Math.max(2200,announcement.length*24))));
+    if(requestToken!==voiceRequestToken)return;
+    if(job.id&&getAppliedJobsSafe().includes(String(job.id))){
+      const msg=`You have already applied for ${jobTitle(job)}${company(job)?' at '+company(job):''}. I have not submitted another application.`;
+      setStatus('Already applied');setResult(msg);speak(msg);return;
+    }
+    const name=(el('candidateFullName')?.value||'').trim();
+    const email=(el('candidateEmailAddress')?.value||localStorage.getItem('candidateLoggedInEmail')||'').trim();
+    const exp=(el('candidateExperience')?.value||'').trim();
+    const resume=window.candidateMasterResumeUrl||'';
+    if(!name||!email||!exp||!resume){
+      const missing=[];if(!name)missing.push('full name');if(!email)missing.push('email');if(!exp)missing.push('experience');if(!resume)missing.push('master resume');
+      const msg=`I found ${jobTitle(job)}${company(job)?' at '+company(job):''}, but your ${missing.join(', ')} ${missing.length===1?'is':'are'} missing. I will not submit until your candidate details are complete.`;
+      setStatus('Profile needs attention','error');setResult(msg);speak(msg);return;
+    }
+    if(window.checkSubscriptionRequirement){
+      const needsSub=await window.checkSubscriptionRequirement();
+      if(needsSub){
+        window.currentApplyingJobId=job.id;window.currentApplyingJobTitle=jobTitle(job);window.currentApplyingJobCompany=company(job);
+        if(window.openApplyModalForJob)window.openApplyModalForJob(job.id,jobTitle(job),company(job));
+        if(window.showPremiumModal)window.showPremiumModal();
+        const msg=`Your current plan requires an upgrade before I can submit ${jobTitle(job)}${company(job)?' at '+company(job):''}. I opened the application options for you.`;
+        setStatus('Subscription required','error');setResult(msg);speak(msg);return;
+      }
+    }
+    setStatus('Submitting application','thinking');
+    const progress=`Submitting your application for ${jobTitle(job)}${company(job)?' at '+company(job):''} using your latest profile and master resume.`;
+    setResult(progress);speak(progress);
+    try{
+      window.currentApplyingJobId=job.id;window.currentApplyingJobTitle=jobTitle(job);window.currentApplyingJobCompany=company(job);window.currentApplyingJobDescription=job.description||'';window.currentApplyingResumeUrl=resume;
+      if(requestToken!==voiceRequestToken)return;
+      const ok=window.submitToFirebase?await window.submitToFirebase(job.id):false;
+      if(requestToken!==voiceRequestToken)return;
+      if(ok){
+        if(window.markJobAsApplied)window.markJobAsApplied(job.id);
+        else{const ids=getAppliedJobsSafe();if(!ids.includes(String(job.id))){ids.push(String(job.id));localStorage.setItem('appliedJobIds',JSON.stringify(ids));}}
+        if(window.syncAppliedJobsFromServer)await window.syncAppliedJobsFromServer();
+        if(window.triggerRefreshApplications)await window.triggerRefreshApplications();
+        const msg=`Your application for ${jobTitle(job)}${company(job)?' at '+company(job):''} was submitted successfully. I also updated your application record.`;
+        setStatus('Application submitted');setResult(msg);speak(msg);
+      }else{
+        const msg='The application could not be submitted, so I have not marked it as submitted. Please review your profile and try again.';
+        setStatus('Not submitted','error');setResult(msg);speak(msg);
+      }
+    }catch(e){
+      console.error('Voice AI application error:',e);
+      const msg='The application service returned an error. I have not marked the application as submitted.';
+      setStatus('Submission error','error');setResult(msg);speak(msg);
+    }finally{window.currentApplyingJobId=null;}
+  }
+
+  // Dashboard-aware command layer: every meaningful dashboard word is mapped to the
+  // actual section/feature first, before falling back to generic career assistance.
+  const dashboardMap={
+    'profile completeness':{section:'profileSection',label:'Profile completeness',msg:'Profile completeness shows how complete your candidate profile is. Open My Profile to update missing details.'},
+    'ats readiness':{section:'careerCopilotSection',label:'ATS readiness',msg:'ATS readiness shows how ready your profile, resume, skills and summary are for recruiter screening. Open Career Copilot to see what needs attention.'},
+    'skills':{section:'profileSection',label:'Skills',msg:'Your Skills area is in My Profile. Add your real core skills one by one and save them. These skills are used for job matching.'},
+    'skill':{section:'profileSection',label:'Skills',msg:'Your Skills area is in My Profile. Add your real core skills one by one and save them. These skills are used for job matching.'},
+    'resume':{section:'profileSection',label:'Master Profile Resume',msg:'Your Master Profile Resume is in My Profile. Upload your latest resume there so the AI can use it for matching and applications.'},
+    'cv':{section:'profileSection',label:'Master Profile Resume',msg:'Your Master Profile Resume is in My Profile. Upload your latest resume there so the AI can use it for matching and applications.'},
+    'ai summary':{section:'profileSection',label:'AI Summary',msg:'AI Summary is your recruiter-facing professional summary. Generate it from your profile, review it, edit it if needed, and save the generated profile details.'},
+    'summary':{section:'profileSection',label:'AI Summary',msg:'Your professional summary appears in My Profile. Keep it concise, relevant to your target roles, and based on your real experience.'},
+    'profile':{section:'profileSection',label:'My Profile',msg:'My Profile contains your candidate information, skills, resume and professional summary. Keep these details accurate before applying.'},
+    'career copilot':{section:'careerCopilotSection',label:'Career Copilot',msg:'Career Copilot checks your profile readiness and shows recommended actions and employer skill gaps.'},
+    'copilot':{section:'careerCopilotSection',label:'Career Copilot',msg:'Career Copilot checks your profile readiness and shows recommended actions and employer skill gaps.'},
+    'job discovery':{section:'browseSection',label:'Job Discovery',msg:'Job Discovery is where you search and review active openings by title, company and available filters.'},
+    'job search':{section:'browseSection',label:'Job Discovery',msg:'Job Search is part of Job Discovery. Tell me a job title and I will search the available openings for you.'},
+    'find jobs':{section:'browseSection',label:'Job Discovery',msg:'I can open Job Discovery and search the available jobs for the title you mention.'},
+    'job match':{section:'browseSection',label:'AI Job Match',msg:'AI Job Match compares your profile and resume with a job and explains the match, strengths and gaps.'},
+    'ai match':{section:'browseSection',label:'AI Job Match',msg:'AI Job Match compares your profile and resume with a job and explains the match, strengths and gaps.'},
+    'my ai agent':{section:'aiAgentSection',label:'My AI Agent',msg:'My AI Agent helps analyse your profile and active opportunities and prepares you for applications.'},
+    'ai agent':{section:'aiAgentSection',label:'My AI Agent',msg:'My AI Agent helps analyse your profile and active opportunities and prepares you for applications.'},
+    'applications':{section:'applicationsSection',label:'My Applications',msg:'My Applications shows the jobs you have submitted and their current application information.'},
+    'my applications':{section:'applicationsSection',label:'My Applications',msg:'My Applications shows the jobs you have submitted and their current application information.'},
+    'billing':{section:'subscriptionsSection',label:'Billing & Payments',msg:'Billing & Payments contains your subscription and payment information.'},
+    'payments':{section:'subscriptionsSection',label:'Billing & Payments',msg:'Billing & Payments contains your subscription and payment information.'},
+    'subscription':{section:'subscriptionsSection',label:'Billing & Payments',msg:'Your subscription options and payment information are available in Billing & Payments.'},
+    'premium':{section:'subscriptionsSection',label:'Premium',msg:'Premium options are available in Billing & Payments. Open that section to review available plans and benefits.'},
+    'premium ready':{section:'profileSection',label:'Premium Ready',msg:'Premium Ready refers to your AI profile-generation access. Your current status is shown in the profile area.'},
+    'select details':{section:'profileSection',label:'Select Details',msg:'Select Details is used to review or choose the profile information you want to continue with.'},
+    'save generated profile details':{section:'profileSection',label:'Save generated profile details',msg:'Use this option after reviewing your AI-generated profile details if you want to save them to your candidate profile.'},
+    'guidelines':{section:'aiAgentSection',label:'AI Career Assistant',msg:'The static Guidelines area has been replaced by the AI Career Assistant. Ask me about any dashboard feature and I will guide you.'}
+  };
+
+  function dashboardAwareHelp(command){
+    const q=clean(command);
+    if(!q)return false;
+    // Longer phrases first so "profile completeness" wins over "profile".
+    const keys=Object.keys(dashboardMap).sort((a,b)=>b.length-a.length);
+    const hit=keys.find(k=>new RegExp('(^|\\b)'+k.replace(/[.*+?^${}()|[\\]\\\\]/g,'\\\\$&')+'(\\b|$)','i').test(q));
+    if(hit){
+      const h=dashboardMap[hit];
+      smoothTo(h.section);
+      setStatus('Dashboard help');setResult(h.msg);
+      const box=el('careerHelpText');if(box)box.textContent=h.msg;
+      // Highlight the matching visible dashboard text when possible without changing its action.
+      setTimeout(()=>{
+        const nodes=[...document.querySelectorAll('h1,h2,h3,h4,label,button,.section-title,.card-title,.stat-label,.profile-label,.ai-title')];
+        const n=nodes.find(x=>clean(x.textContent).includes(clean(h.label)));
+        if(n){n.scrollIntoView({behavior:'smooth',block:'center'});n.style.outline='2px solid #2563eb';n.style.outlineOffset='4px';setTimeout(()=>{n.style.outline='';n.style.outlineOffset='';},1800);}
+      },250);
+      speak(h.msg);return true;
+    }
+    return false;
+  }
+
+  function dashboardElementAnswer(command){
+    const q=clean(command);
+    if(!q)return false;
+    // Handle direct dashboard actions/words that may not have a dedicated help card.
+    if(/^(start|generate|edit|add skill|upload resume|save|select details|see all|apply now|bookmark|share|copy link)$/i.test(q)){
+      const map={
+        'add skill':()=>answerHelp('skills'),'upload resume':()=>answerHelp('resume'),
+        'start':()=>answerHelp('agent'),'generate':()=>answerHelp('summary'),
+        'edit':()=>answerHelp('summary'),'save':()=>answerHelp('profile'),
+        'select details':()=>answerHelp('profile'),'see all':()=>answerHelp('jobs'),
+        'apply now':()=>{const m='Apply Now submits an application for the currently selected job after the required candidate information is available. Say the job title if you want me to find it.';setStatus('Application help');setResult(m);speak(m);return true;},
+        'bookmark':()=>{const m='Bookmark saves a job for later if that option is available on the job card. Open Job Discovery to use it.';setStatus('Job help');setResult(m);speak(m);return true;},
+        'share':()=>{const m='Share lets you share a job link with another person. Open the relevant job in Job Discovery to use it.';setStatus('Job help');setResult(m);speak(m);return true;},
+        'copy link':()=>{const m='Copy Link copies the selected job link so you can share it. Open the relevant job in Job Discovery to use it.';setStatus('Job help');setResult(m);speak(m);return true;}
+      };
+      return map[q]?map[q]():false;
+    }
+    return false;
+  }
+
+  async function handleCommand(raw){showVoiceCareerPanel();updateGlobalVoicePanelUser(raw);updateGlobalVoicePanelStatus('Working…');
+    const command=String(raw||'').trim();if(!command)return;
+    setTranscript('You said: “'+command+'”');setStatus('Thinking','thinking');setResult('');
+    const q=clean(command);
+
+    // First resolve words/phrases that actually exist in this dashboard.
+    // This keeps the assistant contextual and prevents unrelated answers.
+    if(dashboardAwareHelp(command))return;
+    if(dashboardElementAnswer(command))return;
+
+    if(/\b(what is|what does|tell me about|explain|how do i|how can i|where do i|where can i|help me|guide me)\b/.test(q)){
+      if(/\bskills?\b/.test(q))return answerHelp('skills');
+      if(/\bresume|cv\b/.test(q))return answerHelp('resume');
+      if(/\bsummary\b/.test(q))return answerHelp('summary');
+      if(/\bcareer copilot|copilot\b/.test(q))return answerHelp('copilot');
+      if(/\bjob discovery|find jobs|search jobs\b/.test(q))return answerHelp('jobs');
+      if(/\bapplications?|applied\b/.test(q))return answerHelp('applications');
+      if(/\bbilling|payment|subscription\b/.test(q))return answerHelp('billing');
+      if(/\bai agent|career agent\b/.test(q))return answerHelp('agent');
+      if(/\bprofile\b/.test(q))return answerHelp('profile');
+    }
+
+    if(/\b(stop|cancel|never mind|nevermind)\b/.test(q)){window.stopVoiceCareerAgent();const msg='Understood. I stopped the request. No application was submitted.';setStatus('Ready');setResult(msg);speak(msg);return;}
+    if(/\b(show|open|view|check).*(applications?|applied|application status)/.test(q)||/\bmy applications?\b/.test(q))return answerHelp('applications');
+    if(/\b(profile|resume|cv).*(open|show|view|update|edit)/.test(q)||/\bmy profile\b/.test(q))return answerHelp('profile');
+    if(/\b(find|search|show|look for|browse).*(jobs?|roles?|positions?|openings?)/.test(q))return answerHelp('jobs');
+
+    if(/\b(apply|submit|send).*(job|role|position|opening|application)|\bapply\b/.test(q)){
+      const found=findJobFromCommand(command);
+      if(found.reason==='no-jobs'){const msg='There are no active jobs available right now, so I cannot submit an application.';setStatus('No active jobs','error');setResult(msg);speak(msg);return;}
+      if(found.reason==='ambiguous'){const list=found.matches.map((j,i)=>`${i+1}. ${jobTitle(j)}${company(j)?' at '+company(j):''}`).join('; ');const msg=`I found more than one matching job: ${list}. Please say the exact job title or company name.`;setStatus('More detail needed','error');setResult(msg);speak(msg);return;}
+      if(found.reason==='not-found'){const msg='I could not find an active job matching that request. Please say the job title exactly as shown in Job Discovery.';setStatus('Job not found','error');setResult(msg);speak(msg);return;}
+      return submitVoiceApplication(found.job);
+    }
+
+    const titleOnlyMatch=findJobFromCommand(command);
+    if(titleOnlyMatch.reason==='matched'&&titleOnlyMatch.job){
+      const job=titleOnlyMatch.job;showJobInDiscovery(job);const b=buildJobBrief(job);
+      const msg=`I found ${b.title} at ${b.comp}. Location: ${b.location}. Experience: ${b.experience}. Salary: ${b.salary}. I opened it in Job Discovery. If you want me to apply, say “apply for this job”.`;
+      setStatus('Job found');setResult(msg);speak(msg);return;
+    }
+
+    professionalScopeReply();
+  }
+
+  function showVoiceCareerPanel(){
+    const p=document.getElementById('globalVoicePanel');
+    if(p)p.classList.add('show');
+  }
+  function hideVoiceCareerPanel(){
+    const p=document.getElementById('globalVoicePanel');
+    if(p)p.classList.remove('show');
+  }
+  function updateGlobalVoicePanelStatus(text){
+    const s=document.getElementById('globalVoicePanelStatus');
+    if(s)s.textContent=text||'Ready to help';
+  }
+  function updateGlobalVoicePanelMessage(text){
+    const m=document.getElementById('globalVoiceAIMessage');
+    if(m&&text)m.textContent=text;
+  }
+  function updateGlobalVoicePanelUser(text){
+    const m=document.getElementById('globalVoiceUserMessage');
+    if(m){m.hidden=!text;m.textContent=text||'';}
+  }
+  window.closeVoiceCareerPanel=function(){
+    if(listening||speaking||window.__voiceCareerAgentListening||window.__voiceCareerAgentSpeaking) window.stopVoiceCareerAgent();
+    hideVoiceCareerPanel();
+  };
+
+  window.toggleVoiceCareerAgent=function(){
+    if(listening || speaking || window.__voiceCareerAgentListening || window.__voiceCareerAgentSpeaking){
+      window.stopVoiceCareerAgent();
+      return;
+    }
+    if(!SpeechRecognition){
+      const msg='Voice input is not supported in this browser. Please use Chrome or Edge and allow microphone access.';
+      setStatus('Voice unavailable','error');setResult(msg);speak(msg);return;
+    }
+    if(listening){window.stopVoiceCareerAgent();return;}
+    try{
+      showVoiceCareerPanel();
+      updateGlobalVoicePanelStatus('Connecting…');
+      recognition=new SpeechRecognition();recognition.lang='en-IN';recognition.interimResults=true;recognition.continuous=false;recognition.maxAlternatives=1;
+      recognition.onstart=()=>{showVoiceCareerPanel();listening=true;window.__voiceCareerAgentListening=true;updateGlobalVoicePanelStatus('Listening…');el('voiceAgentIcon')?.classList.add('listening');el('globalVoiceCareerButton')?.classList.add('listening');if(el('globalVoiceCareerButton'))el('globalVoiceCareerButton').querySelector('.global-voice-label').textContent='Listening…';setStatus('Listening','listening');setResult('I am listening. Tell me what you need help with.');updateGlobalVoicePanelMessage('I’m listening. Tell me what you need help with.');updateGlobalVoicePanelUser('');el('voiceAgentMicBtn')&&(el('voiceAgentMicBtn').style.display='none');el('voiceAgentStopBtn')&&(el('voiceAgentStopBtn').style.display='inline-flex');};
+      recognition.onresult=event=>{let interim='',finalText='';for(let i=event.resultIndex;i<event.results.length;i++){const t=event.results[i][0]?.transcript||'';if(event.results[i].isFinal)finalText+=t;else interim+=t;}if(interim)setTranscript('Listening: “'+interim+'”');if(finalText)handleCommand(finalText);};
+      recognition.onerror=event=>{console.warn('Voice recognition error:',event.error);if(event.error==='not-allowed'||event.error==='service-not-allowed'){const msg='Microphone access is blocked. Allow microphone permission for this site and try again.';setStatus('Microphone blocked','error');setResult(msg);speak(msg);}else if(event.error!=='aborted'){setStatus('Voice error','error');setResult('I could not hear that clearly. Please try again.');}};
+      recognition.onend=()=>{listening=false;window.__voiceCareerAgentListening=false;el('voiceAgentIcon')?.classList.remove('listening');el('globalVoiceCareerButton')?.classList.remove('listening');if(el('voiceAgentMicBtn'))el('voiceAgentMicBtn').style.display='inline-flex';if(el('voiceAgentStopBtn'))el('voiceAgentStopBtn').style.display='none';};
+      recognition.start();
+    }catch(e){console.error('Voice agent start failed:',e);setStatus('Voice unavailable','error');setResult('Voice input could not be started. Please use Chrome or Edge and allow microphone access.');}
+  };
+  window.stopVoiceCareerAgent=function(){
+    voiceRequestToken++;
+    try{if(recognition)recognition.abort();}catch(e){try{if(recognition)recognition.stop();}catch(_){} }
+    try{if('speechSynthesis' in window)window.speechSynthesis.cancel();}catch(e){}
+    recognition=null;
+    listening=false;
+    speaking=false;
+    window.__voiceCareerAgentListening=false;
+    window.__voiceCareerAgentSpeaking=false;
+    el('voiceAgentIcon')?.classList.remove('listening');
+    el('globalVoiceCareerButton')?.classList.remove('listening');
+    el('globalVoiceCareerButton')?.classList.remove('speaking');
+    if(el('voiceAgentMicBtn'))el('voiceAgentMicBtn').style.display='inline-flex';
+    if(el('voiceAgentStopBtn'))el('voiceAgentStopBtn').style.display='none';
+    setStatus('Stopped');
+    updateGlobalVoicePanelStatus('Conversation stopped');
+    updateGlobalVoicePanelMessage('Conversation stopped. No application will be submitted from the stopped request.');
+  };
+  window.handleVoiceCareerCommand=handleCommand;
+})();
+</script>
+
 <!-- AI AGENT PROFESSIONAL SUCCESS POPUP: popup-only enhancement -->
 <style>
   .ai-success-overlay{position:fixed;inset:0;z-index:99999;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(15,23,42,.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);animation:aiSuccessFade .18s ease}
@@ -6370,5 +6755,169 @@ window.addEventListener('keydown', function(e){
 });
 </script>
 
+
+<script id="career-copilot-script">
+(function(){
+  const SKILLS = [
+    'javascript','typescript','react','next.js','vue','angular','node.js','node','python','java','c++','c#','php','ruby','go','golang','rust',
+    'sql','mysql','postgresql','mongodb','firebase','supabase','aws','azure','gcp','google cloud','docker','kubernetes','terraform','devops',
+    'git','github','html','css','tailwind','figma','power bi','tableau','excel','data analysis','machine learning','artificial intelligence','ai',
+    'spring boot','django','flask','fastapi','laravel','serviceNow','salesforce','sap','cybersecurity','networking','linux','windows','rest api','graphql',
+    'project management','product management','business analysis','recruiting','talent acquisition','communication','leadership','marketing','seo'
+  ];
+  const esc=s=>String(s||'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+  const val=id=>(document.getElementById(id)?.value||'').trim();
+  const pct=n=>Math.max(0,Math.min(100,Math.round(Number(n)||0)));
+
+  function getProfile(){
+    const skills=(val('candidateSkills')||'').toLowerCase();
+    const about=val('candidateAbout');
+    const name=val('candidateFullName');
+    const phone=val('candidatePhone');
+    const exp=val('candidateExperience');
+    const loc=val('candidateLocation') || ((document.getElementById('candidateCitySelect')?.value||'')+' '+(document.getElementById('candidateStateSelect')?.value||'')).trim();
+    const resume=!!window.candidateMasterResumeUrl || !!document.getElementById('resumeFileName')?.textContent?.trim() && !/no resume/i.test(document.getElementById('resumeFileName').textContent);
+    return {skills,about,name,phone,exp,loc,resume};
+  }
+
+  function extractSkills(text){
+    const lower=String(text||'').toLowerCase();
+    return SKILLS.filter(k=>lower.includes(k.toLowerCase()));
+  }
+
+  function allJobText(){
+    const jobs=window.allJobsData||{};
+    return Object.values(jobs).map(j=>[j.jobtitle,j.description,j.experience,j.location].filter(Boolean).join(' ')).join(' ');
+  }
+
+  function renderProgress(id,score){
+    const b=document.getElementById(id+'Bar'), p=document.getElementById(id+'Pct');
+    if(b)b.style.width=pct(score)+'%'; if(p)p.textContent=pct(score)+'%';
+  }
+
+  function renderActions(p,score){
+    const root=document.getElementById('copilotActions'); if(!root)return;
+    const actions=[];
+    if(!p.resume) actions.push({icon:'fa-file-arrow-up',title:'Upload your Master Resume',text:'A resume is required for meaningful job matching.',button:'Upload Resume',fn:"document.getElementById('resumeInput')?.click()"});
+    if(!p.skills) actions.push({icon:'fa-tags',title:'Add at least 3 core skills',text:'Skills help the matcher understand which roles fit you.',button:'Add Skills',fn:"document.getElementById('candidateSkills')?.focus();smoothTo('profileSection')"});
+    if(!p.about) actions.push({icon:'fa-wand-magic-sparkles',title:'Generate your professional summary',text:'A clear summary improves recruiter-facing profile quality.',button:'Generate',fn:'window.generateProfileWithAI&&window.generateProfileWithAI()'});
+    if(score<70 && p.resume && p.skills) actions.push({icon:'fa-bullseye',title:'Run the AI Career Agent',text:'Let the existing agent analyze your available opportunities.',button:'Run Agent',fn:'window.runAIAgent&&window.runAIAgent()'});
+    if(!actions.length) actions.push({icon:'fa-compass',title:'Explore your strongest matches',text:'Your core profile is ready. Review the ranked jobs and compare the match reasons.',button:'View Jobs',fn:"smoothTo('browseSection')"});
+    root.innerHTML=actions.slice(0,3).map(a=>`<div class="next-action"><div class="next-action-icon"><i class="fa-solid ${a.icon}"></i></div><div style="flex:1"><b>${esc(a.title)}</b><span>${esc(a.text)}</span><button class="copilot-action-btn" style="margin-top:8px" onclick="${a.fn}">${esc(a.button)}</button></div></div>`).join('');
+  }
+
+  function renderSkillGaps(p){
+    const root=document.getElementById('copilotSkillGaps'); if(!root)return;
+    const jobsText=allJobText();
+    if(!jobsText){root.innerHTML='<span class="copilot-empty">No job descriptions loaded yet. Refresh Job Discovery first.</span>';return;}
+    const have=new Set(extractSkills(p.skills+' '+p.about));
+    const found=extractSkills(jobsText).filter(x=>!have.has(x));
+    const counts={};
+    Object.values(window.allJobsData||{}).forEach(j=>{
+      const skills=extractSkills([j.jobtitle,j.description].join(' '));
+      skills.forEach(k=>{if(!have.has(k))counts[k]=(counts[k]||0)+1;});
+    });
+    const top=found.sort((a,b)=>(counts[b]||0)-(counts[a]||0)).slice(0,8);
+    root.innerHTML=top.length?top.map(k=>`<span class="copilot-skill">${esc(k)} <small>${counts[k]||1} jobs</small></span>`).join(''):'<span class="copilot-empty">No obvious skill gaps found in the currently loaded jobs.</span>';
+  }
+
+  window.refreshCareerCopilot=function(){
+    const p=getProfile();
+    const profileScore=[p.name,p.phone,p.exp,p.loc].filter(Boolean).length/4*100;
+    const resumeScore=p.resume?100:0;
+    const skillCount=extractSkills(p.skills).length;
+    const skillsScore=skillCount?Math.min(100,40+skillCount*15):0;
+    const summaryScore=p.about.length>=120?100:p.about.length?Math.min(90,Math.round(p.about.length/120*100)):0;
+    const score=Math.round(profileScore*.25+resumeScore*.30+skillsScore*.25+summaryScore*.20);
+    const ring=document.getElementById('copilotReadinessRing');
+    if(ring)ring.style.setProperty('--score-angle',(score*3.6)+'deg');
+    const scoreEl=document.getElementById('copilotReadinessScore'); if(scoreEl)scoreEl.textContent=score+'%';
+    let label='Needs attention', text='Complete the missing pieces below to improve your job readiness.';
+    if(score>=85){label='Recruiter ready';text='Your profile has the essentials. Focus on targeted roles and closing specific skill gaps.';}
+    else if(score>=65){label='Almost ready';text='Your profile is usable, but a few improvements can materially strengthen your matches.';}
+    else if(score>=40){label='Building momentum';text='You have a starting point. Complete your resume, skills and summary before applying heavily.';}
+    const l=document.getElementById('copilotReadinessLabel'), t=document.getElementById('copilotReadinessText'); if(l)l.textContent=label;if(t)t.textContent=text;
+    renderProgress('copilotProfile',profileScore);renderProgress('copilotResume',resumeScore);renderProgress('copilotSkills',skillsScore);renderProgress('copilotSummary',summaryScore);
+    renderActions(p,score);renderSkillGaps(p);
+    const stamp=document.getElementById('copilotUpdatedAt');if(stamp)stamp.textContent='Updated '+new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+  };
+
+  ['candidateFullName','candidatePhone','candidateExperience','candidateLocation','candidateSkills','candidateAbout','candidateCitySelect','candidateStateSelect'].forEach(id=>{
+    const el=document.getElementById(id); if(el){el.addEventListener('input',()=>{clearTimeout(window.__copilotTimer);window.__copilotTimer=setTimeout(window.refreshCareerCopilot,250);});el.addEventListener('change',window.refreshCareerCopilot);}
+  });
+  document.addEventListener('DOMContentLoaded',()=>setTimeout(window.refreshCareerCopilot,900));
+  window.addEventListener('load',()=>setTimeout(window.refreshCareerCopilot,1800));
+})();
+</script>
+
+
+<!-- GLOBAL VOICE AI CAREER AGENT BUTTON -->
+<div class="global-voice-agent" id="globalVoiceAgent" aria-label="AI Career Assistant">
+  <div class="global-voice-panel" id="globalVoicePanel" aria-live="polite">
+    <div class="global-voice-panel-head">
+      <div class="global-voice-avatar"><i class="fa-solid fa-headset"></i><span class="global-voice-online"></span></div>
+      <div class="global-voice-panel-title">
+        <strong>AI Career Assistant</strong>
+        <span id="globalVoicePanelStatus">Ready to help</span>
+      </div>
+      <button type="button" class="global-voice-close" onclick="window.closeVoiceCareerPanel&&window.closeVoiceCareerPanel()" aria-label="Close AI assistant"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="global-voice-panel-body">
+      <div class="global-voice-ai-message" id="globalVoiceAIMessage">Hi! I’m your AI Career Assistant. Say any word or feature you see on this dashboard—Skills, Resume, AI Summary, Job Discovery, Applications, Billing, Career Copilot, ATS Readiness or a job title—and I’ll guide you to the matching place and explain it.</div>
+      <div class="global-voice-user-message" id="globalVoiceUserMessage" hidden></div>
+    </div>
+    <div class="global-voice-panel-actions">
+      <button type="button" class="global-voice-panel-stop" id="globalVoicePanelStop" onclick="window.stopVoiceCareerAgent&&window.stopVoiceCareerAgent()"><i class="fa-solid fa-stop"></i> Stop conversation</button>
+    </div>
+  </div>
+  <button type="button" id="globalVoiceCareerButton" class="global-voice-button" onclick="window.toggleVoiceCareerAgent && window.toggleVoiceCareerAgent()" title="Talk to AI Career Agent">
+    <span class="global-voice-icon"><i class="fa-solid fa-microphone"></i></span>
+    <span class="global-voice-label">Talk to Career Assistant</span>
+  </button>
+</div>
+
+<style id="global-voice-agent-style">
+.global-voice-agent{position:fixed;right:24px;bottom:24px;z-index:99999;display:flex;flex-direction:column;align-items:flex-end;gap:8px;font-family:inherit}
+.global-voice-button{border:0;border-radius:999px;background:#2563eb;color:#fff;min-height:52px;padding:7px 17px 7px 8px;display:flex;align-items:center;gap:9px;font-size:13px;font-weight:800;cursor:pointer;box-shadow:0 10px 28px rgba(37,99,235,.30);transition:transform .18s,box-shadow .18s,background .18s}
+.global-voice-button:hover{transform:translateY(-2px);background:#1d4ed8;box-shadow:0 14px 32px rgba(37,99,235,.36)}
+.global-voice-button.speaking{background:#dc2626;box-shadow:0 10px 28px rgba(220,38,38,.34);animation:globalVoiceStopPulse 1.2s infinite}.global-voice-button.listening{background:#16a34a;box-shadow:0 10px 28px rgba(22,163,74,.34);animation:globalVoicePulse 1.2s infinite}
+.global-voice-icon{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.18);display:flex;align-items:center;justify-content:center;font-size:16px}
+.global-voice-label{white-space:nowrap}
+.global-voice-panel{display:none;width:min(370px,calc(100vw - 28px));overflow:hidden;border:1px solid #dbe7fb;border-radius:18px;background:#fff;color:#17233a;box-shadow:0 18px 50px rgba(15,23,42,.18);animation:globalVoicePanelIn .2s ease}
+.global-voice-panel.show{display:block}
+.global-voice-panel-head{display:flex;align-items:center;gap:10px;padding:13px 14px;border-bottom:1px solid #edf2f7;background:linear-gradient(135deg,#f8fbff,#eef5ff)}
+.global-voice-avatar{width:40px;height:40px;position:relative;flex:0 0 40px;border-radius:13px;background:#2563eb;color:#fff;display:flex;align-items:center;justify-content:center;font-size:17px;box-shadow:0 6px 16px rgba(37,99,235,.22)}
+.global-voice-online{position:absolute;right:-2px;bottom:-2px;width:10px;height:10px;border-radius:50%;background:#22c55e;border:2px solid #fff}
+.global-voice-panel-title{min-width:0;display:flex;flex-direction:column;gap:2px;flex:1}.global-voice-panel-title strong{font-size:14px}.global-voice-panel-title span{font-size:11px;color:#64748b}
+.global-voice-close{width:30px;height:30px;border:0;border-radius:8px;background:transparent;color:#64748b;cursor:pointer}.global-voice-close:hover{background:#e8eef8;color:#1e293b}
+.global-voice-panel-body{padding:13px 14px;max-height:230px;overflow:auto}.global-voice-ai-message{padding:11px 12px;border-radius:13px 13px 13px 4px;background:#eff6ff;color:#1e3a8a;font-size:12.5px;line-height:1.55}.global-voice-user-message{margin-top:9px;padding:10px 12px;border-radius:13px 13px 4px 13px;background:#f1f5f9;color:#334155;font-size:12px;line-height:1.5}
+.global-voice-panel-actions{padding:10px 14px;border-top:1px solid #edf2f7}.global-voice-panel-stop{width:100%;border:1px solid #fecaca;border-radius:10px;padding:9px 12px;background:#fff;color:#dc2626;font-size:12px;font-weight:800;cursor:pointer}.global-voice-panel-stop:hover{background:#fef2f2}
+@keyframes globalVoicePanelIn{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes globalVoiceStopPulse{0%,100%{box-shadow:0 10px 28px rgba(220,38,38,.30),0 0 0 0 rgba(220,38,38,.22)}50%{box-shadow:0 10px 28px rgba(220,38,38,.30),0 0 0 10px rgba(220,38,38,0)}}
+@keyframes globalVoicePulse{0%,100%{box-shadow:0 10px 28px rgba(22,163,74,.28),0 0 0 0 rgba(22,163,74,.25)}50%{box-shadow:0 10px 28px rgba(22,163,74,.28),0 0 0 11px rgba(22,163,74,0)}}
+body.dark-mode .global-voice-panel{background:#111f3d;border-color:#334155;color:#e2e8f0}.dark-mode .global-voice-panel-head{background:linear-gradient(135deg,#172554,#111f3d);border-color:#334155}.dark-mode .global-voice-panel-title span{color:#94a3b8}.dark-mode .global-voice-panel-body{border-color:#334155}.dark-mode .global-voice-ai-message{background:#172554;color:#bfdbfe}.dark-mode .global-voice-user-message{background:#1e293b;color:#cbd5e1}.dark-mode .global-voice-panel-actions{border-color:#334155}.dark-mode .global-voice-panel-stop{background:#111f3d;border-color:#7f1d1d;color:#fca5a5}
+@media(max-width:680px){.global-voice-agent{right:14px;bottom:14px}.global-voice-panel{width:min(370px,calc(100vw - 28px))}.global-voice-button{min-height:48px;padding-right:14px}.global-voice-icon{width:34px;height:34px}.global-voice-label{font-size:12px}}
+</style>
+
+<script id="global-voice-agent-ui-script">
+(function(){
+  function syncVoiceButton(){
+    const btn=document.getElementById('globalVoiceCareerButton');
+    const icon=btn?.querySelector('.global-voice-icon i');
+    const label=btn?.querySelector('.global-voice-label');
+    if(!btn)return;
+    const listening=window.__voiceCareerAgentListening===true;
+    const speaking=window.__voiceCareerAgentSpeaking===true;
+    const busy=listening||speaking;
+    btn.classList.toggle('listening',listening);
+    btn.classList.toggle('speaking',speaking&&!listening);
+    if(icon) icon.className=busy?'fa-solid fa-stop':'fa-solid fa-microphone';
+    if(label) label.textContent=busy?(speaking?'Stop AI':'Stop'):'Talk to AI';
+    btn.title=busy?'Stop AI conversation':'Talk to AI Career Agent';
+  }
+  window.setInterval(syncVoiceButton,150);
+  window.addEventListener('load',syncVoiceButton);
+})();
+</script>
 </body>
 </html>
