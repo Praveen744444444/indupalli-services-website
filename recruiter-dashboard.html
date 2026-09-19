@@ -258,6 +258,136 @@
             background: #dbeafe;
         }
 
+
+        /* ── AI HIRING ASSISTANT ACTION BUTTONS ── */
+        .ai-hiring-actions {
+            display:grid;
+            grid-template-columns:repeat(2,minmax(0,1fr));
+            gap:18px;
+            margin-top:22px;
+        }
+        .ai-action-card {
+            position:relative;
+            width:100%;
+            min-height:205px;
+            padding:22px 22px 20px;
+            text-align:left;
+            border-radius:20px;
+            cursor:pointer;
+            font-family:inherit;
+            overflow:hidden;
+            transition:transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+            box-shadow:0 8px 24px rgba(15,23,42,.06);
+        }
+        .ai-action-card::after {
+            content:"";
+            position:absolute;
+            width:150px;
+            height:150px;
+            border-radius:50%;
+            right:-65px;
+            bottom:-80px;
+            opacity:.45;
+            pointer-events:none;
+        }
+        .ai-action-card:hover {
+            transform:translateY(-4px);
+        }
+        .ai-action-card:focus-visible {
+            outline:3px solid rgba(37,99,235,.22);
+            outline-offset:3px;
+        }
+        .ai-action-post {
+            border:1px solid #bfdbfe;
+            background:linear-gradient(135deg,#f7fbff 0%,#edf5ff 58%,#e0edff 100%);
+        }
+        .ai-action-post:hover {
+            border-color:#60a5fa;
+            box-shadow:0 16px 34px rgba(37,99,235,.16);
+        }
+        .ai-action-post::after { background:#bfdbfe; }
+        .ai-action-screen {
+            border:1px solid #a7f3d0;
+            background:linear-gradient(135deg,#f5fffb 0%,#ecfdf5 58%,#d9fbe9 100%);
+        }
+        .ai-action-screen:hover {
+            border-color:#34d399;
+            box-shadow:0 16px 34px rgba(5,150,105,.14);
+        }
+        .ai-action-screen::after { background:#a7f3d0; }
+        .ai-action-top {
+            display:flex;
+            align-items:center;
+            justify-content:space-between;
+            gap:12px;
+            position:relative;
+            z-index:1;
+        }
+        .ai-action-icon {
+            width:50px;
+            height:50px;
+            border-radius:15px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-size:21px;
+            box-shadow:0 8px 18px rgba(15,23,42,.10);
+        }
+        .ai-action-post .ai-action-icon { background:#2563eb; color:#fff; }
+        .ai-action-screen .ai-action-icon { background:#059669; color:#fff; }
+        .ai-action-badge {
+            display:inline-flex;
+            align-items:center;
+            gap:6px;
+            padding:6px 10px;
+            border-radius:999px;
+            background:rgba(255,255,255,.86);
+            font-size:10px;
+            font-weight:900;
+            letter-spacing:.7px;
+            text-transform:uppercase;
+            box-shadow:0 4px 12px rgba(15,23,42,.06);
+        }
+        .ai-action-post .ai-action-badge { color:#1d4ed8; border:1px solid #bfdbfe; }
+        .ai-action-screen .ai-action-badge { color:#047857; border:1px solid #a7f3d0; }
+        .ai-action-title {
+            position:relative;
+            z-index:1;
+            margin-top:17px;
+            font-size:18px;
+            line-height:1.25;
+            font-weight:900;
+            letter-spacing:-.25px;
+            color:var(--navy);
+        }
+        .ai-action-description {
+            position:relative;
+            z-index:1;
+            margin-top:8px;
+            max-width:620px;
+            color:var(--text-muted);
+            font-size:12.5px;
+            line-height:1.65;
+        }
+        .ai-action-cta {
+            position:relative;
+            z-index:1;
+            display:inline-flex;
+            align-items:center;
+            gap:8px;
+            margin-top:17px;
+            font-size:12px;
+            font-weight:900;
+        }
+        .ai-action-post .ai-action-cta { color:#1d4ed8; }
+        .ai-action-screen .ai-action-cta { color:#047857; }
+        .ai-action-cta i { transition:transform .2s ease; }
+        .ai-action-card:hover .ai-action-cta i { transform:translateX(4px); }
+        @media (max-width:700px) {
+            .ai-hiring-actions { grid-template-columns:1fr; }
+            .ai-action-card { min-height:190px; }
+        }
+
         /* ── TABLE STYLING ── */
         .dashboard-table {
             width: 100%;
@@ -548,55 +678,6 @@
             .popup-actions { flex-direction: column; }
         }
 
-        .guideline-card {
-            background: #f8fafc;
-            border-left: 4px solid var(--primary);
-            border-radius: 12px;
-            padding: 18px 20px;
-            margin-bottom: 14px;
-            border-top: 1px solid var(--border-color);
-            border-right: 1px solid var(--border-color);
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        /* ── RECRUITER SOP GRID VIEW ── */
-        #guidelinesSection .sop-grid {
-            display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 18px;
-        }
-        #guidelinesSection .sop-grid .guideline-card {
-            margin-bottom: 0;
-            height: 100%;
-            padding: 20px;
-            border-left-width: 4px;
-            background: #ffffff;
-            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
-            transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
-        }
-        #guidelinesSection .sop-grid .guideline-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
-        }
-        #guidelinesSection .sop-grid .guideline-card strong {
-            display: block;
-            line-height: 1.4;
-            margin-bottom: 8px;
-        }
-        #guidelinesSection .sop-grid .guideline-card p {
-            margin: 0 !important;
-            line-height: 1.65;
-        }
-        @media (max-width: 1100px) {
-            #guidelinesSection .sop-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
-        }
-        @media (max-width: 700px) {
-            #guidelinesSection .sop-grid {
-                grid-template-columns: 1fr;
-            }
-        }
 
         @media (max-width: 992px) {
             .app-container { flex-direction: column; }
@@ -706,6 +787,36 @@
             }
         }
     </style>
+<style id="ai-talk-promo-style">
+/* AI TALK-TO-CREATE PROMO */
+.ai-talk-promo{
+  display:flex;align-items:center;gap:14px;margin:18px 0 4px;padding:14px 16px;
+  border:1px solid #c7d9ff;border-radius:14px;
+  background:linear-gradient(100deg,#eef5ff 0%,#f8fbff 58%,#effdf6 100%);
+  box-shadow:0 5px 18px rgba(37,99,235,.06);
+}
+.ai-talk-promo-icon{
+  width:42px;height:42px;flex:0 0 42px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  background:#2563eb;color:#fff;font-size:17px;box-shadow:0 7px 16px rgba(37,99,235,.20);
+}
+.ai-talk-promo-copy{min-width:0;flex:1;}
+.ai-talk-promo-title{font-size:14px;font-weight:850;color:#102a56;line-height:1.35;margin-bottom:3px;}
+.ai-talk-promo-text{font-size:12px;line-height:1.55;color:#60708a;}
+.ai-talk-promo-btn{
+  flex:0 0 auto;border:0;border-radius:10px;padding:10px 14px;background:#2563eb;color:#fff;
+  font-size:12px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:7px;
+  box-shadow:0 7px 16px rgba(37,99,235,.18);transition:transform .18s ease,box-shadow .18s ease,background .18s ease;
+}
+.ai-talk-promo-btn:hover{transform:translateY(-1px);background:#1d4ed8;box-shadow:0 10px 20px rgba(37,99,235,.24);}
+body.dark-mode .ai-talk-promo{background:linear-gradient(100deg,#111d35 0%,#101827 58%,#10241d 100%);border-color:#284777;}
+body.dark-mode .ai-talk-promo-title{color:#f3f7ff;}
+body.dark-mode .ai-talk-promo-text{color:#aab8cc;}
+@media(max-width:760px){
+  .ai-talk-promo{align-items:flex-start;flex-wrap:wrap;}
+  .ai-talk-promo-copy{flex:1 1 calc(100% - 60px);}
+  .ai-talk-promo-btn{width:100%;justify-content:center;}
+}
+</style>
 </head>
 
 <body>
@@ -738,9 +849,6 @@
                 </a>
                 <a href="#" onclick="smoothToSection('inboundResumesSection'); return false;" class="nav-link-pill">
                     <i class="fa-solid fa-users"></i> Inbound Candidates
-                </a>
-                <a href="#" onclick="smoothToSection('guidelinesSection'); return false;" class="nav-link-pill">
-                    <i class="fa-solid fa-book-open"></i> SOP & Guidelines
                 </a>
                 <a href="#" id="adminBlogNavLink1" onclick="openBlogModal(); return false;" class="nav-link-pill" style="display: none;">
                     <i class="fa-solid fa-pen-nib"></i> Post New Blog
@@ -795,6 +903,48 @@
                         <h2 id="kpiTotalApps" style="margin:0; font-size: 32px; font-weight:800; color:var(--text-title); line-height: 1.1;">0</h2>
                         <p style="margin:4px 0 0; color:var(--text-muted); font-size: 13.5px; font-weight: 600; text-transform: uppercase;">Total Received Applications</p>
                     </div>
+                </div>
+            </section>
+
+            <!-- AI HIRING ASSISTANT -->
+            <section id="aiHiringAssistantSection" class="card-panel" style="background:linear-gradient(135deg,#f8fbff 0%,#ffffff 60%,#f0fdf4 100%); border-color:#dbe7f7;">
+                <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:18px;flex-wrap:wrap;">
+                    <div>
+                        <div class="card-title" style="margin-bottom:6px;"><i class="fa-solid fa-robot" style="color:var(--primary);"></i> AI Hiring Assistant</div>
+                        <p style="margin:0;color:var(--text-muted);font-size:13.5px;line-height:1.65;max-width:760px;">Create recruiter-ready job posts faster and screen applicants against the selected job using transparent AI-assisted matching. AI highlights matched skills, gaps and experience for human review.</p>
+                    </div>
+                    <span style="display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border-radius:999px;background:#ecfdf5;color:#047857;font-size:11.5px;font-weight:800;border:1px solid #a7f3d0;white-space:nowrap;"><i class="fa-solid fa-circle-check"></i> Human review stays in control</span>
+                </div>
+
+                <div class="ai-talk-promo" role="note" aria-label="Create jobs with AI without manual form filling">
+                    <div class="ai-talk-promo-icon"><i class="fa-solid fa-microphone"></i></div>
+                    <div class="ai-talk-promo-copy">
+                        <div class="ai-talk-promo-title">Just talk to AI — create the job without manual form filling</div>
+                        <div class="ai-talk-promo-text">Tell the AI the role, location, salary, experience and requirements. It fills the job form, creates the professional job description, and asks for your approval before posting.</div>
+                    </div>
+                    <button type="button" class="ai-talk-promo-btn" onclick="window.startAIJobCreationVoice()" aria-label="Talk to AI and create a job"><i class="fa-solid fa-microphone"></i> Talk to AI &amp; Create Job</button>
+                </div>
+
+                <div class="ai-hiring-actions">
+                    <button type="button" class="ai-action-card ai-action-post" onclick="openAI('create')" aria-label="Open AI Job Posting">
+                        <div class="ai-action-top">
+                            <span class="ai-action-icon"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
+                            <span class="ai-action-badge"><i class="fa-solid fa-robot"></i> AI</span>
+                        </div>
+                        <div class="ai-action-title">AI Job Posting</div>
+                        <div class="ai-action-description">Create a recruiter-ready job description from your role, location, experience and compensation details.</div>
+                        <span class="ai-action-cta">Create Job with AI <i class="fa-solid fa-arrow-right"></i></span>
+                    </button>
+
+                    <button type="button" class="ai-action-card ai-action-screen" onclick="openAIScreening()" aria-label="Open AI Candidate Screening">
+                        <div class="ai-action-top">
+                            <span class="ai-action-icon"><i class="fa-solid fa-user-check"></i></span>
+                            <span class="ai-action-badge"><i class="fa-solid fa-robot"></i> AI</span>
+                        </div>
+                        <div class="ai-action-title">AI Candidate Screening</div>
+                        <div class="ai-action-description">Screen applicants against the selected job, compare skills and experience, and surface candidates for human review.</div>
+                        <span class="ai-action-cta">Screen Candidates with AI <i class="fa-solid fa-arrow-right"></i></span>
+                    </button>
                 </div>
             </section>
 
@@ -888,6 +1038,7 @@
                             <input type="text" id="candidateSearchInputLocal" placeholder="Search candidates or job..." onkeyup="syncCandidateSearchInputs(this.value, this.id); if(event.key==='Enter'){ filterCandidatesTable(true); } else { filterCandidatesTable(false); }">
                         </div>
                         <button onclick="filterCandidatesTable(true)" class="view-btn" title="Search"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
+                        <button onclick="openAIScreening()" class="view-btn" style="background:#ecfdf5;color:#047857;border-color:#a7f3d0;"><i class="fa-solid fa-filter-circle-check"></i> AI Screen</button>
                         <button onclick="loadInboundApplications()" class="view-btn"><i class="fa-solid fa-rotate"></i> Refresh Feed</button>
                     </div>
                 </div>
@@ -944,66 +1095,6 @@
                 </div>
             </div>
 
-            <!-- RECRUITER GUIDELINES & SOP SECTION -->
-            <div id="guidelinesSection" style="scroll-margin-top: 20px;" class="card-panel">
-                <div class="card-title">
-                    <i class="fa-solid fa-book-open" style="color:var(--primary);"></i> Recruiter Standard Operating Procedures (SOP)
-                </div>
-
-                <div class="sop-grid">
-
-                <div class="guideline-card">
-                    <strong style="color: var(--text-title); font-size: 14px;">1. Start With the Dashboard Overview</strong>
-                    <p style="margin: 6px 0 0 0; font-size: 13.5px; color: var(--text-muted);">Use Active Open Positions and Total Received Applications to understand your current hiring workload before reviewing candidates.</p>
-                </div>
-
-                <div class="guideline-card" style="border-left-color: var(--primary);">
-                    <strong style="color: var(--text-title); font-size: 14px;">2. Create a New Job Opening</strong>
-                    <p style="margin: 6px 0 0 0; font-size: 13.5px; color: var(--text-muted);">Enter the Job Title, Company, Location, Salary / CTC, Experience, Closing Date, and Notice Period. Add the complete Job Description and use <b>AI Generate Description</b> when you need help drafting it. Select <b>PUBLISH JOB OPENING</b> only after reviewing all fields.</p>
-                </div>
-
-                <div class="guideline-card" style="border-left-color: var(--green);">
-                    <strong style="color: var(--text-title); font-size: 14px;">3. Review Inbound Candidate Applications</strong>
-                    <p style="margin: 6px 0 0 0; font-size: 13.5px; color: var(--text-muted);">Open <b>Inbound Candidates</b> to review applications for your jobs. Use Search, Filter by Job, and Refresh Feed to find the right candidate quickly.</p>
-                </div>
-
-                <div class="guideline-card" style="border-left-color: var(--orange);">
-                    <strong style="color: var(--text-title); font-size: 14px;">4. Evaluate Candidate Match & Skills</strong>
-                    <p style="margin: 6px 0 0 0; font-size: 13.5px; color: var(--text-muted);">Review the Match Score, Experience, and candidate profile information together. Do not rely on the score alone; verify that the resume and profile support the requirements of the job.</p>
-                </div>
-
-                <div class="guideline-card" style="border-left-color: var(--primary-dark);">
-                    <strong style="color: var(--text-title); font-size: 14px;">5. Open the Candidate Pitch / Profile</strong>
-                    <p style="margin: 6px 0 0 0; font-size: 13.5px; color: var(--text-muted);">Use the <b>Cover Letter / Pitch</b> view to read the candidate's professional summary, pitch, and match analysis before deciding on next steps.</p>
-                </div>
-
-                <div class="guideline-card" style="border-left-color: var(--green);">
-                    <strong style="color: var(--text-title); font-size: 14px;">6. Review the Resume</strong>
-                    <p style="margin: 6px 0 0 0; font-size: 13.5px; color: var(--text-muted);">Open the candidate's resume from the Resume column and compare it with the job description, required experience, and skills before progressing the candidate.</p>
-                </div>
-
-                <div class="guideline-card" style="border-left-color: var(--orange);">
-                    <strong style="color: var(--text-title); font-size: 14px;">7. Communicate With Candidates</strong>
-                    <p style="margin: 6px 0 0 0; font-size: 13.5px; color: var(--text-muted);">Use the Chat action to communicate with candidates about next steps, interviews, clarifications, or additional information.</p>
-                </div>
-
-                <div class="guideline-card">
-                    <strong style="color: var(--text-title); font-size: 14px;">8. Manage Active Job Postings</strong>
-                    <p style="margin: 6px 0 0 0; font-size: 13.5px; color: var(--text-muted);">Use Active Job Postings to review your live openings, check closing dates, and use the available actions to keep job information current.</p>
-                </div>
-
-                <div class="guideline-card" style="border-left-color: var(--red);">
-                    <strong style="color: var(--text-title); font-size: 14px;">9. Maintain Recruiter Response Standards</strong>
-                    <p style="margin: 6px 0 0 0; font-size: 13.5px; color: var(--text-muted);">Respond to candidate messages and interview-related communication promptly. Keep candidate information, resumes, phone numbers, and email addresses confidential.</p>
-                </div>
-
-                <div class="guideline-card" style="border-left-color: var(--primary); margin-bottom: 0;">
-                    <strong style="color: var(--text-title); font-size: 14px;">10. Recommended Recruiter Workflow</strong>
-                    <p style="margin: 6px 0 0 0; font-size: 13.5px; color: var(--text-muted);">Create and publish the job → review inbound applications → filter candidates → check match score and skills → read the candidate pitch → review the resume → chat with shortlisted candidates → update the hiring process.</p>
-                </div>
-
-                </div>
-            </div>
 
             <!-- ADMIN-ONLY BLOG CONTROL TABLE -->
             <div id="manageBlogsSection" style="display: none; scroll-margin-top: 20px;" class="card-panel">
@@ -1208,6 +1299,25 @@
                     <button type="submit" id="blogSubmitBtn" class="btn-post-job" style="width: auto; margin-top: 0; padding: 10px 22px;">Publish Article</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- AI CANDIDATE SCREENING POPUP -->
+    <div id="aiScreeningModal" class="modal-overlay">
+        <div class="modal-box" style="max-width:980px;max-height:90vh;overflow:hidden;display:flex;flex-direction:column;">
+            <button onclick="closeAIScreening()" class="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
+            <div style="padding-right:48px;">
+                <h3 style="margin:0 0 6px;font-size:19px;font-weight:800;color:var(--navy);"><i class="fa-solid fa-filter-circle-check" style="color:#047857;margin-right:8px;"></i> AI Candidate Screening</h3>
+                <p style="margin:0;color:var(--text-muted);font-size:13px;line-height:1.55;">Select a job to compare its requirements with the available applications. Results are decision-support only and should be reviewed by the recruiter.</p>
+            </div>
+            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:18px 0 12px;">
+                <select id="aiScreeningJobSelect" class="form-control" style="max-width:420px;background:#fff;"></select>
+                <button type="button" onclick="runAIScreening()" class="btn-post-job" style="width:auto;margin:0;padding:11px 18px;background:#047857;"><i class="fa-solid fa-bolt"></i> Screen Candidates</button>
+            </div>
+            <div id="aiScreeningSummary" style="display:none;margin-bottom:12px;"></div>
+            <div id="aiScreeningResults" class="custom-scroll" style="flex:1;min-height:160px;max-height:55vh;overflow:auto;border:1px solid var(--border-color);border-radius:14px;background:#f8fafc;padding:12px;">
+                <div style="text-align:center;padding:42px 20px;color:var(--text-muted);font-size:13px;">Select a job and click <b>Screen Candidates</b>.</div>
+            </div>
         </div>
     </div>
 
@@ -3428,7 +3538,423 @@ At Indupalli Services, we are committed to helping employers and professionals n
     }
   };
 })();
+        // ============================================================
+        // AI HIRING ASSISTANT — JOB POSTING + CANDIDATE SCREENING
+        // ============================================================
+        const AI_SCREENING_SKILLS = [
+            "javascript","typescript","react","angular","vue","node.js","nodejs","python","java","c","c++","c#","php","ruby","go","golang","sql","mysql","postgresql","postgres","mongodb","oracle","power bi","tableau","excel","aws","azure","gcp","google cloud","docker","kubernetes","terraform","linux","git","github","gitlab","jenkins","spring boot",".net","dotnet","servicenow","salesforce","sap","snowflake","databricks","machine learning","ai","artificial intelligence","data analysis","data analytics","cybersecurity","iam","networking","figma","html","css","tailwind","next.js","nextjs"
+        ];
+
+        function aiNormalize(value){
+            return String(value ?? "").toLowerCase().replace(/[^a-z0-9+#.\- ]+/g," ").replace(/\s+/g," ").trim();
+        }
+
+        function aiCandidateSkills(candidate){
+            const raw = [candidate?.skills, candidate?.skill, candidate?.technicalSkills, candidate?.technical_skills, candidate?.about, candidate?.bio, candidate?.summary, candidate?.coverLetter].filter(Boolean).join(" ");
+            return aiNormalize(raw);
+        }
+
+        function aiExtractSkills(text){
+            const t=aiNormalize(text);
+            return AI_SCREENING_SKILLS.filter(skill=>{
+                const n=aiNormalize(skill);
+                return n && (t.includes(n) || (n==="c++" && t.includes("c++")) || (n==="c#" && t.includes("c#")));
+            });
+        }
+
+        function aiExperienceYears(value){
+            const m=String(value??"").match(/(\d+(?:\.\d+)?)\s*(?:-|to)?\s*(\d+(?:\.\d+)?)?\s*(?:years?|yrs?)/i);
+            if(!m) return null;
+            return Number(m[2] || m[1]);
+        }
+
+        function aiRequiredExperience(value){
+            const m=String(value??"").match(/(\d+(?:\.\d+)?)\s*(?:-|to)\s*(\d+(?:\.\d+)?)?\s*(?:years?|yrs?)/i);
+            return m ? {min:Number(m[1]), max:Number(m[2]||m[1])} : null;
+        }
+
+        function aiScreenJobRequirements(job){
+            const source=[job?.title,job?.jobTitle,job?.description,job?.jobDescription,job?.responsibilities,job?.requirements].filter(Boolean).join(" ");
+            return { skills:aiExtractSkills(source), experience:aiRequiredExperience(job?.experience || job?.experienceRequired || job?.requiredExperience) };
+        }
+
+        function aiScoreCandidate(candidate,job){
+            const req=aiScreenJobRequirements(job);
+            const ctext=aiCandidateSkills(candidate);
+            const matched=req.skills.filter(s=>ctext.includes(aiNormalize(s)));
+            const missing=req.skills.filter(s=>!ctext.includes(aiNormalize(s)));
+            const exp=aiExperienceYears(candidate?.experience);
+            let expScore=70;
+            if(req.experience && exp!==null){
+                if(exp>=req.experience.min && exp<=req.experience.max) expScore=100;
+                else if(exp>=req.experience.min) expScore=85;
+                else if(exp>=Math.max(0,req.experience.min-1)) expScore=65;
+                else expScore=40;
+            } else if(exp!==null){ expScore=85; }
+            const skillScore=req.skills.length ? Math.round((matched.length/req.skills.length)*100) : 70;
+            const profileScore=(candidate?.resumeUrl || candidate?.resume_url || candidate?.resume) ? 90 : 45;
+            const existing=Number(candidate?.matchScore ?? candidate?.match_score ?? candidate?.jobMatchScore ?? candidate?.job_match_score);
+            const base=Number.isFinite(existing) ? Math.max(0,Math.min(100,existing)) : null;
+            const score=Math.round(skillScore*.55 + expScore*.25 + profileScore*.10 + (base===null?75:base)*.10);
+            const status=score>=80?"Strong match":score>=65?"Review":"Needs review";
+            return {score,status,matched,missing,exp,reqExp:req.experience,skillScore,expScore};
+        }
+
+        function aiSafe(value){
+            return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[c]));
+        }
+
+        window.openAIScreening = async function(){
+            const modal=document.getElementById("aiScreeningModal");
+            const select=document.getElementById("aiScreeningJobSelect");
+            if(!modal||!select) return;
+            select.innerHTML='<option value="">Loading your active jobs...</option>';
+            modal.style.display="flex";
+            try{
+                const currentEmail=(localStorage.getItem("recruiterEmail")||"").trim().toLowerCase();
+                const {data,error}=await supabase.from("jobs").select("*").order("id",{ascending:false});
+                if(error) throw error;
+                const jobs=(data||[]).filter(job=>{
+                    if(!currentEmail || currentEmail==="praveencenaindupalli@gmail.com") return true;
+                    const owners=[job.recruiteremail,job.recruiterEmail,job.recruiter_email,job.createdByEmail,job.created_by_email].map(v=>String(v||"").trim().toLowerCase()).filter(Boolean);
+                    return owners.includes(currentEmail);
+                });
+                window.aiScreeningJobs=jobs;
+                select.innerHTML='<option value="">Select a job...</option>'+jobs.map((job,i)=>`<option value="${i}">${aiSafe(job.title||job.jobTitle||"Untitled role")} — ${aiSafe(job.location||"Location not specified")}</option>`).join("");
+                const results=document.getElementById("aiScreeningResults");
+                if(results) results.innerHTML=jobs.length?'<div style="text-align:center;padding:42px 20px;color:var(--text-muted);font-size:13px;">Select a job and click <b>Screen Candidates</b>.</div>':'<div style="text-align:center;padding:42px 20px;color:var(--text-muted);font-size:13px;">No active jobs were found for this recruiter.</div>';
+            }catch(err){
+                console.error("AI screening job load failed",err);
+                select.innerHTML='<option value="">Unable to load jobs</option>';
+                const results=document.getElementById("aiScreeningResults");
+                if(results) results.innerHTML='<div style="padding:30px;text-align:center;color:#b91c1c;">Could not load jobs. Please refresh the dashboard and try again.</div>';
+            }
+        };
+
+        window.runAIScreening = function(){
+            const select=document.getElementById("aiScreeningJobSelect");
+            const results=document.getElementById("aiScreeningResults");
+            const summary=document.getElementById("aiScreeningSummary");
+            const job=window.aiScreeningJobs?.[Number(select?.value)];
+            if(!job){ if(window.showCustomAlert) window.showCustomAlert("Please select a job to screen candidates against.","Select a Job","warning"); return; }
+            const jobId=String(job.id??"");
+            const jobTitle=job.title||job.jobTitle||"Selected role";
+            const candidates=Object.values(window.allCandidatesData||{}).filter(c=>String(c.jobId??c.job_id??"")===jobId || aiNormalize(c.jobTitle||c.job_title)===aiNormalize(jobTitle));
+            const scored=candidates.map(candidate=>({candidate,...aiScoreCandidate(candidate,job)})).sort((a,b)=>b.score-a.score);
+            if(summary){
+                summary.style.display="block";
+                summary.innerHTML=`<div style="display:flex;gap:10px;flex-wrap:wrap;"><span style="padding:7px 11px;border-radius:999px;background:#eff6ff;color:#1d4ed8;font-size:11.5px;font-weight:800;">${scored.length} applicants screened</span><span style="padding:7px 11px;border-radius:999px;background:#ecfdf5;color:#047857;font-size:11.5px;font-weight:800;">${scored.filter(x=>x.score>=80).length} strong matches</span><span style="padding:7px 11px;border-radius:999px;background:#fffbeb;color:#b45309;font-size:11.5px;font-weight:800;">${scored.filter(x=>x.score>=65&&x.score<80).length} review</span></div>`;
+            }
+            if(!scored.length){ results.innerHTML='<div style="text-align:center;padding:42px 20px;color:var(--text-muted);font-size:13px;">No applications were found for this job.</div>'; return; }
+            results.innerHTML=scored.map((item,index)=>{
+                const c=item.candidate; const name=c.fullname||c.full_name||c.name||"Candidate";
+                const tone=item.score>=80?"#047857":item.score>=65?"#b45309":"#b91c1c";
+                const matched=item.matched.slice(0,6).map(aiSafe).join(", ")||"No recognised skill matches";
+                const missing=item.missing.slice(0,5).map(aiSafe).join(", ")||"None identified";
+                return `<div style="background:#fff;border:1px solid var(--border-color);border-radius:14px;padding:16px;margin-bottom:10px;"><div style="display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap;"><div><div style="font-size:14px;font-weight:800;color:var(--navy);">${index+1}. ${aiSafe(name)}</div><div style="font-size:11.5px;color:var(--text-muted);margin-top:3px;">${aiSafe(c.email||"No email")} · ${aiSafe(c.experience||"Experience not provided")}</div></div><div style="display:flex;align-items:center;gap:8px;"><span style="font-size:20px;font-weight:900;color:${tone};">${item.score}%</span><span style="font-size:11px;font-weight:800;color:${tone};">${item.status}</span></div></div><div style="margin-top:11px;display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:11.5px;line-height:1.55;"><div><b style="color:#047857;">Matched:</b> ${matched}</div><div><b style="color:#b45309;">Gaps:</b> ${missing}</div></div><div style="margin-top:10px;font-size:11px;color:var(--text-muted);">AI screening is a structured comparison of the job requirements and candidate data. Review the resume and profile before making a hiring decision.</div></div>`;
+            }).join("");
+        };
+
+        window.closeAIScreening = function(){
+            const modal=document.getElementById("aiScreeningModal"); if(modal) modal.style.display="none";
+        };
 </script>
 
+
+<!-- ==========================================================
+     INDUPELLI AI RECRUITER ASSISTANT
+     Voice + text control for recruiter dashboard actions
+     ========================================================== -->
+<style id="indupalli-recruiter-ai-assistant-style">
+  .ir-ai-fab{position:fixed;right:26px;bottom:26px;z-index:1000000;border:0;border-radius:999px;padding:13px 19px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;display:flex;align-items:center;gap:10px;font-weight:800;font-size:13px;cursor:pointer;box-shadow:0 14px 34px rgba(37,99,235,.30);transition:.2s}
+  .ir-ai-fab:hover{transform:translateY(-2px);box-shadow:0 18px 40px rgba(37,99,235,.38)}
+  .ir-ai-fab.stop{background:linear-gradient(135deg,#dc2626,#b91c1c)}
+  .ir-ai-fab .ir-ai-dot{width:9px;height:9px;border-radius:50%;background:#86efac;box-shadow:0 0 0 5px rgba(134,239,172,.12)}
+  .ir-ai-panel{position:fixed;right:26px;bottom:86px;width:min(440px,calc(100vw - 28px));z-index:999999;background:#fff;border:1px solid #dbe4f0;border-radius:22px;box-shadow:0 24px 70px rgba(15,23,42,.20);overflow:hidden;display:none}
+  .ir-ai-panel.open{display:block;animation:irAiIn .22s ease}
+  @keyframes irAiIn{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}
+  .ir-ai-head{padding:17px 18px;background:linear-gradient(135deg,#eff6ff,#f8fbff);border-bottom:1px solid #e5edf7;display:flex;align-items:center;gap:12px}
+  .ir-ai-avatar{width:42px;height:42px;border-radius:14px;background:linear-gradient(135deg,#2563eb,#4f46e5);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;flex:0 0 42px}
+  .ir-ai-head h3{margin:0;color:#0f172a;font-size:15px;font-weight:900}.ir-ai-head p{margin:2px 0 0;color:#64748b;font-size:11px}
+  .ir-ai-close{margin-left:auto;border:0;background:#fff;border:1px solid #e2e8f0;width:32px;height:32px;border-radius:50%;cursor:pointer;color:#64748b}
+  .ir-ai-status{padding:10px 18px 0;color:#64748b;font-size:11px}.ir-ai-status strong{color:#2563eb}
+  .ir-ai-chat{height:255px;overflow:auto;padding:12px 16px 6px;background:#fff}
+  .ir-msg{max-width:88%;padding:10px 12px;border-radius:14px;margin:7px 0;font-size:12.5px;line-height:1.55;white-space:pre-wrap}.ir-msg.ai{background:#f1f5f9;color:#334155;border-bottom-left-radius:5px}.ir-msg.user{margin-left:auto;background:#2563eb;color:#fff;border-bottom-right-radius:5px}
+  .ir-ai-quick{display:flex;gap:7px;flex-wrap:wrap;padding:8px 16px}.ir-ai-quick button{border:1px solid #dbe4f0;background:#fff;color:#1e3a8a;border-radius:999px;padding:7px 10px;font-size:10.5px;font-weight:800;cursor:pointer}.ir-ai-quick button:hover{background:#eff6ff;border-color:#93c5fd}
+  .ir-ai-compose{display:flex;gap:8px;padding:12px 16px 15px;border-top:1px solid #e5edf7;background:#fbfdff}.ir-ai-compose input{flex:1;min-width:0;border:1px solid #cbd5e1;border-radius:12px;padding:11px 12px;outline:none;font-size:12px}.ir-ai-compose input:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.10)}
+  .ir-ai-mic,.ir-ai-send,.ir-ai-stop{border:0;border-radius:11px;width:42px;height:42px;cursor:pointer;display:flex;align-items:center;justify-content:center}.ir-ai-mic{background:#eef2ff;color:#4338ca}.ir-ai-send{background:#2563eb;color:#fff}.ir-ai-stop{background:#fee2e2;color:#b91c1c;display:none}.ir-ai-mic.listening{background:#dcfce7;color:#047857;animation:irPulse 1.1s infinite}@keyframes irPulse{50%{box-shadow:0 0 0 7px rgba(16,185,129,.12)}}
+  .ir-ai-action{margin-top:9px;padding:9px 11px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;color:#1d4ed8;font-size:11px;font-weight:800}
+  @media(max-width:600px){.ir-ai-fab{right:14px;bottom:14px}.ir-ai-panel{right:14px;bottom:74px}.ir-ai-chat{height:230px}}
+</style>
+
+<div id="indupalliRecruiterAIPanel" class="ir-ai-panel" aria-hidden="true">
+  <div class="ir-ai-head">
+    <div class="ir-ai-avatar"><i class="fa-solid fa-robot"></i></div>
+    <div><h3>AI Recruiter Assistant</h3><p>Jobs, candidates, screening & recruiter actions</p></div>
+    <button class="ir-ai-close" type="button" onclick="window.closeRecruiterAI()" aria-label="Close AI"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  <div class="ir-ai-status" id="irAIStatus"><strong>Ready.</strong> Ask me to create a job, find candidates, screen applicants, or explain any recruiter dashboard feature.</div>
+  <div id="irAIChat" class="ir-ai-chat">
+    <div class="ir-msg ai">Hello! I’m your Indupalli AI Recruiter Assistant. I can help you create and manage jobs, review candidates, run AI screening, search applications, open recruiter tools, and guide you through the dashboard.</div>
+  </div>
+  <div class="ir-ai-quick">
+    <button type="button" onclick="window.irAICommand('Add a new job')">+ Add Job</button>
+    <button type="button" onclick="window.irAICommand('Show candidates')">Candidates</button>
+    <button type="button" onclick="window.irAICommand('Screen candidates')">AI Screen</button>
+    <button type="button" onclick="window.irAICommand('Generate job description')">AI Job Post</button>
+    <button type="button" onclick="window.irAICommand('Open recruiter settings')">Settings</button>
+  </div>
+  <div class="ir-ai-compose">
+    <button id="irAIMic" class="ir-ai-mic" type="button" onclick="window.toggleRecruiterVoice()" title="Talk to AI"><i class="fa-solid fa-microphone"></i></button>
+    <button id="irAIStop" class="ir-ai-stop" type="button" onclick="window.stopRecruiterAI()" title="Stop conversation"><i class="fa-solid fa-stop"></i></button>
+    <input id="irAIInput" type="text" placeholder="Ask AI: add a job, screen candidates..." autocomplete="off">
+    <button class="ir-ai-send" type="button" onclick="window.sendRecruiterAI()" title="Send"><i class="fa-solid fa-paper-plane"></i></button>
+  </div>
+</div>
+<button id="indupalliRecruiterAIFab" class="ir-ai-fab" type="button" onclick="window.toggleRecruiterAI()" aria-label="Talk to AI recruiter assistant"><span class="ir-ai-dot"></span><i class="fa-solid fa-microphone"></i> Talk to AI</button>
+
+<script>
+(function(){
+  let recognition=null, listening=false, speaking=false, stopped=false;
+  const panel=()=>document.getElementById('indupalliRecruiterAIPanel');
+  const chat=()=>document.getElementById('irAIChat');
+  const input=()=>document.getElementById('irAIInput');
+  const status=()=>document.getElementById('irAIStatus');
+  const fab=()=>document.getElementById('indupalliRecruiterAIFab');
+  const mic=()=>document.getElementById('irAIMic');
+  const stopBtn=()=>document.getElementById('irAIStop');
+  const safe=v=>String(v??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  function addMsg(role,text){const el=document.createElement('div');el.className='ir-msg '+role;el.textContent=text;chat().appendChild(el);chat().scrollTop=chat().scrollHeight;}
+  function setStatus(text,active){status().innerHTML=active?'<strong>'+safe(text)+'</strong>':safe(text);}
+  function speak(text){
+    if(!('speechSynthesis' in window)||stopped)return;
+    window.speechSynthesis.cancel(); speaking=true; updateControls();
+    const u=new SpeechSynthesisUtterance(text); u.lang='en-IN'; u.rate=.92; u.pitch=1.08; u.volume=1;
+    const voices=window.speechSynthesis.getVoices();
+    const female=/female|jenny|aria|samantha|susan|zira|heera|neerja|raveena|veena|priya|google uk english female/i;
+    const preferred=voices.find(v=>female.test(v.name)&&/^en(-IN|-GB|-US)?/i.test(v.lang))||voices.find(v=>female.test(v.name))||voices.find(v=>/^en-IN/i.test(v.lang))||voices.find(v=>/^en/i.test(v.lang));
+    if(preferred)u.voice=preferred;
+    u.onend=()=>{speaking=false;updateControls()};u.onerror=()=>{speaking=false;updateControls()};window.speechSynthesis.speak(u);
+  }
+  function updateControls(){
+    const f=fab(); if(!f)return; const active=listening||speaking; f.classList.toggle('stop',active); f.innerHTML=active?'<i class="fa-solid fa-stop"></i> Stop AI':'<span class="ir-ai-dot"></span><i class="fa-solid fa-microphone"></i> Talk to AI';
+    if(mic()){mic().style.display=active?'none':'flex';mic().classList.toggle('listening',listening)} if(stopBtn())stopBtn().style.display=active?'flex':'none';
+  }
+  window.toggleRecruiterAI=function(){const p=panel();if(!p)return;p.classList.toggle('open');p.setAttribute('aria-hidden',p.classList.contains('open')?'false':'true');if(p.classList.contains('open')){stopped=false;updateControls();setTimeout(()=>input()?.focus(),80)}};
+  window.closeRecruiterAI=function(){window.stopRecruiterAI();panel()?.classList.remove('open');panel()?.setAttribute('aria-hidden','true')};
+  window.stopRecruiterAI=function(){stopped=true; if(recognition){try{recognition.stop()}catch(e){}} listening=false; if('speechSynthesis'in window)window.speechSynthesis.cancel(); speaking=false;setStatus('Conversation stopped. No pending voice action will continue.',false);updateControls()};
+  function initRecognition(){
+    const SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR)return null;const r=new SR();r.lang='en-IN';r.continuous=false;r.interimResults=false;r.maxAlternatives=1;
+    r.onstart=()=>{stopped=false;listening=true;setStatus('Listening…',true);updateControls()};
+    r.onresult=e=>{const text=e.results?.[0]?.[0]?.transcript?.trim();listening=false;updateControls();if(text){input().value=text;window.irAICommand(text)}};
+    r.onerror=e=>{listening=false;updateControls();if(e.error!=='aborted')setStatus('Voice input was not available. You can type your request instead.',false)};
+    r.onend=()=>{listening=false;updateControls()}; return r;
+  }
+  window.toggleRecruiterVoice=function(){
+    if(listening){window.stopRecruiterAI();return} if(!panel()?.classList.contains('open'))window.toggleRecruiterAI();
+    stopped=false; if(!recognition)recognition=initRecognition(); if(!recognition){setStatus('Your browser does not support voice input. Please type your request.',false);return}
+    try{recognition.start()}catch(e){}
+  };
+  function scrollToId(id){const el=document.getElementById(id);if(el){el.scrollIntoView({behavior:'smooth',block:'start'});el.style.outline='3px solid rgba(37,99,235,.25)';setTimeout(()=>el.style.outline='',1200);return true}return false}
+  function jobs(){return Array.isArray(window.aiScreeningJobs)?window.aiScreeningJobs:(window.allJobsData?Object.values(window.allJobsData):[])}
+  function findJob(q){const n=q.toLowerCase();return jobs().find(j=>[j.title,j.jobTitle,j.location,j.companyName,j.company].filter(Boolean).join(' ').toLowerCase().includes(n))}
+  function response(text,action){addMsg('ai',text);setStatus(action||'Ready for your next recruiter request.',false);speak(text)}
+  window.irAICommand=function(raw){
+    const q=String(raw||'').trim();if(!q)return; stopped=false;addMsg('user',q);const n=q.toLowerCase();
+    if(/^(stop|cancel|stop ai|stop conversation)$/.test(n)){window.stopRecruiterAI();return}
+    // Job creation / posting
+    if(/\b(add|create|post|new)\b.*\b(job|opening|position|vacancy|requirement)\b|\b(job|opening)\b.*\b(create|add|post)\b/.test(n)){
+      scrollToId('jobForm');document.getElementById('jobTitle')?.focus();
+      const title=q.match(/(?:for|as)\s+(?:a\s+)?(.+?)(?:\s+(?:job|role|position))?$/i)?.[1];
+      if(title&&title.length<90&&!/job|opening|position/i.test(title)){document.getElementById('jobTitle').value=title.trim()}
+      response(title?`I opened the new job form and added “${title.trim()}” as the job title. Please review the remaining recruiter details before publishing.`:'I opened the Create New Job Opening form. Tell me the role, location, experience and other requirements, and I can help prepare the posting.','Job creation workspace opened.');return;
+    }
+    if(/generate|write|draft|job description|jd/.test(n)&&/job|description|jd|role/.test(n)){
+      if(typeof window.openAI==='function')window.openAI('create');else scrollToId('jobForm');
+      response('I opened the AI Job Description tool. Give me the role and requirements, then review the generated description before publishing.','AI Job Posting opened.');return;
+    }
+    // Candidates / applications
+    if(/candidate|applicant|application|resume|talent|inbound/.test(n)&&/show|find|search|open|view|list|review|candidate|applicant|application|resume/.test(n)){
+      scrollToId('inboundResumesSection');document.getElementById('candidateSearchInputLocal')?.focus();
+      const terms=q.replace(/\b(show|find|search|open|view|list|review|candidates?|applicants?|applications?|resumes?|inbound|please|me|for)\b/gi,' ').replace(/\s+/g,' ').trim();
+      if(terms&&terms.length>1){const inp=document.getElementById('candidateSearchInputLocal');if(inp){inp.value=terms;inp.dispatchEvent(new Event('input',{bubbles:true}));}}
+      response(terms?`I opened Inbound Candidates and prepared the candidate search for “${terms}”.`:'I opened Inbound Candidate Applications so you can search, filter and review applicants.','Candidate workspace opened.');return;
+    }
+    // Screening
+    if(/screen|shortlist|match|rank|evaluate|assess/.test(n)&&/candidate|applicant|resume|talent|screen/.test(n)){
+      if(typeof window.openAIScreening==='function')window.openAIScreening();
+      response('I opened AI Candidate Screening. Select the job and I will compare the available applicants against its skills and experience for recruiter review.','AI screening opened.');return;
+    }
+    // Job inventory/edit
+    if(/active jobs|posted jobs|job postings|edit job|manage jobs|openings/.test(n)){
+      const tables=document.querySelector('#jobsContainer');if(tables)tables.closest('.card-panel')?.scrollIntoView({behavior:'smooth'});else scrollToId('jobForm');
+      response('I opened the Active Job Postings area so you can review or manage your live requirements.','Job postings opened.');return;
+    }
+    if(/settings|profile|recruiter details/.test(n)){if(typeof window.openSettingsModal==='function')window.openSettingsModal();response('I opened Recruiter Settings. You can update your recruiter details there.','Recruiter Settings opened.');return}
+    if(/notification|alert|message/.test(n)){if(typeof window.openNotificationsModal==='function')window.openNotificationsModal();response('I opened your recruiter alerts and messages.','Alerts opened.');return}
+    if(/blog|article|publish.*article/.test(n)){if(typeof window.openBlogModal==='function')window.openBlogModal();response('I opened the blog publishing workspace. You can draft or publish an article there.','Blog workspace opened.');return}
+    if(/dashboard|overview|home|summary|stats/.test(n)){window.scrollTo({top:0,behavior:'smooth'});response('I returned you to the Recruiter Dashboard overview, where you can see active positions and received applications.','Dashboard overview opened.');return}
+    if(/help|what can you do|how.*work/.test(n)){response('I can help with recruiter work inside this dashboard: add or prepare jobs, generate job descriptions, find candidates, review applications, run AI screening, open active job postings, open settings and alerts, and guide you through recruiter actions. Tell me what you want to do.','Recruiter AI help.');return}
+    // Context-aware fallback: try a job title before saying it is unsupported.
+    const j=findJob(q);if(j){const title=j.title||j.jobTitle||'that role';response(`I found a job matching “${q}”: ${title}${j.location?` in ${j.location}`:''}. I can open the job posting or run AI screening for its applicants. Tell me “screen candidates” if you want to screen it.`,'Job matched.');return}
+    response('I can help with recruiter tasks available in this dashboard. Try “add a job”, “generate a job description”, “show candidates”, “screen candidates”, “open active jobs”, or ask about a specific job title.','Recruiter request needs clarification.');
+  };
+  window.sendRecruiterAI=function(){const v=input()?.value.trim();if(!v)return;input().value='';window.irAICommand(v)};
+  input()?.addEventListener('keydown',e=>{if(e.key==='Enter')window.sendRecruiterAI()});
+  if('speechSynthesis'in window)window.speechSynthesis.onvoiceschanged=()=>{};
+})();
+</script>
+
+
+<!-- =========================================================
+     INDUPELLI AI RECRUITER JOB CREATION COPILOT v2
+     Conversational job creation: collect -> draft -> confirm -> publish
+     ========================================================= -->
+<style id="indupalli-ai-job-copilot-style">
+  .ir-job-workflow{margin:10px 0 12px;padding:12px;border:1px solid #dbeafe;background:linear-gradient(135deg,#f8fbff,#eef6ff);border-radius:14px;display:none}
+  .ir-job-workflow.show{display:block}
+  .ir-job-workflow-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:9px}
+  .ir-job-workflow-head strong{font-size:12px;color:#0f172a}
+  .ir-job-workflow-badge{font-size:9px;font-weight:900;letter-spacing:.5px;color:#1d4ed8;background:#dbeafe;border:1px solid #bfdbfe;border-radius:999px;padding:4px 8px}
+  .ir-job-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+  .ir-job-step{font-size:9.5px;font-weight:800;color:#64748b;background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:7px 5px;text-align:center}
+  .ir-job-step.active{color:#1d4ed8;border-color:#93c5fd;background:#eff6ff}
+  .ir-job-step.done{color:#047857;border-color:#a7f3d0;background:#ecfdf5}
+  .ir-job-preview{margin-top:9px;padding:10px;background:#fff;border:1px solid #e2e8f0;border-radius:10px;font-size:10.5px;line-height:1.55;color:#475569;display:none}
+  .ir-job-preview.show{display:block}
+  .ir-job-confirm{display:flex;gap:8px;margin-top:9px;flex-wrap:wrap;display:none}
+  .ir-job-confirm.show{display:flex}
+  .ir-job-confirm button{border:0;border-radius:9px;padding:9px 12px;font-weight:800;font-size:11px;cursor:pointer}
+  .ir-job-confirm .yes{background:#10b981;color:#fff}
+  .ir-job-confirm .no{background:#fff;color:#475569;border:1px solid #cbd5e1}
+  @media(max-width:500px){.ir-job-steps{grid-template-columns:repeat(2,1fr)}}
+</style>
+<script>
+(function(){
+  const state={mode:null,step:null,draft:{},optionalAsked:false,stopped:false,publishing:false};
+  const $=id=>document.getElementById(id);
+  const clean=v=>String(v??'').replace(/\s+/g,' ').trim();
+  const esc=v=>clean(v).replace(/[&<>\"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const addMsg=(role,text)=>{const c=$('irAIChat');if(!c)return;const el=document.createElement('div');el.className='ir-msg '+role;el.textContent=text;c.appendChild(el);c.scrollTop=c.scrollHeight};
+  const status=t=>{const e=$('irAIStatus');if(e)e.innerHTML='<strong>'+esc(t)+'</strong>'};
+  const say=(text)=>{addMsg('ai',text);status('Ready for your next instruction.');if(typeof window.speechSynthesis!=='undefined'){window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='en-IN';u.rate=.92;u.pitch=1.08;u.volume=1;const vs=window.speechSynthesis.getVoices();const female=/jenny|aria|samantha|susan|zira|heera|neerja|raveena|veena|priya|female|google uk english/i;u.voice=vs.find(v=>female.test(v.name)&&/^en/i.test(v.lang))||vs.find(v=>/^en-IN/i.test(v.lang))||vs.find(v=>/^en/i.test(v.lang))||null;window.speechSynthesis.speak(u)}};
+  const scrollJob=()=>{const e=$('jobForm');if(e)e.scrollIntoView({behavior:'smooth',block:'start'})};
+  function ensureWorkflow(){let w=$('irJobWorkflow');if(!w){w=document.createElement('div');w.id='irJobWorkflow';w.className='ir-job-workflow';const ch=$('irAIChat');ch?.parentNode?.insertBefore(w,ch)}return w}
+  function renderWorkflow(){const w=ensureWorkflow();if(!w)return;w.classList.toggle('show',state.mode==='job');const d=state.draft;const labels=['Title','Company','Location','Salary','Experience','Deadline','Notice','Description'];const keys=['title','company','location','salary','experience','deadline','notice','description'];let active=Math.max(0,keys.indexOf(state.step));if(state.step==='confirm')active=8;if(state.step==='done')active=9;w.innerHTML='<div class="ir-job-workflow-head"><strong><i class="fa-solid fa-wand-magic-sparkles"></i> AI Job Creation Workflow</strong><span class="ir-job-workflow-badge">AI ASSISTED</span></div><div class="ir-job-steps">'+labels.map((x,i)=>'<div class="ir-job-step '+(i<active?'done ':i===active?'active ':'')+'">'+(i<active?'✓ ':'')+x+'</div>').join('')+'</div>'+(d.title?'<div class="ir-job-preview show"><b>Current draft:</b> '+esc(d.title)+(d.location?' · '+esc(d.location):'')+(d.salary?' · '+esc(d.salary):'')+(d.experience?' · '+esc(d.experience):'')+'</div>':'');}
+  function setField(id,v){const e=$(id);if(e){e.value=v;['input','change'].forEach(t=>e.dispatchEvent(new Event(t,{bubbles:true})))}}
+  function syncForm(){const m={title:'jobTitle',company:'companyName',location:'location',salary:'salary',experience:'experience',deadline:'closingDate',notice:'maxNotice',description:'jobDescription'};Object.entries(m).forEach(([k,id])=>{if(state.draft[k]!=null)setField(id,state.draft[k])});scrollJob()}
+  function normalizeTitle(v){
+    v=clean(v)
+      .replace(/^(job title|title|role|designation)\s*[:\-]\s*/i,'')
+      .replace(/^(a|an|the)\s+/i,'')
+      .replace(/\bjob\s*$/i,'')
+      .replace(/\s+/g,' ')
+      .trim();
+    if(!v)return '';
+    // Professional job-title casing: "app developer" -> "App Developer".
+    // Preserve common acronyms/brand-style technology names such as AI, AWS, API, iOS and UI/UX.
+    const keepCase=new Set(['ai','api','aws','gcp','gke','sql','qa','ui','ux','ui/ux','ml','nlp','llm','sre','devops','ios','macos','ios/android','sap','erp','crm','hr','it','b2b','b2c','saas','paas','faas','c++','c#','.net','node.js','next.js','react.js','vue.js','angular.js']);
+    return v.split(' ').map((word,index)=>{
+      const cleanWord=word.replace(/^[\(\[]+|[\)\],.]+$/g,'');
+      const lower=cleanWord.toLowerCase();
+      if(keepCase.has(lower)){
+        const replacement={
+          'ai':'AI','api':'API','aws':'AWS','gcp':'GCP','gke':'GKE','sql':'SQL','qa':'QA','ui':'UI','ux':'UX','ui/ux':'UI/UX','ml':'ML','nlp':'NLP','llm':'LLM','sre':'SRE','devops':'DevOps','ios':'iOS','macos':'macOS','ios/android':'iOS/Android','sap':'SAP','erp':'ERP','crm':'CRM','hr':'HR','it':'IT','b2b':'B2B','b2c':'B2C','saas':'SaaS','paas':'PaaS','faas':'FaaS','c++':'C++','c#':'C#','.net':'.NET','node.js':'Node.js','next.js':'Next.js','react.js':'React.js','vue.js':'Vue.js','angular.js':'Angular.js'
+        };
+        return word.replace(cleanWord,replacement[lower]||cleanWord);
+      }
+      // Keep already meaningful mixed-case names, otherwise capitalise the first letter.
+      if(/[A-Z]/.test(cleanWord.slice(1)) && /[a-z]/.test(cleanWord)) return word;
+      return word.charAt(0).toUpperCase()+word.slice(1).toLowerCase();
+    }).join(' ');
+  }
+  function validTitle(v){const x=normalizeTitle(v);return x.length>=4&&x.length<=100&&!/^(developer|engineer|manager|designer|analyst|tester|job|role|position|opening|vacancy)$/i.test(x)}
+  function dateValue(v){v=clean(v);const now=new Date();now.setHours(0,0,0,0);if(/^today$/i.test(v))return iso(now);if(/^tomorrow$/i.test(v)){now.setDate(now.getDate()+1);return iso(now)}let m=v.match(/\bin\s+(\d+)\s+days?\b/i);if(m){now.setDate(now.getDate()+Number(m[1]));return iso(now)}m=v.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{4})$/);if(m){const d=new Date(+m[3],+m[2]-1,+m[1]);return validDate(d)?iso(d):''}m=v.match(/^(\d{4})[\/\-.](\d{1,2})[\/\-.](\d{1,2})$/);if(m){const d=new Date(+m[1],+m[2]-1,+m[3]);return validDate(d)?iso(d):''}const d=new Date(v);return isNaN(d)?'':(d.setHours(0,0,0,0),validDate(d)?iso(d):'')}
+  function validDate(d){const n=new Date();n.setHours(0,0,0,0);return d instanceof Date&&!isNaN(d)&&d>=n}
+  function iso(d){return d.toISOString().slice(0,10)}
+  function prettyDate(v){if(!v)return '';const d=new Date(v+'T00:00:00');return isNaN(d)?v:d.toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})}
+  function extractInitial(q){
+    const x=clean(q); const d={};
+    const titleMatch=x.match(/(?:for|as|role(?:\s+is)?|title(?:\s+is)?)\s+(?:a|an|the\s+)?([A-Za-z][A-Za-z0-9 .&/+#-]{3,80}?)(?=\s+(?:in|at|location|salary|ctc|for\s+₹|with|experience|deadline|closing|by)\b|$)/i);
+    if(titleMatch&&validTitle(titleMatch[1]))d.title=normalizeTitle(titleMatch[1]);
+    const loc=x.match(/\b(?:in|at|location(?:\s+is)?)\s+([A-Za-z][A-Za-z .,&/-]{2,60}?)(?=\s+(?:salary|ctc|₹|rs\.?|inr|with|for|experience|deadline|closing|by)\b|$)/i);if(loc)d.location=clean(loc[1]);
+    const sal=x.match(/(?:salary|ctc|compensation)\s*(?:is|of|:)?\s*(₹?\s*[\d,.]+\s*(?:-|to)\s*₹?\s*[\d,.]+(?:\s*(?:lpa|lakhs?|pa|per annum))?|₹?\s*[\d,.]+\s*(?:lpa|lakhs?|pa|per annum))/i);if(sal)d.salary=clean(sal[1]);
+    const exp=x.match(/(?:experience|exp)\s*(?:is|of|:)?\s*(\d+\s*(?:-|to)\s*\d+\s*(?:years?|yrs?)|\d+\+?\s*(?:years?|yrs?))/i);if(exp)d.experience=clean(exp[1]);
+    const dl=x.match(/(?:deadline|closing(?:\s+date)?|close(?:s)?|by)\s*(?:is|on|:)?\s*([A-Za-z0-9 ,\/-]{4,30})$/i);if(dl){const dv=dateValue(dl[1]);if(dv)d.deadline=dv}
+    const notice=x.match(/(?:notice(?:\s+period)?|joining)\s*(?:is|of|:)?\s*(immediate|serving|\d+\s*days?)/i);if(notice)d.notice=/immediate|serving/i.test(notice[1])?'Immediate / Serving':clean(notice[1]).replace(/day$/i,'Days');
+    return d;
+  }
+  function missing(){for(const k of ['title','company','location','salary','experience','deadline','notice'])if(!clean(state.draft[k]))return k;return null}
+  function promptFor(k){const p={title:'Please give me the exact job title you want to post. For example: “Senior Java Developer”. I need a clear professional designation.',company:'What company or entity name should appear on the job posting?',location:'What is the workplace location? For example: Hyderabad, Telangana or Remote / Pan-India.',salary:'What salary or CTC range should I publish? For example: ₹8 LPA – ₹12 LPA.',experience:'What experience should I require? For example: 3–5 Years.',deadline:'What is the application deadline? You can say a date such as 30 September 2026, tomorrow, or in 7 days.',notice:'What is the maximum notice period accepted? For example: Immediate, 15 Days, 30 Days, 60 Days or 90 Days.'};return p[k]}
+  function generateDescription(){const d=state.draft;const extra=clean(d.requirements||'');const skills=extra?`\n\nKey skills / requirements:\n${extra}`:'';return `We are looking for a ${d.title} to join ${d.company} in ${d.location}. The successful candidate will bring ${d.experience} of relevant experience and contribute to delivering high-quality work aligned with business and team objectives.\n\nKey Responsibilities:\n• Own day-to-day responsibilities associated with the ${d.title} role.\n• Collaborate with cross-functional teams and stakeholders to deliver assigned objectives.\n• Analyse requirements, solve problems and maintain high standards of quality.\n• Communicate progress clearly and contribute to continuous improvement.\n\nCandidate Requirements:\n• ${d.experience} of relevant professional experience.\n• Strong communication, problem-solving and teamwork skills.\n• Ability to work effectively in ${d.location} and meet role expectations.\n• Candidates should be comfortable with the tools, technologies and responsibilities relevant to the role.${skills}\n\nCompensation: ${d.salary}.\nMaximum notice period accepted: ${d.notice}.\nApplication deadline: ${prettyDate(d.deadline)}.`}
+  async function publish(){if(state.publishing)return;state.publishing=true;syncForm();const email=clean(localStorage.getItem('recruiterEmail')||localStorage.getItem('recruiterLoggedInEmail')||'').toLowerCase();if(!email){state.publishing=false;say('I cannot publish the job because the recruiter session email is not available. Please sign in again.');return}const recruiterName=clean(localStorage.getItem('recruiterName')||email.split('@')[0]);const payload={jobtitle:state.draft.title,companyname:state.draft.company,location:state.draft.location,salary:state.draft.salary,experience:state.draft.experience,notice:state.draft.notice,description:state.draft.description,recruiteremail:email,recruiterName,status:'Open',applicants:0,isarchived:false,closingdate:state.draft.deadline};status('Publishing job…');try{const {error}=await window.supabase.from('jobs').insert([payload]);if(error)throw error;state.mode='done';state.step='done';renderWorkflow();if(typeof window.loadPostedJobsInventory==='function')await window.loadPostedJobsInventory();$('jobForm')?.reset();say(`Done. The ${state.draft.title} job has been posted successfully. It is now available in Active Job Postings.`);state.publishing=false}catch(e){console.error(e);state.publishing=false;say(`I prepared the job, but I could not publish it. ${e?.message||'Please check the recruiter connection and try again.'}`)}}
+  function beginJob(q){state.mode='job';state.step='title';state.draft={};state.optionalAsked=false;const extracted=extractInitial(q);Object.assign(state.draft,extracted);if(!state.draft.company)state.draft.company=clean($('companyName')?.value||localStorage.getItem('companyName')||'');syncForm();renderWorkflow();const m=missing();state.step=m||'description';renderWorkflow();if(m)say(promptFor(m));else askOptional();}
+  function askOptional(){if(state.optionalAsked)return;state.optionalAsked=true;state.step='description';renderWorkflow();say('I have all the required job details. Do you want to add specific skills, technologies, responsibilities or qualifications? Tell me those details, or say “no” and I will create a professional job description from the information you provided.')}
+  function confirmPost(){state.step='confirm';renderWorkflow();const d=state.draft;const summary=`I have prepared ${d.title} for ${d.company} in ${d.location}. Salary: ${d.salary}. Experience: ${d.experience}. Deadline: ${prettyDate(d.deadline)}. Notice: ${d.notice}. I also created the job description using the details you provided. Would you like me to post this job now?`;say(summary)}
+  function consumeJobAnswer(q){const k=state.step;const x=clean(q);if(!x)return;
+    if(k==='title'){const t=normalizeTitle(x);if(!validTitle(t)){say('Please give me a clear professional job title, such as “Senior Java Developer” or “Cloud Security Architect”. I will not post a vague title.');return}state.draft.title=t;setField('jobTitle',t);state.step='company';renderWorkflow();say(promptFor('company'));return}
+    if(k==='company'){state.draft.company=x;setField('companyName',x);state.step='location';renderWorkflow();say(promptFor('location'));return}
+    if(k==='location'){state.draft.location=x;setField('location',x);state.step='salary';renderWorkflow();say(promptFor('salary'));return}
+    if(k==='salary'){state.draft.salary=x;setField('salary',x);state.step='experience';renderWorkflow();say(promptFor('experience'));return}
+    if(k==='experience'){state.draft.experience=x;setField('experience',x);state.step='deadline';renderWorkflow();say(promptFor('deadline'));return}
+    if(k==='deadline'){const dv=dateValue(x);if(!dv){say('I could not understand that deadline. Please give me a clear date, for example “30 September 2026” or “in 7 days”.');return}state.draft.deadline=dv;setField('closingDate',dv);state.step='notice';renderWorkflow();say(promptFor('notice'));return}
+    if(k==='notice'){if(!/immediate|serving|\d+\s*days?/i.test(x)){say('Please give the maximum notice period, such as Immediate, 15 Days, 30 Days, 60 Days or 90 Days.');return}state.draft.notice=/immediate|serving/i.test(x)?'Immediate / Serving':clean(x);setField('maxNotice',state.draft.notice);renderWorkflow();askOptional();return}
+    if(k==='description'){if(/^(no|none|skip|nothing)$/i.test(x)){state.draft.requirements='';state.draft.description=generateDescription();setField('jobDescription',state.draft.description);confirmPost();return}state.draft.requirements=x;state.draft.description=generateDescription();setField('jobDescription',state.draft.description);confirmPost();return}
+    if(k==='confirm'){if(/^(yes|y|ok|okay|sure|post|publish|go ahead|do it|yes post|publish it|post it)$/i.test(x)||/\b(post|publish)\b.*\b(job|it|this)\b/i.test(x)){publish();return}if(/^(no|cancel|stop|not now|don't)$/i.test(x)){state.mode=null;state.step=null;renderWorkflow();say('No problem. I did not post the job. The details remain available in the job form for you to review or edit.');return}say('Please confirm clearly: “Yes, post it” to publish the job, or “No” to keep it as a draft.');return}
+  }
+  // Keep the visible Job Title field professionally capitalised even when the recruiter types manually.
+  const jobTitleEl=document.getElementById('jobTitle');
+  if(jobTitleEl){
+    jobTitleEl.addEventListener('blur',function(){
+      const formatted=normalizeTitle(this.value);
+      if(formatted && formatted!==this.value.trim()){
+        this.value=formatted;
+        this.dispatchEvent(new Event('input',{bubbles:true}));
+        this.dispatchEvent(new Event('change',{bubbles:true}));
+      }
+    });
+  }
+
+  const old=window.irAICommand;
+  window.irAICommand=function(raw){const q=clean(raw);if(!q)return;addMsg('user',q);if(/^(stop|cancel|stop ai|stop conversation)$/i.test(q)){window.stopRecruiterAI?.();state.mode=null;state.step=null;renderWorkflow();return}if(state.mode==='job'){consumeJobAnswer(q);return}const n=q.toLowerCase();if(/\b(add|create|post|new)\b.*\b(job|opening|position|vacancy|requirement)\b|\b(job|opening)\b.*\b(create|add|post)\b/.test(n)){beginJob(q);return}return old?q&&old(q):say('I can help with recruiter work. Try “Create a new job”, “Show candidates”, or “Screen candidates”.')};
+  // If the recruiter clicks the AI Job Posting card, start the same guided workflow.
+  const oldOpenAI=window.openAI;window.openAI=function(mode){if(mode==='create'){beginJob('Create a new job');return}return oldOpenAI?oldOpenAI(mode):undefined};
+  window.addEventListener('load',()=>{ensureWorkflow();renderWorkflow()});
+})();
+</script>
+<script>
+(function(){
+  // One-click AI job creation: open the AI panel, start the guided workflow,
+  // let the assistant ask for the first required field, then automatically listen.
+  window.startAIJobCreationVoice = function(){
+    try {
+      const panel = document.getElementById('indupalliRecruiterAIPanel');
+      if (panel && !panel.classList.contains('open')) {
+        window.toggleRecruiterAI?.();
+      }
+
+      // Start the guided job workflow. It will ask for the first missing field
+      // (normally the exact professional job title) and populate the form as the
+      // recruiter answers.
+      window.irAICommand?.('Create a new job');
+
+      // Wait until the female assistant finishes its opening question before
+      // turning the microphone on, so the recruiter does not get heard while AI is speaking.
+      const startListening = function(attempt){
+        if (attempt > 50) return;
+        if (window.speechSynthesis && window.speechSynthesis.speaking) {
+          setTimeout(function(){ startListening(attempt + 1); }, 150);
+          return;
+        }
+        setTimeout(function(){ window.toggleRecruiterVoice?.(); }, 250);
+      };
+      setTimeout(function(){ startListening(0); }, 400);
+    } catch (e) {
+      console.error('AI job voice start error:', e);
+      window.toggleRecruiterAI?.();
+    }
+  };
+})();
+</script>
 </body>
 </html>
