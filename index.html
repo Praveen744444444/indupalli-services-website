@@ -2694,7 +2694,44 @@ RESPONSE RULES
             messages.scrollTop = messages.scrollHeight;
         }
 
+        // Caps how much history is sent to /api/chat on every request, without
+        // deleting anything from the on-screen conversation (chatHistory itself
+        // is untouched). Keeps the last MAX_HISTORY_TURNS exchanges verbatim;
+        // anything older is folded into one short context line instead of being
+        // resent in full every single turn.
+        const MAX_HISTORY_TURNS = 6; // 6 user+model exchanges = last 12 entries
+        function buildHistoryForRequest() {
+            const maxItems = MAX_HISTORY_TURNS * 2;
+            if (chatHistory.length <= maxItems) {
+                return chatHistory;
+            }
+
+            const dropped = chatHistory.slice(0, chatHistory.length - maxItems);
+            const recent = chatHistory.slice(-maxItems);
+
+            const droppedUserLines = dropped
+                .filter(m => m.role === "user")
+                .map(m => (m.parts?.[0]?.text || "").trim())
+                .filter(Boolean)
+                .map(t => t.length > 80 ? t.slice(0, 80) + "…" : t);
+
+            if (droppedUserLines.length === 0) return recent;
+
+            const summaryTurn = {
+                role: "user",
+                parts: [{
+                    text: `[Earlier context, for background only — do not re-answer these: the user previously also asked about: ${droppedUserLines.join("; ")}]`
+                }]
+            };
+
+            return [summaryTurn, ...recent];
+        }
+
+        let nikkiRequestInFlight = false;
+
         async function sendChatMessage() {
+            if (nikkiRequestInFlight) return; // guards against rapid double-click / rapid Enter
+
             const input = document.getElementById("chatbotInput");
             const text = input.value.trim();
             if (!text) return;
@@ -2702,6 +2739,12 @@ RESPONSE RULES
             addChatMessage("user", text);
             chatHistory.push({ role: "user", parts: [{ text }] });
             input.value = "";
+
+            const sendBtn = document.getElementById("chatbotSend");
+            nikkiRequestInFlight = true;
+            if (sendBtn) sendBtn.disabled = true;
+            // Input stays enabled so the user can keep typing their next message;
+            // only the actual send action is locked while a request is in flight.
 
             const messages = document.getElementById("chatbotMessages");
             const typingEl = document.createElement("div");
@@ -2711,30 +2754,108 @@ RESPONSE RULES
             messages.appendChild(typingEl);
             messages.scrollTop = messages.scrollHeight;
 
+            const payload = {
+                system_instruction: { parts: [{ text: CHATBOT_CONTEXT }] },
+                contents: buildHistoryForRequest()
+            };
+
+            let response;
             try {
-                const response = await fetch("/api/chat", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        system_instruction: { parts: [{ text: CHATBOT_CONTEXT }] },
-                        contents: chatHistory
-                    })
-                });
+                console.log("[Nikki] Request payload:", payload);
+
+                try {
+                    response = await fetch("/api/chat", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(payload)
+                    });
+                } catch (networkErr) {
+                    // fetch() itself threw: DNS/connection/CORS/offline failure, not an HTTP error
+                    console.error("[Nikki] Network-level failure calling /api/chat:", networkErr);
+                    throw { kind: "network", detail: networkErr.message };
+                }
+
+                console.log("[Nikki] Response status:", response.status);
+
+                let data = null;
+                let rawText = "";
+                try {
+                    rawText = await response.text();
+                    data = rawText ? JSON.parse(rawText) : {};
+                } catch (parseErr) {
+                    console.error("[Nikki] Failed to parse response as JSON. Raw body:", rawText);
+                    throw { kind: "parse", detail: parseErr.message, status: response.status };
+                }
+
+                if (!response.ok) {
+                    throw { kind: "http", status: response.status, detail: data?.error || data?.message || null };
+                }
+
+                // Dev-only visibility into real token usage, when Gemini returns it.
+                // Never shown in the chat UI — console only.
+                if (data.usageMetadata) {
+                    console.log("[Nikki] Prompt tokens:", data.usageMetadata.promptTokenCount);
+                    console.log("[Nikki] Output tokens:", data.usageMetadata.candidatesTokenCount);
+                    console.log("[Nikki] Total tokens:", data.usageMetadata.totalTokenCount);
+                } else {
+                    console.log("[Nikki] No usageMetadata present in this response.");
+                }
+
+                const reply = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim()
+                    || data.reply?.trim();
+
+                if (!reply) {
+                    console.error("[Nikki] Response OK but no recognizable reply field in body:", data);
+                    throw { kind: "malformed" };
+                }
 
                 document.getElementById("chatbotTyping")?.remove();
-                const data = await response.json().catch(() => ({}));
-                if (!response.ok) {
-                    throw new Error(data.error || `Chat service returned ${response.status}`);
-                }
-                const reply = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim()
-                    || data.reply?.trim()
-                    || "I’m unable to answer that right now. Please try again.";
                 addChatMessage("bot", reply);
                 chatHistory.push({ role: "model", parts: [{ text: reply }] });
+
             } catch (e) {
                 document.getElementById("chatbotTyping")?.remove();
-                addChatMessage("bot", "Nikki is temporarily unavailable. Please try again in a moment.");
-                console.error("Nikki chat error:", e);
+                console.error("[Nikki] Chat error:", e);
+
+                let userMessage = "Nikki is temporarily unavailable. Please try again in a moment.";
+
+                if (e && e.kind === "network") {
+                    userMessage = "I can't reach the Nikki service right now — this looks like a connection problem. Please check your internet connection and try again.";
+                } else if (e && e.kind === "parse") {
+                    userMessage = "Nikki received an unexpected response from the server and couldn't read it. Please try again in a moment.";
+                } else if (e && e.kind === "malformed") {
+                    userMessage = "Nikki got a response back but it wasn't in the expected format. Please try again in a moment.";
+                } else if (e && e.kind === "http") {
+                    switch (e.status) {
+                        case 400:
+                            userMessage = "Nikki couldn't process that message (invalid request format). Please try rephrasing and send again.";
+                            break;
+                        case 401:
+                        case 403:
+                            userMessage = "Nikki is temporarily unavailable due to an authentication issue on our end. Our team has been notified.";
+                            break;
+                        case 404:
+                            userMessage = "Nikki's chat service couldn't be reached (endpoint not found). Please try again later.";
+                            break;
+                        case 405:
+                            userMessage = "Nikki's chat service is misconfigured (the server rejected the request method). Our team has been notified.";
+                            break;
+                        case 429:
+                            userMessage = "Nikki has temporarily reached its usage limit. Please try again in a few minutes.";
+                            break;
+                        default:
+                            if (e.status >= 500) {
+                                userMessage = "Nikki's chat service is having trouble right now (server error). Please try again shortly.";
+                            } else {
+                                userMessage = `Nikki hit an unexpected issue (status ${e.status}). Please try again.`;
+                            }
+                    }
+                }
+
+                addChatMessage("bot", userMessage);
+            } finally {
+                nikkiRequestInFlight = false;
+                if (sendBtn) sendBtn.disabled = false;
             }
         }
     </script>
