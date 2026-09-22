@@ -1455,6 +1455,61 @@ body.dark-mode .sidebar{background:#090d16!important;}
   .per-job-agent-actions button{width:100%;}
 }
 </style>
+<style id="ai-mission-review-popup-style">
+/* ===== AI SCAN COMPLETE — REVIEW APPLICATION POPUP ===== */
+#aiMissionReviewPopup{
+  display:none;position:fixed;inset:0;z-index:260000;
+  align-items:center;justify-content:center;padding:20px;
+  background:rgba(8,15,30,.78);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);
+}
+#aiMissionReviewPopup.show{display:flex;animation:fadeIn .22s ease forwards;}
+.ai-mission-review-popup{
+  width:min(520px,100%);position:relative;overflow:hidden;
+  border:1px solid #cfe0ff;border-radius:26px;
+  background:linear-gradient(180deg,#ffffff 0%,#f8fbff 100%);
+  box-shadow:0 35px 90px rgba(15,23,42,.38);
+  animation:popCenter .28s cubic-bezier(.16,1,.3,1) forwards;
+}
+.ai-mission-review-popup:before{content:"";position:absolute;inset:0 0 auto;height:5px;background:linear-gradient(90deg,#2563eb,#60a5fa,#8b5cf6);}
+.ai-mission-review-popup-inner{padding:30px;}
+.ai-mission-review-icon{width:72px;height:72px;border-radius:20px;margin:0 auto 16px;background:linear-gradient(135deg,#dbeafe,#ede9fe);color:#2563eb;display:flex;align-items:center;justify-content:center;font-size:30px;box-shadow:0 12px 28px rgba(37,99,235,.15);}
+.ai-mission-review-eyebrow{text-align:center;font-size:10px;font-weight:900;letter-spacing:.8px;text-transform:uppercase;color:#2563eb;}
+.ai-mission-review-title{text-align:center;margin:6px 0 7px;color:#0f172a;font-size:24px;font-weight:900;letter-spacing:-.5px;}
+.ai-mission-review-copy{text-align:center;color:#64748b;font-size:12px;line-height:1.6;margin:0 auto;max-width:420px;}
+.ai-mission-review-job{margin-top:18px;padding:14px;border:1px solid #dbe7f7;border-radius:14px;background:#fff;display:flex;align-items:center;gap:12px;}
+.ai-mission-review-job-icon{width:42px;height:42px;flex:0 0 42px;border-radius:12px;background:#eff6ff;color:#2563eb;display:flex;align-items:center;justify-content:center;}
+.ai-mission-review-job-copy{min-width:0;}
+.ai-mission-review-job-title{font-size:13px;font-weight:900;color:#17213a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ai-mission-review-job-meta{font-size:10.5px;color:#71809a;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ai-mission-review-score{margin-left:auto;flex:0 0 auto;padding:7px 10px;border-radius:999px;background:#ecfdf5;border:1px solid #bbf7d0;color:#047857;font-size:11px;font-weight:900;}
+.ai-mission-review-checks{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:14px;}
+.ai-mission-review-check{padding:10px 8px;border:1px solid #e1e8f3;border-radius:11px;background:#f8fbff;color:#52627a;text-align:center;font-size:9.5px;font-weight:800;}
+.ai-mission-review-check i{display:block;color:#16a34a;font-size:13px;margin-bottom:5px;}
+.ai-mission-review-actions{display:flex;gap:9px;margin-top:18px;}
+.ai-mission-review-actions button{flex:1;border:0;border-radius:11px;padding:12px 14px;cursor:pointer;font-size:11.5px;font-weight:900;transition:.18s;}
+.ai-mission-review-later{background:#eef2f7;color:#334155;}
+.ai-mission-review-later:hover{background:#e2e8f0;}
+.ai-mission-review-go{background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;box-shadow:0 9px 20px rgba(37,99,235,.22);}
+.ai-mission-review-go:hover{transform:translateY(-1px);box-shadow:0 12px 24px rgba(37,99,235,.28);}
+.ai-mission-review-foot{text-align:center;margin-top:11px;color:#94a3b8;font-size:9.5px;font-weight:700;}
+body.dark-mode .ai-mission-review-popup{background:linear-gradient(180deg,#111827,#0f172a);border-color:#263b62;}
+body.dark-mode .ai-mission-review-title,body.dark-mode .ai-mission-review-job-title{color:#fff;}
+body.dark-mode .ai-mission-review-copy,body.dark-mode .ai-mission-review-job-meta{color:#9fb0c5;}
+body.dark-mode .ai-mission-review-job{background:#111827;border-color:#263143;}
+body.dark-mode .ai-mission-review-check{background:#0f172a;border-color:#263143;color:#aebbd0;}
+body.dark-mode .ai-mission-review-later{background:#1e293b;color:#cbd5e1;}
+@media(max-width:560px){
+  #aiMissionReviewPopup{padding:12px;}
+  .ai-mission-review-popup-inner{padding:24px 18px;}
+  .ai-mission-review-title{font-size:21px;}
+  .ai-mission-review-job{align-items:flex-start;}
+  .ai-mission-review-score{margin-left:auto;}
+  .ai-mission-review-checks{grid-template-columns:1fr;}
+  .ai-mission-review-actions{flex-direction:column-reverse;}
+  .ai-mission-review-actions button{width:100%;}
+}
+</style>
+
 <style id="ai-mission-review-submit-style">
 
 /* ===== AI MISSION — REVIEW & SUBMIT FINISH STATE ===== */
@@ -4487,9 +4542,9 @@ body.dark-mode .copilot-track{background:#1e293b;}
                   <button
                     type="button"
                     class="mission-review-submit-btn"
-                    onclick="window.closePerJobAIAgent(); window.openJobDetailsModalById('${esc(id)}')">
+                    onclick="window.showAIMissionReviewPopup && window.showAIMissionReviewPopup(window.__pendingAIMissionReview)">
                     <i class="fa-solid fa-file-circle-check"></i>
-                    Review &amp; Submit Application
+                    Review Application
                   </button>
                 </div>
               </div>
@@ -4509,7 +4564,26 @@ body.dark-mode .copilot-track{background:#1e293b;}
           perJobAgentSetLive(
               `<b>AI Agent:</b> Workflow complete for <b>${esc(title)}</b>. Any failed step was skipped and the workflow moved forward.`
           );
+
+          // The scan is complete. Store the exact analysis so the application
+          // form can reuse it without triggering a second Gemini request.
+          window.__pendingAIMissionReview = {
+              jobId: id,
+              title,
+              company,
+              score: Math.round(Number(score) || 0),
+              analysis: analysis || {
+                  overallScore: Math.round(Number(score) || 0),
+                  label,
+                  summary
+              },
+              resumeUrl: resumeUrl || window.candidateMasterResumeUrl || ''
+          };
+
           await paint();
+          if (typeof window.showAIMissionReviewPopup === 'function') {
+              window.showAIMissionReviewPopup(window.__pendingAIMissionReview);
+          }
 
       }catch(fatalError){
           // The workflow should be resilient even if an unexpected error
@@ -4551,8 +4625,8 @@ body.dark-mode .copilot-track{background:#1e293b;}
                 </div>
                 <div class="mission-action-bar">
                   <div class="mission-action-hint"><i class="fa-solid fa-shield-halved"></i> Final submission stays with you</div>
-                  <button type="button" class="mission-review-submit-btn" onclick="window.closePerJobAIAgent(); window.openJobDetailsModalById('${esc(id)}')">
-                    <i class="fa-solid fa-file-circle-check"></i> Review &amp; Submit Application
+                  <button type="button" class="mission-review-submit-btn" onclick="window.showAIMissionReviewPopup && window.showAIMissionReviewPopup(window.__pendingAIMissionReview)">
+                    <i class="fa-solid fa-file-circle-check"></i> Review Application
                   </button>
                 </div>
               </div>
@@ -5254,6 +5328,11 @@ body.dark-mode .copilot-track{background:#1e293b;}
 
   window.openApplyModalForJob = function(jobId, jobTitle, companyName) {
       const selectedJob = window.allJobsData ? window.allJobsData[String(jobId)] : null;
+      const pendingMission = window.__pendingAIMissionReview &&
+          String(window.__pendingAIMissionReview.jobId || '') === String(jobId || '')
+          ? window.__pendingAIMissionReview
+          : null;
+
       window.currentApplyingJobId = jobId;
       window.currentApplyingJobTitle = jobTitle;
       window.currentApplyingJobCompany = companyName;
@@ -5266,7 +5345,11 @@ body.dark-mode .copilot-track{background:#1e293b;}
       // Reuse an already-computed Job Discovery score if one exists for
       // this exact job + master resume, so it carries through to submission.
       const cachedScore = window.getSavedJobScore ? window.getSavedJobScore(selectedJob || { id: jobId }) : null;
-      if (cachedScore !== null && window.candidateMasterResumeUrl) {
+      if (pendingMission) {
+          window.currentJobMatchAnalysis = pendingMission.analysis || { overallScore: pendingMission.score };
+          window.currentJobMatchResumeUrl = pendingMission.resumeUrl || window.candidateMasterResumeUrl || '';
+          window.currentApplyingResumeUrl = window.currentJobMatchResumeUrl || '';
+      } else if (cachedScore !== null && window.candidateMasterResumeUrl) {
           window.currentJobMatchAnalysis = { overallScore: cachedScore };
           window.currentJobMatchResumeUrl = window.candidateMasterResumeUrl;
       }
@@ -5294,7 +5377,12 @@ body.dark-mode .copilot-track{background:#1e293b;}
       const applyModal = document.getElementById("applyModal");
       if (applyModal) applyModal.style.display = "flex";
 
-      if (window.candidateMasterResumeUrl) {
+      if (pendingMission) {
+          window.__pendingAIMissionReview = null;
+          if (typeof renderJobMatchAnalysisUI === 'function') {
+              setTimeout(() => renderJobMatchAnalysisUI(window.currentJobMatchAnalysis), 0);
+          }
+      } else if (window.candidateMasterResumeUrl) {
           setTimeout(() => window.analyzeCurrentJobMatch(), 250);
       }
   };
@@ -5393,6 +5481,36 @@ if (confidence) confidence.textContent='Starting AI analysis...';
       }
   };
 
+  function renderJobMatchAnalysisUI(data) {
+      if (!data) return;
+      const overall=normalizeScoreValue(data.overallScore);
+      const overallEl=document.getElementById('aiMatchOverall');
+      const labelEl=document.getElementById('aiMatchLabel');
+      const confidenceEl=document.getElementById('aiMatchConfidence');
+      const results=document.getElementById('aiMatchResults');
+      const loading=document.getElementById('aiMatchLoading');
+      const error=document.getElementById('aiMatchError');
+      const status=document.getElementById('aiMatchStatus');
+      const btn=document.getElementById('aiAnalyzeMatchBtn');
+      const summary=document.getElementById('aiMatchSummary');
+      if (overallEl) overallEl.textContent=overall;
+      if (labelEl) labelEl.textContent=data.label || scoreLabel(overall);
+      if (confidenceEl) confidenceEl.textContent=data.confidence ? `${data.confidence} confidence` : 'AI assessment';
+      setMatchMetric('Skills', data.skillsMatch);
+      setMatchMetric('Experience', data.experienceMatch);
+      setMatchMetric('Responsibilities', data.responsibilitiesMatch);
+      setMatchMetric('Education', data.educationCertificationsMatch);
+      setMatchMetric('Quality', data.resumeQuality);
+      renderMatchChips('aiMatchedSkills', data.matchedSkills, false);
+      renderMatchChips('aiMissingSkills', data.missingOrWeakSkills, true);
+      if (summary) summary.textContent=data.summary || 'The AI analysis is complete.';
+      if (results) results.style.display='block';
+      if (loading) loading.style.display='none';
+      if (error) error.style.display='none';
+      if (status) status.textContent='AI Agent analysis complete. Review the match before submitting.';
+      if (btn) { btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-rotate"></i> Re-analyze Match'; }
+  }
+
   window.analyzeCurrentJobMatch = async function() {
       const jobId = window.currentApplyingJobId;
       const job = window.allJobsData ? window.allJobsData[String(jobId)] : null;
@@ -5440,23 +5558,7 @@ if (confidence) confidence.textContent='Starting AI analysis...';
           const data = await window.invokeScoreResume(payload);
           window.currentJobMatchAnalysis = data;
           window.currentJobMatchResumeUrl = resumeUrl;
-          const overall=normalizeScoreValue(data.overallScore);
-          document.getElementById('aiMatchOverall').textContent=overall;
-          document.getElementById('aiMatchLabel').textContent=data.label || scoreLabel(overall);
-          document.getElementById('aiMatchConfidence').textContent=data.confidence ? `${data.confidence} confidence` : 'AI assessment';
-          setMatchMetric('Skills', data.skillsMatch);
-          setMatchMetric('Experience', data.experienceMatch);
-          setMatchMetric('Responsibilities', data.responsibilitiesMatch);
-          setMatchMetric('Education', data.educationCertificationsMatch);
-          setMatchMetric('Quality', data.resumeQuality);
-          renderMatchChips('aiMatchedSkills', data.matchedSkills, false);
-          renderMatchChips('aiMissingSkills', data.missingOrWeakSkills, true);
-          const summary = document.getElementById('aiMatchSummary');
-          if (summary) summary.textContent = data.summary || 'The AI analysis is complete.';
-          if (results) results.style.display='block';
-          if (status) status.textContent='Analysis complete. Review the match before submitting.';
-          if (btn) { btn.disabled=false; btn.innerHTML='<i class="fa-solid fa-rotate"></i> Re-analyze Match'; }
-          if (loading) loading.style.display='none';
+          renderJobMatchAnalysisUI(data);
           return true;
       } catch (err) {
           console.error('AI job match error:', err);
@@ -6637,6 +6739,39 @@ body.dark-mode .voice-agent-card{background:linear-gradient(135deg,#0f1d35,#111f
 </script>
 
 
+<!-- AI SCAN COMPLETE — REVIEW APPLICATION POPUP -->
+<div id="aiMissionReviewPopup" aria-hidden="true">
+  <div class="ai-mission-review-popup" role="dialog" aria-modal="true" aria-labelledby="aiMissionReviewTitle">
+    <div class="ai-mission-review-popup-inner">
+      <div class="ai-mission-review-icon"><i class="fa-solid fa-file-circle-check"></i></div>
+      <div class="ai-mission-review-eyebrow">AI Scan Complete</div>
+      <h2 id="aiMissionReviewTitle" class="ai-mission-review-title">Review your application</h2>
+      <p class="ai-mission-review-copy">The AI Agent has finished analysing this job. Your application is ready for a final review. Nothing will be submitted until you click <b>Submit Application</b>.</p>
+
+      <div class="ai-mission-review-job">
+        <div class="ai-mission-review-job-icon"><i class="fa-solid fa-briefcase"></i></div>
+        <div class="ai-mission-review-job-copy">
+          <div id="aiMissionReviewJobTitle" class="ai-mission-review-job-title">Open Position</div>
+          <div id="aiMissionReviewJobMeta" class="ai-mission-review-job-meta">Company • Location</div>
+        </div>
+        <div id="aiMissionReviewScore" class="ai-mission-review-score">—% Match</div>
+      </div>
+
+      <div class="ai-mission-review-checks">
+        <div class="ai-mission-review-check"><i class="fa-solid fa-circle-check"></i>JD reviewed</div>
+        <div class="ai-mission-review-check"><i class="fa-solid fa-circle-check"></i>Resume matched</div>
+        <div class="ai-mission-review-check"><i class="fa-solid fa-circle-check"></i>Ready to submit</div>
+      </div>
+
+      <div class="ai-mission-review-actions">
+        <button type="button" class="ai-mission-review-later" onclick="window.closeAIMissionReviewPopup()">Review Later</button>
+        <button type="button" class="ai-mission-review-go" onclick="window.reviewAIMissionApplication()"><i class="fa-solid fa-file-circle-check"></i> Review Application</button>
+      </div>
+      <div class="ai-mission-review-foot"><i class="fa-solid fa-shield-halved"></i> You remain in control of the final submission.</div>
+    </div>
+  </div>
+</div>
+
 <!-- PER-JOB AI AGENT WORKFLOW MODAL -->
 <div id="perJobAIAgentModal" aria-hidden="true">
   <div class="per-job-agent-modal mission-modal" role="dialog" aria-modal="true" aria-labelledby="perJobAIAgentTitle">
@@ -6724,8 +6859,8 @@ body.dark-mode .voice-agent-card{background:linear-gradient(135deg,#0f1d35,#111f
         <div class="per-job-agent-step mission-step" data-step="result">
           <div class="per-job-agent-step-icon mission-icon"><span class="mission-icon-number">6</span><i class="fa-solid fa-circle-check"></i></div>
           <div class="per-job-agent-step-copy mission-copy">
-            <strong>Prepare application decision</strong>
-            <span>Present the result so you can review the job before applying.</span>
+            <strong>Prepare application for review</strong>
+            <span>Complete the AI scan and prepare your application for your final review and submission.</span>
           </div>
           <div class="per-job-agent-step-status mission-status">Waiting</div>
         </div>
@@ -6743,6 +6878,61 @@ body.dark-mode .voice-agent-card{background:linear-gradient(135deg,#0f1d35,#111f
 
 
 <script>
+(function(){
+  const popup=()=>document.getElementById('aiMissionReviewPopup');
+
+  window.showAIMissionReviewPopup=function(payload){
+    const modal=popup();
+    if(!modal || !payload) return;
+    const title=document.getElementById('aiMissionReviewJobTitle');
+    const meta=document.getElementById('aiMissionReviewJobMeta');
+    const score=document.getElementById('aiMissionReviewScore');
+    if(title) title.textContent=payload.title || 'Open Position';
+    if(meta) meta.textContent=`${payload.company || 'Company'}${payload.location ? ' • '+payload.location : ''}`;
+    if(meta && !payload.location){
+      const job=window.allJobsData?.[String(payload.jobId||'')];
+      if(job) meta.textContent=`${payload.company || job.companyname || 'Company'}${job.location ? ' • '+job.location : ''}`;
+    }
+    if(score) score.textContent=`${Math.round(Number(payload.score)||0)}% Match`;
+    modal.classList.add('show');
+    modal.setAttribute('aria-hidden','false');
+  };
+
+  window.closeAIMissionReviewPopup=function(){
+    const modal=popup();
+    if(modal){ modal.classList.remove('show'); modal.setAttribute('aria-hidden','true'); }
+  };
+
+  window.reviewAIMissionApplication=function(){
+    const payload=window.__pendingAIMissionReview;
+    if(!payload) return;
+    const job=window.allJobsData?.[String(payload.jobId||'')];
+    if(!job){
+      window.closeAIMissionReviewPopup();
+      if(window.showCustomAlert) window.showCustomAlert('The job could not be loaded. Please run the AI Agent again.','Job Not Found','warning');
+      return;
+    }
+    window.__pendingAIMissionReview=payload;
+    window.closeAIMissionReviewPopup();
+    if(window.closePerJobAIAgent) window.closePerJobAIAgent();
+    if(window.openApplyModalForJob){
+      window.openApplyModalForJob(
+        payload.jobId,
+        payload.title || job.jobtitle || job.title || 'Open Position',
+        payload.company || job.companyname || job.company || 'Indupalli Services'
+      );
+    }
+  };
+
+  document.addEventListener('click',function(e){
+    const modal=popup();
+    if(modal && e.target===modal) window.closeAIMissionReviewPopup();
+  });
+  window.addEventListener('keydown',function(e){
+    if(e.key==='Escape') window.closeAIMissionReviewPopup();
+  });
+})();
+
 document.addEventListener('click', function(e){
   const modal=document.getElementById('perJobAIAgentModal');
   if(!modal || !modal.classList.contains('show')) return;
